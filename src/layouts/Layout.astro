@@ -1,5 +1,5 @@
 ---
-import { getEntry } from 'astro:content';
+import { getSafeSeo } from '../scripts/seoHelper';
 
 interface Props {
   lang: string;
@@ -8,23 +8,7 @@ interface Props {
 
 const { lang, pageId } = Astro.props;
 
-// Defensive rendering fallback values
-let seoTitle = "Amr Mousa | Data Analyst & Marketer";
-let seoDescription = "Data analyst and digital marketing strategist portfolio.";
-let seoKeywords: string[] = [];
-let seoOgImage = "";
-
-try {
-  const seoEntry = await getEntry('seo', `${lang}/${pageId}`);
-  if (seoEntry && seoEntry.data) {
-    seoTitle = seoEntry.data.title;
-    seoDescription = seoEntry.data.description;
-    seoKeywords = seoEntry.data.keywords || [];
-    seoOgImage = seoEntry.data.ogImage || "";
-  }
-} catch (error) {
-  console.warn(`[Defensive Rendering] SEO fetching failed for ${lang}/${pageId}. Using default values.`, error);
-}
+const { title: seoTitle, description: seoDescription, keywords: seoKeywords = [], ogImage: seoOgImage } = await getSafeSeo(lang, pageId);
 ---
 
 <!doctype html>

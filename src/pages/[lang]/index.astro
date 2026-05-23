@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import { getSafeServices } from '../../scripts/servicesHelper';
+import { getSafeSocials } from '../../scripts/socialsHelper';
 
 // Dynamic route parameters
 export function getStaticPaths() {
@@ -17,27 +18,9 @@ if (!['en', 'ar'].includes(lang || '')) {
   return Astro.redirect('/en/');
 }
 
-// Defensive Content Rendering: Fetch services and socials safely
-let services: any[] = [];
-let socials: any[] = [];
-
-try {
-  const allServices = await getCollection('services');
-  services = allServices
-    .filter(item => item.slug.startsWith(`${lang}/`))
-    .sort((a, b) => (a.data.priority || 0) - (b.data.priority || 0));
-} catch (error) {
-  console.warn(`[Defensive Rendering] Services fetching failed for ${lang}. Using empty list.`, error);
-}
-
-try {
-  const allSocials = await getCollection('socials');
-  socials = allSocials
-    .filter(item => item.slug.startsWith(`${lang}/`))
-    .sort((a, b) => (a.data.priority || 0) - (b.data.priority || 0));
-} catch (error) {
-  console.warn(`[Defensive Rendering] Socials fetching failed for ${lang}. Using empty list.`, error);
-}
+// Fetch services and socials utilizing safe rendering helpers
+const services = await getSafeServices(lang || 'en');
+const socials = await getSafeSocials(lang || 'en');
 
 const isAr = lang === 'ar';
 ---

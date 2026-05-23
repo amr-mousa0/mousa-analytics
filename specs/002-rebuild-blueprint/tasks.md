@@ -64,9 +64,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T014 [P] [US2] Implement safe dynamic content fetching utility for SEO collection in `src/scripts/seoHelper.ts`
-- [ ] T015 [P] [US2] Implement safe dynamic content fetching utility for services collection in `src/scripts/servicesHelper.ts`
-- [ ] T016 [P] [US2] Implement safe dynamic content fetching utility for socials collection in `src/scripts/socialsHelper.ts`
+- [x] T014 [P] [US2] Implement safe dynamic content fetching utility for SEO collection in `src/scripts/seoHelper.ts`
+- [x] T015 [P] [US2] Implement safe dynamic content fetching utility for services collection in `src/scripts/servicesHelper.ts`
+- [x] T016 [P] [US2] Implement safe dynamic content fetching utility for socials collection in `src/scripts/socialsHelper.ts`
 
 **Checkpoint**: Defensive content boundaries are complete.
 
