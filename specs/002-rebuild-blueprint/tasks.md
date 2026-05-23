@@ -18,21 +18,24 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create `package.json` manifest with Astro, Tailwind, and TypeScript strict mode configurations at the repository root
+- [ ] T001 Create `package.json` manifest with Astro, Tailwind, and TypeScript configurations at the repository root
 - [ ] T002 Create `tsconfig.json` with strict mode enabled at the repository root
 - [ ] T003 [P] Create `tailwind.config.mjs` and `astro.config.mjs` configuration files at the repository root
+- [ ] T004 Install core dependencies (`astro`, `tailwindcss`, `sharp`, `typescript`, `@types/node`) using npm
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Foundational routing layout, content configuration, and typing system
+**Purpose**: Core security middleware, layout direction mechanics, content configuration, and dynamic guards
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Setup Astro Content Collections schema and types in `src/content/config.ts`
-- [ ] T005 Create baseline localized markdown documents for SEO, services, and socials under `src/content/seo/`, `src/content/services/`, and `src/content/socials/`
-- [ ] T006 Setup global HTML document structure and direction handling in `src/layouts/Layout.astro`
+- [ ] T005 Create `src/middleware.ts` to implement security headers (CSP, X-Frame-Options, Referrer-Policy, X-Content-Type-Options)
+- [ ] T006 [P] Setup Astro Content Collections schema and validation types in `src/content/config.ts`
+- [ ] T007 [P] Create base localized markdown documents for SEO, services, and socials under `src/content/seo/`, `src/content/services/`, and `src/content/socials/`
+- [ ] T008 Implement global HTML document structure and RTL/LTR direction switching in `src/layouts/Layout.astro`
+- [ ] T009 Implement history-safe root redirection in `src/pages/index.astro` using `window.location.replace('/en/')` and a fallback `<meta>` refresh redirect
 
 ---
 
@@ -44,10 +47,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T007 [P] [US1] Create dynamic dynamic route landing page template `src/pages/[lang]/index.astro`
-- [ ] T008 [US1] Implement dynamic routing parameter guard in `src/pages/[lang]/index.astro` redirecting invalid locales to `/en/`
-- [ ] T009 [P] [US1] Create dynamic dynamic route methodology page template `src/pages/[lang]/methodology.astro`
-- [ ] T010 [US1] Implement dynamic routing parameter guard in `src/pages/[lang]/methodology.astro` redirecting invalid locales to `/en/`
+- [ ] T010 [P] [US1] Create dynamic dynamic route landing page template `src/pages/[lang]/index.astro`
+- [ ] T011 [US1] Implement dynamic routing parameter guard in `src/pages/[lang]/index.astro` to redirect invalid locales to `/en/`
+- [ ] T012 [P] [US1] Create dynamic dynamic route methodology page template `src/pages/[lang]/methodology.astro`
+- [ ] T013 [US1] Implement dynamic routing parameter guard in `src/pages/[lang]/methodology.astro` to redirect invalid locales to `/en/`
 
 **Checkpoint**: Locale dynamic routing validation guard is fully operational.
 
@@ -61,9 +64,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T011 [P] [US2] Implement safe dynamic content fetching utility for SEO collection in `src/scripts/seoHelper.ts`
-- [ ] T012 [P] [US2] Implement safe dynamic content fetching utility for services collection in `src/scripts/servicesHelper.ts`
-- [ ] T013 [P] [US2] Implement safe dynamic content fetching utility for socials collection in `src/scripts/socialsHelper.ts`
+- [ ] T014 [P] [US2] Implement safe dynamic content fetching utility for SEO collection in `src/scripts/seoHelper.ts`
+- [ ] T015 [P] [US2] Implement safe dynamic content fetching utility for services collection in `src/scripts/servicesHelper.ts`
+- [ ] T016 [P] [US2] Implement safe dynamic content fetching utility for socials collection in `src/scripts/socialsHelper.ts`
 
 **Checkpoint**: Defensive content boundaries are complete.
 
@@ -71,17 +74,18 @@
 
 ## Phase 5: User Story 3 - Isolated Hydration and Lightweight Performance (Priority: P3)
 
-**Goal**: Build localized, accessible layout blocks (Hero, About, Services grid, Contact form with honeypot) using pure Tailwind logical properties and zero global javascript.
+**Goal**: Build localized, accessible layout blocks (Hero, About card layout, Services grid, Contact form with honeypot) using pure Tailwind logical properties and zero global javascript.
 
 **Independent Test**: Audit HTML structure and CSS variables to confirm logical properties work and page loads with 0ms client execution time.
 
 ### Implementation for User Story 3
 
-- [ ] T014 [P] [US3] Create global stylesheet with Tailwind directives in `src/styles/global.css`
-- [ ] T015 [P] [US3] Build Header, Footer, and mobile Side Drawer navigation UI in `src/components/ui/Navigation.astro` using Tailwind logical properties
-- [ ] T016 [P] [US3] Create Hero, About card layout, and Services grid components inside `src/components/sections/`
-- [ ] T017 [P] [US3] Create Contact Form component inside `src/components/sections/Contact.astro` including the hidden anti-spam `_gotcha` input field
-- [ ] T018 [US3] Integrate components into pages layouts inside `src/pages/[lang]/index.astro`
+- [ ] T017 [P] [US3] Create global stylesheet with Tailwind directives in `src/styles/global.css`
+- [ ] T018 [P] [US3] Build Header, Footer, and mobile Side Drawer navigation UI in `src/components/ui/Navigation.astro` using Tailwind logical properties
+- [ ] T019 [P] [US3] Create Hero, About card layout, and Services grid components inside `src/components/sections/` utilizing optimized `sharp` image outputs
+- [ ] T020 [P] [US3] Create Contact Form component inside `src/components/sections/Contact.astro` including the hidden anti-spam `_gotcha` input field
+- [ ] T021 [US3] Integrate components into pages layouts inside `src/pages/[lang]/index.astro`
+- [ ] T022 [US3] Implement dynamic lifecycle listener and observer cleanups in `src/scripts/lifecycle.ts` using `astro:before-swap` and duplicate listener guards
 
 **Checkpoint**: Portfolio pages render perfectly with styling, responsive layout, and zero script dependencies.
 
@@ -91,10 +95,12 @@
 
 **Purpose**: Implement unit and E2E automated tests and perform Lighthouse performance validation.
 
-- [ ] T019 [P] Create schema validation tests using Vitest in `tests/unit/schemas.test.ts`
-- [ ] T020 [P] Create navigation and route guard E2E tests using Playwright in `tests/e2e/navigation.spec.ts`
-- [ ] T021 [P] Create contact form submission honeypot verification E2E tests in `tests/e2e/contact.spec.ts`
-- [ ] T022 Run `npm run build` and execute performance/SEO audits to confirm Lighthouse budgets
+- [ ] T023 [P] Create schema validation tests using Vitest in `tests/unit/schemas.test.ts`
+- [ ] T024 [P] Create navigation and route guard E2E tests using Playwright in `tests/e2e/navigation.spec.ts`
+- [ ] T025 [P] Create contact form submission honeypot verification E2E tests in `tests/e2e/contact.spec.ts`
+- [ ] T026 Audit Tailwind logical properties usage in `src/` to verify zero physical directions (`ml-`, `mr-`, `left-`, `right-`, `text-left`, `text-right`) exist
+- [ ] T027 Run `npm run build` and verify CSP headers compatibility and zero hydration warnings
+- [ ] T028 Run Lighthouse CI audits and verify that performance budgets and SEO goals are fully satisfied
 
 ---
 
@@ -110,10 +116,11 @@
 ### Parallel Opportunities
 
 - Configuration setups (T001, T002, T003) can be worked on in parallel.
-- Landing and Methodology page files (T007, T009) can be scaffolded in parallel.
-- Safe content collections helpers (T011, T012, T013) are parallelizable.
-- Layout sections styling components (T014, T015, T016, T017) are parallelizable.
-- Unit and E2E tests files creation (T019, T020, T021) can be done in parallel.
+- Content schema definitions and mock content setups (T006, T007) are parallelizable.
+- Landing and Methodology page files (T010, T012) can be scaffolded in parallel.
+- Safe content collections helpers (T014, T015, T016) are parallelizable.
+- Layout sections styling components (T017, T018, T019, T020) are parallelizable.
+- Unit and E2E tests files creation (T023, T024, T025) can be done in parallel.
 
 ---
 
