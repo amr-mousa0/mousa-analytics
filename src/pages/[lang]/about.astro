@@ -255,69 +255,69 @@ const isAr = lang === 'ar';
               {isAr ? "رحلة البناء والتعلم" : "Experience & Internships"}
             </h2>
           </div>
-          <!-- Swipe Indicator (Mobile Only) -->
-          <div class="md:hidden flex items-center gap-1.5 text-[10px] font-bold text-text-main/40 uppercase font-sans tracking-widest">
-            <span>{isAr ? "اسحب لليمين" : "Swipe"}</span>
+          <!-- Swipe/Scroll Indicator -->
+          <div class="flex items-center gap-1.5 text-[10px] font-bold text-text-main/40 uppercase font-sans tracking-widest">
+            <span>{isAr ? "اسحب لليمين" : "Scroll / Swipe"}</span>
             <i class={`fa-solid ${isAr ? 'fa-arrow-left' : 'fa-arrow-right'} text-[8px] animate-pulse`}></i>
           </div>
         </div>
 
-        <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-4 md:pb-0 md:grid md:grid-cols-1 lg:grid-cols-3 md:overflow-x-visible">
+        <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-4 w-full">
           <!-- Experience Card 1: NTI -->
-          <div class="premium-card-global w-[85%] sm:w-[70%] md:w-auto snap-start flex-shrink-0 flex flex-col justify-between min-h-[300px]">
-            <div class="space-y-5 font-sans">
+          <div class="premium-card-global w-[92%] sm:w-[85%] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-7 md:p-10 flex flex-col justify-between">
+            <div class="space-y-4 font-sans">
               <!-- Top Badges -->
               <div class="flex flex-wrap gap-2.5">
-                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[9px] sm:text-[10px] font-bold tracking-wider uppercase">
+                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[10px] md:text-xs font-bold tracking-wider uppercase whitespace-nowrap">
                   {isAr ? "فبراير 2026 - الحاضر" : "FEB 2026 – PRESENT"}
                 </span>
-                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[9px] sm:text-[10px] font-bold tracking-wider">
+                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[10px] md:text-xs font-bold tracking-wider">
                   {isAr ? "المعهد القومي للاتصالات" : "National Telecommunication Institute - NTI"}
                 </span>
               </div>
               
               <!-- Job Title -->
-              <h3 class="text-lg sm:text-xl font-bold text-text-main font-serif">
+              <h3 class="text-xl md:text-2xl font-bold text-text-main font-sans mt-1">
                 {isAr ? "محلل بيانات متدرب" : "Internship Data Analyst"}
               </h3>
 
               <!-- Custom Bullet List -->
-              <ul class="space-y-3.5 text-xs text-text-main/85 leading-relaxed font-light">
+              <ul class="space-y-3.5 text-[13px] md:text-sm text-text-main/80 leading-relaxed font-light mt-3">
                 {isAr ? (
                   <>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>إتمام برنامج تدريبي مكثف وعملي بمجموع 120 ساعة يركز على ذكاء الأعمال الموجه بالبيانات ومنهجيات التحليل المتقدمة.</span>
                     </li>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>بناء وتسليم أكثر من 3 مشاريع تحليلية متكاملة باستخدام Excel و Power BI و Python و SQL لتحويل البيانات الأولية إلى رؤى استراتيجية.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>التعاون ضمن فريق عمل احترافي لتطوير النماذج التحليلية وتقديم نتائج عالية التأثير من خلال عروض تقديمية فنية متعددة.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>إظهار توازن قوي بين التحليل الفني ومنطق الأعمال، وتقديم توصيات مفيدة لدعم اتخاذ القرار القائم على البيانات.</span>
                     </li>
                   </>
                 ) : (
                   <>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Completed a 120-hour intensive internship program focused on data-driven business intelligence and advanced analytical methodologies.</span>
                     </li>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Successfully delivered 3+ end-to-end analytical projects, utilizing Excel, Power BI, Python, and SQL to transform raw data into strategic insights.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Collaborated within a professional team to refine analytical models and presented high-impact findings through multiple technical presentations.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Demonstrated a strong balance between technical analysis and business logic, providing meaningful recommendations for data-supported decision making.</span>
                     </li>
                   </>
@@ -327,60 +327,60 @@ const isAr = lang === 'ar';
           </div>
 
           <!-- Experience Card 2: So Care -->
-          <div class="premium-card-global w-[85%] sm:w-[70%] md:w-auto snap-start flex-shrink-0 flex flex-col justify-between min-h-[300px]">
-            <div class="space-y-5 font-sans">
+          <div class="premium-card-global w-[92%] sm:w-[85%] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-7 md:p-10 flex flex-col justify-between">
+            <div class="space-y-4 font-sans">
               <!-- Top Badges -->
               <div class="flex flex-wrap gap-2.5">
-                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[9px] sm:text-[10px] font-bold tracking-wider uppercase">
+                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[10px] md:text-xs font-bold tracking-wider uppercase whitespace-nowrap">
                   {isAr ? "يناير 2026 - الحاضر" : "JAN 2026 – PRESENT"}
                 </span>
-                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[9px] sm:text-[10px] font-bold tracking-wider">
+                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[10px] md:text-xs font-bold tracking-wider">
                   {isAr ? "سو كير" : "So Care"}
                 </span>
               </div>
               
               <!-- Job Title -->
-              <h3 class="text-lg sm:text-xl font-bold text-text-main font-serif">
+              <h3 class="text-xl md:text-2xl font-bold text-text-main font-sans mt-1">
                 {isAr ? "مشتري إعلانات ومطور محتوى" : "Media Buyer | Content Developer"}
               </h3>
 
               <!-- Custom Bullet List -->
-              <ul class="space-y-3.5 text-xs text-text-main/85 leading-relaxed font-light">
+              <ul class="space-y-3.5 text-[13px] md:text-sm text-text-main/80 leading-relaxed font-light mt-3">
                 {isAr ? (
                   <>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>إدارة وتحسين حملات تسويق أداء متعددة ذات تحويلات عالية، وتحقيق زيادة استثنائية بنسبة +250% في إجمالي العوائد.</span>
                     </li>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>تطوير استراتيجية محتوى متكاملة نتج عنها إنتاج أكثر من 30 قالباً إعلانياً مخصصاً وأفكار مقاطع مرئية (Reels) مصممة لتحقيق أقصى قدر من التفاعل.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>سد الفجوة بين شراء الإعلانات والتنفيذ الإبداعي من خلال تطوير محتوى استراتيجي يتماشى تماماً مع أهداف أداء الحملة.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>قيادة التخطيط الاستراتيجي وتجهيز الأصول الإبداعية لحملة إطلاق موقع إلكتروني واسع النطاق قادم لدعم التوسع الرقمي.</span>
                     </li>
                   </>
                 ) : (
                   <>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Orchestrated and optimized multiple high-conversion performance marketing campaigns, achieving a remarkable +250% increase in total revenue.</span>
                     </li>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Engineered a comprehensive content strategy, resulting in the production of 30+ custom designs and creative reel concepts tailored for maximum engagement.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Bridged the gap between media buying and creative execution by developing strategic content that directly aligns with campaign performance goals.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Currently spearheading the strategic planning and asset preparation for an upcoming large-scale website launch campaign to drive digital scale.</span>
                     </li>
                   </>
@@ -390,60 +390,60 @@ const isAr = lang === 'ar';
           </div>
 
           <!-- Experience Card 3: DEPI -->
-          <div class="premium-card-global w-[85%] sm:w-[70%] md:w-auto snap-start flex-shrink-0 flex flex-col justify-between min-h-[300px]">
-            <div class="space-y-5 font-sans">
+          <div class="premium-card-global w-[92%] sm:w-[85%] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-7 md:p-10 flex flex-col justify-between">
+            <div class="space-y-4 font-sans">
               <!-- Top Badges -->
               <div class="flex flex-wrap gap-2.5">
-                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[9px] sm:text-[10px] font-bold tracking-wider uppercase">
+                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[10px] md:text-xs font-bold tracking-wider uppercase whitespace-nowrap">
                   {isAr ? "يوليو 2025 - ديسمبر 2025" : "JUL 2025 – DEC 2025"}
                 </span>
-                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[9px] sm:text-[10px] font-bold tracking-wider">
+                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[10px] md:text-xs font-bold tracking-wider">
                   {isAr ? "رواد مصر الرقمية" : "Digital Egypt Pioneers Initiative - DEPI"}
                 </span>
               </div>
               
               <!-- Job Title -->
-              <h3 class="text-lg sm:text-xl font-bold text-text-main font-serif">
+              <h3 class="text-xl md:text-2xl font-bold text-text-main font-sans mt-1">
                 {isAr ? "متدرب تسويق رقمي" : "Internship Digital Marketing"}
               </h3>
 
               <!-- Custom Bullet List -->
-              <ul class="space-y-3.5 text-xs text-text-main/85 leading-relaxed font-light">
+              <ul class="space-y-3.5 text-[13px] md:text-sm text-text-main/80 leading-relaxed font-light mt-3">
                 {isAr ? (
                   <>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>إتمام برنامج تدريبي مكثف بمجموع 400 ساعة متخصصة في منهجيات التسويق الرقمي المتقدمة واستراتيجيات SOSTAC®.</span>
                     </li>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>إعداد عمليات تدقيق تسويقية شاملة واستراتيجيات تحسين النمو لعلامات تجارية متعددة، وتحديد عقبات التحويل وفرص اختراق السوق.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>تخطيط وإطلاق حملات إعلانية مدفوعة عبر منصات متعددة، باستخدام رسم خرائط الميزانية وتحديد شخصية العميل عبر Meta و TikTok و LinkedIn و Snapchat.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>تطبيق ممارسات تهيئة محركات البحث (SEO)، وإجراء تحسينات على الصفحات الرئيسية والمشاريع التسويقية للعلامات التجارية التقنية لزيادة المبيعات والبحث.</span>
                     </li>
                   </>
                 ) : (
                   <>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Completed a 400-hour intensive professional training program specializing in advanced digital marketing methodologies and SOSTAC® strategy.</span>
                     </li>
                     <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Developed comprehensive marketing audits and growth optimization strategies for multiple brands, identifying key conversion blockages and market penetration.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Executed multi-platform paid campaign builds, utilizing budget and audience persona mapping to launch targeted campaigns across Meta, TikTok, LinkedIn, Snapchat.</span>
                     </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0 mt-1.5" aria-hidden="true"></span>
+                    <li class="hidden md:flex gap-2.5 items-start">
+                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
                       <span>Implemented SEO best practices, conducting key page edits and marketing project for technology/hardware brands to drive search and sales growth.</span>
                     </li>
                   </>
