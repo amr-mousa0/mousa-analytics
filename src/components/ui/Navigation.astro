@@ -1,7 +1,7 @@
 ---
 interface Props {
   lang: string;
-  activePage: 'home' | 'methodology';
+  activePage: 'home' | 'methodology' | 'about';
 }
 
 const { lang, activePage } = Astro.props;
@@ -9,7 +9,7 @@ const isAr = lang === 'ar';
 
 // Localized Navigation Links
 const homePath = `/${lang}/`;
-const aboutPath = `/${lang}/#about`;
+const aboutPath = `/${lang}/about/`;
 const servicesPath = `/${lang}/#services`;
 const projectsPath = `/${lang}/#projects`;
 const methodologyPath = `/${lang}/methodology/`;
@@ -21,6 +21,8 @@ const targetLang = isAr ? 'en' : 'ar';
 let langTogglePath = `/${targetLang}/`;
 if (activePage === 'methodology') {
   langTogglePath = `/${targetLang}/methodology/`;
+} else if (activePage === 'about') {
+  langTogglePath = `/${targetLang}/about/`;
 }
 ---
 
@@ -51,7 +53,7 @@ if (activePage === 'methodology') {
       </a>
       <a 
         href={aboutPath} 
-        class="transition-all hover:text-hero-accent text-text-main/70"
+        class={`transition-all hover:text-hero-accent ${activePage === 'about' ? 'text-hero-accent' : 'text-text-main/70'}`}
       >
         {isAr ? "من أنا" : "About"}
       </a>
@@ -138,7 +140,7 @@ if (activePage === 'methodology') {
       <a href={homePath} class={`mobile-drawer-link py-2.5 px-4 rounded-xl ${activePage === 'home' ? 'bg-hero-accent text-white' : 'text-text-main/70 hover:text-hero-accent'}`}>
         {isAr ? "الرئيسية" : "Home"}
       </a>
-      <a href={aboutPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-hero-accent">
+      <a href={aboutPath} class={`mobile-drawer-link py-2.5 px-4 rounded-xl ${activePage === 'about' ? 'bg-hero-accent text-white' : 'text-text-main/70 hover:text-hero-accent'}`}>
         {isAr ? "من أنا" : "About"}
       </a>
       <a href={methodologyPath} class={`mobile-drawer-link py-2.5 px-4 rounded-xl ${activePage === 'methodology' ? 'bg-hero-accent text-white' : 'text-text-main/70 hover:text-hero-accent'}`}>

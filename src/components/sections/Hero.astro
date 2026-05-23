@@ -12,6 +12,7 @@ const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
 const methodologyPath = `/${lang}/methodology/`;
+const aboutPath = `/${lang}/about/`;
 const socials = await getSafeSocials(lang);
 
 // Fetch localized hero data dynamically without hardcoding
@@ -31,16 +32,16 @@ const heroData = heroEntry?.data || {
 // Dynamically highlight key terms for B2B aesthetics
 const highlightText = (text: string) => {
   let highlighted = text
-    .replace(/\bdata\b/gi, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/30 decoration-[1.5px] underline-offset-[6px]">data</strong>')
-    .replace(/\bsystems\b/gi, '<em class="font-serif italic font-medium text-text-main">systems</em>')
-    .replace(/\bmarketing\b/gi, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/30 decoration-[1.5px] underline-offset-[6px]">marketing</strong>')
-    .replace(/\bpeople\b/gi, '<em class="font-serif italic font-medium text-text-main">people</em>');
+    .replace(/\bdata\b/gi, '<span class="font-serif italic font-medium text-accent-primary">data</span>')
+    .replace(/\bsystems\b/gi, '<span class="font-serif italic font-medium text-text-main">systems</span>')
+    .replace(/\bmarketing\b/gi, '<span class="font-serif italic font-medium text-accent-primary">marketing</span>')
+    .replace(/\bpeople\b/gi, '<span class="font-serif italic font-medium text-text-main">people</span>');
 
   highlighted = highlighted
-    .replace(/البيانات/g, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/30 decoration-[1.5px] underline-offset-[6px]">البيانات</strong>')
-    .replace(/الأنظمة/g, '<em class="font-serif italic font-medium text-text-main">الأنظمة</em>')
-    .replace(/التسويق/g, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/30 decoration-[1.5px] underline-offset-[6px]">التسويق</strong>')
-    .replace(/الناس/g, '<em class="font-serif italic font-medium text-text-main">الناس</em>');
+    .replace(/البيانات/g, '<span class="font-serif italic font-medium text-accent-primary">البيانات</span>')
+    .replace(/الأنظمة/g, '<span class="font-serif italic font-medium text-text-main">الأنظمة</span>')
+    .replace(/التسويق/g, '<span class="font-serif italic font-medium text-accent-primary">التسويق</span>')
+    .replace(/الناس/g, '<span class="font-serif italic font-medium text-text-main">الناس</span>');
 
   return highlighted;
 };
@@ -118,7 +119,7 @@ const highlightText = (text: string) => {
           <i class="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i>
         </a>
         <a 
-          href="#about" 
+          href={aboutPath} 
           class="px-8 h-14 border border-text-main/15 hover:border-hero-accent hover:text-hero-accent text-text-main rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center bg-transparent hover:bg-hero-accent/5 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-hero-accent focus-visible:ring-offset-2"
         >
           {heroData.secondaryBtn}

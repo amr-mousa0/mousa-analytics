@@ -69,3 +69,28 @@
   box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.08);
   transform: translateY(-2px);
 }
+
+/* Premium Global Card styling with light theme and hover micro-interactions */
+.premium-card-global {
+  background-color: var(--color-hero-card);
+  border: 1px solid rgba(10, 25, 47, 0.06);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(10, 25, 47, 0.03);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.premium-card-global:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(10, 25, 47, 0.08);
+  border-color: rgba(37, 99, 235, 0.15);
+}
+
+/* Native app-like scrollbar hiding utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

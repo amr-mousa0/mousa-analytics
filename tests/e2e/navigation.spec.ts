@@ -35,6 +35,25 @@ test.describe('Locale Redirection & Routing', () => {
       await expect(page.locator('main h1')).toContainText('Work Methodology');
     }
   });
+
+  test('navigates to about page and switch languages', async ({ page }) => {
+    await page.goto('/en/');
+    // Secondary CTA in the hero
+    const aboutLink = page.locator('a:has-text("Get to Know Me")');
+    if (await aboutLink.isVisible()) {
+      await aboutLink.click({ force: true });
+      await expect(page).toHaveURL(/\/en\/about\//);
+      await expect(page.locator('main h1')).toContainText('The Professional Interview');
+
+      // Switch to Arabic
+      const arToggle = page.locator('header a:has-text("AR")').first();
+      if (await arToggle.isVisible()) {
+        await arToggle.click({ force: true });
+        await expect(page).toHaveURL(/\/ar\/about\//);
+        await expect(page.locator('main h1')).toContainText('التعريف بالخبرة المهنية');
+      }
+    }
+  });
 });
 
 test.describe('Responsive Navigation Drawer', () => {
