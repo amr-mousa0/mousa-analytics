@@ -82,7 +82,7 @@ const highlightText = (text: string) => {
         </div>
 
         <!-- H1 Stacked Identity Name in pure luxury typography (Charcoal + Premium Ice Blue Italic Serif) -->
-        <h1 class="text-6xl sm:text-7xl lg:text-[5.5rem] font-bold tracking-tight leading-[0.95] font-serif text-text-main">
+        <h1 class="text-5xl sm:text-7xl lg:text-[5.5rem] font-bold tracking-tight leading-[0.95] font-serif text-text-main">
           {isAr ? (
             <>
               <span class="block">عمرو</span>
@@ -98,7 +98,7 @@ const highlightText = (text: string) => {
 
         <!-- Service Selling Description -->
         <p 
-          class="text-lg sm:text-xl md:text-2xl text-text-main/80 leading-relaxed font-sans max-w-2xl font-light tracking-wide pt-2"
+          class="text-lg sm:text-xl md:text-2xl text-text-main/90 leading-relaxed font-sans max-w-2xl font-light tracking-wide pt-2"
           set:html={highlightText(heroData.bio)}
         />
       </div>
@@ -114,7 +114,7 @@ const highlightText = (text: string) => {
         </a>
         <a 
           href="#contact" 
-          class="px-8 h-14 border border-text-main/15 hover:border-text-main/30 text-text-main rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center bg-transparent hover:bg-text-main/5 hover:scale-[1.02]"
+          class="px-8 h-14 border border-text-main/15 hover:border-hero-accent hover:text-hero-accent text-text-main rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center bg-transparent hover:bg-hero-accent/5 hover:scale-[1.02]"
         >
           {heroData.secondaryBtn}
         </a>
