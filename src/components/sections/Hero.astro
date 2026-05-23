@@ -20,7 +20,12 @@ const heroData = heroEntry?.data || {
   eyebrow: isAr ? "محلل بيانات وتسويق" : "DATA & MARKETING ANALYST",
   bio: isAr ? "أستخدم البيانات لفهم الأنظمة، والتسويق لفهم الناس." : "I use data to understand systems, and marketing to understand people.",
   primaryBtn: isAr ? "استكشف الخدمات والحلول" : "Explore Services & Solutions",
-  secondaryBtn: isAr ? "احجز جلسة نمو استشارية" : "Book a Growth Audit",
+  secondaryBtn: isAr ? "تعرف عليّ" : "Get to know me",
+  floatingBadge: isAr ? "التتبع عبر الخادم: نشط" : "Server-Side: Active",
+  statLeftTitle: isAr ? "سلامة البيانات" : "DATA INTEGRITY",
+  statLeftVal: isAr ? "جاهزة للتدقيق بنسبة 100%" : "100% Audit-Ready",
+  statRightTitle: isAr ? "قنوات التتبع" : "TRACKING PIPELINES",
+  statRightVal: isAr ? "عبر خادم GTM" : "Server-Side GTM",
 };
 
 // Dynamically highlight key terms for B2B aesthetics
@@ -163,7 +168,7 @@ const highlightText = (text: string) => {
           <!-- Mock Analytics Widget 1 (Floating badge) -->
           <div class="absolute -top-3 -end-2 sm:-end-4 bg-hero-card border border-text-main/8 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2 z-30 font-sans text-xs font-bold text-text-main whitespace-nowrap hover:scale-105 transition-transform duration-300">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>
-            <span>{isAr ? "العائد: +182.4%" : "ROI: +182.4%"}</span>
+            <span>{heroData.floatingBadge}</span>
           </div>
 
           <!-- Luxury Service Performance Stats Overlay: Styled exactly like reference metadata card -->
@@ -171,10 +176,10 @@ const highlightText = (text: string) => {
             <!-- Left Stat -->
             <div class="space-y-0.5">
               <span class="text-[8px] sm:text-[9px] font-extrabold text-text-main/40 tracking-wider uppercase block">
-                {isAr ? "العائد الاستثماري" : "ROI GENERATED"}
+                {heroData.statLeftTitle}
               </span>
               <span class="text-xs sm:text-sm font-bold text-text-main block">
-                {isAr ? "+182.4% متوسط" : "+182.4% Average"}
+                {heroData.statLeftVal}
               </span>
             </div>
             
@@ -184,10 +189,10 @@ const highlightText = (text: string) => {
             <!-- Right Stat -->
             <div class="space-y-0.5">
               <span class="text-[8px] sm:text-[9px] font-extrabold text-text-main/40 tracking-wider uppercase block">
-                {isAr ? "التتبع والتحليلات" : "MEASUREMENT SYSTEMS"}
+                {heroData.statRightTitle}
               </span>
               <span class="text-xs sm:text-sm font-bold text-text-main block">
-                {isAr ? "مفعلة ومؤمنة (GA4)" : "Fully Optimized (GA4)"}
+                {heroData.statRightVal}
               </span>
             </div>
           </div>

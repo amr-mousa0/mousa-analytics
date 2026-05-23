@@ -38,6 +38,11 @@ const heroCollection = defineCollection({
     bio: z.string(),
     primaryBtn: z.string(),
     secondaryBtn: z.string(),
+    floatingBadge: z.string(),
+    statLeftTitle: z.string(),
+    statLeftVal: z.string(),
+    statRightTitle: z.string(),
+    statRightVal: z.string(),
   }),
 });
 
