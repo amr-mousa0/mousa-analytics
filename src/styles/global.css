@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-bg: #fafafb;
+  --color-text-main: #0f172a;
+  --color-accent-primary: #0f2d59;
+  --color-accent-highlight: #1e40af;
+  
+  --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth antialiased;
+  }
+  
+  body {
+    @apply bg-primary-bg text-text-main font-sans selection:bg-accent-primary selection:text-white;
+  }
+
+  /* Accessible focus states */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-accent-highlight ring-offset-2 ring-offset-primary-bg;
+  }
+
+  /* Reduced motion adjustments */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      @apply scroll-auto;
+    }
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Glassmorphism utility classes utilizing logical properties where possible */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.glass-card-hover {
+  @apply transition-all duration-300;
+}
+
+.glass-card-hover:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(37, 99, 235, 0.2);
+  box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.08);
+  transform: translateY(-2px);
+}

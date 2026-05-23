@@ -1,0 +1,116 @@
+---
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+---
+
+<section id="contact" class="py-24 px-6 border-t border-text-main/5 relative bg-primary-bg overflow-hidden">
+  <div class="max-w-3xl mx-auto bg-white border border-text-main/8 rounded-[2rem] p-8 md:p-12 space-y-8 shadow-xl shadow-text-main/2">
+    <div class="text-center space-y-3">
+      <h2 id="contact-title" class="text-3xl font-bold tracking-tight text-text-main font-serif">
+        {isAr ? "لنعمل معاً" : "Let's Work Together"}
+      </h2>
+      <p class="text-text-main/70 text-sm sm:text-base font-sans">
+        {isAr ? "هل لديك مشروع أو تريد الاستفسار عن خدمة؟ لا تتردد في الاتصال بي." : "Have a business bottleneck or need campaign audit? Reach out below."}
+      </p>
+    </div>
+
+    <!-- Form action target as specified in API contracts -->
+    <form id="contact-form" action="https://getform.io/f/allqdeya" method="POST" class="space-y-6 font-sans" aria-labelledby="contact-title">
+      
+      <!-- Anti-spam Honeypot (Strictly empty, hidden from user and screen readers) -->
+      <div class="hidden" aria-hidden="true">
+        <label for="form-gotcha">Do not fill this field</label>
+        <input type="text" id="form-gotcha" name="_gotcha" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <!-- Name Input -->
+      <div class="space-y-2">
+        <label for="form-name" class="block text-sm font-semibold text-text-main/85">
+          {isAr ? "الاسم الكامل" : "Full Name"}
+        </label>
+        <input 
+          type="text" 
+          id="form-name" 
+          name="name" 
+          required 
+          class="w-full h-12 px-4 rounded-xl bg-primary-bg/50 border border-text-main/10 text-text-main placeholder-text-main/40 focus:bg-white transition-all focus-visible:ring-2 focus-visible:ring-accent-primary"
+          placeholder={isAr ? "مثال: أحمد محمد" : "e.g., John Doe"}
+        />
+      </div>
+
+      <!-- Email Input -->
+      <div class="space-y-2">
+        <label for="form-email" class="block text-sm font-semibold text-text-main/85">
+          {isAr ? "البريد الإلكتروني" : "Email Address"}
+        </label>
+        <input 
+          type="email" 
+          id="form-email" 
+          name="email" 
+          required 
+          class="w-full h-12 px-4 rounded-xl bg-primary-bg/50 border border-text-main/10 text-text-main placeholder-text-main/40 focus:bg-white transition-all focus-visible:ring-2 focus-visible:ring-accent-primary"
+          placeholder={isAr ? "example@domain.com" : "example@domain.com"}
+        />
+      </div>
+
+      <!-- Message Input -->
+      <div class="space-y-2">
+        <label for="form-message" class="block text-sm font-semibold text-text-main/85">
+          {isAr ? "تفاصيل الرسالة" : "Your Message"}
+        </label>
+        <textarea 
+          id="form-message" 
+          name="message" 
+          rows="5" 
+          required 
+          class="w-full p-4 rounded-xl bg-primary-bg/50 border border-text-main/10 text-text-main placeholder-text-main/40 focus:bg-white transition-all focus-visible:ring-2 focus-visible:ring-accent-primary resize-none"
+          placeholder={isAr ? "اكتب تفاصيل طلبك هنا..." : "Describe your project or marketing bottleneck..."}
+        ></textarea>
+      </div>
+
+      <!-- Submit Button styled with tech accent colors -->
+      <button 
+        type="submit" 
+        id="submit-button"
+        class="w-full h-14 rounded-full bg-accent-primary hover:bg-accent-highlight text-white font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent-primary/15 focus-visible:ring-2"
+      >
+        <span>{isAr ? "إرسال الرسالة" : "Send Inquiry"}</span>
+      </button>
+
+    </form>
+  </div>
+</section>
+
+<!-- CSP-Compatible Scoped Script -->
+<script>
+  import { lifecycle } from '../../scripts/lifecycle';
+
+  // Double-submission block & honeypot reject
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('submit-button') as HTMLButtonElement | null;
+  const gotchaInput = document.getElementById('form-gotcha') as HTMLInputElement | null;
+
+  if (form && submitBtn) {
+    lifecycle.addListener(form, 'submit', (e: Event) => {
+      // 1. Honeypot check
+      if (gotchaInput && gotchaInput.value.trim() !== '') {
+        e.preventDefault();
+        console.warn('[Anti-Spam] Submission silently rejected.');
+        form.reset();
+        return;
+      }
+
+      // 2. Prevent duplicate submission
+      submitBtn.disabled = true;
+      const textSpan = submitBtn.querySelector('span');
+      if (textSpan) {
+        textSpan.textContent = 'Sending...';
+      }
+    });
+  }
+</script>
+

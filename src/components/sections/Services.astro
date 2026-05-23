@@ -1,0 +1,93 @@
+---
+import { getSafeServices } from '../../scripts/servicesHelper';
+
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const services = await getSafeServices(lang);
+---
+
+<section id="services" class="py-24 px-6 border-t border-text-main/5 relative bg-primary-bg overflow-hidden">
+  <!-- Subtle lighting flare -->
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(37,99,235,0.015),transparent_50%)] pointer-events-none" aria-hidden="true"></div>
+
+  <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+    
+    <!-- Left Column: Sticky Section Header (4 cols on desktop) -->
+    <div class="lg:col-span-4 lg:sticky lg:top-24 h-fit space-y-4">
+      <!-- Subtitle Badge -->
+      <div class="text-[10px] sm:text-xs font-bold tracking-widest text-accent-primary uppercase font-sans">
+        {isAr ? "مجالات العمل" : "SERVICES & SOLUTIONS"}
+      </div>
+      
+      <!-- Section Title -->
+      <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-main font-serif">
+        {isAr ? "كيف أساعدك على النمو؟" : "How I Help You Grow"}
+      </h2>
+      
+      <!-- Section Description -->
+      <p class="text-text-main/70 text-base leading-relaxed font-sans">
+        {isAr ? "حلول استراتيجية متكاملة لربط البيانات بالنتائج التجارية الملموسة وتحقيق أعلى عائد على الاستثمار." : "Strategic, localized offerings designed to map conversions and data insights to real business revenue."}
+      </p>
+    </div>
+
+    <!-- Right Column: Services List (8 cols on desktop) -->
+    <div class="lg:col-span-8">
+      {services.length > 0 && (
+        <div class="space-y-16">
+          {services.map((service, index) => {
+            const displayNum = String(index + 1).padStart(2, '0');
+            return (
+              <div class="group relative pt-12 border-t border-text-main/10 flex flex-col gap-6 font-sans first:border-t-0 first:pt-0">
+                
+                <!-- Header part -->
+                <div class="flex items-start justify-between gap-6">
+                  <div class="space-y-3">
+                    <!-- Serif Serial Number -->
+                    <div class="font-serif text-3xl md:text-4xl text-accent-primary/35 font-medium select-none" aria-hidden="true">
+                      {displayNum}
+                    </div>
+                    <!-- Service Title -->
+                    <h3 class="text-xl sm:text-2xl font-bold text-text-main font-serif group-hover:text-accent-primary transition-colors duration-300">
+                      {service.data.title}
+                    </h3>
+                  </div>
+
+                  <!-- Tech-styled Icon Box -->
+                  <div class="w-12 h-12 rounded-2xl bg-text-main/5 border border-text-main/8 flex items-center justify-center text-accent-primary group-hover:bg-accent-primary group-hover:text-white group-hover:border-accent-primary transition-all duration-300 shadow-sm shadow-text-main/1" aria-hidden="true">
+                    {service.data.icon === 'bar-chart-2' ? (
+                      <i class="fa-solid fa-chart-line text-lg"></i>
+                    ) : (
+                      <i class="fa-solid fa-bullhorn text-lg"></i>
+                    )}
+                  </div>
+                </div>
+
+                <!-- Description -->
+                <p class="text-text-main/70 text-base leading-relaxed max-w-xl">
+                  {service.data.description}
+                </p>
+
+                <!-- Features blueprint grid (2-columns) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 pt-4 border-t border-text-main/5 text-sm text-text-main/60 max-w-xl">
+                  {service.data.features.map((feature: string) => (
+                    <div class="flex items-start gap-3">
+                      <span class="text-accent-primary select-none pt-0.5" aria-hidden="true">•</span>
+                      <span class="leading-normal">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+
+  </div>
+</section>

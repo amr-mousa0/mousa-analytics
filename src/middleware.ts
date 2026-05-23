@@ -9,10 +9,10 @@ export const onRequest = async (_context: APIContext, next: () => Promise<Respon
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
   // CSP Header Configuration
-  // Restricts execution context to self and inline style/script definitions
+  // Restricts execution context to self, Cloudflare CDN for styles/fonts, and Getform for form submissions
   response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self';"
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self'; form-action 'self' https://getform.io;"
   );
 
   return response;

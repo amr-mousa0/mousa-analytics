@@ -1,0 +1,86 @@
+---
+import { Image } from 'astro:assets';
+import profileImg from '../../assets/images/profile.png';
+
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+---
+
+<section id="about" class="py-24 px-6 border-t border-text-main/5 relative bg-primary-bg overflow-hidden">
+  <!-- Subtle background glow -->
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(37,99,235,0.02),transparent_50%)] pointer-events-none" aria-hidden="true"></div>
+
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 items-center">
+    
+    <!-- Profile Photo Column (4 cols on desktop) -->
+    <div class="col-span-1 md:col-span-5 relative flex justify-center md:justify-start order-1 md:order-1">
+      <!-- Glow decoration -->
+      <div class="absolute inset-0 bg-accent-primary/5 blur-3xl rounded-full -z-10" aria-hidden="true"></div>
+      
+      <!-- Luxury Portrait Frame (Chic Vertical Rounded Rectangle) -->
+      <div class="relative w-full max-w-[280px] aspect-[4/5] rounded-[2rem] p-2 bg-white border border-text-main/8 shadow-xl shadow-text-main/2">
+        <div class="w-full h-full rounded-[1.75rem] overflow-hidden">
+          <Image 
+            src={profileImg} 
+            alt={isAr ? "عمرو موسى" : "Amr Mousa"} 
+            class="w-full h-full object-cover object-center"
+            width={560}
+            height={700}
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- About Text Column (7 cols on desktop) -->
+    <div class="col-span-1 md:col-span-7 space-y-6 order-2 md:order-2">
+      <div class="space-y-3">
+        <!-- Subtitle Badge -->
+        <div class="text-[10px] sm:text-xs font-bold tracking-widest text-accent-primary uppercase font-sans">
+          {isAr ? "من أنا" : "WHO I AM"}
+        </div>
+        
+        <!-- Large Luxury Serif Heading -->
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-text-main font-serif">
+          {isAr ? "من هو عمرو موسى؟" : "Who is Amr Mousa?"}
+        </h2>
+      </div>
+      
+      <!-- Body Text -->
+      <p class="text-text-main/70 text-base leading-relaxed font-sans max-w-xl">
+        {isAr ? (
+          "أنا محلل بيانات ومسوق رقمي مخصص لحل الاختناقات المعقدة التي تواجه المشاريع الناشئة والمتوسطة. لا أكتفي فقط ببناء التقارير الفنية، بل أربط كل رقم تسويقي وعملية تتبع بهدف تجاري واضح: زيادة الأرباح وتخفيض التكاليف المهدرة."
+        ) : (
+          "I am a hybrid Data Analyst and Digital Marketer focused on solving growth bottlenecks for businesses. Unlike developers who only write code, I treat every data event tag, analytics dashboard, and PPC campaign as a mechanism to plug leaks in your sales funnel."
+        )}
+      </p>
+
+      <!-- Highlights blueprint grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-8 border-t border-text-main/10 font-sans max-w-xl">
+        <div class="space-y-2">
+          <div class="text-xs font-bold uppercase tracking-widest text-text-main flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent-primary" aria-hidden="true"></span>
+            {isAr ? "التحليلات وحل المشكلات" : "Data Analytics"}
+          </div>
+          <p class="text-text-main/60 text-xs sm:text-sm leading-relaxed">
+            {isAr ? "تحليل قنوات المبيعات لكشف الاختناقات وتصميم تتبع متقدم خالي من الأخطاء." : "Analyzing funnel metrics to find drop-offs and designing clean GA4 implementation."}
+          </p>
+        </div>
+        <div class="space-y-2">
+          <div class="text-xs font-bold uppercase tracking-widest text-text-main flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent-primary" aria-hidden="true"></span>
+            {isAr ? "التسويق المستند إلى العائد" : "ROI Marketing"}
+          </div>
+          <p class="text-text-main/60 text-xs sm:text-sm leading-relaxed">
+            {isAr ? "إدارة وتعديل الحملات المدفوعة بميزانيات حقيقية وأرقام تتبع واضحة." : "Running conversions-optimized ad campaigns mapped to real-time sales indicators."}
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

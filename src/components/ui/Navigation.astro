@@ -1,0 +1,148 @@
+---
+interface Props {
+  lang: string;
+  activePage: 'home' | 'methodology';
+}
+
+const { lang, activePage } = Astro.props;
+const isAr = lang === 'ar';
+
+// Localized Navigation Links
+const homePath = `/${lang}/`;
+const aboutPath = `/${lang}/#about`;
+const servicesPath = `/${lang}/#services`;
+const projectsPath = `/${lang}/#projects`;
+const methodologyPath = `/${lang}/methodology/`;
+const contactPath = `/${lang}/#contact`;
+
+const targetLang = isAr ? 'en' : 'ar';
+
+// Detect active path to toggle lang redirect
+let langTogglePath = `/${targetLang}/`;
+if (activePage === 'methodology') {
+  langTogglePath = `/${targetLang}/methodology/`;
+}
+---
+
+<header class="fixed top-4 inset-x-0 mx-auto w-[calc(100%-2rem)] max-w-4xl h-14 bg-white/75 backdrop-blur-md border border-text-main/8 rounded-full z-50 flex items-center px-6 shadow-md shadow-text-main/3">
+  
+  <!-- Left Column: Logo (takes flex-1 to push nav to center) -->
+  <div class="flex-1 flex items-center justify-start">
+    <a href={homePath} class="flex items-center gap-2 text-text-main font-bold text-sm tracking-tight hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-offset-2">
+      <span class="w-2 h-2 rounded-full bg-accent-primary inline-block animate-pulse"></span>
+      <span>{isAr ? "عمرو موسى" : "Amr Mousa"}</span>
+    </a>
+  </div>
+
+  <!-- Center Column: Desktop Navigation Links -->
+  <nav class="hidden md:flex items-center gap-2 text-xs font-semibold text-text-main/60">
+    <a 
+      href={homePath} 
+      class={`px-4 py-2 rounded-full transition-all focus-visible:ring-2 ${activePage === 'home' ? 'bg-accent-primary text-white' : 'hover:text-text-main'}`}
+    >
+      {isAr ? "الرئيسية" : "Home"}
+    </a>
+    <a 
+      href={aboutPath} 
+      class="px-4 py-2 rounded-full hover:text-text-main transition-colors focus-visible:ring-2"
+    >
+      {isAr ? "من أنا" : "Who I Am"}
+    </a>
+    <a 
+      href={servicesPath} 
+      class="px-4 py-2 rounded-full hover:text-text-main transition-colors focus-visible:ring-2"
+    >
+      {isAr ? "الخدمات" : "Services"}
+    </a>
+    <a 
+      href={projectsPath} 
+      class="px-4 py-2 rounded-full hover:text-text-main transition-colors focus-visible:ring-2"
+    >
+      {isAr ? "المشاريع" : "Projects"}
+    </a>
+    <a 
+      href={contactPath} 
+      class="px-4 py-2 rounded-full hover:text-text-main transition-colors focus-visible:ring-2"
+    >
+      {isAr ? "اتصل بي" : "Contact"}
+    </a>
+  </nav>
+
+  <!-- Right Column: Desktop Actions & Mobile Controls (takes flex-1 to push nav to center) -->
+  <div class="flex-1 flex items-center justify-end">
+    <!-- Desktop Right Section: Language Switcher -->
+    <div class="hidden md:flex items-center gap-3">
+      <a 
+        href={langTogglePath} 
+        class="px-3.5 py-1.5 rounded-full border border-text-main/10 text-[10px] font-extrabold uppercase tracking-wider text-text-main/70 hover:bg-text-main/5 hover:text-text-main transition-all focus-visible:ring-2"
+      >
+        {isAr ? "EN" : "AR"}
+      </a>
+    </div>
+
+    <!-- Mobile Controls (Drawer Toggle) -->
+    <div class="md:hidden flex items-center gap-3">
+      <a 
+        href={langTogglePath} 
+        class="px-2.5 py-1 rounded-full border border-text-main/10 text-[10px] font-extrabold uppercase text-text-main/70 focus-visible:ring-2"
+      >
+        {isAr ? "EN" : "AR"}
+      </a>
+      <label for="menu-toggle" class="cursor-pointer p-1.5 text-text-main/70 hover:text-text-main select-none z-50 focus-visible:ring-2" aria-label="Toggle Menu">
+        <i class="fa-solid fa-bars text-sm"></i>
+      </label>
+    </div>
+  </div>
+
+  <input type="checkbox" id="menu-toggle" class="peer hidden" />
+
+  <!-- Side Drawer Overlay -->
+  <label for="menu-toggle" class="fixed inset-0 bg-text-main/40 backdrop-blur-sm z-40 hidden peer-checked:block md:hidden! transition-all duration-300"></label>
+
+  <!-- Mobile Side Drawer -->
+  <div class="fixed inset-block-0 end-0 w-64 bg-primary-bg border-s border-text-main/10 p-6 z-50 transform translate-x-full rtl:-translate-x-full transition-transform duration-300 peer-checked:translate-x-0 md:hidden! flex flex-col gap-6">
+    <div class="flex justify-between items-center pb-4 border-b border-text-main/5">
+      <span class="font-bold text-text-main text-sm">{isAr ? "القائمة" : "Menu"}</span>
+      <label for="menu-toggle" class="cursor-pointer text-text-main/60 hover:text-text-main p-1">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </label>
+    </div>
+
+    <nav class="flex flex-col gap-3 text-sm font-semibold">
+      <a href={homePath} class={`mobile-drawer-link py-2.5 px-4 rounded-xl ${activePage === 'home' ? 'bg-accent-primary text-white' : 'text-text-main/70 hover:text-text-main'}`}>
+        {isAr ? "الرئيسية" : "Home"}
+      </a>
+      <a href={aboutPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-text-main">
+        {isAr ? "من أنا" : "Who I Am"}
+      </a>
+      <a href={servicesPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-text-main">
+        {isAr ? "الخدمات" : "Services"}
+      </a>
+      <a href={projectsPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-text-main">
+        {isAr ? "المشاريع" : "Projects"}
+      </a>
+      <a href={methodologyPath} class={`mobile-drawer-link py-2.5 px-4 rounded-xl ${activePage === 'methodology' ? 'bg-accent-primary text-white' : 'text-text-main/70 hover:text-text-main'}`}>
+        {isAr ? "منهجية العمل" : "Methodology"}
+      </a>
+      <a href={contactPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-text-main">
+        {isAr ? "اتصل بي" : "Contact"}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  import { lifecycle } from '../../scripts/lifecycle';
+
+  const menuToggle = document.getElementById('menu-toggle') as HTMLInputElement | null;
+  const drawerLinks = document.querySelectorAll('.mobile-drawer-link');
+
+  if (menuToggle && drawerLinks.length > 0) {
+    drawerLinks.forEach((link) => {
+      lifecycle.addListener(link, 'click', () => {
+        menuToggle.checked = false;
+      });
+    });
+  }
+</script>
+

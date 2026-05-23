@@ -2,24 +2,38 @@
 
 ### Users
 - **Primary**: Business owners, marketing managers, and stakeholders facing bottlenecks in sales, inventory, or marketing ROI.
-- **Context**: They have complex problems (low sales, messy data, unoptimized ads) and need a "Data & Marketing Strategist" to solve them. They are looking for clear ROI, not just a technical CV.
+- **Context**: They need an expert "Data & Marketing Strategist" to resolve tracking gaps and drop-offs, scale campaigns, and optimize marketing ROI. They seek visual credibility, professional rigor, and elite authority.
 
 ### Brand Personality
-- **Quiet Luxury & High-Conversion**: Nothing is loud. Everything feels considered and premium. But unlike a static gallery, it actively invites interaction.
-- **Clear & Strategic (No Fog)**: The interface communicates mastery, showing that every data point and marketing decision is calculated to solve a real business problem.
-- **Authoritative & Accessible**: Confident typography conveys expertise, while prominent, frictionless contact options (WhatsApp/Call) make the brand approachable and ready to hire.
+- **Elite Tech & High-Conversion**: Premium, precise, clean, and highly calculated (similar to Stripe or Apple).
+- **Luxurious Professionalism**: Sophisticated editorial hierarchy that feels like an upscale boutique agency rather than standard SaaS templates.
 
 ### Aesthetic Direction
-- **Theme**: Dark-first with near-black backgrounds, fine grid texture, and very restrained accent usage.
-- **Color Strategy**: RESTRAINED. One teal accent (`--accent-a`), one maroon accent (`--accent-b`). Full saturation used strategically for Call-to-Actions (CTAs) to drive sales.
-- **Consistency**: All card sections share the same "Lift + Dim Others + Subtle Glow" interaction model.
-- **Mobile-First Priority**: The entire visual hierarchy is designed for the thumb. CTAs must be sticky or easily accessible without hunting.
+- **Theme**: Platinum & Royal Blue Luxury Tech Theme.
+- **Color Strategy**:
+  - Background: Crisp Light Slate/Platinum Tint (`#f8fafc`)
+  - Text: Deep Slate Carbon (`#0f172a`)
+  - Accent Primary: Royal Blue (`#2563eb`)
+  - Accent Highlight: Deep Cobalt Blue (`#1d4ed8`)
+- **Typography**:
+  - Headings: Cormorant Garamond (luxury serif font)
+  - Body: Outfit (clean modern sans-serif)
 
 ### Design Principles
-1. **The Sales Funnel First**: Every section must lead the user closer to the "Hire Me / WhatsApp" action. No dead ends.
-2. **Frictionless Contact**: Contact must be one tap away (Direct WhatsApp link or Dialer), especially on mobile.
-3. **Internal Customer Journey**: Projects and case studies open internally. Never redirect the user outside the ecosystem.
-4. **Restrained Color & Interactive Depth**: Elements start near-invisible on surfaces and reveal themselves on interaction to maintain the premium feel.
-5. **Mobile Stability**: Zero horizontal overflow, no sticky hover states, clean touch behavior, and thumb-friendly navigation.
-6. **Frictionless Card Navigation (Touchable Blocks)**: Cards themselves should act as unified, touchable interaction surfaces rather than relying on redundant, clunky bottom buttons. This maximizes vertical space for persuasive sales copy.
-7. **Direct Sales Problem-Solving**: Copy should directly address the user's business pain points (e.g., "Having sales problems? Let me show you how ad campaigns can solve them") rather than listing generic technical features.
+1. **Blueprint Precision**: Use fine grid lines (size `2rem_2rem` in soft blue tint) and precise alignments to reflect analytical and systems-driven rigor.
+2. **Premium Simplicity**: Reject generic glassmorphism and side-stripe cards. Focus on content breathing room, high contrast, and editorial layouts.
+3. **High-Conversion & Integrity**: Use active, professional copy and clear contrast to guide the client towards taking action.
+
+---
+
+## Tasks
+
+- [x] Update theme variables in `global.css`
+- [x] T003 Overhaul Hero section backplate gradient, cool grid background, and buttons in `src/components/sections/Hero.astro`
+- [ ] T004 Adjust About section highlight colors in `src/components/sections/About.astro`
+- [ ] T005 Adjust Services section icons and highlight colors in `src/components/sections/Services.astro`
+- [ ] T006 Style Contact form inputs and submit button with Cerulean blue details in `src/components/sections/Contact.astro`
+- [x] T007 Build and run E2E integration tests to verify completion (status badge, grid tint, background overlay)
+- [x] Execute Hero Section copy clarification (adjust button texts and hover borders)
+- [x] Add accessible focus styles to Hero dark half
+- [/] Run verification checks and production builds (E2E and build compiles)

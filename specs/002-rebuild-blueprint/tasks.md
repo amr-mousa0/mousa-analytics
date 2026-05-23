@@ -80,12 +80,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T017 [P] [US3] Create global stylesheet with Tailwind directives in `src/styles/global.css`
-- [ ] T018 [P] [US3] Build Header, Footer, and mobile Side Drawer navigation UI in `src/components/ui/Navigation.astro` using Tailwind logical properties
-- [ ] T019 [P] [US3] Create Hero, About card layout, and Services grid components inside `src/components/sections/` utilizing optimized `sharp` image outputs
-- [ ] T020 [P] [US3] Create Contact Form component inside `src/components/sections/Contact.astro` including the hidden anti-spam `_gotcha` input field
-- [ ] T021 [US3] Integrate components into pages layouts inside `src/pages/[lang]/index.astro`
-- [ ] T022 [US3] Implement dynamic lifecycle listener and observer cleanups in `src/scripts/lifecycle.ts` using `astro:before-swap` and duplicate listener guards
+- [x] T017 [P] [US3] Create global stylesheet with Tailwind directives in `src/styles/global.css`
+- [x] T018 [P] [US3] Build Header, Footer, and mobile Side Drawer navigation UI in `src/components/ui/Navigation.astro` using Tailwind logical properties
+- [x] T019 [P] [US3] Create Hero, About card layout, and Services grid components inside `src/components/sections/` utilizing optimized `sharp` image outputs
+- [x] T020 [P] [US3] Create Contact Form component inside `src/components/sections/Contact.astro` including the hidden anti-spam `_gotcha` input field
+- [x] T021 [US3] Integrate components into pages layouts inside `src/pages/[lang]/index.astro`
+- [x] T022 [US3] Implement dynamic lifecycle listener and observer cleanups in `src/scripts/lifecycle.ts` using `astro:before-swap` and duplicate listener guards
 
 **Checkpoint**: Portfolio pages render perfectly with styling, responsive layout, and zero script dependencies.
 
@@ -95,11 +95,11 @@
 
 **Purpose**: Implement unit and E2E automated tests and perform Lighthouse performance validation.
 
-- [ ] T023 [P] Create schema validation tests using Vitest in `tests/unit/schemas.test.ts`
-- [ ] T024 [P] Create navigation and route guard E2E tests using Playwright in `tests/e2e/navigation.spec.ts`
-- [ ] T025 [P] Create contact form submission honeypot verification E2E tests in `tests/e2e/contact.spec.ts`
-- [ ] T026 Audit Tailwind logical properties usage in `src/` to verify zero physical directions (`ml-`, `mr-`, `left-`, `right-`, `text-left`, `text-right`) exist
-- [ ] T027 Run `npm run build` and verify CSP headers compatibility and zero hydration warnings
+- [x] T023 [P] Create schema validation tests using Vitest in `tests/unit/schemas.test.ts`
+- [x] T024 [P] Create navigation and route guard E2E tests using Playwright in `tests/e2e/navigation.spec.ts`
+- [x] T025 [P] Create contact form submission honeypot verification E2E tests in `tests/e2e/contact.spec.ts`
+- [x] T026 Audit Tailwind logical properties usage in `src/` to verify zero physical directions (`ml-`, `mr-`, `left-`, `right-`, `text-left`, `text-right`) exist
+- [x] T027 Run `npm run build` and verify CSP headers compatibility and zero hydration warnings
 - [ ] T028 Run Lighthouse CI audits and verify that performance budgets and SEO goals are fully satisfied
 
 ---

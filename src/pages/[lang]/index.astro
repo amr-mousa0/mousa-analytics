@@ -1,7 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getSafeServices } from '../../scripts/servicesHelper';
-import { getSafeSocials } from '../../scripts/socialsHelper';
+import Navigation from '../../components/ui/Navigation.astro';
+import Hero from '../../components/sections/Hero.astro';
+import About from '../../components/sections/About.astro';
+import Services from '../../components/sections/Services.astro';
+import Contact from '../../components/sections/Contact.astro';
+import Footer from '../../components/ui/Footer.astro';
 
 // Dynamic route parameters
 export function getStaticPaths() {
@@ -14,59 +18,34 @@ export function getStaticPaths() {
 const { lang } = Astro.params;
 
 // Route Parameter Guard
-if (!['en', 'ar'].includes(lang || '')) {
+if (!lang || !['en', 'ar'].includes(lang)) {
   return Astro.redirect('/en/');
 }
-
-// Fetch services and socials utilizing safe rendering helpers
-const services = await getSafeServices(lang || 'en');
-const socials = await getSafeSocials(lang || 'en');
-
-const isAr = lang === 'ar';
 ---
 
 <Layout lang={lang} pageId="homepage">
-  <main class="max-w-4xl mx-auto px-6 py-12 flex-grow flex flex-col justify-center">
-    <div class="space-y-6">
-      <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-white">
-        {isAr ? "أهلاً بك" : "Welcome"}
-      </h1>
-      <p class="text-lg text-neutral-400 max-w-xl">
-        {isAr ? "جاري بناء موقع معرض الأعمال الجديد استناداً إلى المعايير الحديثة." : "Scaffolding the new Astro-native portfolio system with strict performance limits."}
-      </p>
-      
-      <!-- Services Scaffolding -->
-      {services.length > 0 && (
-        <div class="pt-8">
-          <h2 class="text-2xl font-semibold mb-4 text-white">
-            {isAr ? "الخدمات" : "Services"}
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {services.map(service => (
-              <div class="p-6 rounded-2xl bg-neutral-900 border border-neutral-800 hover:border-neutral-700 transition-colors">
-                <h3 class="text-xl font-bold text-white mb-2">{service.data.title}</h3>
-                <p class="text-neutral-400 text-sm mb-4">{service.data.description}</p>
-                <ul class="space-y-1 text-xs text-neutral-500">
-                  {service.data.features.map((feature: string) => (
-                    <li>• {feature}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+  <Navigation lang={lang} activePage="home" />
+  <main class="flex-grow">
+    <Hero lang={lang} />
+    <About lang={lang} />
+    <Services lang={lang} />
+    
+    <!-- Projects Section Target -->
+    <section id="projects" class="py-20 px-6 max-w-5xl mx-auto scroll-mt-20">
+      <div class="space-y-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-text-main font-serif">
+          {lang === 'ar' ? "المشاريع المميزة" : "Featured Projects"}
+        </h2>
+        <p class="text-text-main/70 text-sm sm:text-base max-w-xl mx-auto font-sans">
+          {lang === 'ar' 
+            ? "حالات دراسية لمشاريع حقيقية توضح كيفية دمج تحليل البيانات بالتسويق لتحقيق نمو حقيقي (قريباً)." 
+            : "Case studies demonstrating how analytical models meet campaign marketing to scale growth (Coming Soon)."}
+        </p>
+      </div>
+    </section>
 
-      <!-- Socials Footer Scaffolding -->
-      {socials.length > 0 && (
-        <div class="pt-12 border-t border-neutral-900 flex gap-4">
-          {socials.map(social => (
-            <a href={social.data.url} target="_blank" rel="noopener noreferrer" class="text-sm text-neutral-400 hover:text-white transition-colors">
-              <i class={social.data.icon}></i> {social.data.name}
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
+    <Contact lang={lang} />
   </main>
+  <Footer lang={lang} />
 </Layout>
+
