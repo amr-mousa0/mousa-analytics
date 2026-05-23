@@ -1,0 +1,19 @@
+---
+// Root page redirection to default locale /en/
+---
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting...</title>
+    <!-- Server/static fallback redirect -->
+    <meta http-equiv="refresh" content="0;url=/en/" />
+    <script is:inline>
+      // History-safe client redirect
+      window.location.replace('/en/');
+    </script>
+  </head>
+  <body>
+    <p>Redirecting to default language... <a href="/en/">click here</a> if not redirected automatically.</p>
+  </body>
+</html>

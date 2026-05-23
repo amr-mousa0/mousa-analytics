@@ -18,10 +18,10 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create `package.json` manifest with Astro, Tailwind, and TypeScript configurations at the repository root
-- [ ] T002 Create `tsconfig.json` with strict mode enabled at the repository root
-- [ ] T003 [P] Create `tailwind.config.mjs` and `astro.config.mjs` configuration files at the repository root
-- [ ] T004 Install core dependencies (`astro`, `tailwindcss`, `sharp`, `typescript`, `@types/node`) using npm
+- [x] T001 Create `package.json` manifest with Astro, Tailwind, and TypeScript configurations at the repository root
+- [x] T002 Create `tsconfig.json` with strict mode enabled at the repository root
+- [x] T003 [P] Create `tailwind.config.mjs` and `astro.config.mjs` configuration files at the repository root
+- [x] T004 Install core dependencies (`astro`, `tailwindcss`, `sharp`, `typescript`, `@types/node`) using npm
 
 ---
 
@@ -31,11 +31,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 Create `src/middleware.ts` to implement security headers (CSP, X-Frame-Options, Referrer-Policy, X-Content-Type-Options)
-- [ ] T006 [P] Setup Astro Content Collections schema and validation types in `src/content/config.ts`
-- [ ] T007 [P] Create base localized markdown documents for SEO, services, and socials under `src/content/seo/`, `src/content/services/`, and `src/content/socials/`
-- [ ] T008 Implement global HTML document structure and RTL/LTR direction switching in `src/layouts/Layout.astro`
-- [ ] T009 Implement history-safe root redirection in `src/pages/index.astro` using `window.location.replace('/en/')` and a fallback `<meta>` refresh redirect
+- [x] T005 Create `src/middleware.ts` to implement security headers (CSP, X-Frame-Options, Referrer-Policy, X-Content-Type-Options)
+- [x] T006 [P] Setup Astro Content Collections schema and validation types in `src/content/config.ts`
+- [x] T007 [P] Create base localized markdown documents for SEO, services, and socials under `src/content/seo/`, `src/content/services/`, and `src/content/socials/`
+- [x] T008 Implement global HTML document structure and RTL/LTR direction switching in `src/layouts/Layout.astro`
+- [x] T009 Implement history-safe root redirection in `src/pages/index.astro` using `window.location.replace('/en/')` and a fallback `<meta>` refresh redirect
 
 ---
 
@@ -47,10 +47,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T010 [P] [US1] Create dynamic dynamic route landing page template `src/pages/[lang]/index.astro`
-- [ ] T011 [US1] Implement dynamic routing parameter guard in `src/pages/[lang]/index.astro` to redirect invalid locales to `/en/`
-- [ ] T012 [P] [US1] Create dynamic dynamic route methodology page template `src/pages/[lang]/methodology.astro`
-- [ ] T013 [US1] Implement dynamic routing parameter guard in `src/pages/[lang]/methodology.astro` to redirect invalid locales to `/en/`
+- [x] T010 [P] [US1] Create dynamic dynamic route landing page template `src/pages/[lang]/index.astro`
+- [x] T011 [US1] Implement dynamic routing parameter guard in `src/pages/[lang]/index.astro` to redirect invalid locales to `/en/`
+- [x] T012 [P] [US1] Create dynamic dynamic route methodology page template `src/pages/[lang]/methodology.astro`
+- [x] T013 [US1] Implement dynamic routing parameter guard in `src/pages/[lang]/methodology.astro` to redirect invalid locales to `/en/`
 
 **Checkpoint**: Locale dynamic routing validation guard is fully operational.
 
