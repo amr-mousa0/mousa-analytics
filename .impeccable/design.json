@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-23T15:00:00Z",
+  "title": "Design System: Amr Systems Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Consultancy Blue", "canonical": "oklch(60% 0.25 250)", "tonalRamp": ["#eff6ff", "#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa", "#3b82f6", "#2563eb", "#1d4ed8"] },
+      "neutral-bg": { "role": "neutral", "displayName": "Alabaster Warm Light", "canonical": "oklch(98.5% 0.005 75)", "tonalRamp": ["#f8f9fa", "#f1f3f5", "#e9ecef", "#dee2e6", "#ced4da", "#adb5bd", "#6c757d", "#495057"] },
+      "text-main": { "role": "neutral", "displayName": "Deep Navy Slate", "canonical": "oklch(15% 0.05 250)", "tonalRamp": ["#0a192f", "#071324", "#050d18", "#03080e"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines only." },
+      "body": { "displayName": "Body", "purpose": "Paragraphs and standard descriptions." }
+    },
+    "shadows": [
+      { "name": "ambient-low", "value": "0 4px 20px rgba(10, 25, 47, 0.05)", "purpose": "Diffuse glow under floating card widgets." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default transitions." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Exploratory primary call-to-actions.",
+      "html": "<button class=\"ds-btn-primary\">EXPLORE SERVICES & SOLUTIONS</button>",
+      "css": ".ds-btn-primary { background: #2563eb; color: #ffffff; padding: 14px 28px; border-radius: 9999px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; border: none; cursor: pointer; transition: background-color 0.3s; } .ds-btn-primary:hover { background-color: #1d4ed8; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary actions or alternative triggers.",
+      "html": "<button class=\"ds-btn-secondary\">BOOK A GROWTH AUDIT</button>",
+      "css": ".ds-btn-secondary { background: transparent; color: #0a192f; padding: 14px 28px; border-radius: 9999px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; border: 1px solid #0a192f; cursor: pointer; transition: background-color 0.3s; } .ds-btn-secondary:hover { background-color: rgba(10, 25, 47, 0.05); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Precision Data & Conversion Architecture",
+    "overview": "This system represents a high-end, elite consultancy design language. It is objective, result-oriented, and corporate. The aesthetic feels highly structured, reliable, and premium, utilizing an editorial Serif typeface for headings combined with a clean Sans-Serif for body copy.",
+    "keyCharacteristics": [
+      "Strict corporate color harmony with heavy contrast.",
+      "Editorial Serif typography for identity names and headers, with modern geometric Sans-Serif body copy.",
+      "Flat container structure utilizing white floating cards overlaying clean backgrounds."
+    ],
+    "rules": [
+      { "name": "The Restrained Accents Rule", "body": "High-saturation blue is limited to call-to-action buttons, key status indicators, and category tags. No background fill is colored with primary blue except primary button styling.", "section": "colors" }
+    ],
+    "dos": [
+      "Do maintain a strict contrast ratio between #0A192F text and #F8F9FA background.",
+      "Do use the serif font exclusively for the name Amr Mousa and main sections headings.",
+      "Do align components strictly to a grid layout."
+    ],
+    "donts": [
+      "Don't use multi-color gradient text or colorful backgrounds.",
+      "Don't use border-left colors as accents on cards.",
+      "Don't add GSAP or other animation libraries; rely on pure CSS transitions."
+    ]
+  }
+}

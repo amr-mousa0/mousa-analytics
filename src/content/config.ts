@@ -31,8 +31,19 @@ const socialsCollection = defineCollection({
   }),
 });
 
+const heroCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    eyebrow: z.string(),
+    bio: z.string(),
+    primaryBtn: z.string(),
+    secondaryBtn: z.string(),
+  }),
+});
+
 export const collections = {
   seo: seoCollection,
   services: servicesCollection,
   socials: socialsCollection,
+  hero: heroCollection,
 };

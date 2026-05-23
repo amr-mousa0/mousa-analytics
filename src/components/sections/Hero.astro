@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
 import profileImg from '../../assets/images/profile.png';
+import { getSafeSocials } from '../../scripts/socialsHelper';
 
 interface Props {
   lang: string;
@@ -10,82 +12,144 @@ const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
 const methodologyPath = `/${lang}/methodology/`;
+const socials = await getSafeSocials(lang);
+
+// Fetch localized hero data dynamically without hardcoding
+const heroEntry = await getEntry('hero', lang);
+const heroData = heroEntry?.data || {
+  eyebrow: isAr ? "محلل بيانات وتسويق" : "DATA & MARKETING ANALYST",
+  bio: isAr ? "أستخدم البيانات لفهم الأنظمة، والتسويق لفهم الناس." : "I use data to understand systems, and marketing to understand people.",
+  primaryBtn: isAr ? "استكشف الخدمات والحلول" : "Explore Services & Solutions",
+  secondaryBtn: isAr ? "احجز جلسة نمو استشارية" : "Book a Growth Audit",
+};
+
+// Dynamically highlight key terms for B2B aesthetics
+const highlightText = (text: string) => {
+  let highlighted = text
+    .replace(/\bdata\b/gi, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/20 decoration-2 underline-offset-4">data</strong>')
+    .replace(/\bsystems\b/gi, '<em class="italic font-medium text-text-main">systems</em>')
+    .replace(/\bmarketing\b/gi, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/20 decoration-2 underline-offset-4">marketing</strong>')
+    .replace(/\bpeople\b/gi, '<em class="italic font-medium text-text-main">people</em>');
+
+  highlighted = highlighted
+    .replace(/البيانات/g, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/20 decoration-2 underline-offset-4">البيانات</strong>')
+    .replace(/الأنظمة/g, '<em class="italic font-medium text-text-main">الأنظمة</em>')
+    .replace(/التسويق/g, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/20 decoration-2 underline-offset-4">التسويق</strong>')
+    .replace(/الناس/g, '<em class="italic font-medium text-text-main">الناس</em>');
+
+  return highlighted;
+};
 ---
 
-<section class="w-full min-h-[90vh] md:min-h-screen relative overflow-hidden bg-primary-bg flex items-center py-16 md:py-24 border-b border-text-main/5">
-  <!-- Fine Grid Backdrop Overlay (smaller squares - 2rem, soft grey tint) -->
-  <div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.035)_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-100 pointer-events-none" aria-hidden="true"></div>
+<section class="w-full min-h-screen relative overflow-hidden bg-transparent flex items-center py-20 md:py-28 border-b border-text-main/5">
   
-  <!-- Premium soft lighting overlay -->
-  <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(15,23,42,0.02),transparent_70%)] pointer-events-none" aria-hidden="true"></div>
+  <!-- Architectural Outlined Watermark: gigantic, stacked outlined lettering displaying Mousa first, centered and responsive -->
+  <div class="absolute inset-0 select-none pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+    <div 
+      class="scroll-bg-text absolute left-1/2 top-1/2 flex flex-col items-center gap-0 leading-[0.8] text-transparent transition-transform duration-75 ease-out"
+      style={`transform: translate3d(calc(-50% + ${isAr ? -80 : 80}px), -50%, 0) scale(1.25);`}
+    >
+      <span 
+        class="text-[24vw] font-black uppercase tracking-[0.15em] font-serif opacity-90 block whitespace-nowrap"
+        style="-webkit-text-stroke: 1.5px rgba(37, 99, 235, 0.12);"
+      >
+        {isAr ? "موسى" : "MOUSA"}
+      </span>
+      <span 
+        class="text-[21vw] font-black uppercase tracking-[0.1em] font-serif opacity-90 block whitespace-nowrap"
+        style="-webkit-text-stroke: 1.5px rgba(37, 99, 235, 0.12);"
+      >
+        {isAr ? "عمرو" : "AMR"}
+      </span>
+    </div>
+  </div>
 
-  <div class="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-[55%_45%] gap-12 md:gap-16 items-center">
+  <!-- Global background grid is applied to body -->
+
+  <!-- Soft luxury Classic Tech Indigo atmospheric glow orbs for color and texture -->
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_20%,oklch(75%_0.12_255_/_0.12),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,oklch(75%_0.12_255_/_0.06),transparent_60%)] pointer-events-none z-0" aria-hidden="true"></div>
+
+  <div class="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-[58%_42%] gap-12 lg:gap-24 items-center">
     
-    <!-- Left Column: Content (Appears at bottom on mobile, left on desktop) -->
-    <div class="space-y-8 order-2 md:order-1 flex flex-col justify-center">
+    <!-- Left Column: Content & Service Pitch -->
+    <div class="space-y-10 flex flex-col justify-center">
       
-      <div class="space-y-4 max-w-xl">
-        <!-- Subtitle Badge with dynamic pulsing dot -->
-        <div class="text-[10px] sm:text-xs font-bold tracking-widest text-accent-primary uppercase font-sans flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-accent-primary animate-pulse" aria-hidden="true"></span>
-          {isAr ? "تحليل البيانات والتسويق الرقمي" : "DATA-DRIVEN SYSTEMS"}
+      <div class="space-y-6 max-w-xl">
+        <!-- Subtitle Kicker: Uppercase luxury tracked sans-serif badge -->
+        <div class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
+          {heroData.eyebrow}
         </div>
 
-        <!-- H1 Identity Title using luxury Serif Font -->
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-text-main leading-none font-serif">
-          {isAr ? "عمرو موسى" : "Amr Mousa"}
+        <!-- H1 Stacked Identity Name in pure luxury typography (Charcoal + Premium Ice Blue Italic Serif) -->
+        <h1 class="text-6xl sm:text-7xl lg:text-[5.5rem] font-bold tracking-tight leading-[0.95] font-serif text-text-main">
+          {isAr ? (
+            <>
+              <span class="block">عمرو</span>
+              <span class="text-hero-ice-blue italic font-medium block mt-2">موسى</span>
+            </>
+          ) : (
+            <>
+              <span class="block">Amr</span>
+              <span class="text-hero-ice-blue italic font-medium block mt-2">Mousa</span>
+            </>
+          )}
         </h1>
 
-        <!-- Large Value Proposition / Core Belief Statement -->
-        <p class="text-xl sm:text-2xl font-bold tracking-tight text-text-main/90 leading-tight font-serif pt-2">
-          {isAr ? (
-            <>
-              تحليل البيانات <span class="text-accent-primary italic font-medium">لكشف الثغرات</span>.<br />والتسويق لمعالجتها.
-            </>
-          ) : (
-            <>
-              Data analysis to <span class="text-accent-primary italic font-medium">find leaks</span>.<br />Marketing to solve them.
-            </>
-          )}
-        </p>
-
-        <!-- Core Belief Statement Description -->
-        <p class="text-base sm:text-lg text-text-main/70 leading-relaxed pt-2 font-sans">
-          {isAr ? (
-            "أساعد الشركات على سد فجوات قنوات البيع وتحويل الميزانيات التسويقية المهدرة إلى أرباح حقيقية بقرارات مدعومة بالأرقام."
-          ) : (
-            "I plug conversion leaks in your sales funnel. I help businesses turn unoptimized ad spend and messy tracking into predictable commercial growth."
-          )}
-        </p>
+        <!-- Service Selling Description -->
+        <p 
+          class="text-lg sm:text-xl md:text-2xl text-text-main/80 leading-relaxed font-sans max-w-2xl font-light tracking-wide pt-2"
+          set:html={highlightText(heroData.bio)}
+        />
       </div>
 
-      <!-- Action Buttons with custom tech-themed styling -->
-      <div class="flex flex-col sm:flex-row items-center gap-6 pt-2 font-sans">
+      <!-- Action Buttons designed strictly matching the luxurious reference style with Ice Blue accents -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-5 font-sans">
         <a 
           href={methodologyPath} 
-          class="w-full sm:w-auto px-8 h-12 rounded-full bg-accent-primary hover:bg-accent-highlight text-white font-semibold text-sm transition-all flex items-center justify-center shadow-lg shadow-accent-primary/15 focus-visible:ring-2"
+          class="px-8 h-14 bg-hero-ice-blue hover:bg-hero-ice-blue-hover text-white rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-hero-ice-blue/15 hover:scale-[1.02]"
         >
-          {isAr ? "استكشف الخدمات" : "Explore Services"}
+          <span>{heroData.primaryBtn}</span>
+          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i>
         </a>
         <a 
           href="#contact" 
-          class="w-full sm:w-auto px-6 h-12 text-text-main hover:bg-text-main/5 border border-transparent hover:border-text-main/10 rounded-full font-bold text-sm transition-all flex items-center justify-center focus-visible:ring-2"
+          class="px-8 h-14 border border-text-main/15 hover:border-text-main/30 text-text-main rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center bg-transparent hover:bg-text-main/5 hover:scale-[1.02]"
         >
-          {isAr ? "تعرف عليّ" : "Get to Know Me"}
+          {heroData.secondaryBtn}
         </a>
       </div>
 
+      <!-- Social Icons row matching the sleek footer-style placement with Ice Blue hover -->
+      {socials.length > 0 && (
+        <div class="pt-8 border-t border-text-main/5 flex items-center gap-6 z-10">
+          {socials.map((item) => (
+            <a 
+              href={item.data.url} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="text-text-main/40 hover:text-hero-ice-blue transition-colors duration-300 text-sm"
+              title={item.data.name}
+            >
+              <i class={item.data.icon} aria-hidden="true"></i>
+            </a>
+          ))}
+        </div>
+      )}
+
     </div>
 
-    <!-- Right Column: Profile Image (Appears at top on mobile, right on desktop) -->
-    <div class="order-1 md:order-2 flex justify-center md:justify-end">
-      <!-- Glow behind portrait -->
-      <div class="relative w-full max-w-[280px] sm:max-w-[320px]">
-        <div class="absolute inset-0 bg-accent-primary/5 blur-3xl rounded-full pointer-events-none" aria-hidden="true"></div>
+    <!-- Right Column: Premium Portrait Frame & Custom Service Metadata overlay -->
+    <div class="flex justify-center lg:justify-end">
+      <!-- Luxury Portrait frame styled strictly based on reference layout -->
+      <div class="relative w-full max-w-[300px] sm:max-w-[340px] mb-6 lg:mb-0">
         
-        <!-- Luxury Portrait Frame (Chic Vertical Rectangular Frame aspect-3/4 with classic white border) -->
-        <div class="relative w-full aspect-[3/4] rounded-[2rem] p-2 bg-white border border-text-main/8 shadow-2xl shadow-text-main/3">
-          <div class="w-full h-full rounded-[1.75rem] overflow-hidden">
+        <!-- Portrait background ambient shadow glow in Ice Blue -->
+        <div class="absolute inset-0 bg-hero-ice-blue/5 blur-3xl rounded-full pointer-events-none z-0" aria-hidden="true"></div>
+        
+        <!-- Luxury Portrait Frame: rounded aspect-3/4 frame with fine styling -->
+        <div class="relative w-full aspect-[3/4] rounded-[2.5rem] p-2 bg-hero-card border border-text-main/8 shadow-2xl shadow-text-main/3 z-10">
+          <div class="w-full h-full rounded-[2.2rem] overflow-hidden bg-text-main/5">
             <Image 
               src={profileImg} 
               alt={isAr ? "عمرو موسى" : "Amr Mousa"} 
@@ -96,20 +160,87 @@ const methodologyPath = `/${lang}/methodology/`;
             />
           </div>
           
-          <!-- Mock Analytics Widget 1 (Top-Right overlay) -->
-          <div class="absolute -top-3 -end-4 bg-white border border-text-main/8 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2 z-30 font-sans text-xs font-bold text-text-main whitespace-nowrap">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <!-- Mock Analytics Widget 1 (Floating badge) -->
+          <div class="absolute -top-3 -end-4 bg-hero-card border border-text-main/8 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2 z-30 font-sans text-xs font-bold text-text-main whitespace-nowrap">
             <span>{isAr ? "العائد: +182.4%" : "ROI: +182.4%"}</span>
           </div>
 
-          <!-- Mock Analytics Widget 2 (Bottom-Left overlay) -->
-          <div class="absolute -bottom-3 -start-4 bg-white border border-text-main/8 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2 z-30 font-sans text-xs font-bold text-text-main whitespace-nowrap">
-            <i class="fa-solid fa-chart-pie text-accent-primary text-sm"></i>
-            <span>{isAr ? "التتبع: مفعل" : "Tracking: GA4"}</span>
+          <!-- Luxury Service Performance Stats Overlay: Styled exactly like reference metadata card -->
+          <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-hero-card border border-text-main/8 rounded-[1.25rem] p-4 shadow-xl w-[92%] flex justify-between gap-4 z-30 font-sans">
+            <!-- Left Stat -->
+            <div class="space-y-0.5">
+              <span class="text-[8px] sm:text-[9px] font-extrabold text-text-main/40 tracking-wider uppercase block">
+                {isAr ? "العائد الاستثماري" : "ROI GENERATED"}
+              </span>
+              <span class="text-xs sm:text-sm font-bold text-text-main block">
+                {isAr ? "+182.4% متوسط" : "+182.4% Average"}
+              </span>
+            </div>
+            
+            <!-- Vertical Divider -->
+            <div class="w-[1px] bg-text-main/10 self-stretch"></div>
+
+            <!-- Right Stat -->
+            <div class="space-y-0.5">
+              <span class="text-[8px] sm:text-[9px] font-extrabold text-text-main/40 tracking-wider uppercase block">
+                {isAr ? "التتبع والتحليلات" : "MEASUREMENT SYSTEMS"}
+              </span>
+              <span class="text-xs sm:text-sm font-bold text-text-main block">
+                {isAr ? "مفعلة ومؤمنة (GA4)" : "Fully Optimized (GA4)"}
+              </span>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
 
   </div>
 </section>
+
+<script>
+  function initScrollParallax() {
+    const bgText = document.querySelector('.scroll-bg-text') as HTMLElement | null;
+    if (!bgText) return;
+
+    // Detect layout direction
+    const dir = document.documentElement.dir === 'rtl' ? -1 : 1;
+
+    const onScroll = () => {
+      const scrolled = window.scrollY;
+      // Butter smooth translation on scroll with direction support
+      // Center-anchored translation starts shifted to the right (80px) and moves out to the left on scroll down
+      const xOffset = (80 - scrolled * 0.45) * dir;
+      bgText.style.transform = `translate3d(calc(-50% + ${xOffset}px), -50%, 0) scale(1.25)`;
+    };
+
+    // Use requestAnimationFrame for high performance scrolling
+    let ticked = false;
+    const handleScroll = () => {
+      if (!ticked) {
+        window.requestAnimationFrame(() => {
+          onScroll();
+          ticked = false;
+        });
+        ticked = true;
+      }
+    };
+
+    // Safe lifecycle-guarded scroll listener
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Initial run to capture correct state
+    onScroll();
+
+    // Safely cleanup listeners before swap to prevent memory leaks and duplicates
+    document.addEventListener('astro:before-swap', () => {
+      window.removeEventListener('scroll', handleScroll);
+    }, { once: true });
+  }
+
+  // Bind to initial load
+  initScrollParallax();
+  
+  // Re-bind to Astro swap transitions
+  document.addEventListener('astro:after-swap', initScrollParallax);
+</script>

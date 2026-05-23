@@ -24,74 +24,100 @@ if (activePage === 'methodology') {
 }
 ---
 
-<header class="fixed top-4 inset-x-0 mx-auto w-[calc(100%-2rem)] max-w-4xl h-14 bg-white/75 backdrop-blur-md border border-text-main/8 rounded-full z-50 flex items-center px-6 shadow-md shadow-text-main/3">
-  
-  <!-- Left Column: Logo (takes flex-1 to push nav to center) -->
-  <div class="flex-1 flex items-center justify-start">
-    <a href={homePath} class="flex items-center gap-2 text-text-main font-bold text-sm tracking-tight hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-offset-2">
-      <span class="w-2 h-2 rounded-full bg-accent-primary inline-block animate-pulse"></span>
-      <span>{isAr ? "عمرو موسى" : "Amr Mousa"}</span>
-    </a>
-  </div>
-
-  <!-- Center Column: Desktop Navigation Links -->
-  <nav class="hidden md:flex items-center gap-2 text-xs font-semibold text-text-main/60">
-    <a 
-      href={homePath} 
-      class={`px-4 py-2 rounded-full transition-all focus-visible:ring-2 ${activePage === 'home' ? 'bg-accent-primary text-white' : 'hover:text-text-main'}`}
-    >
-      {isAr ? "الرئيسية" : "Home"}
-    </a>
-    <a 
-      href={aboutPath} 
-      class="px-4 py-2 rounded-full hover:text-text-main transition-colors focus-visible:ring-2"
-    >
-      {isAr ? "من أنا" : "Who I Am"}
-    </a>
-    <a 
-      href={servicesPath} 
-      class="px-4 py-2 rounded-full hover:text-text-main transition-colors focus-visible:ring-2"
-    >
-      {isAr ? "الخدمات" : "Services"}
-    </a>
-    <a 
-      href={projectsPath} 
-      class="px-4 py-2 rounded-full hover:text-text-main transition-colors focus-visible:ring-2"
-    >
-      {isAr ? "المشاريع" : "Projects"}
-    </a>
-    <a 
-      href={contactPath} 
-      class="px-4 py-2 rounded-full hover:text-text-main transition-colors focus-visible:ring-2"
-    >
-      {isAr ? "اتصل بي" : "Contact"}
-    </a>
-  </nav>
-
-  <!-- Right Column: Desktop Actions & Mobile Controls (takes flex-1 to push nav to center) -->
-  <div class="flex-1 flex items-center justify-end">
-    <!-- Desktop Right Section: Language Switcher -->
-    <div class="hidden md:flex items-center gap-3">
-      <a 
-        href={langTogglePath} 
-        class="px-3.5 py-1.5 rounded-full border border-text-main/10 text-[10px] font-extrabold uppercase tracking-wider text-text-main/70 hover:bg-text-main/5 hover:text-text-main transition-all focus-visible:ring-2"
-      >
-        {isAr ? "EN" : "AR"}
+<header class="fixed top-0 inset-x-0 w-full h-16 md:h-20 bg-hero-surface/75 backdrop-blur-md border-b border-text-main/8 z-50 flex items-center px-6 sm:px-8 lg:px-12 transition-all duration-300">
+  <div class="w-full max-w-6xl mx-auto flex items-center justify-between">
+    
+    <!-- Left Column: Elegant Logo strictly matching the reference -->
+    <div class="flex items-center justify-start">
+      <a href={homePath} class="flex items-center gap-3 focus-visible:ring-2 focus-visible:ring-offset-2">
+        <!-- Circular emblem with a dark background and clean serif letter inside -->
+        <span class="w-9 h-9 rounded-full bg-text-main flex items-center justify-center text-white font-serif text-sm font-bold shadow-md shadow-text-main/10 select-none" aria-hidden="true">
+          A
+        </span>
+        <!-- Brand name: regular serif + colored italic serif -->
+        <span class="font-serif text-base md:text-lg font-bold text-text-main tracking-tight">
+          Amr <span class="text-hero-accent italic font-medium">{isAr ? "للأنظمة" : "Systems"}</span>
+        </span>
       </a>
     </div>
 
-    <!-- Mobile Controls (Drawer Toggle) -->
-    <div class="md:hidden flex items-center gap-3">
+    <!-- Center Column: Centered uppercase navigation links matching reference -->
+    <nav class="hidden md:flex items-center gap-8 text-[10px] font-bold tracking-[0.25em] uppercase font-sans text-text-main/60">
+      <a 
+        href={homePath} 
+        class={`transition-all hover:text-hero-accent ${activePage === 'home' ? 'text-hero-accent' : 'text-text-main/70'}`}
+      >
+        {isAr ? "الرئيسية" : "Home"}
+      </a>
+      <a 
+        href={aboutPath} 
+        class="transition-all hover:text-hero-accent text-text-main/70"
+      >
+        {isAr ? "من أنا" : "About"}
+      </a>
+      <a 
+        href={methodologyPath} 
+        class={`transition-all hover:text-hero-accent ${activePage === 'methodology' ? 'text-hero-accent' : 'text-text-main/70'}`}
+      >
+        {isAr ? "المنهجية" : "Methodology"}
+      </a>
+      <a 
+        href={servicesPath} 
+        class="transition-all hover:text-hero-accent text-text-main/70"
+      >
+        {isAr ? "الخدمات" : "Services"}
+      </a>
+      <a 
+        href={projectsPath} 
+        class="transition-all hover:text-hero-accent text-text-main/70"
+      >
+        {isAr ? "المشاريع" : "Portfolio"}
+      </a>
+      <a 
+        href={contactPath} 
+        class="transition-all hover:text-hero-accent text-text-main/70"
+      >
+        {isAr ? "اتصل بي" : "Contact"}
+      </a>
+    </nav>
+
+    <!-- Right Column: Language Switcher pill & Moon Toggle strictly matching reference -->
+    <div class="flex items-center justify-end gap-3.5">
+      <!-- EN / AR rounded border switcher pill -->
       <a 
         href={langTogglePath} 
-        class="px-2.5 py-1 rounded-full border border-text-main/10 text-[10px] font-extrabold uppercase text-text-main/70 focus-visible:ring-2"
+        class="px-4 py-1.5 rounded-full border border-text-main/10 bg-hero-card text-[9px] font-extrabold uppercase tracking-[0.15em] shadow-sm flex items-center gap-1.5 focus-visible:ring-2"
+        aria-label={isAr ? "Switch to English" : "تغيير للغة العربية"}
       >
-        {isAr ? "EN" : "AR"}
+        {isAr ? (
+          <>
+            <span class="text-text-main/40 hover:text-hero-accent transition-all">EN</span>
+            <span class="text-text-main/10">/</span>
+            <span class="text-hero-accent">AR</span>
+          </>
+        ) : (
+          <>
+            <span class="text-hero-accent">EN</span>
+            <span class="text-text-main/10">/</span>
+            <span class="text-text-main/40 hover:text-hero-accent transition-all">AR</span>
+          </>
+        )}
       </a>
-      <label for="menu-toggle" class="cursor-pointer p-1.5 text-text-main/70 hover:text-text-main select-none z-50 focus-visible:ring-2" aria-label="Toggle Menu">
-        <i class="fa-solid fa-bars text-sm"></i>
+
+      <!-- Visual Light/Dark mode circular toggle matching reference -->
+      <div 
+        class="w-8 h-8 rounded-full border border-text-main/10 bg-hero-card hover:bg-text-main/5 flex items-center justify-center text-text-main/60 hover:text-hero-accent transition-all shadow-sm cursor-pointer"
+        aria-hidden="true"
+      >
+        <i class="fa-regular fa-moon text-xs"></i>
+      </div>
+
+      <!-- Mobile Controls (Drawer Menu Icon) -->
+      <label for="menu-toggle" class="md:hidden cursor-pointer p-1.5 text-text-main/70 hover:text-hero-accent select-none z-50 focus-visible:ring-2" aria-label="Toggle Menu">
+        <i class="fa-solid fa-bars text-base"></i>
       </label>
     </div>
+
   </div>
 
   <input type="checkbox" id="menu-toggle" class="peer hidden" />
@@ -100,31 +126,31 @@ if (activePage === 'methodology') {
   <label for="menu-toggle" class="fixed inset-0 bg-text-main/40 backdrop-blur-sm z-40 hidden peer-checked:block md:hidden! transition-all duration-300"></label>
 
   <!-- Mobile Side Drawer -->
-  <div class="fixed inset-block-0 end-0 w-64 bg-primary-bg border-s border-text-main/10 p-6 z-50 transform translate-x-full rtl:-translate-x-full transition-transform duration-300 peer-checked:translate-x-0 md:hidden! flex flex-col gap-6">
+  <div class="fixed inset-block-0 end-0 w-64 bg-hero-surface border-s border-text-main/10 p-6 z-50 transform translate-x-full rtl:-translate-x-full transition-transform duration-300 peer-checked:translate-x-0 md:hidden! flex flex-col gap-6">
     <div class="flex justify-between items-center pb-4 border-b border-text-main/5">
       <span class="font-bold text-text-main text-sm">{isAr ? "القائمة" : "Menu"}</span>
-      <label for="menu-toggle" class="cursor-pointer text-text-main/60 hover:text-text-main p-1">
+      <label for="menu-toggle" class="cursor-pointer text-text-main/60 hover:text-hero-accent p-1">
         <i class="fa-solid fa-xmark text-sm"></i>
       </label>
     </div>
 
     <nav class="flex flex-col gap-3 text-sm font-semibold">
-      <a href={homePath} class={`mobile-drawer-link py-2.5 px-4 rounded-xl ${activePage === 'home' ? 'bg-accent-primary text-white' : 'text-text-main/70 hover:text-text-main'}`}>
+      <a href={homePath} class={`mobile-drawer-link py-2.5 px-4 rounded-xl ${activePage === 'home' ? 'bg-hero-accent text-white' : 'text-text-main/70 hover:text-hero-accent'}`}>
         {isAr ? "الرئيسية" : "Home"}
       </a>
-      <a href={aboutPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-text-main">
-        {isAr ? "من أنا" : "Who I Am"}
+      <a href={aboutPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-hero-accent">
+        {isAr ? "من أنا" : "About"}
       </a>
-      <a href={servicesPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-text-main">
-        {isAr ? "الخدمات" : "Services"}
-      </a>
-      <a href={projectsPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-text-main">
-        {isAr ? "المشاريع" : "Projects"}
-      </a>
-      <a href={methodologyPath} class={`mobile-drawer-link py-2.5 px-4 rounded-xl ${activePage === 'methodology' ? 'bg-accent-primary text-white' : 'text-text-main/70 hover:text-text-main'}`}>
+      <a href={methodologyPath} class={`mobile-drawer-link py-2.5 px-4 rounded-xl ${activePage === 'methodology' ? 'bg-hero-accent text-white' : 'text-text-main/70 hover:text-hero-accent'}`}>
         {isAr ? "منهجية العمل" : "Methodology"}
       </a>
-      <a href={contactPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-text-main">
+      <a href={servicesPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-hero-accent">
+        {isAr ? "الخدمات" : "Services"}
+      </a>
+      <a href={projectsPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-hero-accent">
+        {isAr ? "المشاريع" : "Portfolio"}
+      </a>
+      <a href={contactPath} class="mobile-drawer-link py-2.5 px-4 rounded-xl text-text-main/70 hover:text-hero-accent">
         {isAr ? "اتصل بي" : "Contact"}
       </a>
     </nav>
@@ -145,4 +171,3 @@ if (activePage === 'methodology') {
     });
   }
 </script>
-
