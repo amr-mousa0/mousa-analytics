@@ -6,7 +6,7 @@ const seoCollection = defineCollection({
     title: z.string().max(60, "Title should be under 60 characters for optimal search display"),
     description: z.string().max(160, "Description should be under 160 characters for search snippets"),
     keywords: z.array(z.string()).optional(),
-    ogImage: z.string().url().optional(),
+    ogImage: z.string().optional(),
   }),
 });
 

@@ -1,7 +1,7 @@
 ---
-title: "Amr Mousa | Data Analyst & Digital Marketer"
-description: "Professional portfolio of Amr Mousa, specializing in data analytics and social media marketing strategy."
-keywords: ["data analyst", "digital marketing", "marketing strategist", "portfolio"]
-ogImage: "https://example.com/og-image.jpg"
+title: "Amr Mousa | B2C Funnel Optimization & Data Analyst"
+description: "Optimize your B2C store conversions and plug funnel leaks. Amr Mousa combines professional data analysis with B2C marketing to scale ad spend efficiency."
+keywords: ["data analyst", "b2c marketing", "funnel optimization", "shopify analytics", "conversion tracking"]
+ogImage: "/images/og-image.png"
 ---
 # Amr Mousa Portfolio
