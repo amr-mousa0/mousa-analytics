@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/001-project-bootstrap/plan.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/001-project-bootstrap/plan.md)
+[specs/002-rebuild-blueprint/plan.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/002-rebuild-blueprint/plan.md)
 <!-- SPECKIT END -->
