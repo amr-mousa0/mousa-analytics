@@ -26,16 +26,16 @@ const heroData = heroEntry?.data || {
 // Dynamically highlight key terms for B2B aesthetics
 const highlightText = (text: string) => {
   let highlighted = text
-    .replace(/\bdata\b/gi, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/20 decoration-2 underline-offset-4">data</strong>')
-    .replace(/\bsystems\b/gi, '<em class="italic font-medium text-text-main">systems</em>')
-    .replace(/\bmarketing\b/gi, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/20 decoration-2 underline-offset-4">marketing</strong>')
-    .replace(/\bpeople\b/gi, '<em class="italic font-medium text-text-main">people</em>');
+    .replace(/\bdata\b/gi, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/30 decoration-[1.5px] underline-offset-[6px]">data</strong>')
+    .replace(/\bsystems\b/gi, '<em class="font-serif italic font-medium text-text-main">systems</em>')
+    .replace(/\bmarketing\b/gi, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/30 decoration-[1.5px] underline-offset-[6px]">marketing</strong>')
+    .replace(/\bpeople\b/gi, '<em class="font-serif italic font-medium text-text-main">people</em>');
 
   highlighted = highlighted
-    .replace(/البيانات/g, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/20 decoration-2 underline-offset-4">البيانات</strong>')
-    .replace(/الأنظمة/g, '<em class="italic font-medium text-text-main">الأنظمة</em>')
-    .replace(/التسويق/g, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/20 decoration-2 underline-offset-4">التسويق</strong>')
-    .replace(/الناس/g, '<em class="italic font-medium text-text-main">الناس</em>');
+    .replace(/البيانات/g, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/30 decoration-[1.5px] underline-offset-[6px]">البيانات</strong>')
+    .replace(/الأنظمة/g, '<em class="font-serif italic font-medium text-text-main">الأنظمة</em>')
+    .replace(/التسويق/g, '<strong class="font-semibold text-accent-primary underline decoration-accent-primary/30 decoration-[1.5px] underline-offset-[6px]">التسويق</strong>')
+    .replace(/الناس/g, '<em class="font-serif italic font-medium text-text-main">الناس</em>');
 
   return highlighted;
 };
@@ -51,13 +51,13 @@ const highlightText = (text: string) => {
     >
       <span 
         class="text-[24vw] font-black uppercase tracking-[0.15em] font-serif opacity-90 block whitespace-nowrap"
-        style="-webkit-text-stroke: 1.5px rgba(37, 99, 235, 0.12);"
+        style="-webkit-text-stroke: 1px rgba(37, 99, 235, 0.08);"
       >
         {isAr ? "موسى" : "MOUSA"}
       </span>
       <span 
         class="text-[21vw] font-black uppercase tracking-[0.1em] font-serif opacity-90 block whitespace-nowrap"
-        style="-webkit-text-stroke: 1.5px rgba(37, 99, 235, 0.12);"
+        style="-webkit-text-stroke: 1px rgba(37, 99, 235, 0.08);"
       >
         {isAr ? "عمرو" : "AMR"}
       </span>
@@ -82,7 +82,7 @@ const highlightText = (text: string) => {
         </div>
 
         <!-- H1 Stacked Identity Name in pure luxury typography (Charcoal + Premium Ice Blue Italic Serif) -->
-        <h1 class="text-5xl sm:text-7xl lg:text-[5.5rem] font-bold tracking-tight leading-[0.95] font-serif text-text-main">
+        <h1 class="text-[clamp(2.75rem,8vw,5.5rem)] font-bold tracking-tight leading-[0.95] font-serif text-text-main">
           {isAr ? (
             <>
               <span class="block">عمرو</span>
@@ -107,14 +107,14 @@ const highlightText = (text: string) => {
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-5 font-sans">
         <a 
           href={methodologyPath} 
-          class="px-8 h-14 bg-hero-ice-blue hover:bg-hero-ice-blue-hover text-white rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-hero-ice-blue/15 hover:scale-[1.02]"
+          class="px-8 h-14 bg-hero-ice-blue hover:bg-hero-ice-blue-hover text-white rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-hero-ice-blue/15 hover:shadow-xl hover:shadow-hero-ice-blue/25 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-hero-ice-blue focus-visible:ring-offset-2"
         >
           <span>{heroData.primaryBtn}</span>
           <i class="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i>
         </a>
         <a 
           href="#contact" 
-          class="px-8 h-14 border border-text-main/15 hover:border-hero-accent hover:text-hero-accent text-text-main rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center bg-transparent hover:bg-hero-accent/5 hover:scale-[1.02]"
+          class="px-8 h-14 border border-text-main/15 hover:border-hero-accent hover:text-hero-accent text-text-main rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center bg-transparent hover:bg-hero-accent/5 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-hero-accent focus-visible:ring-offset-2"
         >
           {heroData.secondaryBtn}
         </a>
@@ -128,7 +128,7 @@ const highlightText = (text: string) => {
               href={item.data.url} 
               target="_blank" 
               rel="noopener noreferrer" 
-              class="text-text-main/40 hover:text-hero-ice-blue transition-colors duration-300 text-sm"
+              class="text-text-main/40 hover:text-hero-ice-blue transition-all duration-300 text-sm hover:-translate-y-0.5 hover:scale-110 inline-block"
               title={item.data.name}
             >
               <i class={item.data.icon} aria-hidden="true"></i>
@@ -148,7 +148,7 @@ const highlightText = (text: string) => {
         <div class="absolute inset-0 bg-hero-ice-blue/5 blur-3xl rounded-full pointer-events-none z-0" aria-hidden="true"></div>
         
         <!-- Luxury Portrait Frame: rounded aspect-3/4 frame with fine styling -->
-        <div class="relative w-full aspect-[3/4] rounded-[2.5rem] p-2 bg-hero-card border border-text-main/8 shadow-2xl shadow-text-main/3 z-10">
+        <div class="relative w-full aspect-[3/4] rounded-[2.5rem] p-2 bg-hero-card border border-text-main/8 shadow-2xl shadow-text-main/3 z-10 hover:scale-[1.01] transition-all duration-500 ease-out">
           <div class="w-full h-full rounded-[2.2rem] overflow-hidden bg-text-main/5">
             <Image 
               src={profileImg} 
@@ -161,12 +161,13 @@ const highlightText = (text: string) => {
           </div>
           
           <!-- Mock Analytics Widget 1 (Floating badge) -->
-          <div class="absolute -top-3 -end-4 bg-hero-card border border-text-main/8 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2 z-30 font-sans text-xs font-bold text-text-main whitespace-nowrap">
+          <div class="absolute -top-3 -end-2 sm:-end-4 bg-hero-card border border-text-main/8 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2 z-30 font-sans text-xs font-bold text-text-main whitespace-nowrap hover:scale-105 transition-transform duration-300">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>
             <span>{isAr ? "العائد: +182.4%" : "ROI: +182.4%"}</span>
           </div>
 
           <!-- Luxury Service Performance Stats Overlay: Styled exactly like reference metadata card -->
-          <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-hero-card border border-text-main/8 rounded-[1.25rem] p-4 shadow-xl w-[92%] flex justify-between gap-4 z-30 font-sans">
+          <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-hero-card border border-text-main/8 rounded-[1.25rem] p-4 shadow-xl w-[92%] flex justify-between gap-4 z-30 font-sans hover:shadow-2xl transition-shadow duration-300">
             <!-- Left Stat -->
             <div class="space-y-0.5">
               <span class="text-[8px] sm:text-[9px] font-extrabold text-text-main/40 tracking-wider uppercase block">
