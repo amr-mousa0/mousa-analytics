@@ -43,14 +43,14 @@ test.describe('Locale Redirection & Routing', () => {
     if (await aboutLink.isVisible()) {
       await aboutLink.click({ force: true });
       await expect(page).toHaveURL(/\/en\/about\//);
-      await expect(page.locator('main h1')).toContainText('The Professional Interview');
+      await expect(page.locator('main h1')).toContainText('How I Drive B2C Growth');
 
       // Switch to Arabic
       const arToggle = page.locator('header a:has-text("AR")').first();
       if (await arToggle.isVisible()) {
         await arToggle.click({ force: true });
         await expect(page).toHaveURL(/\/ar\/about\//);
-        await expect(page.locator('main h1')).toContainText('التعريف بالخبرة المهنية');
+        await expect(page.locator('main h1')).toContainText('كيف أحقق النتائج الفعالة');
       }
     }
   });
