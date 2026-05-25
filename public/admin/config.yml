@@ -13,10 +13,8 @@ publish_mode: editorial_workflow
 # Media configuration to work natively with Astro Image Sharp pipeline
 media_folder: "src/assets/images/uploads"
 public_folder: "../../../assets/images/uploads"
-media_library:
-  name: local
-  config:
-    max_file_size: 5000000 # 5MB limit
+max_file_size: 5000000 # 5MB limit
+
 
 # DRY (Don't Repeat Yourself) YAML Anchors for shared fields
 seo_fields: &seo_fields
