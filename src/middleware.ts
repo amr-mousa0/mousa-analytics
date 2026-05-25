@@ -4,7 +4,7 @@ export const onRequest = async (_context: APIContext, next: () => Promise<Respon
   const response = await next();
 
   // Set standard security headers
-  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
