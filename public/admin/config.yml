@@ -18,7 +18,6 @@ media_library:
   config:
     max_file_size: 5000000 # 5MB limit
 
-
 # DRY (Don't Repeat Yourself) YAML Anchors for shared fields
 seo_fields: &seo_fields
   name: seo
@@ -31,12 +30,6 @@ seo_fields: &seo_fields
     - { label: "OG Image (Social)", name: "ogImage", widget: "image", required: false, hint: "Custom sharing thumbnail card" }
     - { label: "Canonical URL", name: "canonicalUrl", widget: "string", required: false }
     - { label: "No Index", name: "noindex", widget: "boolean", default: false, hint: "Exclude page from search indexes" }
-
-content_states: &content_states
-  - { label: "Draft", name: "draft", widget: "boolean", default: false, hint: "If checked, hidden from public builds" }
-  - { label: "Featured", name: "featured", widget: "boolean", default: false, hint: "If checked, pinned at top of lists" }
-  - { label: "Publish Date", name: "publishedDate", widget: "datetime", required: true }
-  - { label: "Translation Linking Key", name: "translationKey", widget: "string", required: true, hint: "Unique key matching EN/AR versions (e.g. coffee-shop-case)" }
 
 collections:
   # 1. Services (English)
@@ -54,7 +47,11 @@ collections:
       - { label: "Category", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
       - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "Features List", name: "features", widget: "list", required: false, hint: "Deliverable points for the service" }
-      - *content_states
+      # Content States
+      - { label: "Draft", name: "draft", widget: "boolean", default: false, hint: "If checked, hidden from public builds" }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false, hint: "If checked, pinned at top of lists" }
+      - { label: "Publish Date", name: "publishedDate", widget: "datetime", required: true }
+      - { label: "Translation Linking Key", name: "translationKey", widget: "string", required: true, hint: "Unique key matching EN/AR versions (e.g. coffee-shop)" }
       - *seo_fields
 
   # 2. Services (Arabic)
@@ -72,7 +69,11 @@ collections:
       - { label: "التصنيف", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
       - { label: "الوسوم (Tags)", name: "tags", widget: "list", required: false }
       - { label: "قائمة المخرجات (Features)", name: "features", widget: "list", required: false }
-      - *content_states
+      # Content States (Arabic UI)
+      - { label: "مسودة (Draft)", name: "draft", widget: "boolean", default: false, hint: "إخفاء من الموقع في وضع الإنتاج" }
+      - { label: "مميز (Featured)", name: "featured", widget: "boolean", default: false, hint: "تثبيت في أعلى القوائم" }
+      - { label: "تاريخ النشر", name: "publishedDate", widget: "datetime", required: true }
+      - { label: "مفتاح الربط للترجمة", name: "translationKey", widget: "string", required: true, hint: "مفتاح فريد يطابق النسخة الإنجليزية (مثل coffee-shop)" }
       - *seo_fields
 
   # 3. Projects (English)
@@ -99,14 +100,18 @@ collections:
       - { label: "Inquire Description", name: "inquireDesc", widget: "string", required: true }
       - { label: "Inquire Button CTA", name: "inquireBtn", widget: "string", required: true }
       - { label: "Cover Image", name: "coverImage", widget: "image", required: true }
-      - { label: "Gallery Images list", name: "galleryImages", widget: "list", field: { widget: "image" }, required: true }
+      - { label: "Gallery Images list", name: "galleryImages", widget: "list", field: { name: "image", widget: "image" }, required: true }
       - { label: "Github URL", name: "githubUrl", widget: "string", required: false }
       - { label: "WhatsApp Start Project Message", name: "whatsappStartProjectMsg", widget: "string", required: true }
       - { label: "WhatsApp Open Dashboard Message", name: "whatsappOpenDashboardMsg", widget: "string", required: true }
       - { label: "Priority (Order)", name: "priority", widget: "number", value_type: "int", required: true }
       - { label: "Category", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
       - { label: "Tags", name: "tags", widget: "list", required: false }
-      - *content_states
+      # Content States
+      - { label: "Draft", name: "draft", widget: "boolean", default: false, hint: "If checked, hidden from public builds" }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false, hint: "If checked, pinned at top of lists" }
+      - { label: "Publish Date", name: "publishedDate", widget: "datetime", required: true }
+      - { label: "Translation Linking Key", name: "translationKey", widget: "string", required: true, hint: "Unique key matching EN/AR versions (e.g. coffee-shop)" }
       - *seo_fields
 
   # 4. Projects (Arabic)
@@ -133,12 +138,16 @@ collections:
       - { label: "وصف الاستفسار", name: "inquireDesc", widget: "string", required: true }
       - { label: "زر استفسار (CTA)", name: "inquireBtn", widget: "string", required: true }
       - { label: "صورة الغلاف", name: "coverImage", widget: "image", required: true }
-      - { label: "صور المعرض", name: "galleryImages", widget: "list", field: { widget: "image" }, required: true }
+      - { label: "صور المعرض", name: "galleryImages", widget: "list", field: { name: "image", widget: "image" }, required: true }
       - { label: "رابط مستودع Github", name: "githubUrl", widget: "string", required: false }
       - { label: "رسالة واتساب لبدء المشروع", name: "whatsappStartProjectMsg", widget: "string", required: true }
       - { label: "رسالة واتساب لفتح لوحة المؤشرات", name: "whatsappOpenDashboardMsg", widget: "string", required: true }
       - { label: "الأولوية (الترتيب)", name: "priority", widget: "number", value_type: "int", required: true }
       - { label: "التصنيف", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
       - { label: "الوسوم (Tags)", name: "tags", widget: "list", required: false }
-      - *content_states
+      # Content States (Arabic UI)
+      - { label: "مسودة (Draft)", name: "draft", widget: "boolean", default: false, hint: "إخفاء من الموقع في وضع الإنتاج" }
+      - { label: "مميز (Featured)", name: "featured", widget: "boolean", default: false, hint: "تثبيت في أعلى القوائم" }
+      - { label: "تاريخ النشر", name: "publishedDate", widget: "datetime", required: true }
+      - { label: "مفتاح الربط للترجمة", name: "translationKey", widget: "string", required: true, hint: "مفتاح فريد يطابق النسخة الإنجليزية (مثل coffee-shop)" }
       - *seo_fields
