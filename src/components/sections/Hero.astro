@@ -1,7 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
-import profileImg from '../../assets/images/profile.png';
+import analyticsBgImgDesktop from '../../assets/images/analyst-side-bg-desktop.png';
+import analyticsBgImgMobile from '../../assets/images/analyst-side-bg-mobile.png';
 import { getSafeSocials } from '../../scripts/socialsHelper';
 
 interface Props {
@@ -11,130 +12,158 @@ interface Props {
 const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
-const methodologyPath = `/${lang}/methodology/`;
-const aboutPath = `/${lang}/about/`;
 const socials = await getSafeSocials(lang);
 
 // Fetch localized hero data dynamically without hardcoding
 const heroEntry = await getEntry('hero', lang);
 const heroData = heroEntry?.data || {
-  eyebrow: isAr ? "محلل بيانات وتسويق" : "DATA & MARKETING ANALYST",
-  bio: isAr ? "أستخدم البيانات لفهم الأنظمة، والتسويق لفهم الناس." : "I use data to understand systems, and marketing to understand people.",
-  primaryBtn: isAr ? "استكشف الخدمات والحلول" : "Explore Services & Solutions",
-  secondaryBtn: isAr ? "تعرف عليّ" : "Get to know me",
-  floatingBadge: isAr ? "التسويق والتحليل" : "Marketing & Analysis",
-  statLeftTitle: isAr ? "نمو العائد" : "ROI GROWTH",
-  statLeftVal: "+250%",
-  statRightTitle: isAr ? "رؤى البيانات" : "DATA INSIGHTS",
-  statRightVal: isAr ? "استراتيجية" : "Strategic",
+  title: isAr ? "بياناتك وتسويقك... بسطناها" : "Your Data & Marketing... Simplified.",
+  eyebrow: isAr ? "وظّف عقلاً تحليلياً" : "HIRE AN ANALYTICAL MIND",
+  bio: isAr ? "المنظومة الموحدة لتتبع البيانات وإدارة الحملات لتحقيق نمو قابل للتنبؤ." : "The unified analytics system to track metrics and scale ad campaigns for predictable business growth.",
+  primaryBtn: isAr ? "ناقش استراتيجيتك" : "Discuss Your Strategy",
+  secondaryBtn: isAr ? "استكشف الخدمات" : "Explore Services",
+  floatingBadge: isAr ? "البيانات + شراء الإعلانات" : "Data + Media Buying",
+  statLeftTitle: isAr ? "محرك المبيعات" : "SALES ENGINE",
+  statLeftVal: "+182%",
+  statRightTitle: isAr ? "تكامل النظام" : "SYSTEM INTEGRATION",
+  statRightVal: isAr ? "بيانات + إعلانات" : "Data + Ads",
+  trendingLabel: isAr ? "الخدمات الأكثر طلباً:" : "Trending Services:",
+  trendingItems: isAr ? "تتبع البيانات • الحملات الإعلانية • تهيئة التحويل" : "Data Tracking • Ad Scaling • Conversion Optimization"
+};
+
+// Dynamically highlight key terms for title B2B aesthetics
+const highlightTitle = (text: string) => {
+  let highlighted = text
+    .replace(/\bSimplified\.\b/gi, '<span class="text-accent-primary italic font-medium">Simplified.</span>')
+    .replace(/بسطناها/g, '<span class="text-accent-primary italic font-medium">بسطناها</span>');
+
+  return highlighted;
 };
 
 // Dynamically highlight key terms for B2B aesthetics
 const highlightText = (text: string) => {
   let highlighted = text
-    .replace(/\bdata\b/gi, '<span class="font-serif italic font-medium text-accent-primary">data</span>')
-    .replace(/\bsystems\b/gi, '<span class="font-serif italic font-medium text-text-main">systems</span>')
-    .replace(/\bmarketing\b/gi, '<span class="font-serif italic font-medium text-accent-primary">marketing</span>')
-    .replace(/\bpeople\b/gi, '<span class="font-serif italic font-medium text-text-main">people</span>');
+    .replace(/\banalytics system\b/gi, '<span class="font-serif italic font-medium text-accent-primary">analytics system</span>')
+    .replace(/\bmetrics\b/gi, '<span class="text-text-main font-medium underline decoration-accent-primary/50 decoration-2 underline-offset-4">metrics</span>')
+    .replace(/\bpredictable business growth\b/gi, '<span class="font-serif italic font-medium text-accent-primary">predictable business growth</span>');
 
   highlighted = highlighted
-    .replace(/البيانات/g, '<span class="font-serif italic font-medium text-accent-primary">البيانات</span>')
-    .replace(/الأنظمة/g, '<span class="font-serif italic font-medium text-text-main">الأنظمة</span>')
-    .replace(/التسويق/g, '<span class="font-serif italic font-medium text-accent-primary">التسويق</span>')
-    .replace(/الناس/g, '<span class="font-serif italic font-medium text-text-main">الناس</span>');
+    .replace(/المنظومة الموحدة/g, '<span class="font-serif italic font-medium text-accent-primary">المنظومة الموحدة</span>')
+    .replace(/تتبع البيانات/g, '<span class="text-text-main font-medium underline decoration-accent-primary/50 decoration-2 underline-offset-4">تتبع البيانات</span>')
+    .replace(/نمو قابل للتنبؤ/g, '<span class="font-serif italic font-medium text-accent-primary">نمو قابل للتنبؤ</span>');
 
   return highlighted;
 };
 ---
 
-<section class="w-full min-h-screen relative overflow-hidden bg-transparent flex items-center py-20 md:py-28 border-b border-text-main/5">
+<section class="w-full min-h-screen relative overflow-hidden bg-primary-bg flex items-center py-20 md:py-28 border-b border-text-main/5">
   
-  <!-- Architectural Outlined Watermark: gigantic, stacked outlined lettering displaying Mousa first, centered and responsive -->
-  <div class="absolute inset-0 select-none pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-    <div 
-      class="scroll-bg-text absolute left-1/2 top-1/2 flex flex-col items-center gap-0 leading-[0.8] text-transparent transition-transform duration-75 ease-out"
-      style={`transform: translate3d(calc(-50% + ${isAr ? -80 : 80}px), -50%, 0) scale(1.25);`}
-    >
-      <span 
-        class="text-[24vw] font-black uppercase tracking-[0.15em] font-serif opacity-90 block whitespace-nowrap"
-        style="-webkit-text-stroke: 1px rgba(37, 99, 235, 0.08);"
-      >
-        {isAr ? "موسى" : "MOUSA"}
-      </span>
-      <span 
-        class="text-[21vw] font-black uppercase tracking-[0.1em] font-serif opacity-90 block whitespace-nowrap"
-        style="-webkit-text-stroke: 1px rgba(37, 99, 235, 0.08);"
-      >
-        {isAr ? "عمرو" : "AMR"}
-      </span>
-    </div>
+  <!-- Parallax background wrapper covering 100% of the section -->
+  <div class="scroll-bg-image absolute inset-0 z-0 pointer-events-none select-none transition-transform duration-100 ease-out origin-center">
+    <!-- Desktop background image (16:9 ratio, aligned to bottom to show the desk) -->
+    <Image 
+      src={analyticsBgImgDesktop} 
+      alt="" 
+      class:list={[
+        "hidden md:block w-full h-full object-cover object-bottom opacity-90 md:opacity-95",
+        isAr && "scale-x-[-1]"
+      ]}
+      loading="eager"
+      fetchpriority="high"
+    />
+    <!-- Mobile background image (9:16 ratio, aligned to bottom to show the desk) -->
+    <Image 
+      src={analyticsBgImgMobile} 
+      alt="" 
+      class:list={[
+        "block md:hidden w-full h-full object-cover object-bottom opacity-90",
+        isAr && "scale-x-[-1]"
+      ]}
+      loading="eager"
+      fetchpriority="high"
+    />
   </div>
 
-  <!-- Global background grid is applied to body -->
+  <!-- Ambient overlays for high text contrast and edge blending -->
+  <div class="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-primary-bg to-transparent pointer-events-none z-1" aria-hidden="true"></div>
+  <div class="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-primary-bg to-transparent pointer-events-none z-1" aria-hidden="true"></div>
+  <div class="absolute inset-0 bg-primary-bg/25 pointer-events-none z-1" aria-hidden="true"></div>
 
-  <!-- Soft luxury Classic Tech Indigo atmospheric glow orbs for color and texture -->
-  <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_20%,oklch(75%_0.12_255_/_0.12),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
-  <div class="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,oklch(75%_0.12_255_/_0.06),transparent_60%)] pointer-events-none z-0" aria-hidden="true"></div>
-
-  <div class="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-[58%_42%] gap-12 lg:gap-24 items-center">
+  <div class="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col items-center justify-center my-auto">
     
-    <!-- Left Column: Content & Service Pitch -->
-    <div class="space-y-10 flex flex-col justify-center">
+    <!-- Text Content Column aligned to the center -->
+    <div class="w-full max-w-3xl flex flex-col items-center text-center space-y-8 z-10">
       
-      <div class="space-y-6 max-w-xl">
-        <!-- Subtitle Kicker: Uppercase luxury tracked sans-serif badge -->
-        <div class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
-          {heroData.eyebrow}
+      <!-- Brand Logo & Eyebrow -->
+      <div class="flex flex-col items-center gap-2 select-none animate-fade-in">
+        <div class="flex items-center gap-3">
+          <!-- Circular emblem with a dark background and clean serif letter inside -->
+          <span class="w-9 h-9 rounded-full bg-text-main flex items-center justify-center text-white font-serif text-sm font-bold shadow-md shadow-text-main/10 select-none" aria-hidden="true">
+            A
+          </span>
+          <!-- Brand name: regular serif + colored italic serif -->
+          <span class="font-serif text-base md:text-lg font-bold text-text-main tracking-tight">
+            {isAr ? "موسى" : "Mousa"} <span class="text-accent-primary italic font-medium">{isAr ? "للتحليلات" : "Analytics"}</span>
+          </span>
         </div>
-
-        <!-- H1 Stacked Identity Name in pure luxury typography (Charcoal + Premium Ice Blue Italic Serif) -->
-        <h1 class="text-[clamp(2.75rem,8vw,5.5rem)] font-bold tracking-tight leading-[0.95] font-serif text-text-main">
-          {isAr ? (
-            <>
-              <span class="block">عمرو</span>
-              <span class="text-hero-ice-blue italic font-medium block mt-2">موسى</span>
-            </>
-          ) : (
-            <>
-              <span class="block">Amr</span>
-              <span class="text-hero-ice-blue italic font-medium block mt-2">Mousa</span>
-            </>
-          )}
-        </h1>
-
-        <!-- Service Selling Description -->
-        <p 
-          class="text-lg sm:text-xl md:text-2xl text-text-main/90 leading-relaxed font-sans max-w-2xl font-light tracking-wide pt-2"
-          set:html={highlightText(heroData.bio)}
-        />
+        <span class="text-[9px] sm:text-xs font-bold tracking-[0.25em] text-accent-primary uppercase font-sans">
+          {heroData.eyebrow}
+        </span>
       </div>
 
-      <!-- Action Buttons designed strictly matching the luxurious reference style with Ice Blue accents -->
-      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-5 font-sans">
+      <!-- H1 Outcome Headline -->
+      <h1 
+        class="text-[clamp(1.8rem,4.8vw,3.3rem)] font-bold tracking-tight leading-[1.2] font-serif text-text-main max-w-2xl drop-shadow-sm"
+        set:html={highlightTitle(heroData.title)}
+      />
+
+      <!-- Systems Bio Description -->
+      <p 
+        class="text-sm sm:text-base md:text-lg text-text-main/80 leading-relaxed font-sans max-w-xl font-light tracking-wide pt-1"
+        set:html={highlightText(heroData.bio)}
+      />
+
+      <!-- Call to Actions -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full pt-4 font-sans z-20">
+        <!-- Primary Action: Discuss Your Strategy -->
         <a 
-          href={methodologyPath} 
-          class="px-8 h-14 bg-hero-ice-blue hover:bg-hero-ice-blue-hover text-white rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-hero-ice-blue/15 hover:shadow-xl hover:shadow-hero-ice-blue/25 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-hero-ice-blue focus-visible:ring-offset-2"
+          href={`/${lang}/#contact`} 
+          class="h-12 px-8 rounded-full bg-text-main hover:bg-text-main/90 text-white text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
         >
+          <i class="fa-solid fa-comments text-sm text-white/80"></i>
           <span>{heroData.primaryBtn}</span>
-          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i>
         </a>
+
+        <!-- Secondary Action: Explore Services -->
         <a 
-          href={aboutPath} 
-          class="px-8 h-14 border border-text-main/15 hover:border-hero-accent hover:text-hero-accent text-text-main rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center bg-transparent hover:bg-hero-accent/5 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-hero-accent focus-visible:ring-offset-2"
+          href={`/${lang}/#services`} 
+          class="h-12 px-8 rounded-full bg-white border border-text-main/15 hover:bg-text-main/5 text-text-main text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
         >
-          {heroData.secondaryBtn}
+          <i class="fa-solid fa-layer-group text-sm text-text-main/70"></i>
+          <span>{heroData.secondaryBtn}</span>
         </a>
       </div>
 
-      <!-- Social Icons row matching the sleek footer-style placement with Ice Blue hover -->
+      <!-- Trending services list -->
+      <div class="flex flex-wrap items-center justify-center gap-2 text-[11px] sm:text-xs text-text-main/60 animate-fade-in select-none pt-2">
+        <span>{heroData.trendingLabel}</span>
+        {heroData.trendingItems.split(' • ').map((item: string) => (
+          <span class="text-text-main bg-white hover:bg-text-main/5 border border-text-main/8 rounded-full px-3 py-1 transition-all duration-300">
+            {item}
+          </span>
+        ))}
+      </div>
+
+      <!-- Social Links -->
       {socials.length > 0 && (
-        <div class="pt-8 border-t border-text-main/5 flex items-center gap-6 z-10">
+        <div class="pt-8 flex items-center justify-center gap-6 w-full max-w-xs z-10 select-none border-t border-text-main/5">
           {socials.map((item) => (
             <a 
               href={item.data.url} 
               target="_blank" 
               rel="noopener noreferrer" 
-              class="text-text-main/40 hover:text-hero-ice-blue transition-all duration-300 text-sm hover:-translate-y-0.5 hover:scale-110 inline-block"
+              class="text-text-main/40 hover:text-accent-primary transition-all duration-300 text-sm hover:-translate-y-0.5 hover:scale-110 inline-block"
+              aria-label={item.data.name}
               title={item.data.name}
             >
               <i class={item.data.icon} aria-hidden="true"></i>
@@ -145,83 +174,21 @@ const highlightText = (text: string) => {
 
     </div>
 
-    <!-- Right Column: Premium Portrait Frame & Custom Service Metadata overlay -->
-    <div class="flex justify-center lg:justify-end">
-      <!-- Luxury Portrait frame styled strictly based on reference layout -->
-      <div class="relative w-full max-w-[300px] sm:max-w-[340px] mb-6 lg:mb-0">
-        
-        <!-- Portrait background ambient shadow glow in Ice Blue -->
-        <div class="absolute inset-0 bg-hero-ice-blue/5 blur-3xl rounded-full pointer-events-none z-0" aria-hidden="true"></div>
-        
-        <!-- Luxury Portrait Frame: rounded aspect-3/4 frame with fine styling -->
-        <div class="relative w-full aspect-[3/4] rounded-[2.5rem] p-2 bg-hero-card border border-text-main/8 shadow-2xl shadow-text-main/3 z-10 hover:scale-[1.01] transition-all duration-500 ease-out">
-          <div class="w-full h-full rounded-[2.2rem] overflow-hidden bg-text-main/5">
-            <Image 
-              src={profileImg} 
-              alt={isAr ? "عمرو موسى" : "Amr Mousa"} 
-              class="w-full h-full object-cover object-center"
-              width={640}
-              height={853}
-              loading="eager"
-            />
-          </div>
-          
-          <!-- Mock Analytics Widget 1 (Floating badge) -->
-          <div class="absolute -top-3 -end-2 sm:-end-4 bg-hero-card border border-text-main/8 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2 z-30 font-sans text-xs font-bold text-text-main whitespace-nowrap hover:scale-105 transition-transform duration-300">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>
-            <span>{heroData.floatingBadge}</span>
-          </div>
-
-          <!-- Luxury Service Performance Stats Overlay: Styled exactly like reference metadata card -->
-          <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-hero-card border border-text-main/8 rounded-[1.25rem] p-4 shadow-xl w-[92%] flex justify-between gap-4 z-30 font-sans hover:shadow-2xl transition-shadow duration-300">
-            <!-- Left Stat -->
-            <div class="space-y-0.5">
-              <span class="text-[8px] sm:text-[9px] font-extrabold text-text-main/40 tracking-wider uppercase block">
-                {heroData.statLeftTitle}
-              </span>
-              <span class="text-xs sm:text-sm font-bold text-text-main block">
-                {heroData.statLeftVal}
-              </span>
-            </div>
-            
-            <!-- Vertical Divider -->
-            <div class="w-[1px] bg-text-main/10 self-stretch"></div>
-
-            <!-- Right Stat -->
-            <div class="space-y-0.5">
-              <span class="text-[8px] sm:text-[9px] font-extrabold text-text-main/40 tracking-wider uppercase block">
-                {heroData.statRightTitle}
-              </span>
-              <span class="text-xs sm:text-sm font-bold text-text-main block">
-                {heroData.statRightVal}
-              </span>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
 <script>
+  // High-performance background image scroll parallax
   function initScrollParallax() {
-    const bgText = document.querySelector('.scroll-bg-text') as HTMLElement | null;
-    if (!bgText) return;
-
-    // Detect layout direction
-    const dir = document.documentElement.dir === 'rtl' ? -1 : 1;
+    const bgImg = document.querySelector('.scroll-bg-image') as HTMLElement | null;
+    if (!bgImg) return;
 
     const onScroll = () => {
       const scrolled = window.scrollY;
-      // Butter smooth translation on scroll with direction support
-      // Center-anchored translation starts shifted to the right (80px) and moves out to the left on scroll down
-      const xOffset = (80 - scrolled * 0.45) * dir;
-      bgText.style.transform = `translate3d(calc(-50% + ${xOffset}px), -50%, 0) scale(1.25)`;
+      const speed = window.innerWidth < 768 ? 0.05 : 0.12;
+      bgImg.style.transform = `translate3d(0, ${scrolled * speed}px, 0)`;
     };
 
-    // Use requestAnimationFrame for high performance scrolling
     let ticked = false;
     const handleScroll = () => {
       if (!ticked) {
@@ -233,21 +200,19 @@ const highlightText = (text: string) => {
       }
     };
 
-    // Safe lifecycle-guarded scroll listener
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Initial run to capture correct state
     onScroll();
 
-    // Safely cleanup listeners before swap to prevent memory leaks and duplicates
     document.addEventListener('astro:before-swap', () => {
       window.removeEventListener('scroll', handleScroll);
     }, { once: true });
   }
 
-  // Bind to initial load
+  // Initial load binding
   initScrollParallax();
   
-  // Re-bind to Astro swap transitions
-  document.addEventListener('astro:after-swap', initScrollParallax);
+  // Re-bind to Astro view transition swap lifecycle hooks
+  document.addEventListener('astro:after-swap', () => {
+    initScrollParallax();
+  });
 </script>
