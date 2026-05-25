@@ -1,4 +1,4 @@
-# Specification Quality Checklist: Rebrand to The Systems Approach
+# Specification Quality Checklist: Rebrand Hero to Systems Approach
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-05-24
@@ -31,4 +31,5 @@
 
 ## Notes
 
-- Checked and validated. Spec is complete and ready for the next phase.
+- Items marked incomplete require spec updates before `/speckit-clarify` or `/speckit-plan`
+- All quality criteria have passed successfully. Spec is ready for implementation planning.

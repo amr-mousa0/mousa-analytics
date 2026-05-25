@@ -9,26 +9,116 @@ const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
 const socials = await getSafeSocials(lang);
+
+const navLinks = isAr
+  ? [
+      { label: 'الرئيسية', href: `/${lang}/` },
+      { label: 'الخدمات', href: `/${lang}/#services` },
+      { label: 'المشاريع', href: `/${lang}/#projects` },
+      { label: 'تواصل', href: `/${lang}/#contact` },
+    ]
+  : [
+      { label: 'Home', href: `/${lang}/` },
+      { label: 'Services', href: `/${lang}/#services` },
+      { label: 'Projects', href: `/${lang}/#projects` },
+      { label: 'Contact', href: `/${lang}/#contact` },
+    ];
 ---
 
-<footer class="w-full bg-primary-bg border-t border-text-main/8 py-12 mt-auto">
-  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-    
-    <!-- Left Copyright -->
-    <div class="text-text-main/50 text-sm text-center md:text-start font-sans">
-      © {new Date().getFullYear()} {isAr ? "عمرو موسى. جميع الحقوق محفوظة." : "Amr Mousa. All rights reserved."}
+<footer id="contact" class="footer-luxury" role="contentinfo">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <!-- Main Footer Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 py-14 border-b border-white/8">
+
+      <!-- Brand Column -->
+      <div class="md:col-span-5 space-y-4">
+        <a href={`/${lang}/`} class="inline-block text-white text-xl font-bold font-serif tracking-tight hover:opacity-80 transition-opacity">
+          {isAr ? "عمرو موسى" : "Amr Mousa"}
+        </a>
+        <p class="text-white/45 text-sm leading-relaxed font-sans max-w-xs">
+          {isAr
+            ? "محلل بيانات ومسوق رقمي متخصص في تحويل البيانات إلى استراتيجيات نمو قابلة للقياس."
+            : "Data Analyst & Digital Marketer turning raw data into measurable growth strategies."}
+        </p>
+      </div>
+
+      <!-- Navigation Column -->
+      <div class="md:col-span-3">
+        <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/35 mb-4 font-sans">
+          {isAr ? "روابط سريعة" : "Quick Links"}
+        </h4>
+        <nav aria-label={isAr ? "روابط التذييل" : "Footer navigation"}>
+          <ul class="space-y-2.5">
+            {navLinks.map(link => (
+              <li>
+                <a href={link.href} class="text-white/60 hover:text-white text-sm font-sans transition-colors duration-200">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Social Column -->
+      <div class="md:col-span-4">
+        <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/35 mb-4 font-sans">
+          {isAr ? "تابعني" : "Connect"}
+        </h4>
+        {socials.length > 0 && (
+          <div class="flex items-center gap-3">
+            {socials.map(social => (
+              <a
+                href={social.data.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-10 h-10 rounded-xl bg-white/6 hover:bg-white/12 flex items-center justify-center text-white/50 hover:text-white transition-all duration-300 focus-visible:ring-2"
+                aria-label={social.data.name}
+              >
+                <i class={social.data.icon}></i>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
     </div>
 
-    <!-- Right Socials links -->
-    {socials.length > 0 && (
-      <div class="flex items-center gap-6">
-        {socials.map(social => (
-          <a href={social.data.url} target="_blank" rel="noopener noreferrer" class="text-text-main/60 hover:text-accent-primary transition-colors text-lg focus-visible:ring-2" aria-label={social.data.name}>
-            <i class={social.data.icon}></i>
-          </a>
-        ))}
+    <!-- Bottom Bar -->
+    <div class="py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="text-white/30 text-xs font-sans">
+        © {new Date().getFullYear()} {isAr ? "عمرو موسى. جميع الحقوق محفوظة." : "Amr Mousa. All rights reserved."}
       </div>
-    )}
+      <div class="text-white/20 text-xs font-sans">
+        {isAr ? "صُنع بدقة واهتمام" : "Crafted with precision"}
+      </div>
+    </div>
 
   </div>
 </footer>
+
+<style>
+  .footer-luxury {
+    background-color: #0A192F;
+    margin-block-start: auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle top-edge gradient glow */
+  .footer-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(37, 99, 235, 0.3),
+      transparent
+    );
+  }
+</style>

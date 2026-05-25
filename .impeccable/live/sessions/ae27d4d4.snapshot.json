@@ -1,0 +1,78 @@
+{
+  "id": "ae27d4d4",
+  "phase": "generate_requested",
+  "pageUrl": "/ar/",
+  "sourceFile": null,
+  "expectedVariants": 3,
+  "arrivedVariants": 0,
+  "visibleVariant": 0,
+  "paramValues": {},
+  "pendingEventSeq": 2,
+  "pendingEvent": {
+    "type": "generate",
+    "id": "ae27d4d4",
+    "action": "impeccable",
+    "freeformPrompt": "حسن شكلها عن كده",
+    "count": 3,
+    "pageUrl": "/ar/",
+    "element": {
+      "tagName": "div",
+      "id": null,
+      "classes": [
+        "absolute",
+        "bottom-4",
+        "sm:bottom-6",
+        "md:bottom-8",
+        "inset-x-0",
+        "z-20",
+        "w-full",
+        "max-w-4xl",
+        "mx-auto",
+        "px-6",
+        "flex",
+        "flex-col",
+        "items-center",
+        "gap-3",
+        "select-none"
+      ],
+      "textContent": "    سجل حافل   أثر ملموس وسلطة التوسع        +250%   متوسط نمو العائد   عائدات مثبتة عبر حملات التجارة الإلكترونية والـ B2B    مؤشر رئيسي   $85K+   الإيرادات المحققة   تأثير مباشر من تحسين الأنظمة وشراء الإعلانات     10+ ساعات   ساعات عمل موفرة   أتمتة المهام اليدوية بسير عمل ذكي    ",
+      "outerHTML": "<div class=\"absolute bottom-4 sm:bottom-6 md:bottom-8 inset-x-0 z-20 w-full max-w-4xl mx-auto px-6 flex flex-col items-center gap-3 select-none\"> <!-- Header/Label --> <div class=\"flex flex-col items-center gap-1 text-center\"> <span class=\"px-2 py-0.5 rounded bg-text-main/5 text-text-main/50 text-[8px] font-bold tracking-wider uppercase font-sans border border-text-main/5\"> سجل حافل </span> <span class=\"text-[10px] md:text-xs font-bold tracking-wide text-text-main/70 font-serif\"> أثر ملموس وسلطة التوسع </span> </div> <!-- Stats Cards Grid --> <div class=\"grid grid-cols-3 gap-2 md:gap-4 w-full max-w-2xl\"> <div class=\"bg-white/70 backdrop-blur-xs border border-text-main/5 rounded-xl p-2 md:p-3 flex flex-col items-center text-center transition-all duration-300 hover:border-text-main/12 hover:shadow-[0_4px_12px_rgba(10,25,47,0.03)]\">  <span class=\"text-sm md:text-xl font-bold text-text-main font-serif leading-none\"> +250% </span> <span class=\"text-[9px] md:text-[11px] font-bold text-text-main/80 font-sans mt-1 leading-tight\"> متوسط نمو العائد </span> <p class=\"text-[7.5px] md:text-[9.5px] text-text-main/50 font-sans mt-0.5 leading-normal max-w-[150px] font-light\"> عائدات مثبتة عبر حملات التجارة الإلكترونية والـ B2B </p> </div><div class=\"bg-white/70 backdrop-blur-xs border border-text-main/5 rounded-xl p-2 md:p-3 flex flex-col items-center text-center transition-all duration-300 hover:border-text-main/12 hover:shadow-[0_4px_12px_rgba(10,25,47,0.03)]\"> <span class=\"text-[7px] md:text-[8px] font-bold text-accent-primary tracking-wider uppercase font-sans mb-1 block\"> مؤشر رئيسي </span> <span class=\"text-sm md:text-xl font-bold text-text-main font-serif leading-none\"> $85K+ </span> <span class=\"text-[9px] md:text-[11px] font-bold text-text-main/80 font-sans mt-1 leading-tight\"> الإيرادات المحققة </span> <p class=\"text-[7.5px] md:text-[9.5px] text-text-main/50 font-sans mt-0.5 leading-normal max-w-[150px] font-light\"> تأثير مباشر من تحسين الأنظمة وشراء الإعلانات </p> </div><div class=\"bg-white/70 backdrop-blur-xs border border-text-main/5 rounded-xl p-2 md:p-3 flex flex-col items-center text-center transition-all duration-300 hover:border-text-main/12 hover:shadow-[0_4px_12px_rgba(10,25,47,0.03)]\">  <span class=\"text-sm md:text-xl font-bold text-text-main font-serif leading-none\"> 10+ ساعات </span> <span class=\"text-[9px] md:text-[11px] font-bold text-text-main/80 font-sans mt-1 leading-tight\"> ساعات عمل موفرة </span> <p class=\"text-[7.5px] md:text-[9.5px] text-text-main/50 font-sans mt-0.5 leading-normal max-w-[150px] font-light\"> أتمتة المهام اليدوية بسير عمل ذكي </p> </div> </div> </div>",
+      "computedStyles": {
+        "font-family": "Outfit, Inter, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+        "font-size": "16px",
+        "font-weight": "400",
+        "line-height": "24px",
+        "color": "rgb(10, 25, 47)",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "padding": "0px 24px",
+        "margin": "0px 308.4px",
+        "display": "flex",
+        "position": "absolute",
+        "gap": "12px",
+        "border-radius": "0px",
+        "box-shadow": "none"
+      },
+      "cssCustomProperties": {
+        "--fa-style-family-brands": "\"Font Awesome 6 Brands\"",
+        "--fa-font-brands": "normal 400 1em/1 \"Font Awesome 6 Brands\"",
+        "--fa-font-regular": "normal 400 1em/1 \"Font Awesome 6 Free\"",
+        "--fa-style-family-classic": "\"Font Awesome 6 Free\"",
+        "--fa-font-solid": "normal 900 1em/1 \"Font Awesome 6 Free\""
+      },
+      "parentContext": "<section class=\"w-full min-h-screen relative overflow-hidden bg-primary-bg flex items-center py-20 md:py-28 border-b border-text-main/5\">",
+      "boundingRect": {
+        "width": 896,
+        "height": 159
+      }
+    }
+  },
+  "deliveryLease": null,
+  "checkpointRevision": 1,
+  "activeOwner": "0e8b853e",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [],
+  "updatedAt": "2026-05-25T01:48:09.668Z"
+}

@@ -1,12 +1,12 @@
 ## Design Context
 
 ### Users
-- **Primary**: Business owners, enterprise leaders, and marketing directors looking to scale ad spend and optimize data pipelines.
-- **Context**: They need a premium agency/consultancy partner to audit analytics and plug funnel leaks. They expect executive-level authority, visual excellence, and professional rigor.
+- **Primary**: Business owners, ecommerce operators, and marketing directors looking to scale ad spend and optimize data tracking.
+- **Context**: They are looking for a reliable, calculated system (combining Analytics + Media Buying) to plug conversion leaks and scale sales. They expect proof of process and calculated business outcomes (+182% sales).
 
 ### Brand Personality
-- **Elite Consultancy**: Extremely professional, data-informed, and strategic.
-- **Luxury Precision**: Sophisticated layout inspired by editorial catalogs and premium high-ticket B2B agencies.
+- **The Growth Machine**: Productized, systematic, and process-focused. It sells a calculated result ("the engine") rather than personal details.
+- **Data-Driven Precision**: Technical but clean, using clear metrics and flow diagrams to establish authority.
 
 ### Aesthetic Direction
 - **Theme**: Deep Teal & Ice Blue (Platinum) Luxury Corporate Theme.
@@ -18,11 +18,13 @@
 - **Typography**:
   - Headings: Cormorant Garamond (luxury serif font)
   - Body: Outfit (clean modern sans-serif)
+- **Visuals**: Simple, neat data flow diagrams or system architecture diagrams instead of personal portraits, showing the exact process of combining data tracking with acquisition.
 
 ### Design Principles
-1. **Precision Infrastructure**: Fine grid lines in soft teal tint reflecting data pipeline architecture.
-2. **Editorial Contrast**: High contrast stacked typography (bold charcoal slate first name, elegant ice-blue/teal italicized last name) reflecting professional craftsmanship.
-3. **High-Ticket CTA**: Highly focused B2B conversion pathways (Explore Services, Book a Growth Audit) with tailored statistical performance cards.
+1. **Process-First Positioning**: Lead with the "machine" (process) and calculated outcomes (+182% sales increase) in simple, concise, and direct words.
+2. **System Infrastructure Visuals**: Use clean architectural diagrams representing the data-driven marketing system rather than biographical personal images.
+3. **Calculated CTAs**: Focus conversion pathways on "Deploy the Engine" or "Audit my System" to directly engage B2B prospects.
+4. **Instant Mobile Loading**: Keep mobile viewports fast, clean, and layout-shift free (CLS = 0) with optimized image weights and deferred rendering.
 
 ---
 
@@ -37,3 +39,5 @@
 - [x] Execute Hero Section copy clarification (adjust button texts and hover borders)
 - [x] Add accessible focus styles to Hero dark half
 - [x] Run verification checks and production builds (E2E and build compiles)
+- [x] Fix hidden WhatsApp CTA button on proposal page (implement adblock-resilient generic button and dynamic redirect script)
+- [x] Move Back button into navigation header bar (update Navigation.astro and data-analytics.astro layout)

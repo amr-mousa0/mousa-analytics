@@ -1,0 +1,45 @@
+{
+  "id": "a03feac6",
+  "phase": "completed",
+  "pageUrl": "/ar/",
+  "sourceFile": "src/components/sections/Hero.astro",
+  "expectedVariants": 3,
+  "arrivedVariants": 0,
+  "visibleVariant": 1,
+  "paramValues": {},
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 10,
+  "activeOwner": "aeeab3f7",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 2
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 3
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 4
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 5
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 6
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 7
+    }
+  ],
+  "updatedAt": "2026-05-25T01:08:12.746Z"
+}

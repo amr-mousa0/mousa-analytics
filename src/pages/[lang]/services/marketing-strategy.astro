@@ -1,0 +1,315 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Navigation from '../../../components/ui/Navigation.astro';
+import Footer from '../../../components/ui/Footer.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'ar' } },
+  ];
+}
+
+const { lang } = Astro.params;
+
+if (!lang || !['en', 'ar'].includes(lang)) {
+  return Astro.redirect('/en/');
+}
+
+const isAr = lang === 'ar';
+
+// Localization Texts
+const t = {
+  backBtn: isAr ? "العودة للخدمات" : "Back to Services",
+  proposalBadge: isAr ? "مقترح مشروع مخصص" : "TAILORED PROFESSIONAL PROPOSAL",
+  title: isAr ? "استراتيجيات التسويق وشراء الإعلانات" : "Marketing Strategy & Media Buying",
+  execSummaryTitle: isAr ? "الملخص التنفيذي" : "Executive Summary",
+  execSummaryText: isAr 
+    ? "توقف عن إهدار ميزانيتك على إعلانات غير فعالة. أقوم ببناء استراتيجيات إعلانية عالية التحويل على منصات Meta وجوجل، وإدارة شراء المساحات الإعلانية بالكامل لضمان توجيه كل دولار مستثمر مباشرة لتحقيق مبيعات حقيقية أو جذب عملاء محتملين مهتمين فعلاً."
+    : "Stop burning money on ineffective ads. I build high-converting Meta and Google ad strategies and manage media buying from end to end, ensuring every dollar spent goes directly toward generating high-ticket sales or leads.",
+  
+  scopeTitle: isAr ? "ما سأقوم به (نطاق العمل)" : "What I Will Do (Scope of Work)",
+  scopeItems: isAr ? [
+    {
+      title: "إدارة حملات إعلانات Meta",
+      desc: "إجراء تدقيق شامل للقطاع والمنافسين وتحديد دقيق للملفات الشخصية للجمهور المستهدف."
+    },
+    {
+      title: "اختبار A/B وتحسين عائد الإنفاق الإعلاني (ROAS)",
+      desc: "صياغة أكثر من 20 خياراً للنصوص الإعلانية مع زوايا إقناعية جذابة وتصميمات مدروسة للتحويل."
+    },
+    {
+      title: "إعداد البيكسل وتتبع التحويلات",
+      desc: "تثبيت وإعداد كامل لأنظمة التتبع: واجهة برمجة تطبيقات التحويلات (Conversions API)، وبيكسل Meta، وأحداث الإجراءات المخصصة."
+    },
+    {
+      title: "تدقيق ومتابعة شاملة للحملات",
+      desc: "مراقبة يومية لأداء الحملات، وضبط وتيرة الميزانية وتوزيعها، واختبارات A/B المستمرة والتوسع الأفقي."
+    }
+  ] : [
+    {
+      title: "Meta Ads Campaign Management",
+      desc: "Deep industry and competitor audit alongside precision audience demographic profiling."
+    },
+    {
+      title: "A/B Testing & ROAS Optimization",
+      desc: "Drafting 20+ ad copy variations with high-converting hooks and structured graphics."
+    },
+    {
+      title: "Pixel Setup & Conversion Tracking",
+      desc: "Full tracking installation: Conversions API, Meta Pixel, and custom action events."
+    },
+    {
+      title: "Comprehensive Campaign Audits",
+      desc: "Daily campaign monitoring, budget pacing, A/B testing, and horizontal scaling."
+    }
+  ],
+
+  deliverablesTitle: isAr ? "ما ستحصل عليه (العائد والنتائج)" : "What You Will Get (Business ROI & Deliverables)",
+  deliverablesItems: isAr ? [
+    "زيادة ملحوظة في عائد الإنفاق الإعلاني (ROAS) وتقليص تكلفة الاستحواذ على العميل (CPA).",
+    "لوحة بيانات شفافة توضح كفاءة الإنفاق، النقرات، العملاء المحتملين، وعائد الاستثمار المباشر.",
+    "قمع استحواذ مستقر وقابل للتوسع مصمم لربطك بالمشترين ذوي الجودة العالية والمهتمين بالخدمة.",
+    "كتيب متكامل من النصوص الإعلانية والمواد الإبداعية الجاهزة والتي جرى اختبارها لتناسب علامتك التجارية."
+  ] : [
+    "Significantly increased return on ad spend (ROAS) and lower cost per acquisition.",
+    "Transparent dashboard detailing spend efficiency, clicks, leads, and direct ROI.",
+    "A scaled, stable acquisition funnel designed to source highly qualified buyers.",
+    "Complete creative assets and copy workbook tested and optimized for your brand."
+  ],
+
+  ctaTitle: isAr ? "قبول المقترح وبدء المشروع" : "Accept Proposal & Start Project",
+  ctaDesc: isAr 
+    ? "جاهز لتحسين نتائج إعلاناتك ورفع كفاءة ميزانيتك التسويقية؟ اضغط أدناه للموافقة على هذا المقترح وبدء التنسيق مباشرة عبر واتساب."
+    : "Ready to optimize your ad performance and maximize your marketing efficiency? Click below to accept this proposal and start collaborating directly on WhatsApp.",
+  ctaBtn: isAr ? "الموافقة على المقترح والبدء الآن" : "Accept Proposal & Start Project",
+
+  faqTitle: isAr ? "الأسئلة الشائعة حول الخدمة" : "Frequently Asked Questions",
+  faqItems: isAr ? [
+    {
+      q: "ما هي المنصات الإعلانية التي تديرها؟",
+      a: "أركز بشكل أساسي على منصات Meta Ads (فيسبوك وإنستغرام) وإعلانات جوجل (Google Ads تشمل البحث واليوتيوب)، حيث توفر هذه المنصات أعلى عائد استثمار لقطاع الخدمات والتجارة الإلكترونية."
+    },
+    {
+      q: "هل تشمل الخدمة تصميم الإعلانات وكتابة النصوص؟",
+      a: "نعم، أقوم بصياغة النصوص الإعلانية (Copywriting) بالكامل بناءً على تحليل المنافسين. كما أقدم إرشادات وهياكل التصاميم والمواد الإبداعية المطلوبة وأقوم بتحريرها لضمان مطابقتها لأفضل ممارسات منصات الإعلانات وجذب انتباه الجمهور."
+    },
+    {
+      q: "ما هو الحد الأدنى للميزانية الإعلانية المطلوبة؟",
+      a: "لا توجد قيود صارمة، لكن لتحقيق نتائج قابلة للقياس والتحليل والتحسين الإحصائي السريع، ننصح بميزانية إعلانية شهرية لا تقل عن 500 إلى 1000 دولار للبدء."
+    },
+    {
+      q: "كيف تتابع أداء الحملات والنتائج؟",
+      a: "سيكون لديك لوحة تحكم تفاعلية مخصصة (مثل Looker Studio) يتم تحديثها تلقائياً بالبيانات المباشرة من حساباتك الإعلانية، مما يمنحك شفافية كاملة حول النقرات، والتكلفة، والعملاء المحتملين، والعائد المحقق دون الحاجة لقراءة تقارير معقدة."
+    }
+  ] : [
+    {
+      q: "Which ad platforms do you manage?",
+      a: "I focus primarily on Meta Ads (Facebook & Instagram) and Google Ads (Search, Display, and YouTube), as these channels consistently deliver the highest acquisition ROI for service providers and e-commerce brands."
+    },
+    {
+      q: "Do you create the ad copies and creatives?",
+      a: "Yes, I write all ad copy options based on deep competitor analysis. For visual creatives, I provide exact framework briefs and structure design guidelines, and optimize client assets to ensure they meet high-converting ad standards."
+    },
+    {
+      q: "What is the minimum monthly ad budget you work with?",
+      a: "While there is no strict limit, I recommend a minimum starting ad budget of $500 to $1,000 monthly to ensure we have enough data volume to run valid A/B tests and optimize return metrics effectively."
+    },
+    {
+      q: "How do we monitor campaigns and results?",
+      a: "I set up a transparent live dashboard (typically Looker Studio) connected to your ad accounts. You can monitor conversion metrics, CPA, and ROAS in real-time, eliminating manual reports and keeping spend completely transparent."
+    }
+  ]
+};
+
+// WhatsApp pre-filled message URL
+const whatsappMessage = isAr 
+  ? "مرحباً عمرو، أود الموافقة على مقترح استراتيجيات التسويق وشراء الإعلانات والبدء في تفاصيل المشروع الحالية."
+  : "Hi Amr, I'd like to accept the Marketing Strategy & Media Buying proposal and discuss starting the project.";
+---
+
+<Layout lang={lang} pageId="marketing-strategy-proposal">
+  <Navigation lang={lang} activePage="services" backUrl={`/${lang}/#services`} backText={t.backBtn} />
+
+  <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent">
+    <!-- Atmospheric Ambient Grid & Glows -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_0%,rgba(37,99,235,0.03),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
+    
+    <div class="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 space-y-8">
+      
+      <!-- Main Proposal Card -->
+      <div class="glass-card premium-card-global !p-0 overflow-hidden flex flex-col rounded-[24px]">
+        
+        <!-- Header: Blueprint Layout -->
+        <div class="p-8 md:p-10 relative border-b border-slate-100 bg-slate-50/40 bg-[linear-gradient(to_right,rgba(37,99,235,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(37,99,235,0.04)_1px,transparent_1px)] bg-[size:16px_16px] space-y-4">
+          <!-- Proposal Pill Badge -->
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent-primary/20 bg-accent-primary/5 text-accent-primary text-[9px] font-bold tracking-wider uppercase font-mono">
+            <span class="relative flex h-1.5 w-1.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-primary"></span>
+            </span>
+            {t.proposalBadge}
+          </div>
+          
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-text-main font-serif leading-tight">
+            {t.title}
+          </h1>
+
+          <!-- Tech Stack Pills -->
+          <div class="flex flex-wrap gap-2 pt-1 font-mono">
+            <span class="px-3 py-1 rounded-full bg-slate-200/50 text-text-main/65 text-[10px] font-medium border border-text-main/5 transition-colors hover:bg-slate-200/80">Meta Ads</span>
+            <span class="px-3 py-1 rounded-full bg-slate-200/50 text-text-main/65 text-[10px] font-medium border border-text-main/5 transition-colors hover:bg-slate-200/80">Google Ads</span>
+            <span class="px-3 py-1 rounded-full bg-slate-200/50 text-text-main/65 text-[10px] font-medium border border-text-main/5 transition-colors hover:bg-slate-200/80">Tracking</span>
+          </div>
+        </div>
+
+        <!-- Executive Summary Section -->
+        <div class="p-8 md:p-10 pb-4">
+          <div class="p-6 rounded-2xl bg-slate-50/50 border border-slate-100/70 space-y-3 shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]">
+            <h2 class="text-[10px] font-bold uppercase tracking-widest text-text-main/45 font-sans flex items-center gap-2">
+              <i class="fa-solid fa-chart-simple text-accent-primary/60" aria-hidden="true"></i>
+              {t.execSummaryTitle}
+            </h2>
+            <p class="text-text-main/80 text-[13.5px] sm:text-[14px] leading-relaxed font-sans font-light">
+              {t.execSummaryText}
+            </p>
+          </div>
+        </div>
+
+        <!-- Scope & Deliverables Columns -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 p-8 md:p-10 pt-4">
+          
+          <!-- Column 1: Scope of Work -->
+          <div class="space-y-6">
+            <h3 class="text-base font-bold text-text-main font-serif flex items-center gap-2 border-b border-slate-100 pb-3">
+              <span class="text-accent-primary/70"><i class="fa-solid fa-list-check text-sm" aria-hidden="true"></i></span>
+              {t.scopeTitle}
+            </h3>
+            
+            <div class="space-y-3">
+              {t.scopeItems.map((item, i) => (
+                <div class="group flex gap-4 items-start p-3 -mx-3 rounded-xl transition-all duration-300 hover:bg-slate-50/60 cursor-default">
+                  <div class="w-8.5 h-8.5 rounded-xl bg-accent-primary/8 text-accent-primary border border-accent-primary/12 flex items-center justify-center font-bold text-[11px] flex-shrink-0 transition-transform duration-300 group-hover:scale-105 shadow-xs">
+                    0{i + 1}
+                  </div>
+                  <div class="space-y-1">
+                    <h4 class="text-[13px] font-bold text-text-main/85 font-sans tracking-wide">
+                      {item.title}
+                    </h4>
+                    <p class="text-text-main/60 text-[12px] leading-relaxed font-sans font-light">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Column 2: ROI & Deliverables -->
+          <div class="space-y-6">
+            <h3 class="text-base font-bold text-text-main font-serif flex items-center gap-2 border-b border-slate-100 pb-3">
+              <span class="text-accent-primary/70"><i class="fa-solid fa-shield-halved text-sm" aria-hidden="true"></i></span>
+              {t.deliverablesTitle}
+            </h3>
+            
+            <div class="space-y-3">
+              {t.deliverablesItems.map((item) => (
+                <div class="flex gap-3 items-start p-3 -mx-3 rounded-xl transition-all duration-300 hover:bg-slate-50/60 cursor-default">
+                  <span class="text-accent-primary/95 text-[15px] mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center">
+                    <i class="fa-regular fa-circle-check" aria-hidden="true"></i>
+                  </span>
+                  <p class="text-text-main/75 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Accept Proposal & Start Project CTA (WhatsApp) -->
+        <div class="p-8 md:p-10 bg-success-bg border-t border-success-border flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="space-y-1.5 text-center md:text-start max-w-xl">
+            <h3 class="text-base font-bold text-text-main font-serif">
+              {t.ctaTitle}
+            </h3>
+            <p class="text-text-main/60 text-[12.5px] leading-relaxed font-sans font-light">
+              {t.ctaDesc}
+            </p>
+          </div>
+
+          <button 
+            id="accept-proposal-btn"
+            data-msg={whatsappMessage}
+            class="h-12 px-6 rounded-full bg-success-primary hover:bg-success-hover text-white font-semibold text-xs tracking-wider flex items-center justify-center gap-2 shadow-success hover:shadow-success-hover active:scale-95 transition-all duration-300 cursor-pointer flex-shrink-0 w-full md:w-auto text-center border-none"
+          >
+            <i class="fa-solid fa-comments text-sm" aria-hidden="true"></i>
+            <span>{t.ctaBtn}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="space-y-6 pt-6">
+        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-text-main font-serif text-center md:text-start flex items-center justify-center md:justify-start gap-2">
+          <span class="text-xl">💬</span>
+          {t.faqTitle}
+        </h2>
+
+        <div class="grid grid-cols-1 gap-4 w-full">
+          {t.faqItems.map((faq) => (
+            <details class="group bg-white/70 border border-text-main/5 rounded-2xl p-5 transition-all duration-300 hover:border-text-main/12 hover:shadow-[0_4px_16px_rgba(10,25,47,0.03)] cursor-pointer outline-none">
+              <summary class="flex justify-between items-center font-bold text-text-main/90 text-xs sm:text-[13px] tracking-wide font-sans list-none select-none outline-none">
+                <span class="pe-4 leading-relaxed flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-accent-primary/45 group-hover:bg-accent-primary transition-colors duration-300"></span>
+                  {faq.q}
+                </span>
+                <span class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[8px] text-text-main/40 group-open:rotate-180 group-hover:bg-slate-200/60 transition-all duration-300 flex-shrink-0 font-sans">
+                  <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </span>
+              </summary>
+              <p class="text-text-main/60 text-xs sm:text-[13.5px] leading-relaxed font-sans font-light mt-3.5 pt-3.5 border-t border-slate-100 select-text">
+                {faq.a}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+</Layout>
+
+<script>
+  // Adblock-resilient dynamic WhatsApp redirection
+  const btn = document.getElementById('accept-proposal-btn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const msg = btn.getAttribute('data-msg') || '';
+      const domainParts = ['wa', 'me'];
+      const targetDomain = domainParts.join('.');
+      const recipientNum = '201202353381';
+      const redirectUrl = `https://${targetDomain}/${recipientNum}?text=${encodeURIComponent(msg)}`;
+      window.open(redirectUrl, '_blank', 'noopener,noreferrer');
+    });
+  }
+</script>
+
+<style>
+  /* Remove default details summary arrow marker */
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+  
+  /* Polish focused states for FAQ items */
+  details:focus-within {
+    border-color: rgba(37, 99, 235, 0.25) !important;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.05) !important;
+    outline: none !important;
+  }
+  details summary:focus-visible {
+    outline: none !important;
+  }
+</style>

@@ -2,9 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/ui/Navigation.astro';
 import Hero from '../../components/sections/Hero.astro';
-import About from '../../components/sections/About.astro';
 import Services from '../../components/sections/Services.astro';
-import Contact from '../../components/sections/Contact.astro';
+import Projects from '../../components/sections/Projects.astro';
 import Footer from '../../components/ui/Footer.astro';
 
 // Dynamic route parameters
@@ -27,25 +26,8 @@ if (!lang || !['en', 'ar'].includes(lang)) {
   <Navigation lang={lang} activePage="home" />
   <main class="flex-grow">
     <Hero lang={lang} />
-    <About lang={lang} />
     <Services lang={lang} />
-    
-    <!-- Projects Section Target -->
-    <section id="projects" class="py-20 px-6 max-w-5xl mx-auto scroll-mt-20">
-      <div class="space-y-4 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-text-main font-serif">
-          {lang === 'ar' ? "المشاريع المميزة" : "Featured Projects"}
-        </h2>
-        <p class="text-text-main/70 text-sm sm:text-base max-w-xl mx-auto font-sans">
-          {lang === 'ar' 
-            ? "حالات دراسية لمشاريع حقيقية توضح كيفية دمج تحليل البيانات بالتسويق لتحقيق نمو حقيقي (قريباً)." 
-            : "Case studies demonstrating how analytical models meet campaign marketing to scale growth (Coming Soon)."}
-        </p>
-      </div>
-    </section>
-
-    <Contact lang={lang} />
+    <Projects lang={lang} />
   </main>
   <Footer lang={lang} />
 </Layout>
-

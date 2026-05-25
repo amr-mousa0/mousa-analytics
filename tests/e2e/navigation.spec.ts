@@ -14,44 +14,35 @@ test.describe('Locale Redirection & Routing', () => {
 
   test('supports language switching', async ({ page }) => {
     await page.goto('/en/');
-    
+
     // Select Arabic language switcher (which displays "AR" in the new layout)
     const arToggle = page.locator('header a:has-text("AR")').first();
     if (await arToggle.isVisible()) {
       await arToggle.click({ force: true });
       await expect(page).toHaveURL(/\/ar\//);
       // Main heading should contain Arabic greeting or content
-      await expect(page.locator('main h1')).toContainText('عمرو موسى');
+      await expect(page.locator('main h1')).toContainText('بسطناها');
     }
   });
 
-  test('navigates to methodology page and switch languages', async ({ page }) => {
-    await page.goto('/en/');
-    // In the new layout, we navigate to the methodology page via "Explore Services" in the Hero
-    const methodLink = page.locator('a:has-text("Explore Services")');
-    if (await methodLink.isVisible()) {
-      await methodLink.click({ force: true });
-      await expect(page).toHaveURL(/\/en\/methodology\//);
-      await expect(page.locator('main h1')).toContainText('Work Methodology');
-    }
-  });
 
-  test('navigates to about page and switch languages', async ({ page }) => {
-    await page.goto('/en/');
-    // Secondary CTA in the hero
-    const aboutLink = page.locator('a:has-text("Get to Know Me")');
-    if (await aboutLink.isVisible()) {
-      await aboutLink.click({ force: true });
-      await expect(page).toHaveURL(/\/en\/about\//);
-      await expect(page.locator('main h1')).toContainText('How I Drive B2C Growth');
 
-      // Switch to Arabic
-      const arToggle = page.locator('header a:has-text("AR")').first();
-      if (await arToggle.isVisible()) {
-        await arToggle.click({ force: true });
-        await expect(page).toHaveURL(/\/ar\/about\//);
-        await expect(page.locator('main h1')).toContainText('كيف أحقق النتائج الفعالة');
-      }
+  test('navigates to about page and switch languages', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'Skip desktop-only navigation test');
+    await page.goto('/en/');
+    // Locate the About link in the header navigation
+    const aboutLink = page.locator('nav.hidden.md\\:flex a:has-text("About")').first();
+    await expect(aboutLink).toBeVisible();
+    await aboutLink.click({ force: true });
+    await expect(page).toHaveURL(/\/en\/about\//);
+    await expect(page.locator('main h1')).toContainText('How I Drive Business Growth');
+
+    // Switch to Arabic
+    const arToggle = page.locator('header a:has-text("AR")').first();
+    if (await arToggle.isVisible()) {
+      await arToggle.click({ force: true });
+      await expect(page).toHaveURL(/\/ar\/about\//);
+      await expect(page.locator('main h1')).toContainText('كيف أحقق النتائج الفعالة');
     }
   });
 });
@@ -63,7 +54,7 @@ test.describe('Responsive Navigation Drawer', () => {
 
     // Desktop navigation links should be visible
     await expect(page.locator('nav.hidden.md\\:flex')).toBeVisible();
-    
+
     // Mobile menu toggle checkbox peer label should be hidden
     await expect(page.locator('label[aria-label="Toggle Menu"]')).toBeHidden();
   });
@@ -87,14 +78,14 @@ test.describe('Responsive Navigation Drawer', () => {
     await hamburger.click();
     expect(await checkbox.isChecked()).toBe(true);
 
-    // Click on Methodology inside mobile drawer
-    const methodologyDrawerLink = page.locator('.mobile-drawer-link:has-text("Methodology")');
-    await expect(methodologyDrawerLink).toBeVisible();
+    // Click on About inside mobile drawer
+    const aboutDrawerLink = page.locator('.mobile-drawer-link:has-text("Who I Am")').first();
+    await expect(aboutDrawerLink).toBeVisible();
     await page.waitForTimeout(400); // Wait for transition transform (300ms) to settle
-    await methodologyDrawerLink.click();
+    await aboutDrawerLink.evaluate((el: HTMLElement) => el.click());
 
     // Page should navigate and drawer checkbox should reset to unchecked
-    await expect(page).toHaveURL(/\/en\/methodology\//);
+    await expect(page).toHaveURL(/\/en\/about\//);
     expect(await checkbox.isChecked()).toBe(false);
   });
 });

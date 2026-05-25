@@ -10,7 +10,7 @@ const { lang } = Astro.props;
 const isAr = lang === 'ar';
 ---
 
-<section id="about" class="py-24 px-6 border-t border-text-main/5 relative bg-transparent overflow-hidden">
+<section id="about" aria-labelledby="about-title" class="py-24 px-6 border-t border-text-main/5 relative bg-transparent overflow-hidden scroll-mt-20">
   <!-- Subtle background glow -->
   <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(37,99,235,0.02),transparent_50%)] pointer-events-none" aria-hidden="true"></div>
 
@@ -45,7 +45,7 @@ const isAr = lang === 'ar';
         </div>
         
         <!-- Large Luxury Serif Heading -->
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-text-main font-serif">
+        <h2 id="about-title" class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-text-main font-serif">
           {isAr ? "من هو عمرو موسى؟" : "Who is Amr Mousa?"}
         </h2>
       </div>

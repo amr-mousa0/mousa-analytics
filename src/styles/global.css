@@ -14,6 +14,14 @@
   --color-hero-surface: #F8F9FA;
   --color-hero-glow: rgba(37, 99, 235, 0.12); /* Subtle blue tech glow aura */
   --color-hero-card: #FFFFFF;
+
+  /* Success State Design Tokens (WhatsApp / Confirmation CTAs) */
+  --color-success-primary: #16A34A;
+  --color-success-hover: #15803D;
+  --color-success-bg: rgba(22, 163, 74, 0.05);
+  --color-success-border: rgba(22, 163, 74, 0.15);
+  --shadow-success: 0 4px 14px rgba(22, 163, 74, 0.15);
+  --shadow-success-hover: 0 6px 20px rgba(22, 163, 74, 0.25);
   
   --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
@@ -80,10 +88,12 @@
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.premium-card-global:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(10, 25, 47, 0.08);
-  border-color: rgba(37, 99, 235, 0.15);
+@media (hover: hover) and (pointer: fine) {
+  .premium-card-global:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(10, 25, 47, 0.08);
+    border-color: rgba(37, 99, 235, 0.15);
+  }
 }
 
 /* Native app-like scrollbar hiding utility */

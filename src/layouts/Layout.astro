@@ -5,11 +5,25 @@ import '../styles/global.css';
 interface Props {
   lang: string;
   pageId: string;
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
 }
 
-const { lang, pageId } = Astro.props;
+const { lang, pageId, title, description, ogImage, canonicalUrl, noindex } = Astro.props;
 
-const { title: seoTitle, description: seoDescription, keywords: seoKeywords = [], ogImage: seoOgImage } = await getSafeSeo(lang, pageId);
+const fallbackSeo = (await getSafeSeo(lang, pageId).catch(() => ({}))) as Record<string, any>;
+const seoTitle = title || fallbackSeo.title || "Amr Mousa";
+const seoDescription = description || fallbackSeo.description || "";
+const seoKeywords = fallbackSeo.keywords || [];
+const seoOgImage = ogImage || fallbackSeo.ogImage;
+
+// Automatically noindex staging environments/deploy previews
+const isStagingPreview = typeof process !== 'undefined' && process.env && 
+  (process.env.CONTEXT === 'deploy-preview' || process.env.CONTEXT === 'branch-deploy');
+const finalNoindex = noindex || isStagingPreview;
 ---
 
 <!doctype html>
@@ -21,18 +35,44 @@ const { title: seoTitle, description: seoDescription, keywords: seoKeywords = []
     <meta name="description" content={seoDescription} />
     {seoKeywords.length > 0 && <meta name="keywords" content={seoKeywords.join(', ')} />}
     
+    {finalNoindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonicalUrl || Astro.url.href} />
+    
+    <!-- Alternate hreflang tags for multilingual SEO -->
+    <link rel="alternate" hreflang="en" href={Astro.url.href.replace(/\/(en|ar)\//, '/en/')} />
+    <link rel="alternate" hreflang="ar" href={Astro.url.href.replace(/\/(en|ar)\//, '/ar/')} />
+    <link rel="alternate" hreflang="x-default" href={Astro.url.href.replace(/\/(en|ar)\//, '/en/')} />
+    
     <!-- Open Graph Metadata -->
     <meta property="og:title" content={seoTitle} />
     <meta property="og:description" content={seoDescription} />
     {seoOgImage && <meta property="og:image" content={seoOgImage} />}
     
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#F8F9FA" />
+    <meta property="og:type" content="website" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </noscript>
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('PWA Service Worker registered successfully!'))
+            .catch(err => console.error('PWA Service Worker registration failed:', err));
+        });
+      }
+    </script>
   </head>
-  <body class="bg-primary-bg text-text-main selection:bg-accent-primary selection:text-white m-0 p-0 antialiased overflow-x-hidden min-h-screen flex flex-col">
+  <body class="bg-primary-bg text-text-main selection:bg-accent-primary selection:text-white m-0 p-0 pb-20 md:pb-0 antialiased overflow-x-hidden min-h-screen flex flex-col">
     <slot />
-  </body>
+  <!-- impeccable-live-start -->
+<script src="http://localhost:8400/live.js"></script>
+<!-- impeccable-live-end -->
+</body>
 </html>

@@ -1,0 +1,16 @@
+{
+  "name": "Mousa Analytics",
+  "short_name": "Mousa",
+  "description": "Mousa Analytics - Data & Marketing Specialist",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8F9FA",
+  "theme_color": "#0A192F",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

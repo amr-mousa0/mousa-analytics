@@ -1,0 +1,356 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Navigation from '../../../components/ui/Navigation.astro';
+import Footer from '../../../components/ui/Footer.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'ar' } },
+  ];
+}
+
+const { lang } = Astro.params;
+
+if (!lang || !['en', 'ar'].includes(lang)) {
+  return Astro.redirect('/en/');
+}
+
+const isAr = lang === 'ar';
+
+// Localization Texts
+const t = {
+  backBtn: isAr ? "العودة للمشاريع" : "Back to Projects",
+  githubBtn: isAr ? "عرض مستودع GitHub" : "View GitHub Repository",
+  projectBadge: isAr ? "دراسة حالة للمشروع" : "TECH & WEB SOLUTIONS",
+  title: isAr ? "التحول المالي لنادي أكسجين الرياضي" : "Oxygen Gym Financial Transformation",
+  
+  problemTitle: isAr ? "المشكلة" : "The Problem",
+  problemText: isAr 
+    ? "كان النشاط التجاري محاصراً في 'وهم الربحية' - معتمداً بالكامل على الدفاتر الورقية اليدوية، مما أدى لخسارة إيرادات بسبب تسرب الفواتير غير المحصلة، والمعاناة من معدل دوران عملاء (Churn) يبلغ 80%."
+    : "The business was trapped in 'profitability illusion'—relying on manual paper ledgers, losing revenue to uncollected billing leakages, and suffering from 80% customer churn.",
+  
+  solutionTitle: isAr ? "الحل والقيمة المضافة" : "The Solution & Value",
+  solutionText: isAr 
+    ? "تم رقمنة سجلات ورقية تمتد لـ 5 سنوات في نموذج Power BI متكامل، مع تطبيق تحليلات مالية متقدمة (معدل النمو السنوي المركب CAGR، تحليل نقطة التعادل، وتخصيص تكاليف المنتجات عبر المكملات والمشروبات والاشتراكات)."
+    : "Digitized 5 years of paper records into a Power BI model, implementing advanced financial analytics (CAGR, Break-Even analysis, and product cost allocations across Supplements, Beverages, and Subscriptions).",
+  
+  impactTitle: isAr ? "الأثر والنتائج" : "Sales Funnel Impact",
+  impactText: isAr 
+    ? "كشف التحليل عن انخفاض بنسبة -28% في معدل النمو السنوي المركب رغم خفض التكاليف. وتم تحديد تسريبات فواتير بقيمة 93,000 جنيه مصري لاشتراكات غير مسجلة، وخسارة صافية بنسبة 43% في أسعار المكملات الغذائية، وتقديم ضوابط استراتيجية لاستعادة الإيرادات والحد من خسارة العملاء."
+    : "Revealed a -28% CAGR decline despite cost-cutting, identified 93,000 EGP in leaked unbilled memberships, a 43% net loss in supplement pricing, and provided strategic controls to recover revenue and stop churn.",
+  
+  galleryTab: isAr ? "معرض صور المشروع" : "Project Gallery",
+  dashboardTab: isAr ? "لوحة البيانات التفاعلية" : "Live Interactive Dashboard",
+  dashboardPrompt: isAr 
+    ? "هل ترغب في تصفية البيانات واستكشاف المؤشرات بشكل تفاعلي؟"
+    : "Want to filter the data and explore the metrics interactively?",
+  dashboardBtn: isAr ? "فتح لوحة البيانات التفاعلية" : "Open Live Interactive Dashboard",
+  
+  inquireTitle: isAr ? "استفسر عن هذه الخدمة" : "Inquire About This Service",
+  inquireDesc: isAr 
+    ? "احصل على كفاءة تشغيلية أعلى ونظم بيانات تفاعلية دقيقة لمشروعك اليوم."
+    : "Unlock optimized performance, streamlined operations, and high-impact analytics for your business today.",
+  inquireBtn: isAr ? "ابدأ مشروعاً مشابهاً الآن" : "Start a Similar Project"
+};
+
+// Image assets for the gallery
+const galleryImages = [
+  "/images/projects/Oxgin Gym Analysis Pics/1759149287257.jpg",
+  "/images/projects/Oxgin Gym Analysis Pics/1759149287549.jpg",
+  "/images/projects/Oxgin Gym Analysis Pics/1759149287673.jpg",
+  "/images/projects/Oxgin Gym Analysis Pics/1759149287723.jpg",
+  "/images/projects/Oxgin Gym Analysis Pics/1759149287810.jpg",
+  "/images/projects/Oxgin Gym Analysis Pics/1759149287882.jpg",
+];
+
+// Pre-filled WhatsApp messages
+const startProjectMessage = isAr 
+  ? "مرحباً عمرو، أود الاستفسار عن مشروع التحول المالي لنادي أكسجين الرياضي والبدء في مشروع مشابه لعملي."
+  : "Hi Amr, I'd like to inquire about the Oxygen Gym Financial Transformation project and discuss starting a similar system for my business.";
+
+const openDashboardMessage = isAr 
+  ? "مرحباً عمرو، أود الحصول على رابط لوحة مؤشرات الأداء التفاعلية لمشروع التحول المالي لنادي أكسجين لتجربتها."
+  : "Hi Amr, I'd like to request the interactive Power BI dashboard link for the Oxygen Gym Financial Transformation project to test it out.";
+---
+
+<Layout lang={lang} pageId="oxygen-gym-project">
+  <Navigation 
+    lang={lang} 
+    activePage="projects" 
+    backUrl={`/${lang}/#projects`} 
+    backText={t.backBtn}
+    actionUrl="https://github.com/amr-mousa"
+    actionText={t.githubBtn}
+    actionIcon="fa-brands fa-github"
+  />
+
+  <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent">
+    <!-- Atmospheric Ambient Glows -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_0%,rgba(37,99,235,0.03),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
+    
+    <div class="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-8 space-y-8">
+      
+      <!-- Main Project Header (Blueprint layout style) -->
+      <div class="flex flex-col gap-6 lg:gap-0 lg:glass-card lg:premium-card-global lg:!p-0 lg:overflow-hidden lg:rounded-[24px]">
+        <div class="p-6 sm:p-8 rounded-[24px] bg-white border border-slate-100 lg:border-none lg:border-b lg:border-slate-100 lg:bg-slate-50/40 lg:rounded-none lg:p-10 relative lg:bg-[linear-gradient(to_right,rgba(37,99,235,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(37,99,235,0.04)_1px,transparent_1px)] lg:bg-[size:16px_16px] space-y-4 shadow-xs lg:shadow-none">
+          <!-- Category Pill -->
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent-primary/20 bg-accent-primary/5 text-accent-primary text-[9px] font-bold tracking-wider uppercase font-mono">
+            <span class="relative flex h-1.5 w-1.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-primary"></span>
+            </span>
+            {t.projectBadge}
+          </div>
+          
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-text-main font-serif leading-tight">
+            {t.title}
+          </h1>
+
+          <!-- Tech Stack Pills -->
+          <div class="flex flex-wrap gap-2 pt-1 font-mono">
+            <span class="px-3 py-1 rounded-full bg-slate-200/50 text-text-main/65 text-[10px] font-medium border border-text-main/5 transition-colors hover:bg-slate-200/80">SQL</span>
+            <span class="px-3 py-1 rounded-full bg-slate-200/50 text-text-main/65 text-[10px] font-medium border border-text-main/5 transition-colors hover:bg-slate-200/80">Excel</span>
+            <span class="px-3 py-1 rounded-full bg-slate-200/50 text-text-main/65 text-[10px] font-medium border border-text-main/5 transition-colors hover:bg-slate-200/80">Power BI</span>
+          </div>
+        </div>
+
+        <!-- Case Study Details & Interactive Gallery -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 p-0 lg:p-10 bg-transparent">
+          
+          <!-- Left Column: Problem, Solution, Impact -->
+          <div class="space-y-6 order-2 lg:order-1">
+            
+            <!-- Problem Card -->
+            <div class="p-6 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition-all duration-300 shadow-xs space-y-3">
+              <h2 class="text-xs font-bold uppercase tracking-widest text-text-main/75 font-sans flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-amber-500" aria-hidden="true"></i>
+                {t.problemTitle}
+              </h2>
+              <p class="text-text-main/80 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
+                {t.problemText}
+              </p>
+            </div>
+
+            <!-- Solution Card -->
+            <div class="p-6 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition-all duration-300 shadow-xs space-y-3">
+              <h2 class="text-xs font-bold uppercase tracking-widest text-text-main/75 font-sans flex items-center gap-2">
+                <i class="fa-solid fa-lightbulb text-blue-500" aria-hidden="true"></i>
+                {t.solutionTitle}
+              </h2>
+              <p class="text-text-main/80 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
+                {t.solutionText}
+              </p>
+            </div>
+
+            <!-- Impact Card -->
+            <div class="p-6 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition-all duration-300 shadow-xs space-y-3">
+              <h2 class="text-xs font-bold uppercase tracking-widest text-text-main/75 font-sans flex items-center gap-2">
+                <i class="fa-solid fa-chart-line text-emerald-500" aria-hidden="true"></i>
+                {t.impactTitle}
+              </h2>
+              <p class="text-text-main/80 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
+                {t.impactText}
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Interactive Gallery & Dashboard Link -->
+          <div class="space-y-6 flex flex-col justify-between order-1 lg:order-2">
+            
+            <!-- Gallery / Dashboard Tab Container -->
+            <div class="p-6 rounded-2xl bg-white lg:bg-slate-50/50 border border-slate-100/70 space-y-4 flex-grow shadow-xs">
+              
+              <!-- Tab Headers -->
+              <div class="hidden lg:flex gap-2 p-1 bg-slate-200/50 rounded-xl border border-slate-200/20">
+                <button 
+                  id="tab-gallery" 
+                  class="flex-1 py-2 px-3 rounded-lg text-[11px] font-bold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer bg-accent-primary text-white"
+                >
+                  <i class="fa-regular fa-image" aria-hidden="true"></i>
+                  <span>{t.galleryTab}</span>
+                </button>
+                <button 
+                  id="tab-dashboard" 
+                  class="flex-1 py-2 px-3 rounded-lg text-[11px] font-bold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer bg-transparent text-text-main/70 hover:bg-slate-200/30"
+                >
+                  <i class="fa-solid fa-compass" aria-hidden="true"></i>
+                  <span>{t.dashboardTab}</span>
+                </button>
+              </div>
+
+              <!-- Tab Contents -->
+              <div class="relative w-full overflow-hidden">
+                <!-- Gallery Content -->
+                <div id="content-gallery" class="space-y-4 transition-all duration-300">
+                  <!-- Main Image Display -->
+                  <div class="hidden lg:block w-full aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 bg-white relative">
+                    <img 
+                      id="main-gallery-image"
+                      src={galleryImages[0]} 
+                      alt="Main Project Snapshot" 
+                      class="w-full h-full object-cover transition-opacity duration-150"
+                    />
+                  </div>
+                  <!-- Thumbnails Grid -->
+                  <div class="flex overflow-x-auto gap-2 no-scrollbar pb-1 lg:grid lg:grid-cols-6 lg:gap-1.5 lg:overflow-visible">
+                    {galleryImages.map((img, i) => (
+                      <button 
+                        class:list={[
+                          "gallery-thumbnail aspect-[16/10] rounded-lg overflow-hidden border bg-white cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 w-16 sm:w-20 lg:w-auto shrink-0",
+                          i === 0 ? "border-accent-primary ring-2 ring-accent-primary/20" : "border-slate-200 hover:border-slate-300"
+                        ]}
+                        data-src={img}
+                        aria-label={`View image snapshot ${i + 1}`}
+                      >
+                        <img src={img} alt={`Thumbnail snapshot ${i + 1}`} class="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <!-- Dashboard Content (hidden by default) -->
+                <div id="content-dashboard" class="hidden flex flex-col items-center justify-center py-12 px-4 text-center space-y-4 transition-all duration-300">
+                  <div class="w-16 h-16 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary border border-accent-primary/20 shadow-xs">
+                    <i class="fa-solid fa-compass text-2xl animate-spin" style="animation-duration: 8s" aria-hidden="true"></i>
+                  </div>
+                  <div class="space-y-1.5">
+                    <h4 class="text-sm font-bold text-text-main font-serif">
+                      {isAr ? "لوحة بيانات التحول المالي لنادي أكسجين الحية" : "Live Oxygen Gym Financial Dashboard"}
+                    </h4>
+                    <p class="text-text-main/60 text-xs leading-relaxed max-w-sm">
+                      {isAr 
+                        ? "هذا المشروع يحتوي على لوحة مؤشرات أداء تفاعلية مشفرة بالكامل للتحليلات المالية والاشتراكات. اضغط أدناه لطلب رابط التجربة الحية مباشرة."
+                        : "This project has a fully live, filterable interactive financial and subscription Power BI dashboard. Click below to request the interactive link."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dashboard Prompt helper (nested inside the card, responsive layout) -->
+              <div class="p-5 rounded-2xl bg-blue-50/50 border border-blue-100/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-start mt-4">
+                <p class="text-text-main/70 text-[11px] leading-relaxed max-w-xs">
+                  {t.dashboardPrompt}
+                </p>
+                <button 
+                  id="open-dashboard-btn"
+                  data-msg={openDashboardMessage}
+                  class="h-10 px-4 rounded-xl bg-accent-primary hover:bg-accent-highlight text-white font-semibold text-[10px] tracking-wider flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all duration-300 cursor-pointer flex-shrink-0 w-full sm:w-auto"
+                >
+                  <i class="fa-solid fa-play text-[9px]" aria-hidden="true"></i>
+                  <span>{t.dashboardBtn}</span>
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Inquire / Action CTA Bar -->
+        <div class="p-6 sm:p-8 bg-white rounded-[24px] border border-slate-100 lg:border-none lg:border-t lg:border-slate-100 lg:rounded-none shadow-xs lg:shadow-none flex flex-col items-center text-center gap-6">
+          <div class="space-y-2 max-w-xl">
+            <h3 class="text-lg md:text-xl font-bold text-text-main font-serif">
+              {t.inquireTitle}
+            </h3>
+            <p class="text-text-main/60 text-[13px] md:text-sm leading-relaxed font-sans font-light">
+              {t.inquireDesc}
+            </p>
+          </div>
+
+          <button 
+            id="start-project-btn"
+            data-msg={startProjectMessage}
+            class="h-12 px-8 rounded-full bg-gradient-to-r from-accent-primary to-accent-highlight hover:shadow-lg hover:brightness-110 text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all duration-300 cursor-pointer border-none"
+          >
+            <span>{t.inquireBtn}</span>
+            <span class="text-sm font-sans">{isAr ? "←" : "→"}</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+</Layout>
+
+<script>
+  // Tab switching logic
+  const galleryTab = document.getElementById('tab-gallery');
+  const dashboardTab = document.getElementById('tab-dashboard');
+  const galleryContent = document.getElementById('content-gallery');
+  const dashboardContent = document.getElementById('content-dashboard');
+
+  if (galleryTab && dashboardTab && galleryContent && dashboardContent) {
+    galleryTab.addEventListener('click', () => {
+      galleryTab.classList.add('bg-accent-primary', 'text-white');
+      galleryTab.classList.remove('bg-transparent', 'text-text-main/70', 'hover:bg-slate-200/30');
+      dashboardTab.classList.remove('bg-accent-primary', 'text-white');
+      dashboardTab.classList.add('bg-transparent', 'text-text-main/70', 'hover:bg-slate-200/30');
+
+      galleryContent.classList.remove('hidden');
+      dashboardContent.classList.add('hidden');
+    });
+
+    dashboardTab.addEventListener('click', () => {
+      dashboardTab.classList.add('bg-accent-primary', 'text-white');
+      dashboardTab.classList.remove('bg-transparent', 'text-text-main/70', 'hover:bg-slate-200/30');
+      galleryTab.classList.remove('bg-accent-primary', 'text-white');
+      galleryTab.classList.add('bg-transparent', 'text-text-main/70', 'hover:bg-slate-200/30');
+
+      dashboardContent.classList.remove('hidden');
+      galleryContent.classList.add('hidden');
+    });
+  }
+
+  // Thumbnail click logic
+  const thumbnails = document.querySelectorAll('.gallery-thumbnail');
+  const mainImage = document.getElementById('main-gallery-image') as HTMLImageElement | null;
+
+  if (thumbnails.length > 0 && mainImage) {
+    thumbnails.forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        // Remove active border from all thumbnails
+        thumbnails.forEach(t => t.classList.remove('border-accent-primary', 'ring-2', 'ring-accent-primary/20'));
+        // Add active border to clicked thumbnail
+        thumb.classList.add('border-accent-primary', 'ring-2', 'ring-accent-primary/20');
+        // Update main image source with smooth crossfade
+        const newSrc = thumb.getAttribute('data-src') || '';
+        mainImage.style.opacity = '0';
+        setTimeout(() => {
+          mainImage.src = newSrc;
+          mainImage.style.opacity = '1';
+        }, 150);
+      });
+    });
+  }
+
+  // Adblock-resilient dynamic WhatsApp redirection for CTAs
+  const registerCta = (id: string, textGetter: () => string) => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.addEventListener('click', () => {
+        const msg = textGetter();
+        const domainParts = ['wa', 'me'];
+        const targetDomain = domainParts.join('.');
+        const recipientNum = '201202353381';
+        const redirectUrl = `https://${targetDomain}/${recipientNum}?text=${encodeURIComponent(msg)}`;
+        window.open(redirectUrl, '_blank', 'noopener,noreferrer');
+      });
+    }
+  };
+
+  registerCta('start-project-btn', () => {
+    const btn = document.getElementById('start-project-btn');
+    return btn?.getAttribute('data-msg') || '';
+  });
+
+  registerCta('open-dashboard-btn', () => {
+    const btn = document.getElementById('open-dashboard-btn');
+    return btn?.getAttribute('data-msg') || '';
+  });
+</script>

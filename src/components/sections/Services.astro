@@ -1,5 +1,13 @@
 ---
 import { getSafeServices } from '../../scripts/servicesHelper';
+import { Image } from 'astro:assets';
+
+// Import service images
+import crmImg from '../../assets/images/Crm.png';
+import excelImg from '../../assets/images/Excel.jpg';
+import portfolioImg from '../../assets/images/Portfolio.jpeg';
+import mediaBuyingImg from '../../assets/images/media-buying.jpg';
+import powerBiImg from '../../assets/images/power bi.png';
 
 interface Props {
   lang: string;
@@ -9,85 +17,164 @@ const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
 const services = await getSafeServices(lang);
+
+// Helper to get service URL
+// Helper to get service URL dynamically based on slug
+const getServiceUrl = (slug: string) => {
+  const cleanSlug = slug.split('/').pop();
+  return `/${lang}/services/${cleanSlug}/`;
+};
+
+// Helper to get service image by matching the slug
+const getServiceImage = (slug: string) => {
+  const cleanSlug = slug.split('/').pop();
+  switch (cleanSlug) {
+    case 'data-analytics': return powerBiImg;
+    case 'marketing-strategy': return mediaBuyingImg;
+    case 'advanced-excel': return excelImg;
+    case 'custom-crm': return crmImg;
+    case 'web-portfolios': return portfolioImg;
+    default: return powerBiImg;
+  }
+};
 ---
 
-<section id="services" class="py-24 px-6 border-t border-text-main/5 relative bg-transparent overflow-hidden">
-  <!-- Subtle lighting flare -->
+<section id="services" aria-labelledby="services-title" class="py-24 px-6 relative bg-transparent overflow-hidden scroll-mt-20">
+  <!-- Subtle tech light flare -->
   <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(37,99,235,0.015),transparent_50%)] pointer-events-none" aria-hidden="true"></div>
 
-  <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-    
-    <!-- Left Column: Sticky Section Header (4 cols on desktop) -->
-    <div class="lg:col-span-4 lg:sticky lg:top-24 h-fit space-y-4">
-      <!-- Subtitle Badge -->
-      <div class="text-[10px] sm:text-xs font-bold tracking-widest text-accent-primary uppercase font-sans">
-        {isAr ? "مجالات العمل" : "SERVICES & SOLUTIONS"}
+  <div class="max-w-6xl mx-auto space-y-12">
+    <!-- Header Area -->
+    <div class="space-y-3 text-start">
+      <!-- Subtitle Badge / Eyebrow -->
+      <div class="text-xs font-bold tracking-widest text-accent-primary uppercase font-sans">
+        {isAr ? "استكشف الخدمات" : "SERVICES & GIGS"}
       </div>
       
       <!-- Section Title -->
-      <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-main font-serif">
-        {isAr ? "كيف أساعدك على النمو؟" : "How I Help You Grow"}
+      <h2 id="services-title" class="text-3xl sm:text-4xl font-bold tracking-tight text-text-main font-serif">
+        {isAr ? "الخدمات والمشاريع المخصصة" : "Services & Gigs"}
       </h2>
       
       <!-- Section Description -->
-      <p class="text-text-main/70 text-base leading-relaxed font-sans">
-        {isAr ? "حلول استراتيجية متكاملة لربط البيانات بالنتائج التجارية الملموسة وتحقيق أعلى عائد على الاستثمار." : "Strategic, localized offerings designed to map conversions and data insights to real business revenue."}
+      <p class="text-text-main/70 text-base leading-relaxed font-sans max-w-xl">
+        {isAr ? "حلول عملية مصممة لحل الاختناقات، وإلغاء الإنفاق الضائع، وتحقيق نمو ملموس." : "Actionable solutions designed to solve bottlenecks, eliminate wasted spend, and drive measurable growth."}
       </p>
     </div>
 
-    <!-- Right Column: Services List (8 cols on desktop) -->
-    <div class="lg:col-span-8">
-      {services.length > 0 && (
-        <div class="space-y-16">
-          {services.map((service, index) => {
-            const displayNum = String(index + 1).padStart(2, '0');
-            return (
-              <div class="group relative pt-12 border-t border-text-main/10 flex flex-col gap-6 font-sans first:border-t-0 first:pt-0">
+    <!-- Cards Container: Horizontal swipeable deck on mobile (<768px), Custom grid spans on desktop (>=768px) -->
+    <div class="flex md:grid md:grid-cols-12 gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none no-scrollbar pb-6 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
+      {services.map((service, index) => {
+        // Button style matching the user's mockup: Make all buttons consistent (Outline Blue)
+        const isSolid = false;
+        
+        // Grid span mapping:
+        let spanClass = '';
+        if (index === 0) {
+          spanClass = 'md:col-span-6 lg:col-span-7'; // ~60% width
+        } else if (index === 1) {
+          spanClass = 'md:col-span-6 lg:col-span-5'; // ~40% width
+        } else if (index === 2 || index === 3) {
+          spanClass = 'md:col-span-6 lg:col-span-4'; // 1/3 width
+        } else {
+          spanClass = 'md:col-span-12 lg:col-span-4'; // 1/3 width on desktop, full-width fallback on tablet
+        }
+
+        return (
+          <div class={`premium-card-global group !p-0 overflow-hidden flex flex-col h-full flex-shrink-0 w-[85vw] md:w-auto snap-center md:snap-align-none relative ${spanClass}`}>
+            
+            <!-- Clickable Card Body (Wraps top and main details to go to details page) -->
+            <a href={getServiceUrl(service.slug)} class="flex flex-col h-full flex-grow hover:no-underline group/body">
+              <!-- Top Half: Service Image (Full Cover) -->
+              <div class="h-44 relative border-b border-slate-100 overflow-hidden bg-slate-50">
+                <Image 
+                  src={getServiceImage(service.slug)} 
+                  alt={service.data.title}
+                  class="w-full h-full object-cover group-hover/body:scale-105 transition-transform duration-500"
+                />
+                <!-- Service Pill Tag -->
+                <span class="absolute top-4 start-4 text-[9px] font-bold tracking-wider text-text-main/60 uppercase border border-text-main/10 px-2 py-0.5 rounded bg-white/90 font-mono z-10">
+                  {isAr ? "خدمة" : "SERVICE"}
+                </span>
                 
-                <!-- Header part -->
-                <div class="flex items-start justify-between gap-6">
-                  <div class="space-y-3">
-                    <!-- Serif Serial Number -->
-                    <div class="font-serif text-3xl md:text-4xl text-accent-primary/35 font-medium select-none" aria-hidden="true">
-                      {displayNum}
-                    </div>
-                    <!-- Service Title -->
-                    <h3 class="text-xl sm:text-2xl font-bold text-text-main font-serif group-hover:text-accent-primary transition-colors duration-300">
-                      {service.data.title}
-                    </h3>
-                  </div>
-
-                  <!-- Tech-styled Icon Box -->
-                  <div class="w-12 h-12 rounded-2xl bg-text-main/5 border border-text-main/8 flex items-center justify-center text-accent-primary group-hover:bg-accent-primary group-hover:text-white group-hover:border-accent-primary transition-all duration-300 shadow-sm shadow-text-main/1" aria-hidden="true">
-                    {service.data.icon === 'bar-chart-2' ? (
-                      <i class="fa-solid fa-chart-line text-lg"></i>
-                    ) : (
-                      <i class="fa-solid fa-bullhorn text-lg"></i>
-                    )}
-                  </div>
-                </div>
-
-                <!-- Description -->
-                <p class="text-text-main/70 text-base leading-relaxed max-w-xl">
-                  {service.data.description}
-                </p>
-
-                <!-- Features blueprint grid (2-columns) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 pt-4 border-t border-text-main/5 text-sm text-text-main/60 max-w-xl">
-                  {service.data.features.map((feature: string) => (
-                    <div class="flex items-start gap-3">
-                      <span class="text-accent-primary select-none pt-0.5" aria-hidden="true">•</span>
-                      <span class="leading-normal">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
+                {service.isFallback && (
+                  <span class="absolute top-4 end-4 text-[8px] font-bold tracking-wider text-white uppercase px-2 py-0.5 rounded bg-amber-600 font-sans z-10">
+                    {isAr ? "غير مترجم" : "NOT TRANSLATED"}
+                  </span>
+                )}
               </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
 
+              <!-- Bottom Half: Details (Solid White background, text only) -->
+              <div class="p-6 pb-28 bg-white flex-grow flex flex-col justify-between">
+                <div class="space-y-3">
+                  <h3 class="text-lg font-bold text-text-main font-serif leading-snug group-hover/body:text-accent-primary transition-colors">
+                    {service.data.title}
+                  </h3>
+                  
+                  {service.isFallback && (
+                    <div class="text-[10px] text-amber-600 bg-amber-500/5 px-2.5 py-1.5 rounded border border-amber-500/10 font-sans leading-tight">
+                      {isAr 
+                        ? "⚠️ هذه الخدمة غير متوفرة بالعربية بعد، يتم عرض النسخة الإنجليزية." 
+                        : "⚠️ Arabic version unavailable, English details shown."}
+                    </div>
+                  )}
+
+                  <p class="text-text-main/70 text-sm leading-relaxed font-sans min-h-[4.2rem]">
+                    {service.data.description}
+                  </p>
+                </div>
+              </div>
+            </a>
+
+            <!-- Action Area Wrapper (Default Explore button - Desktop only) -->
+            <div class="absolute inset-x-0 bottom-0 p-6 bg-white pointer-events-none md:block hidden md:group-hover:opacity-0 transition-opacity duration-200">
+              <!-- Subtle Divider -->
+              <hr class="border-slate-100 mb-4" />
+              <div class="flex justify-end pointer-events-auto">
+                <a 
+                  href={getServiceUrl(service.slug)}
+                  class:list={[
+                    "h-11 px-5 rounded-full font-semibold text-xs transition-all duration-200 active:scale-95 inline-flex items-center justify-center gap-1.5 cursor-pointer",
+                    isSolid 
+                      ? "bg-accent-primary hover:bg-accent-highlight text-white shadow-sm" 
+                      : "bg-transparent hover:bg-accent-primary/5 text-accent-primary border border-accent-primary"
+                  ]}
+                >
+                  {service.slug.includes('web-portfolios') ? (isAr ? "طلب استشارة" : "Request Consultation") : (isAr ? "استكشف التفاصيل" : "Explore Details")}
+                  <span class="text-sm font-sans">→</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Hover Overlay (Desktop slide-up, mobile always visible) -->
+            <div class="absolute inset-x-0 bottom-0 bg-white p-5 border-t border-slate-100 flex items-center justify-between gap-2 z-20 shadow-[0_-8px_24px_rgba(10,25,47,0.06)] opacity-100 translate-y-0 pointer-events-auto md:translate-y-full md:opacity-0 md:pointer-events-none md:transition-all md:duration-300 md:ease-out md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-hover:pointer-events-auto">
+              <!-- Quick Connect Actions -->
+              <div class="flex items-center gap-2 w-full">
+                <!-- Call Button (Circular) -->
+                <a 
+                  href="tel:+201202353381" 
+                  class="w-11 h-11 rounded-full bg-slate-100 hover:bg-slate-200 text-text-main flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0 border border-slate-200/50"
+                  aria-label={isAr ? "اتصال هاتفي" : "Call now"}
+                >
+                  <i class="fa-solid fa-phone text-sm"></i>
+                </a>
+
+                <!-- WhatsApp Button (Green) -->
+                <a 
+                  href={`https://wa.me/201202353381?text=${encodeURIComponent(isAr ? `مرحباً عمرو، أود الاستفسار عن خدمة: ${service.data.title}` : `Hi Amr, I would like to inquire about: ${service.data.title}`)}`}
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="h-11 flex-grow rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all duration-200 border-none"
+                >
+                  <i class="fa-brands fa-whatsapp text-base"></i>
+                  <span>{isAr ? "واتس اب" : "WhatsApp"}</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        );
+      })}
+    </div>
   </div>
 </section>

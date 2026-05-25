@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Manager | Mousa Analytics</title>
+    <!-- Netlify Identity Widget -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+      /* Base styles for the admin login/loader page */
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f1f5f9;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Decap CMS Core App CDN -->
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+    <script>
+      // Configure Decap CMS settings post-initialization
+      CMS.registerEventListener({
+        name: 'preSave',
+        handler: ({ entry }) => {
+          // Force lowercase alphanumeric hyphenated naming conventions on slugs to protect routing
+          const data = entry.get('data');
+          if (data && data.has('slug')) {
+            const slug = data.get('slug');
+            const sanitizedSlug = slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+            return entry.setIn(['data', 'slug'], sanitizedSlug);
+          }
+        }
+      });
+
+      // Register generic custom style helper for the preview iframe to keep preview aesthetics aligned
+      CMS.registerPreviewStyle("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+      CMS.registerPreviewStyle("https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css");
+
+      const h = window.h;
+
+      // Services Live Preview
+      const ServicesPreview = ({ entry }) => {
+        const title = entry.getIn(['data', 'title']) || '';
+        const description = entry.getIn(['data', 'description']) || '';
+        const icon = entry.getIn(['data', 'icon']) || 'chart-line';
+        const category = entry.getIn(['data', 'category']) || '';
+        const tags = entry.getIn(['data', 'tags']) ? entry.getIn(['data', 'tags']).toJS() : [];
+        const features = entry.getIn(['data', 'features']) ? entry.getIn(['data', 'features']).toJS() : [];
+        const isDraft = entry.getIn(['data', 'draft']) || false;
+        const isFeatured = entry.getIn(['data', 'featured']) || false;
+
+        return h('div', { className: 'p-8 max-w-xl mx-auto bg-white rounded-xl shadow-md space-y-4 border border-slate-100 mt-6' },
+          h('div', { className: 'flex items-center justify-between' },
+            h('span', { className: 'text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase tracking-wider font-mono' }, category || 'Service'),
+            h('div', { className: 'flex gap-2' },
+              isFeatured && h('span', { className: 'text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded uppercase' }, 'Featured'),
+              isDraft && h('span', { className: 'text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded uppercase' }, 'Draft')
+            )
+          ),
+          h('div', { className: 'flex items-center gap-3' },
+            h('i', { className: `fa-solid fa-${icon} text-2xl text-blue-600` }),
+            h('h2', { className: 'text-xl font-bold text-slate-800' }, title)
+          ),
+          h('p', { className: 'text-slate-600 text-sm leading-relaxed' }, description),
+          features.length > 0 && h('div', { className: 'space-y-2' },
+            h('h3', { className: 'text-sm font-bold text-slate-700' }, 'Key Features:'),
+            h('ul', { className: 'list-disc list-inside text-xs text-slate-500 space-y-1' },
+              features.map((f, i) => h('li', { key: i }, f))
+            )
+          ),
+          tags.length > 0 && h('div', { className: 'flex flex-wrap gap-1.5 pt-2' },
+            tags.map((t, i) => h('span', { key: i, className: 'text-xs bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full' }, t))
+          )
+        );
+      };
+
+      CMS.registerPreviewTemplate("services_en", ServicesPreview);
+      CMS.registerPreviewTemplate("services_ar", ServicesPreview);
+
+      // Projects Live Preview
+      const ProjectsPreview = ({ entry, getAsset }) => {
+        const title = entry.getIn(['data', 'title']) || '';
+        const badge = entry.getIn(['data', 'projectBadge']) || '';
+        const problemTitle = entry.getIn(['data', 'problemTitle']) || 'The Problem';
+        const problemText = entry.getIn(['data', 'problemText']) || '';
+        const solutionTitle = entry.getIn(['data', 'solutionTitle']) || 'The Solution & Value';
+        const solutionText = entry.getIn(['data', 'solutionText']) || '';
+        const impactTitle = entry.getIn(['data', 'impactTitle']) || 'Sales Funnel Impact';
+        const impactText = entry.getIn(['data', 'impactText']) || '';
+        
+        const coverImage = entry.getIn(['data', 'coverImage']);
+        const coverUrl = coverImage ? getAsset(coverImage).toString() : '';
+        
+        const galleryList = entry.getIn(['data', 'galleryImages']);
+        const galleryUrls = galleryList ? galleryList.toJS().map(img => getAsset(img).toString()) : [];
+        
+        const tags = entry.getIn(['data', 'tags']) ? entry.getIn(['data', 'tags']).toJS() : [];
+
+        return h('div', { className: 'p-8 max-w-3xl mx-auto bg-slate-50 space-y-6 mt-6 rounded-2xl border border-slate-200' },
+          h('div', { className: 'bg-white p-6 rounded-xl border border-slate-100 space-y-4' },
+            h('span', { className: 'text-[10px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase tracking-wider font-mono' }, badge || 'Case Study'),
+            h('h1', { className: 'text-2xl font-bold text-slate-800' }, title),
+            coverUrl && h('img', { src: coverUrl, className: 'w-full h-64 object-cover rounded-lg border border-slate-200' })
+          ),
+          h('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-6' },
+            h('div', { className: 'space-y-4' },
+              h('div', { className: 'bg-white p-5 rounded-xl border border-slate-100 space-y-2' },
+                h('h2', { className: 'text-xs font-bold text-amber-600 uppercase tracking-widest' }, problemTitle),
+                h('p', { className: 'text-xs text-slate-600 leading-relaxed font-light' }, problemText)
+              ),
+              h('div', { className: 'bg-white p-5 rounded-xl border border-slate-100 space-y-2' },
+                h('h2', { className: 'text-xs font-bold text-blue-600 uppercase tracking-widest' }, solutionTitle),
+                h('p', { className: 'text-xs text-slate-600 leading-relaxed font-light' }, solutionText)
+              ),
+              h('div', { className: 'bg-white p-5 rounded-xl border border-slate-100 space-y-2' },
+                h('h2', { className: 'text-xs font-bold text-emerald-600 uppercase tracking-widest' }, impactTitle),
+                h('p', { className: 'text-xs text-slate-600 leading-relaxed font-light' }, impactText)
+              )
+            ),
+            h('div', { className: 'bg-white p-5 rounded-xl border border-slate-100 space-y-4' },
+              h('h2', { className: 'text-sm font-bold text-slate-700' }, 'Gallery Snapshots'),
+              galleryUrls.length > 0 ? h('div', { className: 'grid grid-cols-2 gap-2' },
+                galleryUrls.map((url, i) => h('img', { key: i, src: url, className: 'w-full h-24 object-cover rounded border border-slate-200' }))
+              ) : h('p', { className: 'text-xs text-slate-400' }, 'No gallery images selected.'),
+              tags.length > 0 && h('div', { className: 'space-y-2 pt-2' },
+                h('h3', { className: 'text-xs font-bold text-slate-500' }, 'Tech Stack:'),
+                h('div', { className: 'flex flex-wrap gap-1.5' },
+                  tags.map((t, i) => h('span', { key: i, className: 'text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full' }, t))
+                )
+              )
+            )
+          )
+        );
+      };
+
+      CMS.registerPreviewTemplate("projects_en", ProjectsPreview);
+      CMS.registerPreviewTemplate("projects_ar", ProjectsPreview);
+
+      // Netlify Identity redirection handler
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", user => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => {
+              document.location.href = "/admin/";
+            });
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

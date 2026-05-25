@@ -7,89 +7,248 @@ const { lang } = Astro.props;
 const isAr = lang === 'ar';
 ---
 
-<section id="contact" class="py-24 px-6 border-t border-text-main/5 relative bg-transparent overflow-hidden">
-  <div class="max-w-3xl mx-auto bg-white border border-text-main/8 rounded-[2rem] p-8 md:p-12 space-y-8 shadow-xl shadow-text-main/2">
-    <div class="text-center space-y-3">
-      <h2 id="contact-title" class="text-3xl font-bold tracking-tight text-text-main font-serif">
-        {isAr ? "لنعمل معاً" : "Let's Work Together"}
-      </h2>
-      <p class="text-text-main/70 text-sm sm:text-base font-sans">
-        {isAr ? "هل لديك مشروع أو تريد الاستفسار عن خدمة؟ لا تتردد في الاتصال بي." : "Have a business bottleneck or need campaign audit? Reach out below."}
-      </p>
+<section id="contact" class="py-24 px-6 relative bg-transparent overflow-hidden scroll-mt-20">
+  <!-- Subtle radial glow decoration -->
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(37,99,235,0.03),transparent_60%)] pointer-events-none" aria-hidden="true"></div>
+
+  <div class="max-w-6xl mx-auto">
+
+    <!-- 2-Column CSS Grid: Form | Contact Info -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+
+      <!-- LEFT COLUMN: The Form (7 cols) -->
+      <div class="lg:col-span-7 order-1">
+        <!-- Section Header -->
+        <div class="space-y-3 mb-10">
+          <div class="text-[10px] sm:text-xs font-bold tracking-widest text-accent-primary uppercase font-sans">
+            {isAr ? "تواصل معنا" : "GET IN TOUCH"}
+          </div>
+          <h2 id="contact-title" class="text-3xl sm:text-4xl font-bold tracking-tight text-text-main font-serif">
+            {isAr ? "مستعد لمناقشة مشروعك ووضع خطة نمو؟" : "Ready to Discuss Your Project?"}
+          </h2>
+          <p class="text-text-main/65 text-sm sm:text-base leading-relaxed font-sans max-w-lg">
+            {isAr
+              ? "تخطَّ الأساليب العامة. شاركنا أهداف عملك أو العقبات الحالية، ودعنا نصمم خارطة طريق مخصصة لزيادة إيراداتك."
+              : "Skip the generic tactics. Share your business goals or current bottlenecks, and let's design a clear, custom roadmap to scale your revenue."}
+          </p>
+        </div>
+
+        <!-- Contact Form Card -->
+        <div class="bg-white border border-text-main/8 rounded-[1.5rem] p-6 sm:p-8 shadow-xl shadow-text-main/2">
+          <form id="contact-form" action="https://getform.io/f/allqdeya" method="POST" class="space-y-5 font-sans" aria-labelledby="contact-title">
+
+            <!-- Anti-spam Honeypot -->
+            <div class="hidden" aria-hidden="true">
+              <label for="form-gotcha">Do not fill this field</label>
+              <input type="text" id="form-gotcha" name="_gotcha" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <!-- Name Field -->
+            <div class="space-y-2">
+              <label for="form-name" class="block text-sm font-semibold text-text-main/85">
+                {isAr ? "الاسم الكامل" : "Full Name"}
+              </label>
+              <input
+                type="text"
+                id="form-name"
+                name="name"
+                required
+                class="contact-input"
+                placeholder={isAr ? "مثال: أحمد محمد" : "e.g., John Doe"}
+              />
+            </div>
+
+            <!-- Email Field -->
+            <div class="space-y-2">
+              <label for="form-email" class="block text-sm font-semibold text-text-main/85">
+                {isAr ? "البريد الإلكتروني" : "Email Address"}
+              </label>
+              <input
+                type="email"
+                id="form-email"
+                name="email"
+                required
+                class="contact-input"
+                placeholder={isAr ? "example@domain.com" : "example@domain.com"}
+              />
+            </div>
+
+            <!-- Message Field -->
+            <div class="space-y-2">
+              <label for="form-message" class="block text-sm font-semibold text-text-main/85">
+                {isAr ? "تفاصيل المشروع" : "Project Details"}
+              </label>
+              <textarea
+                id="form-message"
+                name="message"
+                rows="5"
+                required
+                class="contact-input resize-none"
+                placeholder={isAr ? "اوصف مشروعك أو التحدي التسويقي الذي تواجهه..." : "Describe your project or marketing bottleneck..."}
+              ></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              id="submit-button"
+              data-loading-text={isAr ? "جاري الإرسال..." : "Sending..."}
+              class="group w-full h-14 rounded-full bg-accent-primary hover:bg-accent-highlight text-white font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-accent-primary/15 focus-visible:ring-2 cursor-pointer"
+            >
+              <span id="submit-text">{isAr ? "إرسال الاستفسار" : "Send Inquiry"}</span>
+              <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </button>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Direct Contact Channels (5 cols) -->
+      <div class="lg:col-span-5 order-2 space-y-6">
+        <!-- Sticky wrapper on desktop -->
+        <div class="lg:sticky lg:top-28 space-y-5">
+
+          <!-- Direct Contact Heading -->
+          <div class="space-y-2 mb-2">
+            <h3 class="text-lg font-bold text-text-main font-serif">
+              {isAr ? "أو تواصل مباشرة" : "Or Reach Out Directly"}
+            </h3>
+            <p class="text-text-main/55 text-sm font-sans">
+              {isAr ? "اختر الطريقة الأنسب لك للتواصل." : "Choose the channel that works best for you."}
+            </p>
+          </div>
+
+          <!-- Email Card -->
+          <a href="mailto:amr@example.com" class="contact-channel-card group" aria-label={isAr ? "إرسال بريد إلكتروني" : "Send email"}>
+            <div class="w-11 h-11 rounded-xl bg-accent-primary/8 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-accent-primary/15">
+              <svg class="w-5 h-5 text-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs font-bold uppercase tracking-widest text-text-main/50 mb-0.5">
+                {isAr ? "البريد الإلكتروني" : "Email"}
+              </div>
+              <div class="text-sm font-semibold text-text-main group-hover:text-accent-primary transition-colors truncate">
+                amr@example.com
+              </div>
+            </div>
+            <svg class="w-4 h-4 text-text-main/30 group-hover:text-accent-primary transition-all duration-300 ms-auto shrink-0 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </a>
+
+          <!-- WhatsApp Card -->
+          <a href="https://wa.me/201000000000" target="_blank" rel="noopener noreferrer" class="contact-channel-card group" aria-label={isAr ? "تواصل عبر واتساب" : "Chat on WhatsApp"}>
+            <div class="w-11 h-11 rounded-xl bg-emerald-500/8 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-emerald-500/15">
+              <svg class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs font-bold uppercase tracking-widest text-text-main/50 mb-0.5">
+                {isAr ? "واتساب" : "WhatsApp"}
+              </div>
+              <div class="text-sm font-semibold text-text-main group-hover:text-emerald-600 transition-colors">
+                {isAr ? "محادثة فورية" : "Quick Chat"}
+              </div>
+            </div>
+            <svg class="w-4 h-4 text-text-main/30 group-hover:text-emerald-600 transition-all duration-300 ms-auto shrink-0 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </a>
+
+          <!-- LinkedIn Card -->
+          <a href="https://linkedin.com/in/amr-mousa" target="_blank" rel="noopener noreferrer" class="contact-channel-card group" aria-label={isAr ? "زيارة لينكدإن" : "Visit LinkedIn"}>
+            <div class="w-11 h-11 rounded-xl bg-blue-600/8 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-blue-600/15">
+              <svg class="w-5 h-5 text-blue-700" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs font-bold uppercase tracking-widest text-text-main/50 mb-0.5">
+                LinkedIn
+              </div>
+              <div class="text-sm font-semibold text-text-main group-hover:text-blue-700 transition-colors">
+                {isAr ? "الملف المهني" : "Professional Profile"}
+              </div>
+            </div>
+            <svg class="w-4 h-4 text-text-main/30 group-hover:text-blue-700 transition-all duration-300 ms-auto shrink-0 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </a>
+
+          <!-- Response Time Badge -->
+          <div class="flex items-center gap-3 pt-4 ps-1">
+            <div class="w-2 h-2 rounded-full bg-emerald-500" aria-hidden="true"></div>
+            <span class="text-xs text-text-main/50 font-sans">
+              {isAr ? "عادةً أرد خلال ساعات قليلة" : "Usually responds within a few hours"}
+            </span>
+          </div>
+
+        </div>
+      </div>
+
     </div>
-
-    <!-- Form action target as specified in API contracts -->
-    <form id="contact-form" action="https://getform.io/f/allqdeya" method="POST" class="space-y-6 font-sans" aria-labelledby="contact-title">
-      
-      <!-- Anti-spam Honeypot (Strictly empty, hidden from user and screen readers) -->
-      <div class="hidden" aria-hidden="true">
-        <label for="form-gotcha">Do not fill this field</label>
-        <input type="text" id="form-gotcha" name="_gotcha" tabindex="-1" autocomplete="off" />
-      </div>
-
-      <!-- Name Input -->
-      <div class="space-y-2">
-        <label for="form-name" class="block text-sm font-semibold text-text-main/85">
-          {isAr ? "الاسم الكامل" : "Full Name"}
-        </label>
-        <input 
-          type="text" 
-          id="form-name" 
-          name="name" 
-          required 
-          class="w-full h-12 px-4 rounded-xl bg-primary-bg/50 border border-text-main/10 text-text-main placeholder-text-main/40 focus:bg-white transition-all focus-visible:ring-2 focus-visible:ring-accent-primary"
-          placeholder={isAr ? "مثال: أحمد محمد" : "e.g., John Doe"}
-        />
-      </div>
-
-      <!-- Email Input -->
-      <div class="space-y-2">
-        <label for="form-email" class="block text-sm font-semibold text-text-main/85">
-          {isAr ? "البريد الإلكتروني" : "Email Address"}
-        </label>
-        <input 
-          type="email" 
-          id="form-email" 
-          name="email" 
-          required 
-          class="w-full h-12 px-4 rounded-xl bg-primary-bg/50 border border-text-main/10 text-text-main placeholder-text-main/40 focus:bg-white transition-all focus-visible:ring-2 focus-visible:ring-accent-primary"
-          placeholder={isAr ? "example@domain.com" : "example@domain.com"}
-        />
-      </div>
-
-      <!-- Message Input -->
-      <div class="space-y-2">
-        <label for="form-message" class="block text-sm font-semibold text-text-main/85">
-          {isAr ? "تفاصيل الرسالة" : "Your Message"}
-        </label>
-        <textarea 
-          id="form-message" 
-          name="message" 
-          rows="5" 
-          required 
-          class="w-full p-4 rounded-xl bg-primary-bg/50 border border-text-main/10 text-text-main placeholder-text-main/40 focus:bg-white transition-all focus-visible:ring-2 focus-visible:ring-accent-primary resize-none"
-          placeholder={isAr ? "اكتب تفاصيل طلبك هنا..." : "Describe your project or marketing bottleneck..."}
-        ></textarea>
-      </div>
-
-      <!-- Submit Button styled with tech accent colors -->
-      <button 
-        type="submit" 
-        id="submit-button"
-        class="w-full h-14 rounded-full bg-accent-primary hover:bg-accent-highlight text-white font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent-primary/15 focus-visible:ring-2"
-      >
-        <span>{isAr ? "إرسال الرسالة" : "Send Inquiry"}</span>
-      </button>
-
-    </form>
   </div>
 </section>
+
+<!-- Scoped Styles -->
+<style>
+  .contact-input {
+    width: 100%;
+    height: 3rem;
+    padding-inline: 1rem;
+    border-radius: 0.75rem;
+    background-color: #F8F9FA;
+    border: 1px solid #E2E8F0;
+    color: var(--color-text-main);
+    font-size: 0.875rem;
+    transition: all 0.25s ease;
+  }
+
+  .contact-input:focus {
+    background-color: #FFFFFF;
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    outline: none;
+  }
+
+  .contact-input::placeholder {
+    color: rgba(10, 25, 47, 0.35);
+  }
+
+  textarea.contact-input {
+    height: auto;
+    padding-block: 0.75rem;
+  }
+
+  .contact-channel-card {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 1rem 1.25rem;
+    background: #FFFFFF;
+    border: 1px solid rgba(10, 25, 47, 0.06);
+    border-radius: 1rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 8px rgba(10, 25, 47, 0.02);
+  }
+
+  .contact-channel-card:hover {
+    border-color: rgba(37, 99, 235, 0.15);
+    box-shadow: 0 8px 24px rgba(10, 25, 47, 0.06);
+    transform: translateY(-2px);
+  }
+</style>
 
 <!-- CSP-Compatible Scoped Script -->
 <script>
   import { lifecycle } from '../../scripts/lifecycle';
 
-  // Double-submission block & honeypot reject
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   const submitBtn = document.getElementById('submit-button') as HTMLButtonElement | null;
   const gotchaInput = document.getElementById('form-gotcha') as HTMLInputElement | null;
@@ -106,11 +265,10 @@ const isAr = lang === 'ar';
 
       // 2. Prevent duplicate submission
       submitBtn.disabled = true;
-      const textSpan = submitBtn.querySelector('span');
+      const textSpan = document.getElementById('submit-text');
       if (textSpan) {
-        textSpan.textContent = 'Sending...';
+        textSpan.textContent = submitBtn.getAttribute('data-loading-text') || 'Sending...';
       }
     });
   }
 </script>
-

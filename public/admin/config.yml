@@ -1,0 +1,144 @@
+# Decap CMS Configuration File
+
+backend:
+  name: git-gateway
+  branch: main
+
+# Enable Local development mode (runs with npx decap-cms-proxy-server)
+local_backend: true
+
+# Enable Editorial Workflow in production for draft reviews, approvals, and preview builds
+publish_mode: editorial_workflow
+
+# Media configuration to work natively with Astro Image Sharp pipeline
+media_folder: "src/assets/images/uploads"
+public_folder: "../../../assets/images/uploads"
+media_library:
+  name: local
+  config:
+    max_file_size: 5000000 # 5MB limit
+
+
+# DRY (Don't Repeat Yourself) YAML Anchors for shared fields
+seo_fields: &seo_fields
+  name: seo
+  label: SEO & Metadata
+  widget: object
+  required: true
+  fields:
+    - { label: "Meta Title", name: "metaTitle", widget: "string", required: true, hint: "Search result title (60 chars max)" }
+    - { label: "Meta Description", name: "metaDescription", widget: "string", required: true, hint: "Search description snippet (160 chars max)" }
+    - { label: "OG Image (Social)", name: "ogImage", widget: "image", required: false, hint: "Custom sharing thumbnail card" }
+    - { label: "Canonical URL", name: "canonicalUrl", widget: "string", required: false }
+    - { label: "No Index", name: "noindex", widget: "boolean", default: false, hint: "Exclude page from search indexes" }
+
+content_states: &content_states
+  - { label: "Draft", name: "draft", widget: "boolean", default: false, hint: "If checked, hidden from public builds" }
+  - { label: "Featured", name: "featured", widget: "boolean", default: false, hint: "If checked, pinned at top of lists" }
+  - { label: "Publish Date", name: "publishedDate", widget: "datetime", required: true }
+  - { label: "Translation Linking Key", name: "translationKey", widget: "string", required: true, hint: "Unique key matching EN/AR versions (e.g. coffee-shop-case)" }
+
+collections:
+  # 1. Services (English)
+  - name: "services_en"
+    label: "Services (English)"
+    folder: "src/content/services/en"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "slug", readonly: true, required: true, hint: "Read-only after creation to prevent broken routes." }
+      - { label: "Description", name: "description", widget: "text", required: true }
+      - { label: "Icon Name", name: "icon", widget: "string", required: true, hint: "Lucide icon key (e.g. chart-line, database)" }
+      - { label: "Priority (Order)", name: "priority", widget: "number", value_type: "int", required: true }
+      - { label: "Category", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Features List", name: "features", widget: "list", required: false, hint: "Deliverable points for the service" }
+      - *content_states
+      - *seo_fields
+
+  # 2. Services (Arabic)
+  - name: "services_ar"
+    label: "الخدمات (العربية)"
+    folder: "src/content/services/ar"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "العنوان", name: "title", widget: "string", required: true }
+      - { label: "الرابط البديل (Slug)", name: "slug", widget: "slug", readonly: true, required: true }
+      - { label: "الوصف", name: "description", widget: "text", required: true }
+      - { label: "اسم الأيقونة", name: "icon", widget: "string", required: true, hint: "اسم أيقونة Lucide (مثل chart-line)" }
+      - { label: "الأولوية (الترتيب)", name: "priority", widget: "number", value_type: "int", required: true }
+      - { label: "التصنيف", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
+      - { label: "الوسوم (Tags)", name: "tags", widget: "list", required: false }
+      - { label: "قائمة المخرجات (Features)", name: "features", widget: "list", required: false }
+      - *content_states
+      - *seo_fields
+
+  # 3. Projects (English)
+  - name: "projects_en"
+    label: "Projects (English)"
+    folder: "src/content/projects/en"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "slug", readonly: true, required: true }
+      - { label: "Project Badge/Category", name: "projectBadge", widget: "string", required: true, hint: "Uppercase badge (e.g. DATA ANALYTICS & BI)" }
+      - { label: "Problem Section Title", name: "problemTitle", widget: "string", required: true, default: "The Problem" }
+      - { label: "Problem Text Details", name: "problemText", widget: "text", required: true }
+      - { label: "Solution Section Title", name: "solutionTitle", widget: "string", required: true, default: "The Solution & Value" }
+      - { label: "Solution Text Details", name: "solutionText", widget: "text", required: true }
+      - { label: "Impact Section Title", name: "impactTitle", widget: "string", required: true, default: "Sales Funnel Impact" }
+      - { label: "Impact Text Details", name: "impactText", widget: "text", required: true }
+      - { label: "Gallery Tab Label", name: "galleryTab", widget: "string", required: true, default: "Project Gallery" }
+      - { label: "Dashboard Tab Label", name: "dashboardTab", widget: "string", required: true, default: "Live Interactive Dashboard" }
+      - { label: "Dashboard Prompt", name: "dashboardPrompt", widget: "string", required: true }
+      - { label: "Dashboard Request Button", name: "dashboardBtn", widget: "string", required: true }
+      - { label: "Inquire Title", name: "inquireTitle", widget: "string", required: true }
+      - { label: "Inquire Description", name: "inquireDesc", widget: "string", required: true }
+      - { label: "Inquire Button CTA", name: "inquireBtn", widget: "string", required: true }
+      - { label: "Cover Image", name: "coverImage", widget: "image", required: true }
+      - { label: "Gallery Images list", name: "galleryImages", widget: "list", field: { widget: "image" }, required: true }
+      - { label: "Github URL", name: "githubUrl", widget: "string", required: false }
+      - { label: "WhatsApp Start Project Message", name: "whatsappStartProjectMsg", widget: "string", required: true }
+      - { label: "WhatsApp Open Dashboard Message", name: "whatsappOpenDashboardMsg", widget: "string", required: true }
+      - { label: "Priority (Order)", name: "priority", widget: "number", value_type: "int", required: true }
+      - { label: "Category", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - *content_states
+      - *seo_fields
+
+  # 4. Projects (Arabic)
+  - name: "projects_ar"
+    label: "المشاريع (العربية)"
+    folder: "src/content/projects/ar"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "العنوان", name: "title", widget: "string", required: true }
+      - { label: "الرابط البديل (Slug)", name: "slug", widget: "slug", readonly: true, required: true }
+      - { label: "شارة المشروع", name: "projectBadge", widget: "string", required: true }
+      - { label: "عنوان قسم المشكلة", name: "problemTitle", widget: "string", required: true, default: "المشكلة" }
+      - { label: "تفاصيل المشكلة", name: "problemText", widget: "text", required: true }
+      - { label: "عنوان قسم الحل والقيمة", name: "solutionTitle", widget: "string", required: true, default: "الحل والقيمة المضافة" }
+      - { label: "تفاصيل الحل والقيمة", name: "solutionText", widget: "text", required: true }
+      - { label: "عنوان قسم الأثر والنتائج", name: "impactTitle", widget: "string", required: true, default: "الأثر والنتائج" }
+      - { label: "تفاصيل الأثر والنتائج", name: "impactText", widget: "text", required: true }
+      - { label: "تسمية تبويب المعرض", name: "galleryTab", widget: "string", required: true, default: "معرض صور المشروع" }
+      - { label: "تسمية تبويب لوحة البيانات", name: "dashboardTab", widget: "string", required: true, default: "لوحة البيانات التفاعلية" }
+      - { label: "نص التوجيه للوحة البيانات", name: "dashboardPrompt", widget: "string", required: true }
+      - { label: "زر فتح لوحة البيانات", name: "dashboardBtn", widget: "string", required: true }
+      - { label: "عنوان الاستفسار", name: "inquireTitle", widget: "string", required: true }
+      - { label: "وصف الاستفسار", name: "inquireDesc", widget: "string", required: true }
+      - { label: "زر استفسار (CTA)", name: "inquireBtn", widget: "string", required: true }
+      - { label: "صورة الغلاف", name: "coverImage", widget: "image", required: true }
+      - { label: "صور المعرض", name: "galleryImages", widget: "list", field: { widget: "image" }, required: true }
+      - { label: "رابط مستودع Github", name: "githubUrl", widget: "string", required: false }
+      - { label: "رسالة واتساب لبدء المشروع", name: "whatsappStartProjectMsg", widget: "string", required: true }
+      - { label: "رسالة واتساب لفتح لوحة المؤشرات", name: "whatsappOpenDashboardMsg", widget: "string", required: true }
+      - { label: "الأولوية (الترتيب)", name: "priority", widget: "number", value_type: "int", required: true }
+      - { label: "التصنيف", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
+      - { label: "الوسوم (Tags)", name: "tags", widget: "list", required: false }
+      - *content_states
+      - *seo_fields

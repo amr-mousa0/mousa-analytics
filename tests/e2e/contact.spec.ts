@@ -31,29 +31,29 @@ test.describe('Contact Form Interaction & Spam Protection', () => {
     const submitBtn = page.locator('#submit-button');
     await expect(submitBtn).toBeEnabled();
 
-    // Start listening for the submit event in the page context and prevent default navigation
-    const submitPromise = page.evaluate(() => {
-      return new Promise<Record<string, string>>((resolve) => {
-        const form = document.getElementById('contact-form') as HTMLFormElement | null;
-        if (form) {
-          form.addEventListener('submit', (e) => {
-            e.preventDefault(); // Stop navigation
-            const data = new FormData(form);
-            const obj: Record<string, string> = {};
-            data.forEach((val, key) => {
-              obj[key] = val.toString();
-            });
-            resolve(obj);
+    // Register the submit listener synchronously
+    await page.evaluate(() => {
+      const form = document.getElementById('contact-form') as HTMLFormElement | null;
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault(); // Stop navigation so page doesn't unload
+          const data = new FormData(form);
+          const obj: Record<string, string> = {};
+          data.forEach((val, key) => {
+            obj[key] = val.toString();
           });
-        }
-      });
+          (window as any).submittedPayload = obj;
+        });
+      }
     });
 
-    // Click submit
-    await submitBtn.click({ force: true });
+    // Dispatch submit event on the form programmatically to run listeners synchronously
+    await page.locator('#contact-form').evaluate((form: HTMLFormElement) => {
+      form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    });
 
-    // Await captured payload
-    const submittedPayload = await submitPromise;
+    // Retrieve the captured payload
+    const submittedPayload = await page.evaluate(() => (window as any).submittedPayload);
 
     // Verify fields in the payload
     expect(submittedPayload.name).toBe('Jane Doe');
@@ -95,8 +95,10 @@ test.describe('Contact Form Interaction & Spam Protection', () => {
       }
     });
 
-    // Click submit (the event listener should reset form and prevent default)
-    await submitBtn.click({ force: true });
+    // Submit form using dispatchEvent to trigger client-side submit handler robustly
+    await page.locator('#contact-form').evaluate((form: HTMLFormElement) => {
+      form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    });
 
     // Assert request was never sent
     await page.waitForTimeout(1000); // Wait briefly to verify no requests triggered

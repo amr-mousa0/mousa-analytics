@@ -1,0 +1,213 @@
+---
+import { getSafeProjects } from '../../scripts/projectsHelper';
+import { Image } from 'astro:assets';
+
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const projects = await getSafeProjects(lang);
+
+const getProjectUrl = (slug: string) => {
+  const cleanSlug = slug.split('/').pop();
+  return `/${lang}/projects/${cleanSlug}/`;
+};
+
+const getProjectIcon = (slug: string) => {
+  const cleanSlug = slug.split('/').pop();
+  if (cleanSlug === 'coffee-shop') return 'fa-solid fa-mug-hot';
+  if (cleanSlug === 'marketing-roi') return 'fa-solid fa-chart-line';
+  if (cleanSlug === 'oxygen-gym') return 'fa-solid fa-dumbbell';
+  return 'fa-solid fa-laptop-code';
+};
+
+---
+
+<section id="projects" aria-labelledby="projects-title" class="py-24 px-6 relative bg-transparent overflow-hidden scroll-mt-20">
+  <div class="max-w-6xl mx-auto space-y-12">
+    <!-- Header Area -->
+    <div class="space-y-3 text-center">
+      <!-- Title -->
+      <h2 id="projects-title" class="text-4xl font-extrabold tracking-tight text-accent-primary font-sans">
+        {isAr ? "المشاريع" : "Projects"}
+      </h2>
+      
+      <!-- Subtitle -->
+      <p class="text-text-main/70 text-base leading-relaxed font-sans max-w-xl mx-auto">
+        {isAr ? "نتائج حقيقية من مشاريع واقعية. شاهد كيف نقود النمو." : "Real results from real projects. See how we drive growth."}
+      </p>
+    </div>
+
+    <!-- Carousel Container Wrapper -->
+    <div class="relative project-carousel-container px-4 md:px-0">
+      
+      <!-- Navigation Arrows (Desktop overlay only) -->
+      <button 
+        class="absolute top-1/2 -translate-y-1/2 start-0 md:-start-6 z-10 w-12 h-12 rounded-full border border-slate-200 bg-white shadow-md flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all duration-200 active:scale-90 select-none carousel-btn-left"
+        aria-label={isAr ? "التمرير للأمام" : "Scroll back"}
+      >
+        <svg class="w-4 h-4 text-text-main/70 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+      </button>
+
+      <button 
+        class="absolute top-1/2 -translate-y-1/2 end-0 md:-end-6 z-10 w-12 h-12 rounded-full border border-slate-200 bg-white shadow-md flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all duration-200 active:scale-90 select-none carousel-btn-right"
+        aria-label={isAr ? "التمرير للخلف" : "Scroll forward"}
+      >
+        <svg class="w-4 h-4 text-text-main/70 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+      </button>
+
+      <!-- Horizontal scroll snap list -->
+      <div class="project-carousel-list flex gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar pb-6 px-1">
+        {projects.length === 0 ? (
+          <div class="w-full text-center py-12 text-slate-400 font-sans">
+            {isAr ? "لا توجد مشاريع متاحة حالياً." : "No projects found."}
+          </div>
+        ) : (
+          projects.map((project) => (
+            <div class="premium-card-global !p-0 overflow-hidden flex flex-col h-full flex-shrink-0 w-[85vw] md:w-[420px] snap-center">
+              
+              <!-- Top Half: Project Preview Image -->
+              <a 
+                href={getProjectUrl(project.slug)} 
+                class="h-56 relative border-b border-slate-100 bg-slate-50 overflow-hidden block"
+              >
+                <Image 
+                  src={project.data.coverImage} 
+                  alt={project.data.title} 
+                  class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  loading="lazy"
+                />
+                
+                {project.isFallback && (
+                  <span class="absolute top-4 end-4 text-[8px] font-bold tracking-wider text-white uppercase px-2 py-0.5 rounded bg-amber-600 font-sans z-10">
+                    {isAr ? "غير مترجم" : "NOT TRANSLATED"}
+                  </span>
+                )}
+
+                <!-- Floating Icon Badge (Bottom-Left) -->
+                <div class="absolute -bottom-3 start-4 w-9 h-9 rounded-xl bg-white border border-slate-200 shadow-md flex items-center justify-center text-accent-primary z-10">
+                  <i class={`${getProjectIcon(project.slug)} text-sm`}></i>
+                </div>
+              </a>
+
+              <!-- Bottom Half: Content details -->
+              <div class="p-6 pt-8 bg-white flex-grow flex flex-col justify-between">
+                <div class="space-y-4">
+                  
+                  <!-- Category pill tag -->
+                  <div>
+                    <span class="inline-block px-2.5 py-1 text-[9px] font-extrabold tracking-wider text-accent-primary uppercase bg-accent-primary/5 border border-accent-primary/20 rounded font-sans">
+                      {project.data.projectBadge}
+                    </span>
+                  </div>
+
+                  <!-- Title -->
+                  <h3 class="text-lg font-bold text-text-main font-serif leading-snug">
+                    <a 
+                      href={getProjectUrl(project.slug)} 
+                      class="hover:text-accent-primary transition-colors"
+                    >
+                      {project.data.title}
+                    </a>
+                  </h3>
+
+                  {project.isFallback && (
+                    <div class="text-[10px] text-amber-600 bg-amber-500/5 px-2.5 py-1.5 rounded border border-amber-500/10 font-sans leading-tight">
+                      {isAr 
+                        ? "⚠️ هذا المشروع غير متوفر بالعربية بعد، يتم عرض النسخة الإنجليزية." 
+                        : "⚠️ Arabic version unavailable, English details shown."}
+                    </div>
+                  )}
+
+                  <!-- Description -->
+                  <p class="text-text-main/70 text-sm leading-relaxed font-sans min-h-[4.5rem]">
+                    {project.data.problemText.length > 150 ? project.data.problemText.substring(0, 147) + '...' : project.data.problemText}
+                  </p>
+
+                  <!-- Tech Stack tags -->
+                  <div class="flex flex-wrap gap-2 pt-2">
+                    {project.data.tags.map((tag: string) => (
+                      <span class="px-2.5 py-1 text-[11px] font-medium text-slate-600 bg-slate-50 border border-slate-100 rounded-full font-sans">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div class="mt-6">
+                  <!-- Subtle divider line -->
+                  <hr class="border-slate-100 my-4" />
+
+                  <!-- Explore CTA Button (Touch target height of 44px) -->
+                  <div class="flex justify-end">
+                    <a 
+                      href={getProjectUrl(project.slug)} 
+                      class="h-11 px-5 rounded-lg bg-accent-primary/5 hover:bg-accent-primary/10 text-accent-primary border border-accent-primary/20 font-semibold text-xs transition-all duration-200 active:scale-95 flex items-center gap-1.5 cursor-pointer justify-center"
+                    >
+                      {isAr ? "استكشف التفاصيل" : "Explore Details"}
+                      <span class="text-sm font-sans">→</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          ))
+        )}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  // Setup logic for navigation trigger events
+  const setupCarousel = () => {
+    const carousels = document.querySelectorAll('.project-carousel-container');
+    
+    carousels.forEach(container => {
+      // Guard against double initialization
+      if (container.hasAttribute('data-carousel-initialized')) return;
+      container.setAttribute('data-carousel-initialized', 'true');
+
+      const list = container.querySelector('.project-carousel-list');
+      const leftBtn = container.querySelector('.carousel-btn-left');
+      const rightBtn = container.querySelector('.carousel-btn-right');
+      
+      if (!list || !leftBtn || !rightBtn) return;
+      
+      const card = list.querySelector('.premium-card-global');
+      if (!card) return;
+
+      // Scroll amount is one card width + gap (32px)
+      const getScrollAmount = () => card.clientWidth + 32;
+
+      leftBtn.addEventListener('click', () => {
+        const isRtl = document.documentElement.dir === 'rtl';
+        const scrollAmount = getScrollAmount();
+        list.scrollBy({
+          left: isRtl ? scrollAmount : -scrollAmount,
+          behavior: 'smooth'
+        });
+      });
+
+      rightBtn.addEventListener('click', () => {
+        const isRtl = document.documentElement.dir === 'rtl';
+        const scrollAmount = getScrollAmount();
+        list.scrollBy({
+          left: isRtl ? -scrollAmount : scrollAmount,
+          behavior: 'smooth'
+        });
+      });
+    });
+  };
+
+  // Run on page load
+  setupCarousel();
+
+  // Run on Astro View Transitions navigation swap
+  document.addEventListener('astro:after-swap', setupCarousel);
+</script>
