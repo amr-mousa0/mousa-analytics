@@ -7,9 +7,11 @@ import { getSafeSocials } from '../../scripts/socialsHelper';
 
 interface Props {
   lang: string;
+  desktopImg?: any;
+  mobileImg?: any;
 }
 
-const { lang } = Astro.props;
+const { lang, desktopImg: propDesktopImg, mobileImg: propMobileImg } = Astro.props;
 const isAr = lang === 'ar';
 
 const socials = await getSafeSocials(lang);
@@ -31,9 +33,9 @@ const heroData = heroEntry?.data || {
   trendingItems: isAr ? "بيانات آمنة • شفافية كاملة • تسليم دقيق" : "Secure Data • Full Transparency • On-Time Delivery"
 };
 
-// Pre-optimize hero images at build time for <picture> element
-const desktopImg = await getImage({ src: analyticsBgImgDesktop, quality: 85, format: 'webp' });
-const mobileImg = await getImage({ src: analyticsBgImgMobile, quality: 80, format: 'webp' });
+// Fallback to build-time optimization if not passed as props (defensive design)
+const desktopImg = propDesktopImg || (await getImage({ src: analyticsBgImgDesktop, quality: 85, format: 'webp' }));
+const mobileImg = propMobileImg || (await getImage({ src: analyticsBgImgMobile, quality: 80, format: 'webp' }));
 
 // Parse trending items into individual pills
 const trendingPills = heroData.trendingItems.split('•').map((s: string) => s.trim()).filter(Boolean);
@@ -172,7 +174,7 @@ const highlightText = (text: string) => {
   <div class="w-full max-w-4xl mx-auto px-6 flex flex-col items-center gap-3 md:gap-4">
     <!-- Label -->
     <span class:list={[
-      "text-[9px] md:text-[10px] font-semibold uppercase text-text-main/40 font-sans tracking-widest",
+      "text-[9px] md:text-[10px] font-semibold uppercase text-text-main/60 font-sans tracking-widest",
       isAr ? "tracking-normal" : "tracking-[0.16em]"
     ]}>
       {heroData.trendingLabel}
@@ -203,9 +205,9 @@ const highlightText = (text: string) => {
             <!-- Text content container -->
             <div class="flex flex-col text-center md:text-start gap-0.5">
               <!-- Title -->
-              <h3 class="text-[9px] sm:text-[10px] md:text-xs font-bold font-serif text-text-main group-hover:text-accent-primary transition-colors duration-300 leading-tight whitespace-nowrap">
+              <h2 class="text-[9px] sm:text-[10px] md:text-xs font-bold font-serif text-text-main group-hover:text-accent-primary transition-colors duration-300 leading-tight whitespace-nowrap">
                 {pill}
-              </h3>
+              </h2>
               
               <!-- Description (Hidden on mobile for ultra-clean look) -->
               <p class="hidden md:block text-[9px] md:text-[10px] text-text-main/55 font-sans font-light leading-snug">

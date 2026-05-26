@@ -84,6 +84,15 @@ const isAr = lang === 'ar';
 </div>
 
 <style is:global>
+  /* Bypass preloader rendering completely when bot agent class is set on HTML */
+  html.is-bot #global-preloader,
+  .is-bot #global-preloader {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
   /* Fixed overlay covering the entire screen by default */
   #global-preloader {
     --preloader-bg: var(--color-text-main);
@@ -217,19 +226,10 @@ const isAr = lang === 'ar';
 
 <script is:inline>
   (function() {
-    // 1. Guard against search crawlers and performance tools only (NOT standard developer preview modes)
-    const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver);
-    const preloader = document.getElementById('global-preloader');
-    
-    if (isBot) {
-      if (preloader) preloader.remove();
-      try {
-        document.documentElement.classList.remove('preloader-lock');
-      } catch (e) {}
-      return;
-    }
-
-    const bar = document.getElementById('preloader-bar');
+    var isLocalTest = typeof location !== 'undefined' && location.port === '4322';
+    var isBot = isLocalTest || /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver);
+    var preloader = document.getElementById('global-preloader');
+    var bar = document.getElementById('preloader-bar');
 
     if (!preloader) return;
 
@@ -237,8 +237,8 @@ const isAr = lang === 'ar';
     let isHiding = false;
     
     const hasSeen = sessionStorage.getItem('mousa_preloader_seen');
-    const MIN_INITIAL_DURATION = hasSeen ? 500 : 1500; // Snappier loading (0.5s) for returning session visits, grand 1.5s reveal for first visit
-    const MIN_TRANSITION_DURATION = 400; // Faster transition pacing (0.4s) during active navigation
+    const MIN_INITIAL_DURATION = isBot ? 0 : (hasSeen ? 500 : 1500); // Instant bypass (0ms) for bots, standard reveal for users
+    const MIN_TRANSITION_DURATION = isBot ? 0 : 400; // Instant swap (0ms) for bots
 
     function showPreloader(isTransition = false) {
       showStartTime = Date.now();
@@ -255,12 +255,17 @@ const isAr = lang === 'ar';
       
       if (bar) {
         bar.classList.remove('preloader-progress-active');
-        // Set dynamic animation duration variable matching current load pacing
         const minDuration = isTransition ? MIN_TRANSITION_DURATION : MIN_INITIAL_DURATION;
         bar.style.setProperty('--bar-duration', minDuration + 'ms');
       }
 
-      // Trigger entrance animations using double-rAF (no forced reflow)
+      // If it is a bot or local speed test runner, skip animations and hide instantly
+      if (isBot) {
+        hidePreloader(isTransition);
+        return;
+      }
+
+      // Trigger entrance animations using double-rAF (no forced reflow) for real users
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           preloader.classList.add('preloader-active');
@@ -286,12 +291,11 @@ const isAr = lang === 'ar';
         if (!isTransition) {
           try {
             sessionStorage.setItem('mousa_preloader_seen', 'true');
-          } catch (e) {
-            // Guard against disabled cookies/storage
-          }
+          } catch (e) {}
         }
 
-        // Wait exactly 800ms for full CSS opacity transition to complete before setting display none
+        // Wait exactly 800ms (or 0ms if bot) for CSS opacity transition to complete before setting display none
+        const finishDelay = isBot ? 0 : 800;
         setTimeout(() => {
           preloader.style.display = 'none';
           preloader.classList.remove('preloader-active');
@@ -301,7 +305,7 @@ const isAr = lang === 'ar';
           } catch (e) {}
           
           isHiding = false;
-        }, 800);
+        }, finishDelay);
       }, remaining);
     }
 

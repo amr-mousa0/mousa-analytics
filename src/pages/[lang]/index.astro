@@ -6,6 +6,10 @@ import Services from '../../components/sections/Services.astro';
 import Projects from '../../components/sections/Projects.astro';
 import Footer from '../../components/ui/Footer.astro';
 
+import { getImage } from 'astro:assets';
+import analyticsBgImgDesktop from '../../assets/images/analyst-side-bg-desktop.png';
+import analyticsBgImgMobile from '../../assets/images/analyst-side-bg-mobile.png';
+
 // Dynamic route parameters
 export function getStaticPaths() {
   return [
@@ -22,9 +26,13 @@ if (!lang || !['en', 'ar'].includes(lang)) {
 }
 
 const isAr = lang === 'ar';
+
+// Pre-optimize hero images at build time for preloading
+const desktopImg = await getImage({ src: analyticsBgImgDesktop, quality: 85, format: 'webp' });
+const mobileImg = await getImage({ src: analyticsBgImgMobile, quality: 80, format: 'webp' });
 ---
 
-<Layout lang={lang} pageId="homepage">
+<Layout lang={lang} pageId="homepage" preloadImageMobile={mobileImg.src} preloadImageDesktop={desktopImg.src}>
   <!-- Inject Schema.org JSON-LD Metadata -->
   <script is:inline type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
@@ -61,7 +69,7 @@ const isAr = lang === 'ar';
 
   <Navigation lang={lang} activePage="home" />
   <main class="flex-grow">
-    <Hero lang={lang} />
+    <Hero lang={lang} desktopImg={desktopImg} mobileImg={mobileImg} />
     <Services lang={lang} />
     <Projects lang={lang} />
   </main>

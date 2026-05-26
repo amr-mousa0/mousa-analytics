@@ -123,11 +123,11 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
         id="language-toggle"
         href={langTogglePath} 
         class="px-4 py-1.5 rounded-full border border-text-main/10 bg-hero-card text-[9px] font-extrabold uppercase tracking-[0.15em] shadow-sm flex items-center gap-1.5 focus-visible:ring-2"
-        aria-label={isAr ? "Switch to English" : "تغيير للغة العربية"}
+        aria-label={isAr ? "EN / AR - Switch to English" : "EN / AR - تغيير للغة العربية"}
       >
         {isAr ? (
           <>
-            <span class="text-text-main/40 hover:text-hero-accent transition-all">EN</span>
+            <span class="text-text-main/60 hover:text-hero-accent transition-all">EN</span>
             <span class="text-text-main/10">/</span>
             <span class="text-hero-accent">AR</span>
           </>
@@ -135,7 +135,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
           <>
             <span class="text-hero-accent">EN</span>
             <span class="text-text-main/10">/</span>
-            <span class="text-text-main/40 hover:text-hero-accent transition-all">AR</span>
+            <span class="text-text-main/60 hover:text-hero-accent transition-all">AR</span>
           </>
         )}
       </a>
@@ -414,7 +414,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
 </div>
 
 <!-- Contact Form Modal (Bottom Sheet GPU-Accelerated) -->
-<div id="contact-modal" class="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none" aria-modal="true" role="dialog">
+<div id="contact-modal" class="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none" aria-modal="true" role="dialog" aria-labelledby="contact-modal-title">
   <!-- Frosted Glass Backdrop Overlay -->
   <div id="contact-modal-backdrop" class="fixed inset-0 bg-text-main/60 backdrop-blur-md opacity-0 transition-opacity duration-300 ease-out cursor-pointer pointer-events-none"></div>
   
@@ -426,7 +426,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
     <!-- Header -->
     <div class="flex items-center justify-between pb-3 border-b border-text-main/5">
       <div class="flex flex-col text-start">
-        <h3 class="font-serif text-base font-bold text-text-main">
+        <h3 id="contact-modal-title" class="font-serif text-base font-bold text-text-main">
           {isAr ? "ابدأ خدمتك الآن" : "Start Your Service"}
         </h3>
         <p class="text-[10px] md:text-xs text-text-main/50 font-sans leading-none mt-1">
