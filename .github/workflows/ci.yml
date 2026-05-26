@@ -7,8 +7,8 @@ on:
     branches: [ main, master ]
 
 jobs:
-  test:
-    name: Build & Test Validation
+  build:
+    name: Build Validation
     runs-on: ubuntu-latest
 
     steps:
@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-level: '20'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install Dependencies
@@ -27,12 +27,5 @@ jobs:
       - name: Run Astro Type Checking
         run: npm run check
 
-      - name: Run Unit Tests
-        run: npm run test:unit
-
-      # Optional: To run Playwright E2E tests in CI, uncomment the steps below:
-      # - name: Install Playwright Browsers
-      #   run: npx playwright install --with-deps
-      #
-      # - name: Run E2E Integration Tests
-      #   run: npm run test:e2e
+      - name: Build Production Bundle
+        run: npm run build

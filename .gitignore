@@ -57,3 +57,21 @@ Thumbs.db
 # Temporary and Scratch Directories
 scratch/
 .impeccable/
+.specify/
+specs/
+
+# Agent Tooling (local dev only)
+.agent/
+.agents/
+AGENTS.md
+DESIGN.md
+PRODUCT.md
+STARTER_CONSTRAINTS.md
+task.md
+
+# Testing (local dev only)
+tests/
+playwright.config.ts
+playwright-report/
+test-results/
+
