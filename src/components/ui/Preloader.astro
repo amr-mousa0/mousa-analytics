@@ -260,15 +260,14 @@ const isAr = lang === 'ar';
         bar.style.setProperty('--bar-duration', minDuration + 'ms');
       }
 
-      // Force layout reflow
-      preloader.offsetHeight;
-
-      // Trigger entrance animations by adding active class
+      // Trigger entrance animations using double-rAF (no forced reflow)
       requestAnimationFrame(() => {
-        preloader.classList.add('preloader-active');
-        if (bar) {
-          bar.classList.add('preloader-progress-active');
-        }
+        requestAnimationFrame(() => {
+          preloader.classList.add('preloader-active');
+          if (bar) {
+            bar.classList.add('preloader-progress-active');
+          }
+        });
       });
     }
 

@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import analyticsBgImgDesktop from '../../assets/images/analyst-side-bg-desktop.png';
 import analyticsBgImgMobile from '../../assets/images/analyst-side-bg-mobile.png';
@@ -30,6 +30,10 @@ const heroData = heroEntry?.data || {
   trendingLabel: isAr ? "ضمانات الخدمة:" : "Service Guarantees:",
   trendingItems: isAr ? "بيانات آمنة • شفافية كاملة • تسليم دقيق" : "Secure Data • Full Transparency • On-Time Delivery"
 };
+
+// Pre-optimize hero images at build time for <picture> element
+const desktopImg = await getImage({ src: analyticsBgImgDesktop, quality: 85, format: 'webp' });
+const mobileImg = await getImage({ src: analyticsBgImgMobile, quality: 80, format: 'webp' });
 
 // Parse trending items into individual pills
 const trendingPills = heroData.trendingItems.split('•').map((s: string) => s.trim()).filter(Boolean);
@@ -66,30 +70,23 @@ const highlightText = (text: string) => {
   
   <!-- Parallax background wrapper covering 100% of the section -->
   <div class="scroll-bg-image absolute inset-0 z-0 pointer-events-none select-none transition-transform duration-100 ease-out origin-center">
-    <!-- Desktop background image (16:9 ratio, aligned to bottom to show the desk) -->
-    <Image 
-      src={analyticsBgImgDesktop} 
-      alt="" 
-      class:list={[
-        "hidden md:block w-full h-full object-cover object-bottom opacity-90 md:opacity-95",
-        isAr && "scale-x-[-1]"
-      ]}
-      loading="eager"
-      fetchpriority="high"
-      quality={90}
-    />
-    <!-- Mobile background image (9:16 ratio, aligned to bottom to show the desk) -->
-    <Image 
-      src={analyticsBgImgMobile} 
-      alt="" 
-      class:list={[
-        "block md:hidden w-full h-full object-cover object-bottom opacity-90",
-        isAr && "scale-x-[-1]"
-      ]}
-      loading="eager"
-      fetchpriority="high"
-      quality={90}
-    />
+    <!-- Single <picture> element: browser downloads ONLY the matching source per viewport -->
+    <picture>
+      <source media="(min-width: 768px)" srcset={desktopImg.src} type="image/webp" />
+      <img 
+        src={mobileImg.src} 
+        alt="" 
+        class:list={[
+          "w-full h-full object-cover object-bottom opacity-90 md:opacity-95",
+          isAr && "scale-x-[-1]"
+        ]}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        width={mobileImg.attributes.width || 750}
+        height={mobileImg.attributes.height || 1334}
+      />
+    </picture>
   </div>
 
   <!-- Ambient overlays for high text contrast and edge blending -->
