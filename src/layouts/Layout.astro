@@ -1,5 +1,7 @@
 ---
 import { getSafeSeo } from '../scripts/seoHelper';
+import { ClientRouter } from 'astro:transitions';
+import Preloader from '../components/ui/Preloader.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -154,12 +156,14 @@ const pageContext = {
         });
       }
     </script>
+    <ClientRouter />
   </head>
   <body class="bg-primary-bg text-text-main selection:bg-accent-primary selection:text-white m-0 p-0 pb-20 md:pb-0 antialiased overflow-x-hidden min-h-screen flex flex-col">
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MCSCSTTS"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+    <Preloader lang={lang} />
     <slot />
 
     <!-- Centralized Page View Tracking Script -->
