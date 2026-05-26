@@ -1,0 +1,265 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/ui/Navigation.astro';
+import Footer from '../../components/ui/Footer.astro';
+
+// Dynamic route parameters for bilingual setup
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'ar' } },
+  ];
+}
+
+const { lang } = Astro.params;
+
+// Route Parameter Guard
+if (!lang || !['en', 'ar'].includes(lang)) {
+  return Astro.redirect('/en/');
+}
+
+const isAr = lang === 'ar';
+
+// Page-specific text content matching high-ticket B2B agency style
+const t = {
+  eyebrow: isAr ? "اتفاقية تقديم الخدمة" : "TERMS & CONDITIONS",
+  title: isAr ? "الشروط والأحكام" : "Terms of Service",
+  subtitle: isAr ? "شروط تقديم الاستشارات الاحترافية، معايير الخدمات، وضوابط المشروعات." : "Our professional service standards, B2B consulting terms, and project rules.",
+  lastUpdated: isAr ? "آخر تحديث: مايو 2026" : "Last Updated: May 2026",
+  
+  introTitle: isAr ? "شروط وأحكام الاستشارات" : "Consulting Terms & Standards",
+  introText: isAr 
+    ? "مرحباً بكم في موسى للتحليلات. تنطبق شروط الخدمة هذه على جميع الاستشارات، لوحات البيانات التحليلية، وخدمات إدارة الحملات الإعلانية المقدمة من المهندس عمرو موسى. باستخدامك لهذا الموقع أو بدء مشروع معنا، فإنك توافق بالكامل على الالتزام بهذه الشروط."
+    : "Welcome to Mousa Analytics. These Terms of Service apply to all consulting services, custom analytics dashboards, and marketing campaign management provided by Amr Mousa. By using this website or initiating a B2B project with us, you agree to comply with these terms.",
+
+  scopeTitle: isAr ? "نطاق الخدمات والتعاقد" : "Scope of Services & Engagement",
+  scopeText: isAr
+    ? "نقدم خدمات استشارية متخصصة ومصممة بدقة للشركات، تشمل:"
+    : "We deliver tailored, high-precision B2B consulting services, including:",
+  scopeItems: isAr ? [
+    "تصميم وتنفيذ لوحات قياس البيانات (Dashboards) باستخدام Power BI و SQL.",
+    "إعداد وتتبع قنوات الربط التحليلي وتأمين البنية التحتية لبيانات الإعلانات.",
+    "إدارة وتدقيق الحملات الإعلانية المدفوعة لتحسين الأداء وتقليص الهدر المالي."
+  ] : [
+    "Designing and building custom analytics dashboards using SQL, Power BI, and specialized interfaces.",
+    "Setting up conversion tracking systems and auditing marketing data pipelines.",
+    "Auditing and managing performance advertising campaigns to maximize conversions and prevent spend waste."
+  ],
+
+  responsibilityTitle: isAr ? "مسؤوليات العميل والوصول" : "Client Responsibilities & Account Access",
+  responsibilityText: isAr
+    ? "لضمان تحقيق أقصى قدر من الدقة والالتزام بتسليم المشروعات في مواعيدها المحددة:"
+    : "To ensure absolute precision and on-time delivery of analytical milestones:",
+  responsibilityItems: isAr ? [
+    "يلتزم العميل بتوفير وصول آمن ومصرح به (صلاحيات عرض أو ربط) للمنصات الإعلانية وقواعد البيانات المطلوبة للمشروع.",
+    "العميل مسؤول تماماً عن صحة وسلامة البيانات والمصادر الداخلية التي يزودنا بها.",
+    "أي تأخير في توفير التراخيص والوصول المطلوب قد ينتج عنه تمديد تلقائي للجدول الزمني لتسليم المشروع."
+  ] : [
+    "The client agrees to provide secure, authorized read-only credentials or API access to relevant advertising accounts and databases.",
+    "The client maintains sole responsibility for the validity, legality, and accuracy of the internal data sources provided.",
+    "Delays in providing required account permissions will naturally result in corresponding timeline adjustments."
+  ],
+
+  ipTitle: isAr ? "الملكية الفكرية للأدوات" : "Intellectual Property & Deliverables",
+  ipText: isAr
+    ? "عند سداد كامل مستحقات المشروع، تنتقل ملكية لوحات البيانات المخصصة (Dashboards) والتقارير المكتوبة بالكامل للعميل. ومع ذلك، تحتفظ مؤسسة 'موسى للتحليلات' بالحقوق الكاملة للملكية الفكرية للقوالب الخاصة، الأكواد البرمجية المرجعية، والاستراتيجيات التأسيسية التي تم استخدامها في التطوير."
+    : "Upon complete payment of project invoices, the specific dashboards, custom reports, and delivered spreadsheets belong entirely to the client. However, Mousa Analytics retains full intellectual property rights to any proprietary framework templates, base scripts, and underlying database architectures utilized in the creation process.",
+
+  paymentTitle: isAr ? "التعاقد والدفعات المالية" : "Payments, Retainers & Termination",
+  paymentText: isAr
+    ? "تبدأ المشاريع فور سداد الدفعة الأولى المتفق عليها في نموذج عرض العمل. بالنسبة لخدمات المراقبة والصيانة الشهرية، يتم احتساب الفواتير بشكل دوري في بداية كل شهر تعاقدي. يحق لكلا الطرفين إنهاء خدمات الدعم الشهري بإشعار مسبق مدته 14 يوماً."
+    : "B2B projects are initiated upon receipt of the initial deposit specified in the custom scope proposal. Monthly tracking retainers are invoiced at the beginning of each billing cycle. Either party may terminate a monthly support agreement with a 14-day written notice, with no refunds provided for active work cycles.",
+
+  disclaimerTitle: isAr ? "إخلاء المسؤولية الاستشارية" : "Professional Advisory Disclaimer",
+  disclaimerText: isAr
+    ? "جميع البيانات، والتحليلات، والتوصيات الاستشارية المقدمة هي لأغراض اتخاذ القرار ومساعدتك على تحسين الأداء. نحن نبذل قصارى جهدنا لضمان دقة التحليلات، ولكن القرار النهائي والنتائج التجارية الفعلية هي مسؤولية العميل وإدارة الشركة بالكامل."
+    : "All analytical dashboards, campaign audits, and recommendations are strategic advice intended to help clients optimize budgets. While we exercise absolute professional diligence to ensure accuracy, the final business decisions and resulting marketing performance are the sole responsibility of the client.",
+
+  contactBtn: isAr ? "تواصل معي مباشرة" : "Contact Directly",
+  homeBtn: isAr ? "الذهاب للرئيسية" : "Go to Homepage"
+};
+---
+
+<Layout lang={lang} pageId="terms" title={t.title}>
+  <Navigation lang={lang} activePage="" />
+
+  <!-- Inject Schema.org JSON-LD Metadata for Legal Page -->
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `https://mousaanalytics.com/${lang}/terms/`,
+        "url": `https://mousaanalytics.com/${lang}/terms/`,
+        "name": t.title,
+        "description": t.subtitle,
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": `https://mousaanalytics.com/${lang}/#website`
+        }
+      }
+    ]
+  })} />
+
+  <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent font-sans">
+    <!-- Atmospheric Premium Ambient Glows -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_20%,oklch(75%_0.12_255_/_0.06),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,oklch(75%_0.12_255_/_0.04),transparent_60%)] pointer-events-none z-0" aria-hidden="true"></div>
+
+    <article class="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 space-y-16" dir={isAr ? "rtl" : "ltr"}>
+      
+      <!-- Premium Editorial Header -->
+      <header class="text-center space-y-4 max-w-3xl mx-auto">
+        <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase">
+          {t.eyebrow}
+        </span>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight font-serif text-text-main leading-tight">
+          {t.title}
+        </h1>
+        <p class="text-sm sm:text-base text-text-main/70 max-w-xl mx-auto font-light leading-relaxed">
+          {t.subtitle}
+        </p>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-text-main/5 border border-text-main/10 text-text-main/55 text-[10px] font-medium font-mono select-none">
+          <i class="fa-regular fa-clock text-[9px]" aria-hidden="true"></i>
+          <span>{t.lastUpdated}</span>
+        </div>
+      </header>
+
+      <!-- Minimalist elegant divider -->
+      <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-text-main/20 to-transparent mx-auto" aria-hidden="true"></div>
+
+      <!-- Core Content Grid -->
+      <div class="space-y-12 text-text-main/80 text-sm sm:text-[15px] leading-relaxed font-light">
+        
+        <!-- Commitment Section -->
+        <section class="glass-card p-6 sm:p-8 rounded-xl border border-text-main/5 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-file-contract text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.introTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/70">
+            {t.introText}
+          </p>
+        </section>
+
+        <!-- Scope Section -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-screwdriver-wrench text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.scopeTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/75">
+            {t.scopeText}
+          </p>
+          <ul class="list-none space-y-3 pl-0">
+            {t.scopeItems.map((item) => (
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent-primary mt-2.5 shrink-0" aria-hidden="true"></span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- Client Responsibility Section -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-user-check text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.responsibilityTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/75">
+            {t.responsibilityText}
+          </p>
+          <ul class="list-none space-y-3 pl-0">
+            {t.responsibilityItems.map((item) => (
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent-primary mt-2.5 shrink-0" aria-hidden="true"></span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- Intellectual Property Section -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-copyright text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.ipTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/75">
+            {t.ipText}
+          </p>
+        </section>
+
+        <!-- Payments Section -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-credit-card text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.paymentTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/75">
+            {t.paymentText}
+          </p>
+        </section>
+
+        <!-- Disclaimer Section -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-triangle-exclamation text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.disclaimerTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/75">
+            {t.disclaimerText}
+          </p>
+        </section>
+
+      </div>
+
+      <!-- Elegant Call to Actions -->
+      <footer class="pt-8 border-t border-text-main/5 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a 
+          href={isAr ? "https://wa.me/201099661462" : "mailto:amr@mousaanalytics.com"} 
+          target="_blank"
+          rel="noopener noreferrer"
+          class="h-11 px-6 rounded-full bg-text-main hover:bg-text-main/90 text-white text-[11px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 w-full sm:w-auto"
+        >
+          <i class={isAr ? "fa-brands fa-whatsapp text-xs" : "fa-regular fa-envelope text-xs"} aria-hidden="true"></i>
+          <span>{t.contactBtn}</span>
+        </a>
+        <a 
+          href={`/${lang}/`} 
+          class="h-11 px-6 rounded-full bg-transparent border border-text-main/15 hover:bg-text-main/5 text-text-main text-[11px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 w-full sm:w-auto"
+        >
+          <span>{t.homeBtn}</span>
+        </a>
+      </footer>
+
+    </article>
+  </main>
+
+  <Footer lang={lang} />
+</Layout>
