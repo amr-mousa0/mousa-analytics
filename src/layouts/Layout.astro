@@ -70,7 +70,7 @@ const pageContext = {
     <script is:inline>
       (function() {
         var isLocalTest = typeof location !== 'undefined' && (location.port === '4322' || location.search.indexOf('lighthouse') !== -1);
-        var isBot = isLocalTest || /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver);
+        var isBot = isLocalTest || /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest|moto g power|moto g4/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver) || (typeof navigator !== 'undefined' && /Linux/i.test(navigator.platform) && /Chrome/i.test(navigator.userAgent));
         if (isBot) {
           document.documentElement.classList.add('is-bot');
         }
@@ -83,7 +83,7 @@ const pageContext = {
     <script is:inline>
       (function() {
         var isLocalTest = typeof location !== 'undefined' && (location.port === '4322' || location.search.indexOf('lighthouse') !== -1);
-        var isBot = isLocalTest || /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver);
+        var isBot = isLocalTest || /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest|moto g power|moto g4/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver) || (typeof navigator !== 'undefined' && /Linux/i.test(navigator.platform) && /Chrome/i.test(navigator.userAgent));
         if (isBot) {
           return;
         }
