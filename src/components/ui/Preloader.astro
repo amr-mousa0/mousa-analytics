@@ -10,38 +10,38 @@ const isAr = lang === 'ar';
 <!-- Premium preloader overlay -->
 <div 
   id="global-preloader" 
-  class="fixed inset-0 bg-[#0A192F] z-[99999] flex flex-col items-center justify-center select-none" 
+  class="select-none" 
   aria-hidden="true"
 >
-  <!-- Fine background mesh/grid to fit the "Precision Infrastructure" design principle -->
-  <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.08),transparent)] pointer-events-none"></div>
+  <!-- Background grid decoration -->
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.1),transparent)] pointer-events-none"></div>
   <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px); background-size: 4rem 4rem;"></div>
 
   <div class="flex flex-col items-center text-center px-6 max-w-xl relative z-10">
-    <!-- Main Branding Title with premium typography -->
+    <!-- Main Branding Title -->
     <div class="overflow-hidden mb-4 py-1">
       <h1 
         id="preloader-title"
-        class="font-logo text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-[0.2em] transform translate-y-full opacity-0 will-change-transform"
+        class="text-3xl sm:text-5xl md:text-6xl tracking-[0.2em]"
       >
         {isAr ? "موسى للتحليلات" : "MOUSA ANALYTICS"}
       </h1>
     </div>
     
-    <!-- Subtitle with wider tracking and premium branding color -->
+    <!-- Subtitle -->
     <div class="overflow-hidden mb-10 py-1">
       <p 
         id="preloader-subtitle"
-        class="font-sans text-[10px] sm:text-xs md:text-sm font-bold tracking-[0.3em] uppercase text-[#2563EB] transform translate-y-full opacity-0 will-change-transform"
+        class="text-[10px] sm:text-xs md:text-sm tracking-[0.3em] uppercase"
       >
         {isAr ? "حلول تحليل البيانات وتحقيق العائد من الاستثمار" : "DATA ANALYTICS & MARKETING ROI SOLUTIONS"}
       </p>
     </div>
     
-    <!-- Premium glowing loading bar exactly like the reference -->
+    <!-- Premium glowing loading bar -->
     <div 
       id="preloader-bar-container"
-      class="w-56 sm:w-64 h-[2px] bg-white/10 rounded-full overflow-hidden relative opacity-0"
+      class="w-56 sm:w-64 h-[2px] bg-white/10 rounded-full overflow-hidden relative"
     >
       <div 
         id="preloader-bar"
@@ -52,11 +52,58 @@ const isAr = lang === 'ar';
 </div>
 
 <style is:global>
-  /* Base state: preloader overlay styling */
+  /* Fixed overlay covering the entire screen by default */
   #global-preloader {
-    display: none;
-    opacity: 0;
+    position: fixed;
+    inset: 0;
+    background-color: #0A192F;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform;
+  }
+
+  /* Custom typography with fallback to prevent FOIT (Flash of Invisible Text) */
+  #preloader-title {
+    font-family: 'Cinzel', 'Cormorant Garamond', 'Georgia', serif;
+    font-weight: 700;
+    color: #ffffff;
+    transform: translateY(40px);
+    opacity: 0;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+  }
+
+  #preloader-subtitle {
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-weight: 600;
+    color: #93C5FD; /* Light ice blue for optimal contrast and readability on dark background */
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, opacity 0.8s ease 0.15s;
+  }
+
+  #preloader-bar-container {
+    opacity: 0;
+    transition: opacity 0.5s ease 0.3s;
+  }
+
+  /* Animation triggers */
+  .preloader-active #preloader-title {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .preloader-active #preloader-subtitle {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .preloader-active #preloader-bar-container {
+    opacity: 1;
   }
 
   /* Slide up curtain transition on exit */
@@ -82,11 +129,13 @@ const isAr = lang === 'ar';
   (function() {
     // 1. Guard against search crawlers and performance tools only (NOT standard developer preview modes)
     const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse/i.test(navigator.userAgent);
+    const preloader = document.getElementById('global-preloader');
+    
     if (isBot) {
+      if (preloader) preloader.style.display = 'none';
       return;
     }
 
-    const preloader = document.getElementById('global-preloader');
     const title = document.getElementById('preloader-title');
     const subtitle = document.getElementById('preloader-subtitle');
     const barContainer = document.getElementById('preloader-bar-container');
@@ -101,20 +150,11 @@ const isAr = lang === 'ar';
     function showPreloader(isTransition = false) {
       showStartTime = Date.now();
       preloader.classList.remove('preloader-exit');
+      preloader.classList.remove('preloader-active');
       preloader.style.display = 'flex';
+      preloader.style.opacity = '1';
+      preloader.style.transform = 'translateY(0)';
       
-      // Reset element styles to hidden before animating in
-      if (title) {
-        title.style.transform = 'translateY(100%)';
-        title.style.opacity = '0';
-      }
-      if (subtitle) {
-        subtitle.style.transform = 'translateY(100%)';
-        subtitle.style.opacity = '0';
-      }
-      if (barContainer) {
-        barContainer.style.opacity = '0';
-      }
       if (bar) {
         bar.classList.remove('preloader-progress-active');
       }
@@ -122,29 +162,10 @@ const isAr = lang === 'ar';
       // Force layout reflow
       preloader.offsetHeight;
 
-      // Fade-in preloader panel
-      preloader.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-      preloader.style.opacity = '1';
-      preloader.style.transform = 'translateY(0)';
-
-      // Trigger beautiful coordinated entrance animations
+      // Trigger beautiful coordinated entrance animations by adding active class
       requestAnimationFrame(() => {
-        if (title) {
-          title.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease';
-          title.style.transform = 'translateY(0)';
-          title.style.opacity = '1';
-        }
-        if (subtitle) {
-          subtitle.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, opacity 0.8s ease 0.15s';
-          subtitle.style.transform = 'translateY(0)';
-          subtitle.style.opacity = '1';
-        }
-        if (barContainer) {
-          barContainer.style.transition = 'opacity 0.5s ease 0.3s';
-          barContainer.style.opacity = '1';
-        }
+        preloader.classList.add('preloader-active');
         if (bar) {
-          bar.offsetWidth; // force reflow
           bar.classList.add('preloader-progress-active');
         }
       });
@@ -156,12 +177,12 @@ const isAr = lang === 'ar';
       const remaining = Math.max(0, minDuration - elapsed);
 
       setTimeout(() => {
-        // Luxury slide up exit animation
-        preloader.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+        // Slide up exit animation
         preloader.classList.add('preloader-exit');
 
         setTimeout(() => {
           preloader.style.display = 'none';
+          preloader.classList.remove('preloader-active');
         }, 850);
       }, remaining);
     }
