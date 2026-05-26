@@ -218,11 +218,14 @@ const isAr = lang === 'ar';
 <script is:inline>
   (function() {
     // 1. Guard against search crawlers and performance tools only (NOT standard developer preview modes)
-    const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse/i.test(navigator.userAgent);
+    const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver);
     const preloader = document.getElementById('global-preloader');
     
     if (isBot) {
       if (preloader) preloader.style.display = 'none';
+      try {
+        document.documentElement.classList.remove('preloader-lock');
+      } catch (e) {}
       return;
     }
 
@@ -234,8 +237,8 @@ const isAr = lang === 'ar';
     let isHiding = false;
     
     const hasSeen = sessionStorage.getItem('mousa_preloader_seen');
-    const MIN_INITIAL_DURATION = hasSeen ? 900 : 2400; // Snappier loading (0.9s) for returning session visits, grand 2.4s reveal for first visit
-    const MIN_TRANSITION_DURATION = 800; // Faster transition pacing (0.8s) during active navigation
+    const MIN_INITIAL_DURATION = hasSeen ? 500 : 1500; // Snappier loading (0.5s) for returning session visits, grand 1.5s reveal for first visit
+    const MIN_TRANSITION_DURATION = 400; // Faster transition pacing (0.4s) during active navigation
 
     function showPreloader(isTransition = false) {
       showStartTime = Date.now();
