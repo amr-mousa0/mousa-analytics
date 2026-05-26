@@ -22,7 +22,7 @@ const { lang } = Astro.params;
 
 // Route Parameter Guard
 if (!lang || !['en', 'ar'].includes(lang)) {
-  return Astro.redirect('/en/');
+  return Astro.redirect('/ar/');
 }
 
 const isAr = lang === 'ar';
