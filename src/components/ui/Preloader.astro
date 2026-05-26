@@ -156,17 +156,17 @@ const isAr = lang === 'ar';
   .preloader-exit {
     opacity: 0 !important;
     pointer-events: none !important;
-    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   /* Progress bar animation keyframes */
   .preloader-progress-active {
-    animation: preloader-progress-bar 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: preloader-progress-bar 2.0s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
 
   @keyframes preloader-progress-bar {
     0% { transform: translateX(-100%); }
-    50% { transform: translateX(-25%); }
+    50% { transform: translateX(-20%); }
     100% { transform: translateX(0); }
   }
 </style>
@@ -190,8 +190,8 @@ const isAr = lang === 'ar';
     if (!preloader) return;
 
     let showStartTime = 0;
-    const MIN_INITIAL_DURATION = 1400; // Hold initial preloader for 1.4s
-    const MIN_TRANSITION_DURATION = 700; // Hold page transitions for 0.7s
+    const MIN_INITIAL_DURATION = 2400; // Hold initial preloader for 2.4s to display the premium animation and typography
+    const MIN_TRANSITION_DURATION = 1300; // Hold page transitions for 1.3s for satisfyingly smooth visual pacing
 
     function showPreloader(isTransition = false) {
       showStartTime = Date.now();
