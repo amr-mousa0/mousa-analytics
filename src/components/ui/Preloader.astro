@@ -222,7 +222,7 @@ const isAr = lang === 'ar';
     const preloader = document.getElementById('global-preloader');
     
     if (isBot) {
-      if (preloader) preloader.style.display = 'none';
+      if (preloader) preloader.remove();
       try {
         document.documentElement.classList.remove('preloader-lock');
       } catch (e) {}
