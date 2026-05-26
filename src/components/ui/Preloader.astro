@@ -75,7 +75,7 @@ const isAr = lang === 'ar';
     >
       <div 
         id="preloader-bar"
-        class="absolute inset-y-0 left-0 bg-[#2563EB] w-full h-full transform -translate-x-full"
+        class="absolute inset-y-0 left-0 bg-[#2563EB] w-full h-full"
       ></div>
     </div>
   </div>
@@ -130,6 +130,11 @@ const isAr = lang === 'ar';
   #preloader-bar-container {
     opacity: 0;
     transition: opacity 0.6s ease 0.6s;
+  }
+
+  #preloader-bar {
+    transform: translateX(-100%);
+    will-change: transform;
   }
 
   /* Active state triggers */
