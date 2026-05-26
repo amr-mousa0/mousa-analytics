@@ -13,30 +13,35 @@ const isAr = lang === 'ar';
   class="fixed inset-0 bg-[#0A192F] z-[99999] flex flex-col items-center justify-center select-none" 
   aria-hidden="true"
 >
-  <div class="flex flex-col items-center text-center px-6 max-w-lg">
-    <!-- Branding matching the user's reference but with Mousa Analytics -->
-    <div class="overflow-hidden mb-3 py-1">
+  <!-- Fine background mesh/grid to fit the "Precision Infrastructure" design principle -->
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.08),transparent)] pointer-events-none"></div>
+  <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px); background-size: 4rem 4rem;"></div>
+
+  <div class="flex flex-col items-center text-center px-6 max-w-xl relative z-10">
+    <!-- Main Branding Title with premium typography -->
+    <div class="overflow-hidden mb-4 py-1">
       <h1 
         id="preloader-title"
-        class="font-sans text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-[0.2em] transform translate-y-full transition-transform duration-700 ease-out will-change-transform"
+        class="font-logo text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-[0.2em] transform translate-y-full opacity-0 will-change-transform"
       >
         {isAr ? "موسى للتحليلات" : "MOUSA ANALYTICS"}
       </h1>
     </div>
     
-    <div class="overflow-hidden mb-8 py-0.5">
+    <!-- Subtitle with wider tracking and premium branding color -->
+    <div class="overflow-hidden mb-10 py-1">
       <p 
         id="preloader-subtitle"
-        class="font-sans text-[9px] sm:text-[11px] font-bold tracking-[0.25em] uppercase text-[#2563EB] transform translate-y-full transition-transform duration-700 ease-out delay-150 will-change-transform"
+        class="font-sans text-[10px] sm:text-xs md:text-sm font-bold tracking-[0.3em] uppercase text-[#2563EB] transform translate-y-full opacity-0 will-change-transform"
       >
-        {isAr ? "حلول تحليل البيانات والتسويق الرقمي" : "DATA ANALYTICS & DIGITAL MARKETING"}
+        {isAr ? "حلول تحليل البيانات وتحقيق العائد من الاستثمار" : "DATA ANALYTICS & MARKETING ROI SOLUTIONS"}
       </p>
     </div>
     
-    <!-- Premium glowing loading bar -->
+    <!-- Premium glowing loading bar exactly like the reference -->
     <div 
       id="preloader-bar-container"
-      class="w-48 h-[2px] bg-white/10 rounded-full overflow-hidden relative opacity-0 transition-opacity duration-500 delay-300"
+      class="w-56 sm:w-64 h-[2px] bg-white/10 rounded-full overflow-hidden relative opacity-0"
     >
       <div 
         id="preloader-bar"
@@ -47,38 +52,37 @@ const isAr = lang === 'ar';
 </div>
 
 <style is:global>
-  /* Base state: preloader is active but hidden for bots automatically */
+  /* Base state: preloader overlay styling */
   #global-preloader {
     display: none;
     opacity: 0;
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform;
   }
 
-  /* Slide up curtain animation when page is ready */
+  /* Slide up curtain transition on exit */
   .preloader-exit {
     opacity: 0 !important;
     transform: translateY(-100%) !important;
     pointer-events: none !important;
   }
 
-  /* Progress bar animation */
+  /* Progress bar animation keyframes */
   .preloader-progress-active {
-    animation: preloader-progress 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation: preloader-progress-bar 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
 
-  @keyframes preloader-progress {
+  @keyframes preloader-progress-bar {
     0% { transform: translateX(-100%); }
-    50% { transform: translateX(-30%); }
+    50% { transform: translateX(-25%); }
     100% { transform: translateX(0); }
   }
 </style>
 
 <script is:inline>
   (function() {
-    // 1. Guard against Bots, Lighthouse, & E2E Testing WebDriver (Instant bypass to maintain SEO & 100/100 performance scores)
-    const isBotOrTest = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|lighthouse|chrome-lighthouse|webdriver/i.test(navigator.userAgent) || navigator.webdriver;
-    if (isBotOrTest) {
+    // 1. Guard against search crawlers and performance tools only (NOT standard developer preview modes)
+    const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse/i.test(navigator.userAgent);
+    if (isBot) {
       return;
     }
 
@@ -90,39 +94,89 @@ const isAr = lang === 'ar';
 
     if (!preloader) return;
 
-    // Show preloader immediately on initial load
-    preloader.style.display = 'flex';
-    preloader.style.opacity = '1';
+    let showStartTime = 0;
+    const MIN_INITIAL_DURATION = 1500; // Hold initial preloader for 1.5s to display the premium animation
+    const MIN_TRANSITION_DURATION = 800; // Hold page transitions for 0.8s for smooth client-side loading visual
 
-    // Trigger animate-in for text elements
-    requestAnimationFrame(() => {
-      if (title) title.style.transform = 'translateY(0)';
-      if (subtitle) subtitle.style.transform = 'translateY(0)';
-      if (barContainer) barContainer.style.opacity = '1';
-      if (bar) bar.classList.add('preloader-progress-active');
-    });
+    function showPreloader(isTransition = false) {
+      showStartTime = Date.now();
+      preloader.classList.remove('preloader-exit');
+      preloader.style.display = 'flex';
+      
+      // Reset element styles to hidden before animating in
+      if (title) {
+        title.style.transform = 'translateY(100%)';
+        title.style.opacity = '0';
+      }
+      if (subtitle) {
+        subtitle.style.transform = 'translateY(100%)';
+        subtitle.style.opacity = '0';
+      }
+      if (barContainer) {
+        barContainer.style.opacity = '0';
+      }
+      if (bar) {
+        bar.classList.remove('preloader-progress-active');
+      }
 
-    // Helper to hide loader
-    function hidePreloader() {
-      if (preloader.classList.contains('preloader-exit')) return;
-      
-      preloader.classList.add('preloader-exit');
-      
-      // Clean up DOM after animation completes to free resources
-      setTimeout(() => {
-        preloader.style.display = 'none';
-      }, 850);
+      // Force layout reflow
+      preloader.offsetHeight;
+
+      // Fade-in preloader panel
+      preloader.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+      preloader.style.opacity = '1';
+      preloader.style.transform = 'translateY(0)';
+
+      // Trigger beautiful coordinated entrance animations
+      requestAnimationFrame(() => {
+        if (title) {
+          title.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease';
+          title.style.transform = 'translateY(0)';
+          title.style.opacity = '1';
+        }
+        if (subtitle) {
+          subtitle.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, opacity 0.8s ease 0.15s';
+          subtitle.style.transform = 'translateY(0)';
+          subtitle.style.opacity = '1';
+        }
+        if (barContainer) {
+          barContainer.style.transition = 'opacity 0.5s ease 0.3s';
+          barContainer.style.opacity = '1';
+        }
+        if (bar) {
+          bar.offsetWidth; // force reflow
+          bar.classList.add('preloader-progress-active');
+        }
+      });
     }
 
-    // Hide once page is fully loaded
+    function hidePreloader(isTransition = false) {
+      const minDuration = isTransition ? MIN_TRANSITION_DURATION : MIN_INITIAL_DURATION;
+      const elapsed = Date.now() - showStartTime;
+      const remaining = Math.max(0, minDuration - elapsed);
+
+      setTimeout(() => {
+        // Luxury slide up exit animation
+        preloader.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+        preloader.classList.add('preloader-exit');
+
+        setTimeout(() => {
+          preloader.style.display = 'none';
+        }, 850);
+      }, remaining);
+    }
+
+    // Run initial preloader instantly
+    showPreloader(false);
+    
     if (document.readyState === 'complete') {
-      setTimeout(hidePreloader, 650);
+      hidePreloader(false);
     } else {
       window.addEventListener('load', () => {
-        setTimeout(hidePreloader, 500);
+        hidePreloader(false);
       });
-      // Fallback timeout: hide anyway after 3 seconds in case of slow assets
-      setTimeout(hidePreloader, 3000);
+      // Safe fallback timeout
+      setTimeout(() => hidePreloader(false), 3500);
     }
 
     // 2. Setup Astro transitions handling if not already initialized
@@ -131,40 +185,12 @@ const isAr = lang === 'ar';
 
       // When a new page is clicked (transition starts)
       document.addEventListener('astro:before-preparation', () => {
-        const livePreloader = document.getElementById('global-preloader');
-        const liveBar = document.getElementById('preloader-bar');
-        
-        if (!livePreloader) return;
-
-        // Reset state for page transition (make it snappy)
-        livePreloader.classList.remove('preloader-exit');
-        livePreloader.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-        livePreloader.style.display = 'flex';
-
-        requestAnimationFrame(() => {
-          livePreloader.style.opacity = '1';
-          livePreloader.style.transform = 'translateY(0)';
-          if (liveBar) {
-            liveBar.classList.remove('preloader-progress-active');
-            liveBar.offsetWidth; // Force layout reflow to restart animation
-            liveBar.classList.add('preloader-progress-active');
-          }
-        });
+        showPreloader(true);
       });
 
       // When the new page is fully loaded and swapped (transition ends)
       document.addEventListener('astro:page-load', () => {
-        const livePreloader = document.getElementById('global-preloader');
-        if (!livePreloader) return;
-
-        // Slowly slide/fade out
-        setTimeout(() => {
-          livePreloader.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
-          livePreloader.classList.add('preloader-exit');
-          setTimeout(() => {
-            livePreloader.style.display = 'none';
-          }, 650);
-        }, 300); // Small delay to let user see transition finish nicely
+        hidePreloader(true);
       });
     }
   })();
