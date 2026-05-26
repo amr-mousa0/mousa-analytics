@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/ui/Navigation.astro';
 import Footer from '../../components/ui/Footer.astro';
 import { Image } from 'astro:assets';
-import profileImg from '../../assets/images/amr-hazem.png';
+import profileImg from '../../assets/images/amr-mousa.webp';
 
 
 
@@ -180,20 +180,19 @@ const isAr = lang === 'ar';
       <section class="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-12 lg:gap-16 items-center">
         <!-- Visual Column: Square Premium Portrait Frame -->
         <div class="flex flex-col items-center justify-center space-y-6">
-          <div class="relative w-56 h-56 md:w-64 md:h-64 rounded-[2rem] p-1 bg-hero-card/45 border border-hero-ice-blue/15 shadow-xl shadow-text-main/10 group select-none overflow-hidden transition-all duration-300 hover:border-hero-ice-blue/30">
-            <!-- Glow decoration inside -->
-            <div class="absolute inset-0 bg-hero-ice-blue/5 blur-xl rounded-[1.85rem] -z-10" aria-hidden="true"></div>
-            
-            <div class="w-full h-full rounded-[1.75rem] overflow-hidden relative">
-              <!-- Subtle gradient overlay on hover -->
-              <div class="absolute inset-0 bg-gradient-to-tr from-hero-accent/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+          <!-- The main card frame -->
+          <div class="group relative w-56 h-56 md:w-64 md:h-64 rounded-2xl p-1 bg-white border border-hero-ice-blue/20 shadow-[0_4px_20px_rgba(10,25,47,0.05)] overflow-hidden transition-all duration-300 hover:border-hero-ice-blue/50">
+            <div class="w-full h-full rounded-xl overflow-hidden relative bg-white bg-[linear-gradient(to_right,rgba(10,25,47,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(10,25,47,0.035)_1px,transparent_1px)] bg-[size:1.75rem_1.75rem]">
+              <!-- Subtle hover overlay -->
+              <div class="absolute inset-0 bg-text-main/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
               <Image 
                 src={profileImg} 
                 alt={isAr ? "عمرو موسى" : "Amr Mousa"} 
                 class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                width={400}
-                height={400}
-                quality={90}
+                style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 82%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 82%, rgba(0,0,0,0) 100%);"
+                width={784}
+                height={784}
+                quality={100}
                 loading="eager"
               />
             </div>
@@ -254,12 +253,12 @@ const isAr = lang === 'ar';
                 <i class="fa-solid fa-database text-xl" aria-hidden="true" title="SQL Database"></i>
               </div>
               <h3 class="text-base font-bold text-text-main font-serif">
-                {isAr ? "قواعد البيانات العلاقاتية" : "Relational Database Design"}
+                {isAr ? "تنظيم قواعد البيانات" : "Database Organization"}
               </h3>
               <p class="text-xs text-text-main/70 leading-relaxed font-light">
                 {isAr 
-                  ? "تصميم الاستعلامات المعقدة وتنظيف البيانات وضمان سلامة تدفق الهياكل البرمجية." 
-                  : "Writing highly optimized queries, analytical aggregates, and structuring schema models for reporting."}
+                  ? "ترتيب وتجهيز البيانات الخاصة بمشروعك لجعلها دقيقة وسهلة الاستخدام في التقارير." 
+                  : "Organizing and preparing your business data to make it accurate and easy to use in reports."}
               </p>
             </div>
           </div>
@@ -271,12 +270,12 @@ const isAr = lang === 'ar';
                 <i class="fa-brands fa-python text-2xl" aria-hidden="true" title="Python"></i>
               </div>
               <h3 class="text-base font-bold text-text-main font-serif">
-                {isAr ? "معالجة البيانات وأتمتتها" : "Wrangling & Script Automation"}
+                {isAr ? "أتمتة المهام اليومية" : "Task Automation"}
               </h3>
               <p class="text-xs text-text-main/70 leading-relaxed font-light">
                 {isAr 
-                  ? "استخدام Pandas/Numpy لتنظيف البيانات وهيكلتها وأتمتة المهام المكررة بكفاءة." 
-                  : "Applying Pandas, NumPy, and scripting methods to ingest, clean, and automate business data tasks."}
+                  ? "كتابة أكواد برمجية ذكية لتنظيف البيانات، وتوفير الوقت عن طريق أتمتة المهام المتكررة." 
+                  : "Writing smart code to clean datasets and saving time by automating repetitive daily tasks."}
               </p>
             </div>
           </div>
@@ -288,12 +287,12 @@ const isAr = lang === 'ar';
                 <i class="fa-regular fa-file-excel text-2xl" aria-hidden="true" title="Microsoft Excel"></i>
               </div>
               <h3 class="text-base font-bold text-text-main font-serif">
-                {isAr ? "النمذجة الرياضية المعقدة" : "Advanced Business Modeling"}
+                {isAr ? "النماذج المالية والتحليلية" : "Financial & Analytical Models"}
               </h3>
               <p class="text-xs text-text-main/70 leading-relaxed font-light">
                 {isAr 
-                  ? "بناء معادلات متقدمة، النماذج المالية والتحليلية وأتمتة الجداول البرمجية عبر VBA." 
-                  : "Constructing advanced formulas, analytics, and business logic using VBA and structured spreadsheets."}
+                  ? "بناء معادلات متقدمة وتصميم نماذج مالية لمشروعك لمتابعة الأرباح والمصاريف تلقائياً." 
+                  : "Building advanced formulas and designing financial models to track profits and expenses automatically."}
               </p>
             </div>
           </div>
@@ -310,12 +309,12 @@ const isAr = lang === 'ar';
                 </svg>
               </div>
               <h3 class="text-base font-bold text-text-main font-serif">
-                {isAr ? "لوحات البيانات التفاعلية" : "Interactive Dashboard Design"}
+                {isAr ? "لوحات البيانات التفاعلية" : "Interactive Dashboards"}
               </h3>
               <p class="text-xs text-text-main/70 leading-relaxed font-light">
                 {isAr 
-                  ? "بناء نمذجة Star Schema المتقدمة وكتابة مقاييس DAX التفاعلية لوضوح اتخاذ القرار." 
-                  : "Engineering Star Schema database models and writing custom DAX measures for executive reporting."}
+                  ? "بناء لوحات تحكم تفاعلية وسهلة القراءة تظهر أرقام مشروعك بوضوح لاتخاذ قرارات أسرع." 
+                  : "Building interactive, clean dashboards that show your business numbers clearly for faster decision-making."}
               </p>
             </div>
           </div>
@@ -421,7 +420,7 @@ const isAr = lang === 'ar';
               
               <!-- Job Title -->
               <h3 class="text-xl md:text-2xl font-bold text-text-main font-sans mt-1">
-                {isAr ? "مشتري إعلانات ومطور محتوى" : "Media Buyer | Content Developer"}
+                {isAr ? "ميديا باير و كونتنت ديفوليبمنت" : "Media Buyer | Content Developer"}
               </h3>
 
               <!-- Custom Bullet List -->
@@ -665,19 +664,19 @@ const isAr = lang === 'ar';
       <!-- Section 6: Action CTA Block (Deploy the Engine) -->
       <section class="max-w-2xl mx-auto text-center space-y-6 pb-12 font-sans">
         <h2 class="text-3xl md:text-4xl font-bold tracking-tight font-serif text-text-main leading-tight">
-          {isAr ? "جاهز لسد ثغرات مبيعاتك؟" : "Ready to Plug Your Funnel Leaks?"}
+          {isAr ? "جاهز لزيادة مبيعاتك؟" : "Ready to grow your sales?"}
         </h2>
         <p class="text-sm text-text-main/70 max-w-lg mx-auto leading-relaxed">
           {isAr 
-            ? "دعنا نناقش كيف يمكن لموسى للتحليلات بناء هيكل تتبع متطور لزيادة أرباحك وتخفيض الهدر الإعلاني."
-            : "Let's discuss how Mousa Analytics can build a custom tracking architecture to optimize your ad spend and increase profitability."}
+            ? "دعنا نناقش كيف نساعدك في فهم أرقامك بوضوح لزيادة أرباحك وتقليل مصاريف إعلاناتك."
+            : "Let's discuss how we can help you understand your numbers clearly to increase profits and reduce ad waste."}
         </p>
         <div class="pt-4 flex items-center justify-center">
           <a 
             href={`/${lang}/#contact`}
             class="h-11 px-8 rounded-full bg-hero-ice-blue hover:bg-hero-ice-blue-hover text-white text-[11px] font-bold uppercase tracking-wider flex items-center justify-center transition-all duration-300 min-w-[200px]"
           >
-            <span>{isAr ? "ابدأ الآن" : "Deploy the Engine"}</span>
+            <span>{isAr ? "ابدأ الآن" : "Get Started"}</span>
           </a>
         </div>
       </section>

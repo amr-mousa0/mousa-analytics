@@ -15,20 +15,20 @@ const isAr = lang === 'ar';
   aria-hidden="true"
 >
   <!-- Background subtle aura glow and grid -->
-  <div class="absolute inset-0 bg-[#070F1E] pointer-events-none"></div>
+  <div class="absolute inset-0 bg-[var(--preloader-bg)] pointer-events-none"></div>
   <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.06),transparent_65%)] pointer-events-none"></div>
   <div class="absolute inset-0 opacity-[0.02] pointer-events-none" style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px); background-size: 3.5rem 3.5rem;"></div>
 
-  <div class="flex flex-col items-center justify-center text-center px-6 max-w-2xl relative z-10">
+  <div class="flex flex-col items-center justify-center text-center px-6 max-w-4xl relative z-10">
     
     <!-- Premium Geometric M Logo (Self-Drawing SVG) -->
-    <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mb-10 text-white relative">
+    <div class="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 mb-12 text-white relative">
       <svg viewBox="0 0 24 24" class="w-full h-full" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <defs>
           <linearGradient id="preloader-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#FFFFFF" />
-            <stop offset="60%" stop-color="#93C5FD" />
-            <stop offset="100%" stop-color="#2563EB" />
+            <stop offset="60%" stop-color="var(--preloader-accent-light)" />
+            <stop offset="100%" stop-color="var(--preloader-accent)" />
           </linearGradient>
         </defs>
         <!-- The main M path, animated with CSS stroke-dash -->
@@ -42,40 +42,42 @@ const isAr = lang === 'ar';
         <path 
           class="logo-path-shadow" 
           d="M6 16V4L13 10L20 4V16" 
-          stroke="#2563EB" 
+          stroke="var(--preloader-accent)" 
           stroke-width="1.2" 
         />
       </svg>
     </div>
 
-    <!-- Main Branding Title with premium typography -->
+    <!-- Main Branding Title - DIV instead of H1 for SEO semantics, ARIA for accessibility -->
     <div class="overflow-hidden mb-4 py-1">
-      <h1 
+      <div 
         id="preloader-title"
-        class="text-2xl sm:text-4xl md:text-5xl font-bold tracking-[0.25em] sm:tracking-[0.3em] uppercase"
+        class={`text-3xl sm:text-5xl md:text-6xl font-bold uppercase ${isAr ? 'tracking-normal' : 'tracking-[0.3em] sm:tracking-[0.35em]'}`}
+        role="status"
+        aria-live="polite"
       >
         {isAr ? "موسى للتحليلات" : "MOUSA ANALYTICS"}
-      </h1>
+      </div>
     </div>
     
     <!-- Subtitle -->
-    <div class="overflow-hidden mb-12 py-1">
+    <div class="overflow-hidden mb-16 py-1">
       <p 
         id="preloader-subtitle"
-        class="text-[9px] sm:text-xs md:text-sm font-bold tracking-[0.3em] sm:tracking-[0.35em] uppercase"
+        class={`text-[10px] sm:text-xs md:text-sm font-medium uppercase ${isAr ? 'tracking-normal' : 'tracking-[0.3em] sm:tracking-[0.4em]'}`}
       >
-        {isAr ? "تحليل البيانات واستراتيجيات النمو" : "DATA PIPELINES & CONVERSION INFRASTRUCTURE"}
+        {isAr ? "تبسيط البيانات لقرارات أفضل" : "SIMPLIFYING DATA FOR BETTER DECISIONS"}
       </p>
     </div>
     
-    <!-- Thin loading bar -->
+    <!-- Thin loading bar scaled up visually -->
     <div 
       id="preloader-bar-container"
-      class="w-56 sm:w-72 md:w-80 h-[2px] bg-white/10 overflow-hidden relative"
+      class="w-64 sm:w-96 md:w-[480px] lg:w-[600px] h-[3px] bg-white/10 overflow-hidden relative"
     >
       <div 
         id="preloader-bar"
-        class="absolute inset-y-0 left-0 bg-[#2563EB] w-full h-full"
+        class="absolute inset-y-0 left-0 bg-[var(--preloader-accent)] w-full h-full"
       ></div>
     </div>
   </div>
@@ -84,6 +86,10 @@ const isAr = lang === 'ar';
 <style is:global>
   /* Fixed overlay covering the entire screen by default */
   #global-preloader {
+    --preloader-bg: var(--color-text-main);
+    --preloader-accent: var(--color-accent-primary);
+    --preloader-accent-light: var(--color-accent-light);
+
     position: fixed;
     inset: 0;
     z-index: 99999;
@@ -112,7 +118,7 @@ const isAr = lang === 'ar';
 
   /* Custom typography with fallback to prevent FOIT */
   #preloader-title {
-    font-family: 'Cinzel', 'Cormorant Garamond', 'Georgia', serif;
+    font-family: var(--font-logo), 'Cinzel', serif;
     color: #ffffff;
     transform: translateY(15px);
     opacity: 0;
@@ -120,8 +126,8 @@ const isAr = lang === 'ar';
   }
 
   #preloader-subtitle {
-    font-family: 'Outfit', 'Inter', sans-serif;
-    color: #2563EB; /* Premium branding blue matching key highlights */
+    font-family: var(--font-sans), 'Outfit', 'Inter', sans-serif;
+    color: var(--preloader-accent-light); /* Light ice blue for optimal contrast and readability on dark background */
     transform: translateY(10px);
     opacity: 0;
     transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s, opacity 0.8s ease 0.45s;
@@ -164,15 +170,48 @@ const isAr = lang === 'ar';
     transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
-  /* Progress bar animation keyframes */
+  /* Progress bar animation binding to variable duration */
   .preloader-progress-active {
-    animation: preloader-progress-bar 2.0s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: preloader-progress-bar var(--bar-duration, 2s) cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
 
   @keyframes preloader-progress-bar {
     0% { transform: translateX(-100%); }
     50% { transform: translateX(-20%); }
     100% { transform: translateX(0); }
+  }
+
+  /* Prevent scroll shift or back scroll during preloader active stage */
+  html.preloader-lock,
+  html.preloader-lock body {
+    overflow: hidden !important;
+    height: 100% !important;
+  }
+
+  /* Reduced motion preference compliance */
+  @media (prefers-reduced-motion: reduce) {
+    #global-preloader {
+      transition: none !important;
+    }
+    .logo-path-main,
+    .logo-path-shadow,
+    #preloader-title,
+    #preloader-subtitle,
+    #preloader-bar-container {
+      transition: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+      stroke-dashoffset: 0 !important;
+    }
+    #preloader-bar {
+      transform: translateX(0) !important;
+      transition: none !important;
+      animation: none !important;
+    }
+    .preloader-exit {
+      opacity: 0 !important;
+      transition: opacity 0.01ms !important;
+    }
   }
 </style>
 
@@ -187,19 +226,25 @@ const isAr = lang === 'ar';
       return;
     }
 
-    const title = document.getElementById('preloader-title');
-    const subtitle = document.getElementById('preloader-subtitle');
-    const barContainer = document.getElementById('preloader-bar-container');
     const bar = document.getElementById('preloader-bar');
 
     if (!preloader) return;
 
     let showStartTime = 0;
-    const MIN_INITIAL_DURATION = 2400; // Hold initial preloader for 2.4s to display the premium animation and typography
-    const MIN_TRANSITION_DURATION = 1300; // Hold page transitions for 1.3s for satisfyingly smooth visual pacing
+    let isHiding = false;
+    
+    const hasSeen = sessionStorage.getItem('mousa_preloader_seen');
+    const MIN_INITIAL_DURATION = hasSeen ? 900 : 2400; // Snappier loading (0.9s) for returning session visits, grand 2.4s reveal for first visit
+    const MIN_TRANSITION_DURATION = 800; // Faster transition pacing (0.8s) during active navigation
 
     function showPreloader(isTransition = false) {
       showStartTime = Date.now();
+      isHiding = false;
+      
+      try {
+        document.documentElement.classList.add('preloader-lock');
+      } catch (e) {}
+      
       preloader.classList.remove('preloader-exit');
       preloader.classList.remove('preloader-active');
       preloader.style.display = 'flex';
@@ -207,6 +252,9 @@ const isAr = lang === 'ar';
       
       if (bar) {
         bar.classList.remove('preloader-progress-active');
+        // Set dynamic animation duration variable matching current load pacing
+        const minDuration = isTransition ? MIN_TRANSITION_DURATION : MIN_INITIAL_DURATION;
+        bar.style.setProperty('--bar-duration', minDuration + 'ms');
       }
 
       // Force layout reflow
@@ -222,17 +270,36 @@ const isAr = lang === 'ar';
     }
 
     function hidePreloader(isTransition = false) {
+      if (isHiding) return;
+      isHiding = true;
+
       const minDuration = isTransition ? MIN_TRANSITION_DURATION : MIN_INITIAL_DURATION;
       const elapsed = Date.now() - showStartTime;
       const remaining = Math.max(0, minDuration - elapsed);
 
       setTimeout(() => {
         preloader.classList.add('preloader-exit');
+        
+        // Persist session flag to memory on first successful hide
+        if (!isTransition) {
+          try {
+            sessionStorage.setItem('mousa_preloader_seen', 'true');
+          } catch (e) {
+            // Guard against disabled cookies/storage
+          }
+        }
 
+        // Wait exactly 800ms for full CSS opacity transition to complete before setting display none
         setTimeout(() => {
           preloader.style.display = 'none';
           preloader.classList.remove('preloader-active');
-        }, 550);
+          
+          try {
+            document.documentElement.classList.remove('preloader-lock');
+          } catch (e) {}
+          
+          isHiding = false;
+        }, 800);
       }, remaining);
     }
 
