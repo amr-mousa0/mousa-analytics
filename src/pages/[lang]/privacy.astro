@@ -1,0 +1,245 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/ui/Navigation.astro';
+import Footer from '../../components/ui/Footer.astro';
+
+// Dynamic route parameters for bilingual setup
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'ar' } },
+  ];
+}
+
+const { lang } = Astro.params;
+
+// Route Parameter Guard
+if (!lang || !['en', 'ar'].includes(lang)) {
+  return Astro.redirect('/en/');
+}
+
+const isAr = lang === 'ar';
+
+// Page-specific text content matching high-ticket B2B agency style
+const t = {
+  eyebrow: isAr ? "الخصوصية وحماية البيانات" : "PRIVACY & DATA PROTECTION",
+  title: isAr ? "سياسة الخصوصية" : "Privacy Policy",
+  subtitle: isAr ? "كيف ندير بياناتك بأقصى درجات الأمان والشفافية الاحترافية." : "How we handle your data with elite security and transparent integrity.",
+  lastUpdated: isAr ? "آخر تحديث: مايو 2026" : "Last Updated: May 2026",
+  
+  commitTitle: isAr ? "التزامنا بنزاهة البيانات" : "Our Commitment to Data Integrity",
+  commitText: isAr 
+    ? "في موسى للتحليلات، لا تُعد سلامة البيانات مجرد سياسة مكتوبة—بل هي الخدمة الجوهرية التي نقدمها. بصفتنا استشارياً في تحليلات البيانات والتسويق الرقمي عالي القيمة، نتعامل مع أرقام أعمال عملائنا ومعلوماتهم الشخصية بأقصى درجات الدقة والسرية والأمان المطلق."
+    : "At Mousa Analytics, data integrity is not just a policy—it is our core service. As a high-ticket data analytics and performance marketing consultancy, we treat your business metrics and personal information with absolute rigor, confidentiality, and maximum security.",
+
+  collectTitle: isAr ? "البيانات التي نجمعها ومصادرها" : "Information We Collect & Its Source",
+  collectText: isAr
+    ? "نحن نجمع فقط البيانات الأساسية والضرورية لتقديم خدمات تحسين الأداء وإعداد التقارير الفعّالة:"
+    : "We collect only essential information required to deliver high-performance optimization and analytical reporting:",
+  collectItems: isAr ? [
+    "تفاصيل الاتصال المباشر (مثل الاسم، البريد الإلكتروني، ورقم الهاتف) التي تقدمها طواعية عند طلب استشارة.",
+    "بيانات ورموز وصول الأنظمة (API Keys) للاتصال بالمنصات التسويقية (وصول للقراءة فقط لربط لوحات البيانات التفاعلية).",
+    "بيانات تصفح خفيفة وغير محددة للهوية (مثل نوع المتصفح وبلد الزيارة) بهدف تحسين أداء وسرعة تحميل موقعنا."
+  ] : [
+    "Direct contact details (e.g., name, email, phone) voluntarily submitted via WhatsApp or contact requests.",
+    "API integration tokens and credentials to connect marketing platforms (strictly read-only access for building analytics dashboards).",
+    "Basic, non-identifying telemetry (e.g., browser type, region) used strictly to optimize site speed and layout stability."
+  ],
+
+  processingTitle: isAr ? "كيف نستخدم ونعالج بياناتك" : "How Data is Processed & Used",
+  processingText: isAr
+    ? "يتم معالجة جميع بيانات الأعمال والتسويق بدقة فائقة لتحقيق أهداف نمو واضحة ومحددة:"
+    : "All business and marketing data is parsed strictly to achieve clear, predictable growth goals:",
+  processingItems: isAr ? [
+    "بناء وتصميم لوحات بيانات تحليلية متكاملة ومصممة خصيصاً لعملك (بصيغ SQL أو Power BI أو CRM مخصص).",
+    "تحليل ومراقبة الحملات الإعلانية النشطة للحد من الهدر المالي وتحسين العائد على الاستثمار الإعلاني (ROI).",
+    "توفير قنوات تواصل سريعة وفعالة لمتابعة المشروعات وحل استفسارات العملاء."
+  ] : [
+    "Designing and building custom, isolated analytics dashboards tailored to your business (SQL, Power BI, or custom CRM).",
+    "Analyzing active ad campaigns to plug budget leaks and maximize Return on Ad Spend (ROAS).",
+    "Providing secure, direct communication channels for project reporting and client onboarding."
+  ],
+
+  securityTitle: isAr ? "حماية وتشفير البيانات" : "Absolute Security & Encryption",
+  securityText: isAr
+    ? "نطبق تدابير أمنية صارمة تليق باستشارات الأعمال عالية التقنية: يتم تشفير جميع رموز الوصول وقواعد البيانات أثناء النقل والتخزين. نلتزم بسياسة صارمة لعدم بيع أو تأجير أو مشاركة أي بيانات تخص عملك مع أي طرف ثالث على الإطلاق. كما يتم إلغاء تراخيص الوصول والربط فوراً عند تسليم المشروع ما لم يتم الاتفاق على صيانة شهرية نشطة."
+    : "We enforce rigorous security measures appropriate for enterprise-level technology consulting. All credentials, API tokens, and temporary databases are fully encrypted both in transit and at rest. We adhere to a strict zero-sharing policy: we never sell, rent, or distribute your metrics to any third parties. Access integrations are immediately revoked upon project completion unless active monthly retainer monitoring is agreed upon.",
+
+  rightsTitle: isAr ? "حقوقك والتحكم الكامل ببياناتك" : "Your Rights & Data Control",
+  rightsText: isAr
+    ? "أنت تحتفظ بالملكية المطلقة لبياناتك بالكامل في جميع الأوقات. يحق لك طلب حذف سجلاتك نهائياً من أنظمتنا، أو إلغاء صلاحيات ربط منصاتك التسويقية، أو طلب نسخة كاملة من تحليلاتك وسجلاتك في أي وقت تشاء."
+    : "You maintain complete, absolute ownership of your data at all times. You have the right to request permanent deletion of your contact records from our systems, revoke API and integration access at your discretion, or request a complete copy of your records at any time.",
+
+  contactBtn: isAr ? "تواصل معي مباشرة" : "Contact Directly",
+  homeBtn: isAr ? "الذهاب للرئيسية" : "Go to Homepage"
+};
+---
+
+<Layout lang={lang} pageId="privacy" title={t.title}>
+  <Navigation lang={lang} activePage="" />
+
+  <!-- Inject Schema.org JSON-LD Metadata for Legal Page -->
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `https://mousaanalytics.com/${lang}/privacy/`,
+        "url": `https://mousaanalytics.com/${lang}/privacy/`,
+        "name": t.title,
+        "description": t.subtitle,
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": `https://mousaanalytics.com/${lang}/#website`
+        }
+      }
+    ]
+  })} />
+
+  <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent font-sans">
+    <!-- Atmospheric Premium Ambient Glows -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_20%,oklch(75%_0.12_255_/_0.06),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,oklch(75%_0.12_255_/_0.04),transparent_60%)] pointer-events-none z-0" aria-hidden="true"></div>
+
+    <article class="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 space-y-16" dir={isAr ? "rtl" : "ltr"}>
+      
+      <!-- Premium Editorial Header -->
+      <header class="text-center space-y-4 max-w-3xl mx-auto">
+        <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase">
+          {t.eyebrow}
+        </span>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight font-serif text-text-main leading-tight">
+          {t.title}
+        </h1>
+        <p class="text-sm sm:text-base text-text-main/70 max-w-xl mx-auto font-light leading-relaxed">
+          {t.subtitle}
+        </p>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-text-main/5 border border-text-main/10 text-text-main/55 text-[10px] font-medium font-mono select-none">
+          <i class="fa-regular fa-clock text-[9px]" aria-hidden="true"></i>
+          <span>{t.lastUpdated}</span>
+        </div>
+      </header>
+
+      <!-- Minimalist elegant divider -->
+      <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-text-main/20 to-transparent mx-auto" aria-hidden="true"></div>
+
+      <!-- Core Content Grid -->
+      <div class="space-y-12 text-text-main/80 text-sm sm:text-[15px] leading-relaxed font-light">
+        
+        <!-- Commitment Section -->
+        <section class="glass-card p-6 sm:p-8 rounded-xl border border-text-main/5 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-shield-halved text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.commitTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/70">
+            {t.commitText}
+          </p>
+        </section>
+
+        <!-- Information Collection -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-database text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.collectTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/75">
+            {t.collectText}
+          </p>
+          <ul class="list-none space-y-3 pl-0">
+            {t.collectItems.map((item) => (
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent-primary mt-2.5 shrink-0" aria-hidden="true"></span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- Data Processing -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-chart-line text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.processingTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/75">
+            {t.processingText}
+          </p>
+          <ul class="list-none space-y-3 pl-0">
+            {t.processingItems.map((item) => (
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent-primary mt-2.5 shrink-0" aria-hidden="true"></span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- Security and Encryption -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-lock text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.securityTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/75">
+            {t.securityText}
+          </p>
+        </section>
+
+        <!-- User Rights -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+              <i class="fa-solid fa-user-gear text-xs" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold font-serif text-text-main">
+              {t.rightsTitle}
+            </h2>
+          </div>
+          <p class="text-text-main/75">
+            {t.rightsText}
+          </p>
+        </section>
+
+      </div>
+
+      <!-- Elegant Call to Actions -->
+      <footer class="pt-8 border-t border-text-main/5 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a 
+          href={isAr ? "https://wa.me/201099661462" : "mailto:amr@mousaanalytics.com"} 
+          target="_blank"
+          rel="noopener noreferrer"
+          class="h-11 px-6 rounded-full bg-text-main hover:bg-text-main/90 text-white text-[11px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 w-full sm:w-auto"
+        >
+          <i class={isAr ? "fa-brands fa-whatsapp text-xs" : "fa-regular fa-envelope text-xs"} aria-hidden="true"></i>
+          <span>{t.contactBtn}</span>
+        </a>
+        <a 
+          href={`/${lang}/`} 
+          class="h-11 px-6 rounded-full bg-transparent border border-text-main/15 hover:bg-text-main/5 text-text-main text-[11px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 w-full sm:w-auto"
+        >
+          <span>{t.homeBtn}</span>
+        </a>
+      </footer>
+
+    </article>
+  </main>
+
+  <Footer lang={lang} />
+</Layout>
