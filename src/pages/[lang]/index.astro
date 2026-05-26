@@ -39,14 +39,14 @@ const mobileImg = await getImage({ src: analyticsBgImgMobile, quality: 80, forma
     "@graph": [
       {
         "@type": "ProfessionalService",
-        "@id": `https://mousaanalytics.com/${lang}/#organization`,
+        "@id": `${Astro.site}${lang}/#organization`,
         "name": isAr ? "موسى للتحليلات" : "Mousa Analytics",
-        "url": `https://mousaanalytics.com/${lang}/`,
-        "logo": `https://mousaanalytics.com/favicon.svg`,
-        "image": `https://mousaanalytics.com/images/og-image.jpg`,
+        "url": `${Astro.site}${lang}/`,
+        "logo": `${Astro.site}favicon.svg`,
+        "image": `${Astro.site}images/og-image.png`,
         "description": isAr 
-          ? "موسى للتحليلات: نساعد أصحاب المشاريع والمتاجر الإلكترونية على تبسيط وفهم بياناتهم لزيادة الأرباح وتقليل الهدر الإعلاني."
-          : "Mousa Analytics: Simplifying data to help e-commerce and business owners optimize ad spend and scale profitability.",
+          ? "موسى للتحليلات: خيارك الأفضل لخدمات تحليل البيانات والميديا باينج لتضاعف أرباح مشروعك."
+          : "Mousa Analytics: Your premier choice for data analytics and media buying services to scale your business.",
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "Cairo",
@@ -57,11 +57,11 @@ const mobileImg = await getImage({ src: analyticsBgImgMobile, quality: 80, forma
       },
       {
         "@type": "WebSite",
-        "@id": `https://mousaanalytics.com/${lang}/#website`,
-        "url": `https://mousaanalytics.com/${lang}/`,
+        "@id": `${Astro.site}${lang}/#website`,
+        "url": `${Astro.site}${lang}/`,
         "name": isAr ? "موسى للتحليلات" : "Mousa Analytics",
         "publisher": {
-          "@id": `https://mousaanalytics.com/${lang}/#organization`
+          "@id": `${Astro.site}${lang}/#organization`
         }
       }
     ]
