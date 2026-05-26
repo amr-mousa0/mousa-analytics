@@ -41,3 +41,4 @@
 - [x] Run verification checks and production builds (E2E and build compiles)
 - [x] Fix hidden WhatsApp CTA button on proposal page (implement adblock-resilient generic button and dynamic redirect script)
 - [x] Move Back button into navigation header bar (update Navigation.astro and data-analytics.astro layout)
+- [x] Push trust cards (service guarantees) below the first fold in Hero.astro on all devices to ensure scrolling is required to see them

@@ -9,6 +9,6 @@ statLeftTitle: "محرك المبيعات"
 statLeftVal: "+182%"
 statRightTitle: "تكامل النظام"
 statRightVal: "بيانات + إعلانات"
-trendingLabel: "الخدمات الأكثر طلباً:"
-trendingItems: "تتبع البيانات • الحملات الإعلانية • تهيئة التحويل"
+trendingLabel: "ضمانات الخدمة:"
+trendingItems: "بيانات آمنة • شفافية كاملة • تسليم دقيق"
 ---

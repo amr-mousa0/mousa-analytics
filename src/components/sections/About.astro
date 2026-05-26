@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
-import profileImg from '../../assets/images/profile.png';
+import profileImg from '../../assets/images/amr-hazem.png';
+
 
 interface Props {
   lang: string;
@@ -16,13 +17,13 @@ const isAr = lang === 'ar';
 
   <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 items-center">
     
-    <!-- Profile Photo Column (4 cols on desktop) -->
-    <div class="col-span-1 md:col-span-5 relative flex justify-center md:justify-start order-1 md:order-1">
+    <!-- Profile Photo Column (5 cols on desktop) -->
+    <div class="col-span-1 md:col-span-5 relative flex justify-center md:justify-start">
       <!-- Glow decoration -->
       <div class="absolute inset-0 bg-accent-primary/5 blur-3xl rounded-full -z-10" aria-hidden="true"></div>
       
       <!-- Luxury Portrait Frame (Chic Vertical Rounded Rectangle) -->
-      <div class="relative w-full max-w-[280px] aspect-[4/5] rounded-[2rem] p-2 bg-white border border-text-main/8 shadow-xl shadow-text-main/2">
+      <div class="relative w-full max-w-[280px] aspect-[4/5] rounded-[2rem] p-2 bg-hero-card border border-text-main/8 shadow-xl shadow-text-main/2">
         <div class="w-full h-full rounded-[1.75rem] overflow-hidden">
           <Image 
             src={profileImg} 
@@ -30,6 +31,7 @@ const isAr = lang === 'ar';
             class="w-full h-full object-cover object-center"
             width={560}
             height={700}
+            quality={90}
             loading="lazy"
           />
         </div>
@@ -37,25 +39,25 @@ const isAr = lang === 'ar';
     </div>
 
     <!-- About Text Column (7 cols on desktop) -->
-    <div class="col-span-1 md:col-span-7 space-y-6 order-2 md:order-2">
+    <div class="col-span-1 md:col-span-7 space-y-6">
       <div class="space-y-3">
         <!-- Subtitle Badge -->
         <div class="text-[10px] sm:text-xs font-bold tracking-widest text-accent-primary uppercase font-sans">
-          {isAr ? "من أنا" : "WHO I AM"}
+          {isAr ? "عن المؤسسة" : "ABOUT THE FIRM"}
         </div>
         
         <!-- Large Luxury Serif Heading -->
         <h2 id="about-title" class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-text-main font-serif">
-          {isAr ? "من هو عمرو موسى؟" : "Who is Amr Mousa?"}
+          {isAr ? "ما هي موسى للتحليلات؟" : "What is Mousa Analytics?"}
         </h2>
       </div>
       
       <!-- Body Text -->
       <p class="text-text-main/70 text-base leading-relaxed font-sans max-w-xl">
         {isAr ? (
-          "أنا محلل بيانات ومسوق رقمي مخصص لحل الاختناقات المعقدة التي تواجه المشاريع الناشئة والمتوسطة. لا أكتفي فقط ببناء التقارير الفنية، بل أربط كل رقم تسويقي وعملية تتبع بهدف تجاري واضح: زيادة الأرباح وتخفيض التكاليف المهدرة."
+          "تأسست موسى للتحليلات كعلامة متخصصة لحل الاختناقات المعقدة وتتبع البيانات بقيادة المؤسس عمرو موسى. نحن لا نكتفي بإنشاء التقارير الفنية، بل نربط كل عملية تتبع وحملة إعلانية بهدف تجاري واضح: زيادة أرباحك وتخفيض تكاليفك المهدرة."
         ) : (
-          "I am a hybrid Data Analyst and Digital Marketer focused on solving growth bottlenecks for businesses. Unlike developers who only write code, I treat every data event tag, analytics dashboard, and PPC campaign as a mechanism to plug leaks in your sales funnel."
+          "Mousa Analytics is a specialized data-to-profit agency captained by founder Amr Mousa. We treat every data event tag, analytics dashboard, and PPC campaign as a calculated mechanism to plug leaks in your sales funnel and drive predictable B2B growth."
         )}
       </p>
 
@@ -80,6 +82,18 @@ const isAr = lang === 'ar';
           </p>
         </div>
       </div>
+
+      <!-- Learn More Link -->
+      <div class="pt-4 font-sans">
+        <a 
+          href={`/${lang}/about/`} 
+          class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-primary hover:text-accent-highlight tracking-widest uppercase transition-colors duration-300 group"
+        >
+          <span>{isAr ? "تعرف على رحلتنا وخبراتنا" : "Learn more about our journey"}</span>
+          <span class="inline-block transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1">{isAr ? "←" : "→"}</span>
+        </a>
+      </div>
+
     </div>
 
   </div>

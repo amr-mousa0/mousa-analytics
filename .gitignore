@@ -53,3 +53,7 @@ dist/
 # OS Metadata
 .DS_Store
 Thumbs.db
+
+# Temporary and Scratch Directories
+scratch/
+.impeccable/

@@ -42,15 +42,15 @@ describe('Defensive Content Boundary Unit Tests', () => {
       vi.mocked(getEntry).mockResolvedValueOnce(null);
 
       const result = await getSafeSeo('en', 'nonexistent');
-      expect(result.title).toBe('Amr Mousa | Data Analyst & Marketer');
-      expect(result.description).toContain('Portfolio of Amr Mousa');
+      expect(result.title).toBe('Mousa Analytics');
+      expect(result.description).toContain('Mousa Analytics: Simplifying data');
     });
 
     it('falls back to default SEO configurations if the query throws an exception', async () => {
       vi.mocked(getEntry).mockRejectedValueOnce(new Error('DB failure'));
 
       const result = await getSafeSeo('en', 'homepage');
-      expect(result.title).toBe('Amr Mousa | Data Analyst & Marketer');
+      expect(result.title).toBe('Mousa Analytics');
     });
   });
 

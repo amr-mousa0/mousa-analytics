@@ -3,6 +3,16 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout lang="en" pageId="404" title="Page Not Found | 404" description="The page you are looking for does not exist." noindex={true}>
+  <script is:inline>
+    const path = window.location.pathname;
+    const match = path.match(/^\/([^\/]+)/);
+    if (match) {
+      const lang = match[1];
+      if (lang !== 'en' && lang !== 'ar' && lang !== 'admin') {
+        window.location.replace('/en/');
+      }
+    }
+  </script>
   <div class="min-h-screen flex flex-col justify-center bg-primary-bg relative overflow-hidden">
     <!-- Atmospheric glows -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_40%,rgba(37,99,235,0.04),transparent_70%)] pointer-events-none z-0"></div>

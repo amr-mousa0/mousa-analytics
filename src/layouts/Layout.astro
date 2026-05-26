@@ -10,9 +10,25 @@ interface Props {
   ogImage?: string;
   canonicalUrl?: string;
   noindex?: boolean;
+  contentType?: 'service' | 'project' | 'blog' | 'page';
+  slug?: string;
+  pageCategory?: string;
+  isFallback?: boolean;
 }
 
-const { lang, pageId, title, description, ogImage, canonicalUrl, noindex } = Astro.props;
+const { 
+  lang, 
+  pageId, 
+  title, 
+  description, 
+  ogImage, 
+  canonicalUrl, 
+  noindex,
+  contentType,
+  slug,
+  pageCategory,
+  isFallback
+} = Astro.props;
 
 const fallbackSeo = (await getSafeSeo(lang, pageId).catch(() => ({}))) as Record<string, any>;
 const seoTitle = title || fallbackSeo.title || "Amr Mousa";
@@ -20,23 +36,86 @@ const seoDescription = description || fallbackSeo.description || "";
 const seoKeywords = fallbackSeo.keywords || [];
 const seoOgImage = ogImage || fallbackSeo.ogImage;
 
-// Automatically noindex staging environments/deploy previews
+// Automatically noindex staging environments/deploy previews and fallback translations
 const isStagingPreview = typeof process !== 'undefined' && process.env && 
   (process.env.CONTEXT === 'deploy-preview' || process.env.CONTEXT === 'branch-deploy');
-const finalNoindex = noindex || isStagingPreview;
+const finalNoindex = noindex || isFallback || isStagingPreview;
+
+// Build page context payload for analytics
+const environment = import.meta.env.DEV 
+  ? 'development' 
+  : (typeof process !== 'undefined' && process.env && (process.env.CONTEXT === 'deploy-preview' || process.env.CONTEXT === 'branch-deploy') ? 'staging' : 'production');
+
+const pageContext = {
+  locale: lang,
+  slug: slug || pageId,
+  contentType: contentType || 'page',
+  pageCategory: pageCategory || 'general',
+  environment,
+  isFallback: !!isFallback
+};
 ---
 
 <!doctype html>
 <html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'} class="scroll-smooth">
   <head>
+    <!-- Google Tag Manager -->
+    <script is:inline>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-MCSCSTTS');
+    </script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{seoTitle}</title>
     <meta name="description" content={seoDescription} />
+    <meta name="author" content="Amr Mousa" />
     {seoKeywords.length > 0 && <meta name="keywords" content={seoKeywords.join(', ')} />}
     
-    {finalNoindex && <meta name="robots" content="noindex, nofollow" />}
+    {finalNoindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonicalUrl || Astro.url.href} />
+
+    <!-- Server-rendered page context metadata block for GTM/analytics -->
+    <script id="page-metadata" type="application/json" is:inline set:html={JSON.stringify(pageContext).replace(/</g, '\\u003c')} />
+
+    <!-- Structured Metadata JSON-LD (Search engine rich snippets) -->
+    {contentType === 'blog' && (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": seoTitle,
+        "description": seoDescription,
+        "image": seoOgImage || "",
+        "inLanguage": lang,
+        "author": {
+          "@type": "Person",
+          "name": "Amr Mousa"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Mousa Analytics",
+          "logo": {
+            "@type": "ImageObject",
+            "url": new URL('/favicon.svg', Astro.url.href).href
+          }
+        }
+      })} />
+    )}
+    {contentType === 'service' && (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": seoTitle,
+        "description": seoDescription,
+        "provider": {
+          "@type": "Person",
+          "name": "Amr Mousa"
+        }
+      })} />
+    )}
     
     <!-- Alternate hreflang tags for multilingual SEO -->
     <link rel="alternate" hreflang="en" href={Astro.url.href.replace(/\/(en|ar)\//, '/en/')} />
@@ -46,15 +125,22 @@ const finalNoindex = noindex || isStagingPreview;
     <!-- Open Graph Metadata -->
     <meta property="og:title" content={seoTitle} />
     <meta property="og:description" content={seoDescription} />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:type" content="website" />
     {seoOgImage && <meta property="og:image" content={seoOgImage} />}
+    
+    <!-- Twitter Card Metadata -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={seoTitle} />
+    <meta name="twitter:description" content={seoDescription} />
+    {seoOgImage && <meta name="twitter:image" content={seoOgImage} />}
     
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#F8F9FA" />
-    <meta property="og:type" content="website" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'" />
     <noscript>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -63,16 +149,47 @@ const finalNoindex = noindex || isStagingPreview;
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('PWA Service Worker registered successfully!'))
+            .then(() => console.log('PWA Service Worker registered successfully!'))
             .catch(err => console.error('PWA Service Worker registration failed:', err));
         });
       }
     </script>
   </head>
   <body class="bg-primary-bg text-text-main selection:bg-accent-primary selection:text-white m-0 p-0 pb-20 md:pb-0 antialiased overflow-x-hidden min-h-screen flex flex-col">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MCSCSTTS"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <slot />
-  <!-- impeccable-live-start -->
-<script src="http://localhost:8400/live.js"></script>
-<!-- impeccable-live-end -->
+
+    <!-- Centralized Page View Tracking Script -->
+    <script>
+      import { getPageContext } from '../scripts/pageContext';
+      import { trackEvent } from '../scripts/analytics';
+
+      const trackPageViewTelemetry = () => {
+        const context = getPageContext();
+        if (context.contentType === 'project') {
+          trackEvent({
+            event: 'project_view',
+            slug: context.slug,
+            title: document.title,
+            category: context.pageCategory
+          });
+        } else if (context.contentType === 'service') {
+          trackEvent({
+            event: 'service_view',
+            slug: context.slug,
+            title: document.title,
+            category: context.pageCategory
+          });
+        }
+      };
+
+      // Run on initial load
+      trackPageViewTelemetry();
+      // Re-run if Astro View Transitions is active and swap occurs
+      document.addEventListener('astro:after-swap', trackPageViewTelemetry);
+    </script>
 </body>
 </html>

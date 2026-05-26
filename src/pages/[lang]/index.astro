@@ -20,9 +20,45 @@ const { lang } = Astro.params;
 if (!lang || !['en', 'ar'].includes(lang)) {
   return Astro.redirect('/en/');
 }
+
+const isAr = lang === 'ar';
 ---
 
 <Layout lang={lang} pageId="homepage">
+  <!-- Inject Schema.org JSON-LD Metadata -->
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ProfessionalService",
+        "@id": `https://mousaanalytics.com/${lang}/#organization`,
+        "name": isAr ? "موسى للتحليلات" : "Mousa Analytics",
+        "url": `https://mousaanalytics.com/${lang}/`,
+        "logo": `https://mousaanalytics.com/favicon.svg`,
+        "image": `https://mousaanalytics.com/images/og-image.jpg`,
+        "description": isAr 
+          ? "موسى للتحليلات: نساعد أصحاب المشاريع والمتاجر الإلكترونية على تبسيط وفهم بياناتهم لزيادة الأرباح وتقليل الهدر الإعلاني."
+          : "Mousa Analytics: Simplifying data to help e-commerce and business owners optimize ad spend and scale profitability.",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Cairo",
+          "addressCountry": "EG"
+        },
+        "telephone": "+201099661462",
+        "priceRange": "$$$"
+      },
+      {
+        "@type": "WebSite",
+        "@id": `https://mousaanalytics.com/${lang}/#website`,
+        "url": `https://mousaanalytics.com/${lang}/`,
+        "name": isAr ? "موسى للتحليلات" : "Mousa Analytics",
+        "publisher": {
+          "@id": `https://mousaanalytics.com/${lang}/#organization`
+        }
+      }
+    ]
+  })} />
+
   <Navigation lang={lang} activePage="home" />
   <main class="flex-grow">
     <Hero lang={lang} />

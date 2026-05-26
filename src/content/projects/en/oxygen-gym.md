@@ -22,7 +22,8 @@ galleryImages:
   - "../../../assets/images/uploads/gym/1759149287723.jpg"
   - "../../../assets/images/uploads/gym/1759149287810.jpg"
   - "../../../assets/images/uploads/gym/1759149287882.jpg"
-githubUrl: "https://github.com/amr-mousa"
+githubUrl: "https://github.com/amr-mousa0"
+dashboardUrl: "https://app.powerbi.com/view?r=eyJrIjoiYzY5ZmVjZWUtYjg2NC00YWQ4LTllZGEtNDM4YjkzMjY2YTI1IiwidCI6IjJiYjZlNWJjLWMxMDktNDdmYi05NDMzLWMxYzZmNGZhMzNmZiIsImMiOjl9"
 whatsappStartProjectMsg: "Hi Amr, I'd like to inquire about the Oxygen Gym Financial Transformation project and discuss starting a similar system for my business."
 whatsappOpenDashboardMsg: "Hi Amr, I'd like to request the interactive Power BI dashboard link for the Oxygen Gym Financial Transformation project to test it out."
 priority: 3

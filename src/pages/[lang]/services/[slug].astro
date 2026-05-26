@@ -1,0 +1,335 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../../../layouts/Layout.astro';
+import Navigation from '../../../components/ui/Navigation.astro';
+import Footer from '../../../components/ui/Footer.astro';
+
+// Dynamic static route generations with fallback support
+export async function getStaticPaths() {
+  const allServices = await getCollection('services');
+  const isProd = import.meta.env.PROD;
+  const showDrafts = !isProd;
+
+  // Filter drafts based on build mode
+  const activeServices = allServices.filter(item => showDrafts || !item.data.draft);
+
+  // Group services by translation key
+  const servicesByKey: Record<string, { en?: any; ar?: any }> = {};
+  activeServices.forEach(service => {
+    // Slugs are defined as "en/advanced-excel" or similar
+    const [lang] = service.slug.split('/');
+    const key = service.data.translationKey;
+    if (!servicesByKey[key]) {
+      servicesByKey[key] = {};
+    }
+    if (lang === 'en') servicesByKey[key].en = service;
+    if (lang === 'ar') servicesByKey[key].ar = service;
+  });
+
+  const paths: any[] = [];
+  Object.entries(servicesByKey).forEach(([key, versions]) => {
+    // Generate English page
+    if (versions.en) {
+      paths.push({
+        params: { lang: 'en', slug: key },
+        props: { service: versions.en, isFallback: false }
+      });
+    } else if (versions.ar) {
+      // Fallback: English page uses Arabic content
+      paths.push({
+        params: { lang: 'en', slug: key },
+        props: { service: versions.ar, isFallback: true }
+      });
+    }
+
+    // Generate Arabic page
+    if (versions.ar) {
+      paths.push({
+        params: { lang: 'ar', slug: key },
+        props: { service: versions.ar, isFallback: false }
+      });
+    } else if (versions.en) {
+      // Fallback: Arabic page uses English content
+      paths.push({
+        params: { lang: 'ar', slug: key },
+        props: { service: versions.en, isFallback: true }
+      });
+    }
+  });
+
+  return paths;
+}
+
+const { lang, slug } = Astro.params;
+const { service, isFallback } = Astro.props;
+
+if (!lang || !['en', 'ar'].includes(lang)) {
+  return Astro.redirect('/en/');
+}
+
+const isAr = lang === 'ar';
+
+// Localization UI Texts
+const t = {
+  backBtn: isAr ? "العودة للخدمات" : "Back to Services",
+  proposalBadge: isAr ? "مقترح مشروع مخصص" : "TAILORED PROFESSIONAL PROPOSAL",
+  execSummaryTitle: isAr ? "الملخص التنفيذي" : "Executive Summary",
+};
+
+// Check if noindex should be applied (e.g. if the service is draft or has noindex checked)
+const shouldNoindex = service.data.draft || service.data.seo.noindex;
+
+// Resolve dynamic template fields with sensible fallbacks
+const scopeTitle = service.data.scopeTitle || (isAr ? "ما سأقوم به (نطاق العمل)" : "What I Will Do (Scope of Work)");
+const deliverablesTitle = service.data.deliverablesTitle || (isAr ? "ما ستحصل عليه (العائد والنتائج)" : "What You Will Get (Business ROI & Deliverables)");
+const ctaTitle = service.data.ctaTitle || (isAr ? "قبول المقترح وبدء المشروع" : "Accept Proposal & Start Project");
+const ctaDesc = service.data.ctaDesc || (isAr 
+  ? "جاهز للبدء والعمل معاً لمساعدتك في تحقيق أهدافك؟ اضغط أدناه للموافقة على هذا المقترح وبدء التنسيق مباشرة عبر واتساب."
+  : "Ready to start working together and scale your business? Click below to accept this proposal and start collaborating directly on WhatsApp.");
+const ctaBtn = service.data.ctaBtn || (isAr ? "الموافقة على المقترح والبدء الآن" : "Accept Proposal & Start Project");
+const faqTitle = service.data.faqTitle || (isAr ? "الأسئلة الشائعة حول الخدمة" : "Frequently Asked Questions");
+
+const whatsappMessage = service.data.whatsappMessage || (isAr 
+  ? `مرحباً عمرو، أود الموافقة على مقترح ${service.data.title} والبدء في تفاصيل المشروع الحالية.`
+  : `Hi Amr, I'd like to accept the ${service.data.title} proposal and discuss starting the project.`);
+---
+
+<Layout 
+  lang={lang} 
+  pageId={`service-${slug}`}
+  title={service.data.seo.metaTitle}
+  description={service.data.seo.metaDescription}
+  ogImage={service.data.seo.ogImage || (service.data.coverImage ? service.data.coverImage.src : undefined)}
+  canonicalUrl={service.data.seo.canonicalUrl}
+  noindex={shouldNoindex}
+  contentType="service"
+  slug={slug}
+  pageCategory={service.data.category}
+  isFallback={isFallback}
+>
+  <Navigation lang={lang} activePage="services" backUrl={`/${lang}/#services`} backText={t.backBtn} />
+
+  <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent">
+    
+    <div class="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 space-y-8">
+      
+      {isFallback && (
+        <div class="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-amber-600 text-xs sm:text-sm font-sans flex items-center gap-3">
+          <i class="fa-solid fa-triangle-exclamation text-base sm:text-lg"></i>
+          <div>
+            {isAr 
+              ? "⚠️ هذه الخدمة غير متوفرة باللغة العربية بعد. تم عرض النسخة الإنجليزية بدلاً منها كخيار احتياطي." 
+              : "⚠️ This service is not available in English yet. The Arabic version is displayed as a fallback."}
+          </div>
+        </div>
+      )}
+
+      <!-- Main Proposal Card -->
+      <div class="glass-card premium-card-global !p-0 overflow-hidden flex flex-col rounded-[24px]">
+        
+        <!-- Header -->
+        <div class="p-8 md:p-10 relative border-b border-text-main/10 bg-primary-bg/50 space-y-4">
+          <!-- Proposal Pill Badge -->
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent-primary/20 bg-accent-primary/5 text-accent-primary text-[9px] font-bold tracking-wider uppercase font-mono">
+            <span class="relative flex h-1.5 w-1.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-primary"></span>
+            </span>
+            {t.proposalBadge}
+          </div>
+          
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-text-main font-serif leading-tight">
+            {service.data.title}
+          </h1>
+
+          <!-- Tech Stack Pills -->
+          <div class="flex flex-wrap gap-2 pt-1 font-mono">
+            {service.data.tags.map((tag: string) => (
+              <span class="px-3 py-1 rounded-full bg-text-main/5 text-text-main/65 text-[10px] font-medium border border-text-main/5 transition-colors hover:bg-text-main/10">
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <!-- Cover Image Rendering -->
+          {service.data.coverImage && (
+            <div class="mt-6 overflow-hidden rounded-xl border border-text-main/10 shadow-xs">
+              <Image 
+                src={service.data.coverImage} 
+                alt={service.data.title}
+                class="w-full max-h-64 object-cover"
+                width={1000}
+                quality={90}
+                loading="eager"
+                fetchpriority="high"
+              />
+            </div>
+          )}
+        </div>
+
+        <!-- Executive Summary Section -->
+        <div class="p-8 md:p-10 pb-4">
+          <div class="p-6 rounded-2xl bg-primary-bg/50 border border-text-main/10 space-y-3 shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]">
+            <h2 class="text-[10px] font-bold uppercase tracking-widest text-text-main/45 font-sans flex items-center gap-2">
+              <i class="fa-solid fa-chart-simple text-accent-primary/60" aria-hidden="true"></i>
+              {t.execSummaryTitle}
+            </h2>
+            <p class="text-text-main/80 text-[13.5px] sm:text-[14px] leading-relaxed font-sans font-light">
+              {service.data.execSummaryText}
+            </p>
+          </div>
+        </div>
+
+        <!-- Scope & Deliverables Columns -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 p-8 md:p-10 pt-4">
+          
+          <!-- Column 1: Scope of Work -->
+          <div class="space-y-6">
+            <h3 class="text-base font-bold text-text-main font-serif flex items-center gap-2 border-b border-text-main/10 pb-3">
+              <span class="text-accent-primary/70"><i class="fa-solid fa-list-check text-sm" aria-hidden="true"></i></span>
+              {scopeTitle}
+            </h3>
+            
+            <div class="space-y-3">
+              {service.data.scopeItems.map((item: any, i: number) => (
+                <div class="group flex gap-4 items-start p-3 -mx-3 rounded-xl transition-all duration-300 hover:bg-primary-bg/60 cursor-default">
+                  <div class="w-8.5 h-8.5 rounded-xl bg-accent-primary/8 text-accent-primary border border-accent-primary/12 flex items-center justify-center font-bold text-[11px] flex-shrink-0 transition-transform duration-300 group-hover:scale-105 shadow-xs">
+                    0{i + 1}
+                  </div>
+                  <div class="space-y-1">
+                    <h4 class="text-[13px] font-bold text-text-main/85 font-sans tracking-wide">
+                      {item.title}
+                    </h4>
+                    <p class="text-text-main/60 text-[12px] leading-relaxed font-sans font-light">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Column 2: ROI & Deliverables -->
+          <div class="space-y-6">
+            <h3 class="text-base font-bold text-text-main font-serif flex items-center gap-2 border-b border-text-main/10 pb-3">
+              <span class="text-accent-primary/70"><i class="fa-solid fa-shield-halved text-sm" aria-hidden="true"></i></span>
+              {deliverablesTitle}
+            </h3>
+            
+            <div class="space-y-3">
+              {service.data.deliverablesItems.map((item: string) => (
+                <div class="flex gap-3 items-start p-3 -mx-3 rounded-xl transition-all duration-300 hover:bg-primary-bg/60 cursor-default">
+                  <span class="text-accent-primary/95 text-[15px] mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center">
+                    <i class="fa-regular fa-circle-check" aria-hidden="true"></i>
+                  </span>
+                  <p class="text-text-main/75 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Accept Proposal & Start Project CTA (WhatsApp) -->
+        <div class="p-8 md:p-10 bg-success-bg border-t border-success-border flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="space-y-1.5 text-center md:text-start max-w-xl">
+            <h3 class="text-base font-bold text-text-main font-serif">
+              {ctaTitle}
+            </h3>
+            <p class="text-text-main/60 text-[12.5px] leading-relaxed font-sans font-light">
+              {ctaDesc}
+            </p>
+          </div>
+
+          <button 
+            id="accept-proposal-btn"
+            data-msg={whatsappMessage}
+            class="h-12 px-6 rounded-full bg-success-primary hover:bg-success-hover text-white font-semibold text-xs tracking-wider flex items-center justify-center gap-2 shadow-success hover:shadow-success-hover active:scale-95 transition-all duration-300 cursor-pointer flex-shrink-0 w-full md:w-auto text-center border-none"
+          >
+            <i class="fa-solid fa-comments text-sm" aria-hidden="true"></i>
+            <span>{ctaBtn}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      {service.data.faqItems.length > 0 && (
+        <div class="space-y-6 pt-6">
+          <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-text-main font-serif text-center md:text-start flex items-center justify-center md:justify-start gap-2">
+            <span class="text-xl">💬</span>
+            {faqTitle}
+          </h2>
+
+          <div class="grid grid-cols-1 gap-4 w-full">
+            {service.data.faqItems.map((faq: any) => (
+              <details class="group bg-hero-card/70 border border-text-main/5 rounded-2xl p-5 transition-all duration-300 hover:border-text-main/12 hover:shadow-[0_4px_16px_rgba(10,25,47,0.03)] cursor-pointer">
+                <summary class="flex justify-between items-center font-bold text-text-main/90 text-xs sm:text-[13px] tracking-wide font-sans list-none select-none">
+                  <span class="pe-4 leading-relaxed flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-accent-primary/45 group-hover:bg-accent-primary transition-colors duration-300"></span>
+                    {faq.q}
+                  </span>
+                  <span class="w-6 h-6 rounded-full bg-primary-bg flex items-center justify-center text-[8px] text-text-main/40 group-open:rotate-180 group-hover:bg-text-main/10 transition-all duration-300 flex-shrink-0 font-sans">
+                    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                  </span>
+                </summary>
+                <p class="text-text-main/60 text-xs sm:text-[13.5px] leading-relaxed font-sans font-light mt-3.5 pt-3.5 border-t border-text-main/10 select-text">
+                  {faq.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      )}
+
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+</Layout>
+
+<script>
+  import { trackEvent } from '../../../scripts/analytics';
+
+  // Adblock-resilient dynamic WhatsApp redirection
+  const btn = document.getElementById('accept-proposal-btn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const msg = btn.getAttribute('data-msg') || '';
+
+      // Track CTA click
+      const slug = window.location.pathname.split('/').filter(Boolean).pop() || '';
+      trackEvent({
+        event: 'cta_click',
+        cta_text: btn.textContent?.trim() || 'Accept Proposal',
+        cta_type: 'whatsapp',
+        context_slug: slug
+      });
+
+      const domainParts = ['wa', 'me'];
+      const targetDomain = domainParts.join('.');
+      const recipientNum = '201017749925';
+      const redirectUrl = `https://${targetDomain}/${recipientNum}?text=${encodeURIComponent(msg)}`;
+      window.open(redirectUrl, '_blank', 'noopener,noreferrer');
+    });
+  }
+</script>
+
+<style>
+  /* Remove default details summary arrow marker */
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+  
+  /* Polish focused states for FAQ items */
+  details:focus-within {
+    border-color: rgba(37, 99, 235, 0.25) !important;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.05) !important;
+  }
+  details summary:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+</style>

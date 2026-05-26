@@ -20,7 +20,7 @@ const seoFieldsSchema = z.object({
 
 const servicesCollection = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }: SchemaContext) => z.object({
     title: z.string(),
     description: z.string(),
     icon: z.string(),
@@ -32,6 +32,27 @@ const servicesCollection = defineCollection({
     draft: z.boolean().default(false),
     featured: z.boolean().default(false),
     publishedDate: z.coerce.date(),
+    coverImage: image().optional(),
+    
+    // Detailed Proposal Fields
+    execSummaryText: z.string(),
+    scopeTitle: z.string().optional(),
+    scopeItems: z.array(z.object({
+      title: z.string(),
+      desc: z.string(),
+    })).default([]),
+    deliverablesTitle: z.string().optional(),
+    deliverablesItems: z.array(z.string()).default([]),
+    ctaTitle: z.string().optional(),
+    ctaDesc: z.string().optional(),
+    ctaBtn: z.string().optional(),
+    whatsappMessage: z.string().optional(),
+    faqTitle: z.string().optional(),
+    faqItems: z.array(z.object({
+      q: z.string(),
+      a: z.string(),
+    })).default([]),
+    
     seo: seoFieldsSchema,
   }),
 });
@@ -57,6 +78,7 @@ const projectsCollection = defineCollection({
     galleryImages: z.array(image()),
     coverImage: image(),
     githubUrl: z.string().url().optional(),
+    dashboardUrl: z.string().url().optional(),
     whatsappStartProjectMsg: z.string(),
     whatsappOpenDashboardMsg: z.string(),
     priority: z.number().int().default(0),
@@ -101,13 +123,15 @@ const heroCollection = defineCollection({
 const blogCollection = defineCollection({
   type: 'content',
   schema: ({ image }: SchemaContext) => z.object({
-    title: z.string(),
-    description: z.string(),
+    title: z.string().max(60, "Meta title should be under 60 characters for optimal display"),
+    description: z.string().max(160, "Meta description should be under 160 characters for search snippets"),
     publishDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     coverImage: image().optional(),
     author: z.string().default("Amr Mousa"),
+    category: z.enum(["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"]),
     tags: z.array(z.string()).default([]),
+    translationKey: z.string(),
     draft: z.boolean().default(true),
     seo: seoFieldsSchema,
   }),

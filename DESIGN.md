@@ -13,7 +13,7 @@ typography:
     fontWeight: 700
     lineHeight: 1.1
   body:
-    fontFamily: "Inter, Roboto, sans-serif"
+    fontFamily: "Outfit, Inter, sans-serif"
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.6
@@ -47,12 +47,14 @@ components:
 
 This system represents a high-end, elite consultancy design language. It is objective, result-oriented, and corporate. The aesthetic feels highly structured, reliable, and premium, utilizing an editorial Serif typeface for headings combined with a clean Sans-Serif for body copy. 
 
-This design explicitly rejects generic, cartoonish SaaS landing-page styles, neon gradient overlays, or unnecessary global client-side frameworks. It emphasizes clean logical alignments, subtle structural indicators (like fine grid lines and watermarks), and clear content hierarchy.
+This design explicitly rejects generic, cartoonish SaaS landing-page styles, neon gradient overlays, or unnecessary global client-side frameworks. It emphasizes clean logical alignments, subtle structural indicators, and clear content hierarchy.
 
 **Key Characteristics:**
 - Strict corporate color harmony with heavy contrast.
 - Editorial Serif typography for identity names and headers, with modern geometric Sans-Serif body copy.
 - Flat container structure utilizing white floating cards overlaying clean backgrounds.
+
+**The Simplicity Doctrine.** Design must focus entirely on clarity of idea and ease of use. Remove any visual clutter, redundant copying, or decorative slop.
 
 ## 2. Colors
 
@@ -68,10 +70,12 @@ A highly restrained and high-contrast professional color palette, structured to 
 
 **The Restrained Accents Rule.** High-saturation blue is limited to call-to-action buttons, key status indicators, and category tags. No background fill is colored with primary blue except primary button styling.
 
+**The Neutral Tinting Rule.** Never use pure black (#000000) or pure white (#ffffff). All backgrounds and borders must be tinted slightly toward the brand hue (with a chroma of 0.005–0.01) to feel premium and warm.
+
 ## 3. Typography
 
 **Display Font:** Cormorant Garamond (or system fallback Georgia/serif)
-**Body Font:** Inter (or system fallback Roboto/sans-serif)
+**Body Font:** Outfit (or system fallback Inter/sans-serif)
 
 **Character:** The typography marries an elegant, editorial Serif font (representing prestige and executive leadership) with a clean, high-legibility Sans-Serif (representing modern systems, data, and precision).
 
@@ -81,6 +85,8 @@ A highly restrained and high-contrast professional color palette, structured to 
 - **Body** (Regular, 1rem, 1.6): Paragraph text. Captions at 65-75ch maximum width.
 - **Label** (Bold, 0.75rem, uppercase, 0.2em tracking): Eyebrow/overline kickers and navigation links.
 
+**The Editorial Contrast Rule.** Paired Serif Cormorant Garamond headings and Outfit body copy ensure a luxury B2B consulting feel.
+
 ## 4. Elevation
 
 The system is flat by default, utilizing high contrast and solid white containers to create separation. Structural layering is achieved using flat container borders (1px solid #0A192F with low opacity) and very soft, ambient shadows.
@@ -88,7 +94,11 @@ The system is flat by default, utilizing high contrast and solid white container
 ### Shadow Vocabulary
 - **Ambient Card Glow** (`box-shadow: 0 4px 20px rgba(10, 25, 47, 0.05)`): Applied to floating cards overlapping main visuals.
 
+**The No-Glow Rule.** Do not use radial gradients, glowing accents, background grids, or repeating watermarks for decoration. The default is a clean, solid warm-cream background.
+
 ## 5. Components
+
+For each component, lead with a short character line, then specify shape, color assignment, states, and any distinctive behavior.
 
 ### Buttons
 - **Shape:** Rounded Pill (9999px)
@@ -103,14 +113,23 @@ The system is flat by default, utilizing high contrast and solid white container
 ### Navigation
 - **Style:** Flat header with small uppercase links, wide tracking, and clean text logo.
 
+**The No-Slop Rule.** Never use pointer icons, arrows, cursors, or indicators as static decorations inside elements.
+
+**The Clean CTA Rule.** Conversion buttons must be simple, rounded pills using primary brand tokens, without heavy wrapping cards or competing actions.
+
 ## 6. Do's and Don'ts
+
+Concrete, forceful guardrails. Lead each with "Do" or "Don't".
 
 ### Do:
 - **Do** maintain a strict contrast ratio between #0A192F text and #F8F9FA background.
 - **Do** use the serif font exclusively for the name Amr Mousa and main sections headings.
 - **Do** align components strictly to a grid layout.
+- **Do** use whitespace as a primary layout element.
 
 ### Don't:
 - **Don't** use multi-color gradient text or colorful backgrounds.
 - **Don't** use border-left colors as accents on cards.
 - **Don't** add GSAP or other animation libraries; rely on pure CSS transitions.
+- **Don't** include cursor icons or pointers inside static layouts.
+- **Don't** use hardcoded values like #ffffff or bg-white where design tokens like bg-hero-card are defined.

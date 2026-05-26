@@ -20,7 +20,8 @@ galleryImages:
   - "../../../assets/images/uploads/cafe-bar/project-2.JPG"
   - "../../../assets/images/uploads/cafe-bar/before.JPG"
   - "../../../assets/images/uploads/cafe-bar/after.JPG"
-githubUrl: "https://github.com/amr-mousa"
+githubUrl: "https://github.com/amr-mousa0"
+dashboardUrl: "https://app.powerbi.com/view?r=eyJrIjoiMzYwMWU2ZGYtOTFmNy00NTEwLTk0MWEtYzY0OGM2NWM1OTU0IiwidCI6IjJiYjZlNWJjLWMxMDktNDdmYi05NDMzLWMxYzZmNGZhMzNmZiIsImMiOjl9"
 whatsappStartProjectMsg: "Hi Amr, I'd like to inquire about the Coffee Shop Sales Analysis project and discuss starting a similar system for my business."
 whatsappOpenDashboardMsg: "Hi Amr, I'd like to request the interactive Power BI dashboard link for the Coffee Shop Sales project to test it out."
 priority: 1

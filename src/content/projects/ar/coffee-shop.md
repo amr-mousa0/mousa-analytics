@@ -20,7 +20,8 @@ galleryImages:
   - "../../../assets/images/uploads/cafe-bar/project-2.JPG"
   - "../../../assets/images/uploads/cafe-bar/before.JPG"
   - "../../../assets/images/uploads/cafe-bar/after.JPG"
-githubUrl: "https://github.com/amr-mousa"
+githubUrl: "https://github.com/amr-mousa0"
+dashboardUrl: "https://app.powerbi.com/view?r=eyJrIjoiMzYwMWU2ZGYtOTFmNy00NTEwLTk0MWEtYzY0OGM2NWM1OTU0IiwidCI6IjJiYjZlNWJjLWMxMDktNDdmYi05NDMzLWMxYzZmNGZhMzNmZiIsImMiOjl9"
 whatsappStartProjectMsg: "مرحباً عمرو، أود الاستفسار عن مشروع تحليل وتحسين مبيعات المقهى والبدء في مشروع مشابه لعملي."
 whatsappOpenDashboardMsg: "مرحباً عمرو، أود الحصول على رابط لوحة مؤشرات الأداء التفاعلية لمبيعات المقهى لتجربتها."
 priority: 1

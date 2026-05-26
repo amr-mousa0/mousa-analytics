@@ -2,6 +2,11 @@
 import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/ui/Navigation.astro';
 import Footer from '../../components/ui/Footer.astro';
+import { Image } from 'astro:assets';
+import profileImg from '../../assets/images/amr-hazem.png';
+
+
+
 
 // Dynamic route parameters
 export function getStaticPaths() {
@@ -30,7 +35,7 @@ const isAr = lang === 'ar';
     "@graph": [
       {
         "@type": "Person",
-        "@id": `https://amrmousa.com/${lang}/#person`,
+        "@id": `https://mousaanalytics.com/${lang}/#person`,
         "name": isAr ? "عمرو موسى" : "Amr Mousa",
         "jobTitle": isAr ? "محلل بيانات وتسويق" : "Data & Marketing Analyst",
         "knowsAbout": ["SQL", "Python", "Power BI", "Excel", "Performance Marketing", "Conversion Rate Optimization"],
@@ -56,9 +61,9 @@ const isAr = lang === 'ar';
       },
       {
         "@type": "ProfilePage",
-        "@id": `https://amrmousa.com/${lang}/about/`,
+        "@id": `https://mousaanalytics.com/${lang}/about/`,
         "mainEntity": {
-          "@id": `https://amrmousa.com/${lang}/#person`
+          "@id": `https://mousaanalytics.com/${lang}/#person`
         }
       }
     ]
@@ -70,77 +75,100 @@ const isAr = lang === 'ar';
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,oklch(75%_0.12_255_/_0.04),transparent_60%)] pointer-events-none z-0" aria-hidden="true"></div>
 
     <article class="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 space-y-24">
-      <!-- Section 1: Philosophy & Value Pillars -->
-      <section class="grid grid-cols-1 lg:grid-cols-[35%_65%] gap-12 lg:gap-20 items-start">
-        <aside class="space-y-4">
+      
+      <!-- Restructured Section 1: Hero Block (Mousa Analytics B2B Agency) -->
+      <!-- Restructured Section 1: Hero Block (Mousa Analytics B2B Agency) -->
+      <section class="max-w-3xl mx-auto text-center space-y-6 pt-4 pb-8">
+        <div class="space-y-3">
           <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
-            {isAr ? "الفلسفة والركائز" : "PHILOSOPHY & PILLARS"}
+            {isAr ? "ترتيب وفهم الأرقام" : "ORGANIZING & UNDERSTANDING DATA"}
           </span>
-          <h1 class="text-4xl md:text-5xl font-bold tracking-tight font-serif text-text-main leading-tight">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight font-serif text-text-main leading-[1.15]">
             {isAr ? (
               <>
-                كيف أحقق <span class="text-hero-ice-blue italic font-medium">النتائج الفعالة</span>
+                موسى <span class="text-hero-ice-blue italic font-medium">للتحليلات</span>
               </>
             ) : (
               <>
-                How I Drive <span class="text-hero-ice-blue italic font-medium">Business Growth</span>
+                Mousa <span class="text-hero-ice-blue italic font-medium">Analytics</span>
               </>
             )}
           </h1>
+          <h2 class="text-base md:text-lg font-bold font-sans text-text-main/80 mt-2">
+            {isAr ? "تبسيط البيانات لمساعدتك على اتخاذ القرارات الصحيحة" : "Simplifying Data to Help You Make the Right Decisions"}
+          </h2>
+        </div>
+        
+        <p class="text-sm md:text-base text-text-main/70 font-sans leading-relaxed max-w-2xl mx-auto">
+          {isAr ? (
+            "بدأت موسى للتحليلات بهدف واحد: تبسيط البيانات المعقدة لأصحاب المتاجر والمشاريع. نحن نؤمن أن الأرقام لا يجب أن تكون صعبة، ولا تحتاج لشعارات تسويقية ضخمة لتقنعك بجدواها. دورنا ببساطة هو مساعدتك على رؤية أرقامك بوضوح لتتخذ قراراتك بثقة، وتقلل الهدر الإعلاني بناءً على حقائق فعلية."
+          ) : (
+            "Mousa Analytics started with a single goal: simplifying complex data for business and e-commerce owners. We believe that numbers shouldn't be difficult, and you don't need massive marketing slogans to prove their worth. Our role is simple—helping you see your numbers clearly so you can make decisions with confidence, and reduce ad spend waste based on real facts."
+          )}
+        </p>
+      </section>
+
+      <hr class="border-t border-text-main/5" />
+
+      <!-- Section 2: Values & Philosophy Block (Clarity, Tracking, Practical Simplicity) -->
+      <section class="grid grid-cols-1 lg:grid-cols-[35%_65%] gap-12 lg:gap-20 items-start">
+        <aside class="space-y-4">
+          <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
+            {isAr ? "رؤيتنا في العمل" : "OUR APPROACH"}
+          </span>
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight font-serif text-text-main leading-tight">
+            {isAr ? (
+              <>
+                كيف نرى <span class="text-hero-ice-blue italic font-medium">البيانات</span>؟
+              </>
+            ) : (
+              <>
+                How We View <span class="text-hero-ice-blue italic font-medium">Data</span>
+              </>
+            )}
+          </h2>
           <p class="text-sm text-text-main/60 font-sans leading-relaxed max-w-sm">
             {isAr 
-              ? "الربط بين قواعد البيانات التحليلية وسيكولوجية المستهلك لفحص وتحسين ومضاعفة مبيعات المتاجر والتجارة الإلكترونية." 
-              : "Bridging analytical models with consumer psychology to audit, optimize, and scale conversion pipelines."}
+              ? "البيانات تكون أكثر فائدة حينما تتحول لخطوات عملية واضحة. نساعدك على فهم أرقام متجرك لتتخذ قراراتك بثقة ووضوح." 
+              : "Data is most useful when it turns into clear, actionable steps. We help you understand your store's numbers so you can make decisions with clarity."}
           </p>
         </aside>
 
-        <!-- Pillars Stack -->
-        <div class="space-y-6">
-          <div class="border border-text-main/8 rounded-2xl p-6 bg-hero-card/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:border-hero-ice-blue/20">
-            <h2 class="text-base font-bold text-text-main font-serif flex gap-3 items-center leading-snug">
-              <span class="w-2 h-2 rounded-full bg-hero-ice-blue shrink-0"></span>
-              <span>{isAr ? "من الفوضى إلى التركيز" : "From Noise to Focus"}</span>
-            </h2>
-            <p class="mt-3 text-sm text-text-main/80 font-sans leading-relaxed ps-5">
+        <!-- Pillars List -->
+        <div class="divide-y divide-text-main/5 space-y-6 lg:space-y-8">
+          <div class="pt-0 pb-6 first:pt-0 last:pb-0 space-y-2">
+            <h3 class="text-base font-bold text-text-main font-serif flex gap-3 items-center leading-snug">
+              <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0"></span>
+              <span>{isAr ? "الوضوح والتركيز" : "Clarity & Focus"}</span>
+            </h3>
+            <p class="text-sm text-text-main/70 font-sans leading-relaxed ps-5">
               {isAr 
-                ? "البيانات تكون ذات قيمة فقط إذا كانت توجهك نحو اتخاذ إجراء. أقوم بتصفية الفوضى التقنية والمقاييس الوهمية للتركيز فقط على ما يحقق مبيعات فعلية ويضاعف العوائد." 
-                : "Data is only valuable if it drives action. I filter out the technical noise and vanity metrics to focus strictly on what generates sales and scales revenue."}
+                ? "تصفية الفوضى التقنية والمقاييس الوهمية للتركيز فقط على الأرقام التي تهم عملك وتصنع فارقاً حقيقياً." 
+                : "Filtering out technical noise and vanity metrics to focus strictly on numbers that actually impact your business."}
             </p>
           </div>
 
-          <div class="border border-text-main/8 rounded-2xl p-6 bg-hero-card/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:border-hero-ice-blue/20">
-            <h2 class="text-base font-bold text-text-main font-serif flex gap-3 items-center leading-snug">
-              <span class="w-2 h-2 rounded-full bg-hero-ice-blue shrink-0"></span>
-              <span>{isAr ? "فك شيفرة السلوك البشري" : "Deciphering the 'Why'"}</span>
-            </h2>
-            <p class="mt-3 text-sm text-text-main/80 font-sans leading-relaxed ps-5">
+          <div class="pt-6 pb-6 first:pt-0 last:pb-0 space-y-2">
+            <h3 class="text-base font-bold text-text-main font-serif flex gap-3 items-center leading-snug">
+              <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0"></span>
+              <span>{isAr ? "منطق التتبع الصحيح" : "Accurate Tracking"}</span>
+            </h3>
+            <p class="text-sm text-text-main/70 font-sans leading-relaxed ps-5">
               {isAr 
-                ? "الأرقام توضح المسار، ولكن علم النفس يفسر الرحلة. من خلال دمج تحليلات البيانات مع فهم سلوك المستهلك، أحدد الأسباب الدقيقة وراء كل نقرة أو تراجع عن الشراء." 
-                : "Numbers show the path, but psychology explains the journey. By combining data analytics with consumer behavior, I map the exact reasons behind every click and drop-off."}
+                ? "ربط التتبع الفني والتحليلي بسلوك العميل الفعلي لفهم القصة الكاملة وراء الأرقام." 
+                : "Connecting analytics and tracking setup to actual buyer behavior, telling you the real story behind every click."}
             </p>
           </div>
 
-          <div class="border border-text-main/8 rounded-2xl p-6 bg-hero-card/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:border-hero-ice-blue/20">
-            <h2 class="text-base font-bold text-text-main font-serif flex gap-3 items-center leading-snug">
-              <span class="w-2 h-2 rounded-full bg-hero-ice-blue shrink-0"></span>
-              <span>{isAr ? "سد ثغرات مسارات البيع" : "Bridging the Funnel"}</span>
-            </h2>
-            <p class="mt-3 text-sm text-text-main/80 font-sans leading-relaxed ps-5">
+          <div class="pt-6 pb-0 first:pt-0 last:pb-0 space-y-2">
+            <h3 class="text-base font-bold text-text-main font-serif flex gap-3 items-center leading-snug">
+              <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0"></span>
+              <span>{isAr ? "البساطة العملية" : "Practical Simplicity"}</span>
+            </h3>
+            <p class="text-sm text-text-main/70 font-sans leading-relaxed ps-5">
               {isAr 
-                ? "تسريب العملاء من مسار الشراء يعني ميزانية مهدورة. أقوم بفحص وربط التتبع التقني مع المحتوى الإبداعي لضمان رحلة سلسة من الظهور الأول حتى الدفع النهائي." 
-                : "A conversion leak is wasted budget. I audit and bridge your technical tracking with creative campaign assets to ensure a seamless path from first impression to checkout."}
-            </p>
-          </div>
-
-          <div class="border border-text-main/8 rounded-2xl p-6 bg-hero-card/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:border-hero-ice-blue/20">
-            <h2 class="text-base font-bold text-text-main font-serif flex gap-3 items-center leading-snug">
-              <span class="w-2 h-2 rounded-full bg-hero-ice-blue shrink-0"></span>
-              <span>{isAr ? "المرونة والاتجاه الواضح" : "Structured & Scalable Logic"}</span>
-            </h2>
-            <p class="mt-3 text-sm text-text-main/80 font-sans leading-relaxed ps-5">
-              {isAr 
-                ? "الأنظمة وخوارزميات الإعلانات تتغير، لكن منطق التحليل المنظم يظل ثابتاً. أقوم ببناء لوحات بيانات مخصصة وقابلة للتطوير تنمو مع عملك، مما يضمن لك اتجاهاً واضحاً دائماً." 
-                : "Systems and algorithms change, but structured logic remains. I build scalable, custom reporting dashboards that grow with your business, ensuring you always have clear direction."}
+                ? "بناء لوحات بيانات واضحة وسهلة الفهم تساعدك على اتخاذ قراراتك اليومية بيسر وثقة." 
+                : "Building clean, straightforward dashboards that help you make daily decisions with confidence and ease."}
             </p>
           </div>
         </div>
@@ -148,19 +176,71 @@ const isAr = lang === 'ar';
 
       <hr class="border-t border-text-main/5" />
 
-      <!-- Section 2: Core Capabilities (Horizontal Scroll on Mobile) -->
+      <!-- Section 3: Amr Mousa CEO & Lead Analyst Profile Monogram -->
+      <section class="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-12 lg:gap-16 items-center">
+        <!-- Visual Column: Square Premium Portrait Frame -->
+        <div class="flex flex-col items-center justify-center space-y-6">
+          <div class="relative w-56 h-56 md:w-64 md:h-64 rounded-[2rem] p-1 bg-hero-card/45 border border-hero-ice-blue/15 shadow-xl shadow-text-main/10 group select-none overflow-hidden transition-all duration-300 hover:border-hero-ice-blue/30">
+            <!-- Glow decoration inside -->
+            <div class="absolute inset-0 bg-hero-ice-blue/5 blur-xl rounded-[1.85rem] -z-10" aria-hidden="true"></div>
+            
+            <div class="w-full h-full rounded-[1.75rem] overflow-hidden relative">
+              <!-- Subtle gradient overlay on hover -->
+              <div class="absolute inset-0 bg-gradient-to-tr from-hero-accent/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+              <Image 
+                src={profileImg} 
+                alt={isAr ? "عمرو موسى" : "Amr Mousa"} 
+                class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                width={400}
+                height={400}
+                quality={90}
+                loading="eager"
+              />
+            </div>
+          </div>
+          
+          <div class="text-center space-y-1">
+            <h3 class="text-xl font-bold text-text-main font-serif">{isAr ? "عمرو موسى" : "Amr Mousa"}</h3>
+            <p class="text-xs text-hero-ice-blue font-bold tracking-widest uppercase font-sans">{isAr ? "المؤسس ومحلل البيانات الرئيسي" : "Founder & Lead Analyst"}</p>
+          </div>
+        </div>
+
+        <!-- Bio Details -->
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
+              {isAr ? "تعرف عليّ" : "GET TO KNOW ME"}
+            </span>
+            <h2 class="text-3xl md:text-4xl font-bold tracking-tight font-serif text-text-main">
+              {isAr ? "كيف بدأت القصة؟" : "How the Story Began"}
+            </h2>
+          </div>
+
+          <p class="text-sm text-text-main/70 font-sans leading-relaxed">
+            {isAr ? (
+              "أنا عمرو موسى، بدأت موسى للتحليلات كفكرة بسيطة: مساعدة أصحاب المشاريع والمتاجر على فهم أرقامهم بدون تعقيد. كمحلل بيانات ومسوق، دوري ببساطة هو ترتيب فوضى البيانات وبناء لوحات تحكم واضحة تساعدك على اتخاذ قرارات صحيحة وتقليل الهدر الإعلاني بناءً على حقائق وأرقام حقيقية، بعيداً عن الوعود الوهمية."
+            ) : (
+              "I'm Amr Mousa, and I started Mousa Analytics with a simple idea: helping business owners understand their numbers without the headache. As an analyst and marketer, my role is simple—bringing order to data data chaos and building clean dashboards that help you make better decisions and reduce ad waste based on real facts, not hollow promises."
+            )}
+          </p>
+        </div>
+      </section>
+
+      <hr class="border-t border-text-main/5" />
+
+      <!-- Section 4: Core Capabilities -->
       <section class="space-y-8">
         <div class="flex items-center justify-between">
           <div class="space-y-2">
             <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
-              {isAr ? "القدرات الفنية" : "CORE CAPABILITIES"}
+              {isAr ? "القدرات الفنية والتقنية" : "TECHNICAL CAPABILITIES"}
             </span>
             <h2 class="text-3xl md:text-4xl font-bold tracking-tight font-serif text-text-main">
               {isAr ? "التحليل الفني والنمذجة" : "Analytical & Technical Stack"}
             </h2>
           </div>
           <!-- Swipe Indicator (Mobile Only) -->
-          <div class="md:hidden flex items-center gap-1.5 text-[10px] font-bold text-text-main/40 uppercase font-sans tracking-widest">
+          <div class="md:hidden flex items-center gap-1.5 text-[10px] font-bold text-text-main/60 uppercase font-sans tracking-widest">
             <span>{isAr ? "اسحب لليمين" : "Swipe"}</span>
             <i class={`fa-solid ${isAr ? 'fa-arrow-left' : 'fa-arrow-right'} text-[8px] animate-pulse`}></i>
           </div>
@@ -244,7 +324,7 @@ const isAr = lang === 'ar';
 
       <hr class="border-t border-text-main/5" />
 
-      <!-- Section 3: Experience Timeline (Horizontal Scroll on Mobile) -->
+      <!-- Section 5: Experience Timeline (Horizontal Scroll on Mobile) -->
       <section class="space-y-8">
         <div class="flex items-center justify-between">
           <div class="space-y-2">
@@ -256,15 +336,15 @@ const isAr = lang === 'ar';
             </h2>
           </div>
           <!-- Swipe/Scroll Indicator -->
-          <div class="flex items-center gap-1.5 text-[10px] font-bold text-text-main/40 uppercase font-sans tracking-widest">
+          <div class="flex items-center gap-1.5 text-[10px] font-bold text-text-main/60 uppercase font-sans tracking-widest">
             <span>{isAr ? "اسحب لليمين" : "Scroll / Swipe"}</span>
             <i class={`fa-solid ${isAr ? 'fa-arrow-left' : 'fa-arrow-right'} text-[8px] animate-pulse`}></i>
           </div>
         </div>
 
-        <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-4 w-full">
+        <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar pb-4 w-full px-6 -mx-6">
           <!-- Experience Card 1: NTI -->
-          <div class="premium-card-global w-[92%] sm:w-[85%] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-7 md:p-10 flex flex-col justify-between">
+          <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
             <div class="space-y-4 font-sans">
               <!-- Top Badges -->
               <div class="flex flex-wrap gap-2.5">
@@ -327,7 +407,7 @@ const isAr = lang === 'ar';
           </div>
 
           <!-- Experience Card 2: So Care -->
-          <div class="premium-card-global w-[92%] sm:w-[85%] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-7 md:p-10 flex flex-col justify-between">
+          <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
             <div class="space-y-4 font-sans">
               <!-- Top Badges -->
               <div class="flex flex-wrap gap-2.5">
@@ -390,7 +470,7 @@ const isAr = lang === 'ar';
           </div>
 
           <!-- Experience Card 3: DEPI -->
-          <div class="premium-card-global w-[92%] sm:w-[85%] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-7 md:p-10 flex flex-col justify-between">
+          <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
             <div class="space-y-4 font-sans">
               <!-- Top Badges -->
               <div class="flex flex-wrap gap-2.5">
@@ -453,7 +533,7 @@ const isAr = lang === 'ar';
           </div>
 
           <!-- Experience Card 4: Oxygen Gym -->
-          <div class="premium-card-global w-[92%] sm:w-[85%] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-7 md:p-10 flex flex-col justify-between">
+          <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
             <div class="space-y-4 font-sans">
               <!-- Top Badges -->
               <div class="flex flex-wrap gap-2.5">
@@ -516,7 +596,7 @@ const isAr = lang === 'ar';
           </div>
 
           <!-- Experience Card 5: Iris Communications -->
-          <div class="premium-card-global w-[92%] sm:w-[85%] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-7 md:p-10 flex flex-col justify-between">
+          <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
             <div class="space-y-4 font-sans">
               <!-- Top Badges -->
               <div class="flex flex-wrap gap-2.5">
@@ -577,6 +657,28 @@ const isAr = lang === 'ar';
               </ul>
             </div>
           </div>
+        </div>
+      </section>
+
+      <hr class="border-t border-text-main/5" />
+
+      <!-- Section 6: Action CTA Block (Deploy the Engine) -->
+      <section class="max-w-2xl mx-auto text-center space-y-6 pb-12 font-sans">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight font-serif text-text-main leading-tight">
+          {isAr ? "جاهز لسد ثغرات مبيعاتك؟" : "Ready to Plug Your Funnel Leaks?"}
+        </h2>
+        <p class="text-sm text-text-main/70 max-w-lg mx-auto leading-relaxed">
+          {isAr 
+            ? "دعنا نناقش كيف يمكن لموسى للتحليلات بناء هيكل تتبع متطور لزيادة أرباحك وتخفيض الهدر الإعلاني."
+            : "Let's discuss how Mousa Analytics can build a custom tracking architecture to optimize your ad spend and increase profitability."}
+        </p>
+        <div class="pt-4 flex items-center justify-center">
+          <a 
+            href={`/${lang}/#contact`}
+            class="h-11 px-8 rounded-full bg-hero-ice-blue hover:bg-hero-ice-blue-hover text-white text-[11px] font-bold uppercase tracking-wider flex items-center justify-center transition-all duration-300 min-w-[200px]"
+          >
+            <span>{isAr ? "ابدأ الآن" : "Deploy the Engine"}</span>
+          </a>
         </div>
       </section>
 

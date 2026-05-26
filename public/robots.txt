@@ -1,0 +1,12 @@
+# Mousa Analytics — robots.txt
+# https://mousaanalytics.com
+
+User-agent: *
+Allow: /
+
+# Block admin and backup pages
+Disallow: /admin
+Disallow: /.backup
+
+# Sitemap location
+Sitemap: https://mousaanalytics.com/sitemap-index.xml

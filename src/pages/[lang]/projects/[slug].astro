@@ -87,13 +87,17 @@ const shouldNoindex = project.data.draft || project.data.seo.noindex;
   ogImage={project.data.seo.ogImage?.src || project.data.coverImage.src}
   canonicalUrl={project.data.seo.canonicalUrl}
   noindex={shouldNoindex}
+  contentType="project"
+  slug={slug}
+  pageCategory={project.data.projectBadge}
+  isFallback={isFallback}
 >
   <Navigation 
     lang={lang} 
     activePage="projects" 
     backUrl={`/${lang}/#projects`} 
     backText={t.backBtn}
-    actionUrl={project.data.githubUrl || "https://github.com/amr-mousa"}
+    actionUrl={project.data.githubUrl || "https://github.com/amr-mousa0"}
     actionText={t.githubBtn}
     actionIcon="fa-brands fa-github"
   />
@@ -102,7 +106,7 @@ const shouldNoindex = project.data.draft || project.data.seo.noindex;
     <!-- Atmospheric Ambient Glows -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_0%,rgba(37,99,235,0.03),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
     
-    <div class="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-8 space-y-8">
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
       
       {isFallback && (
         <div class="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-amber-600 text-xs sm:text-sm font-sans flex items-center gap-3">
@@ -142,10 +146,10 @@ const shouldNoindex = project.data.draft || project.data.seo.noindex;
         </div>
 
         <!-- Case Study Details & Interactive Gallery -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 p-0 lg:p-10 bg-transparent">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 p-0 lg:p-10 bg-transparent">
           
           <!-- Left Column: Problem, Solution, Impact -->
-          <div class="space-y-6 order-2 lg:order-1">
+          <div class="lg:col-span-5 space-y-6 order-2 lg:order-1">
             
             <!-- Problem Card -->
             <div class="p-6 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition-all duration-300 shadow-xs space-y-3">
@@ -183,25 +187,25 @@ const shouldNoindex = project.data.draft || project.data.seo.noindex;
           </div>
 
           <!-- Right Column: Interactive Gallery & Dashboard Link -->
-          <div class="space-y-6 flex flex-col justify-between order-1 lg:order-2">
+          <div class="lg:col-span-7 space-y-6 flex flex-col justify-between order-1 lg:order-2">
             
             <!-- Gallery / Dashboard Tab Container -->
             <div class="p-6 rounded-2xl bg-white lg:bg-slate-50/50 border border-slate-100/70 space-y-4 flex-grow shadow-xs">
               
               <!-- Tab Headers -->
-              <div class="hidden lg:flex gap-2 p-1 bg-slate-200/50 rounded-xl border border-slate-200/20">
+              <div class="flex flex-col gap-2.5 p-0 bg-transparent border-none rounded-none lg:flex-row lg:gap-2 lg:p-1 lg:bg-slate-200/50 lg:rounded-xl lg:border lg:border-slate-200/20">
                 <button 
                   id="tab-gallery" 
-                  class="flex-1 py-2 px-3 rounded-lg text-[11px] font-bold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer bg-accent-primary text-white"
+                  class="flex-1 py-3 px-6 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer bg-accent-primary text-white shadow-md border-none lg:py-2 lg:px-3 lg:rounded-lg lg:text-[11px] lg:shadow-none"
                 >
-                  <i class="fa-regular fa-image" aria-hidden="true"></i>
+                  <i class="fa-regular fa-image text-sm lg:text-xs" aria-hidden="true"></i>
                   <span>{project.data.galleryTab}</span>
                 </button>
                 <button 
                   id="tab-dashboard" 
-                  class="flex-1 py-2 px-3 rounded-lg text-[11px] font-bold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer bg-transparent text-text-main/70 hover:bg-slate-200/30"
+                  class="flex-1 py-3 px-6 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer bg-slate-100 border border-slate-200/60 text-text-main/70 shadow-none lg:py-2 lg:px-3 lg:rounded-lg lg:text-[11px] lg:bg-transparent lg:border-none lg:hover:bg-slate-200/30"
                 >
-                  <i class="fa-solid fa-compass" aria-hidden="true"></i>
+                  <i class="fa-solid fa-chart-pie text-sm lg:text-xs" aria-hidden="true"></i>
                   <span>{project.data.dashboardTab}</span>
                 </button>
               </div>
@@ -210,19 +214,21 @@ const shouldNoindex = project.data.draft || project.data.seo.noindex;
               <div class="relative w-full overflow-hidden">
                 <!-- Gallery Content -->
                 <div id="content-gallery" class="space-y-4 transition-all duration-300">
-                  <!-- Main Image Display -->
+                   <!-- Main Image Display -->
                   {project.data.galleryImages.length > 0 && (
-                    <div class="hidden lg:block w-full aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 bg-white relative">
+                    <div class="w-full aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 bg-white relative">
                       <Image 
                         id="main-gallery-image"
                         src={project.data.galleryImages[0]} 
                         alt="Main Project Snapshot" 
                         class="w-full h-full object-cover transition-opacity duration-150"
+                        width={1000}
+                        quality={90}
                       />
                     </div>
                   )}
                   <!-- Thumbnails Grid -->
-                  <div class="flex overflow-x-auto gap-2 no-scrollbar pb-1 lg:grid lg:grid-cols-4 lg:gap-3 lg:overflow-visible">
+                  <div class="flex overflow-x-auto gap-2 no-scrollbar pb-1 justify-center lg:grid lg:grid-cols-4 lg:gap-3 lg:overflow-visible">
                     {project.data.galleryImages.map((img: any, i: number) => (
                       <button 
                         class:list={[
@@ -232,41 +238,80 @@ const shouldNoindex = project.data.draft || project.data.seo.noindex;
                         data-src={img.src}
                         aria-label={`View image snapshot ${i + 1}`}
                       >
-                        <Image src={img} alt={`Thumbnail snapshot ${i + 1}`} class="w-full h-full object-cover" />
+                        <Image 
+                          src={img} 
+                          alt={`Thumbnail snapshot ${i + 1}`} 
+                          class="w-full h-full object-cover" 
+                          width={200}
+                          quality={90}
+                        />
                       </button>
                     ))}
                   </div>
                 </div>
 
                 <!-- Dashboard Content (hidden by default) -->
-                <div id="content-dashboard" class="hidden flex flex-col items-center justify-center py-12 px-4 text-center space-y-4 transition-all duration-300">
-                  <div class="w-16 h-16 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary border border-accent-primary/20 shadow-xs">
-                    <i class="fa-solid fa-compass text-2xl animate-spin" style="animation-duration: 8s" aria-hidden="true"></i>
-                  </div>
-                  <div class="space-y-1.5">
-                    <h4 class="text-sm font-bold text-text-main font-serif">
-                      {project.data.title}
-                    </h4>
-                    <p class="text-text-main/60 text-xs leading-relaxed max-w-sm">
-                      {isAr 
-                        ? "هذا المشروع يحتوي على لوحة مؤشرات أداء تفاعلية مشفرة بالكامل. اضغط أدناه لطلب رابط التجربة الحية مباشرة."
-                        : "This project has a fully live, filterable interactive client dashboard. Click below to request the interactive link."}
-                    </p>
-                  </div>
-                </div>
-              </div>
+                <div id="content-dashboard" class="hidden w-full transition-all duration-300 space-y-4">
+                  {project.data.dashboardUrl ? (
+                    <div class="w-full flex flex-col gap-4">
+                      <!-- Interactive Iframe Container -->
+                      <div class="w-full aspect-[16/9] min-h-[400px] md:min-h-[550px] rounded-xl overflow-hidden border border-slate-200 bg-slate-50 relative shadow-sm">
+                        <!-- Skeleton Loader -->
+                        <div id="iframe-loader" class="absolute inset-0 bg-slate-50 flex flex-col items-center justify-center gap-3 z-10 transition-opacity duration-300">
+                          <div class="w-12 h-12 rounded-full border-4 border-slate-200 border-t-accent-primary animate-spin"></div>
+                          <p class="text-xs text-text-main/50 font-mono">Loading live interactive dashboard...</p>
+                        </div>
+                        
+                        <iframe
+                          id="dashboard-iframe"
+                          title={`${project.data.title} Live Dashboard`}
+                          src={project.data.dashboardUrl}
+                          class="w-full h-full border-none opacity-0 transition-opacity duration-300"
+                          allowfullscreen="true"
+                          loading="lazy"
+                        ></iframe>
+                      </div>
 
+                      <!-- Custom Note Card (warning/info style from screenshot) -->
+                      <div class="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 flex gap-3 text-start">
+                        <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-sm sm:text-base flex-shrink-0"></i>
+                        <p class="text-[11px] leading-relaxed text-slate-700/90 font-sans">
+                          {isAr 
+                            ? "ملاحظة: إذا كانت خدمة Microsoft Power BI محجوبة على شبكتك أو جهازك، يرجى استخدام علامة تبويب \"معرض صور المشروع\" أعلاه لعرض لقطات عالية الدقة للوحة البيانات."
+                            : "Note: If the Microsoft Power BI service is blocked on your network or device, please use the Project Gallery tab above to view full high-resolution dashboard exports."}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div class="flex flex-col items-center justify-center py-12 px-4 text-center space-y-4">
+                      <div class="w-16 h-16 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary border border-accent-primary/20 shadow-xs">
+                        <i class="fa-solid fa-compass text-2xl animate-spin" style="animation-duration: 8s" aria-hidden="true"></i>
+                      </div>
+                      <div class="space-y-1.5">
+                        <h4 class="text-sm font-bold text-text-main font-serif">
+                          {project.data.title}
+                        </h4>
+                        <p class="text-text-main/60 text-xs leading-relaxed max-w-sm">
+                          {isAr 
+                            ? "هذا المشروع يحتوي على لوحة مؤشرات أداء تفاعلية مشفرة بالكامل. اضغط أدناه لطلب رابط التجربة الحية مباشرة."
+                            : "This project has a fully live, filterable interactive client dashboard. Click below to request the interactive link."}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+              </div>
+              </div>
+              
               <!-- Dashboard Prompt helper (nested inside the card, responsive layout) -->
-              <div class="p-5 rounded-2xl bg-blue-50/50 border border-blue-100/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-start mt-4">
+              <div id="dashboard-prompt-helper" class="p-5 rounded-2xl bg-blue-50/50 border border-blue-100/40 flex flex-col items-center text-center gap-4 mt-4 transition-all duration-300">
                 <p class="text-text-main/70 text-[11px] leading-relaxed max-w-xs">
                   {project.data.dashboardPrompt}
                 </p>
                 <button 
-                  id="open-dashboard-btn"
-                  data-msg={project.data.whatsappOpenDashboardMsg}
-                  class="h-10 px-4 rounded-xl bg-accent-primary hover:bg-accent-highlight text-white font-semibold text-[10px] tracking-wider flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all duration-300 cursor-pointer flex-shrink-0 w-full sm:w-auto"
+                  id="activate-dashboard-tab-btn"
+                  class="h-10 px-6 rounded-full bg-accent-primary hover:bg-accent-highlight text-white font-semibold text-[10px] tracking-wider flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all duration-300 cursor-pointer w-full sm:w-auto"
                 >
-                  <i class="fa-solid fa-play text-[9px]" aria-hidden="true"></i>
+                  <i class="fa-regular fa-circle-play text-xs" aria-hidden="true"></i>
                   <span>{project.data.dashboardBtn}</span>
                 </button>
               </div>
@@ -307,31 +352,57 @@ const shouldNoindex = project.data.draft || project.data.seo.noindex;
 </Layout>
 
 <script>
+  import { trackEvent } from '../../../scripts/analytics';
+
   // Tab switching logic
   const galleryTab = document.getElementById('tab-gallery');
   const dashboardTab = document.getElementById('tab-dashboard');
   const galleryContent = document.getElementById('content-gallery');
   const dashboardContent = document.getElementById('content-dashboard');
+  const promptHelper = document.getElementById('dashboard-prompt-helper');
+
+  const activeClasses = ['bg-accent-primary', 'text-white', 'shadow-md', 'border-none', 'lg:shadow-none'];
+  const inactiveClasses = ['bg-slate-100', 'border', 'border-slate-200/60', 'text-text-main/70', 'shadow-none', 'lg:bg-transparent', 'lg:border-none', 'lg:hover:bg-slate-200/30'];
 
   if (galleryTab && dashboardTab && galleryContent && dashboardContent) {
     galleryTab.addEventListener('click', () => {
-      galleryTab.classList.add('bg-accent-primary', 'text-white');
-      galleryTab.classList.remove('bg-transparent', 'text-text-main/70', 'hover:bg-slate-200/30');
-      dashboardTab.classList.remove('bg-accent-primary', 'text-white');
-      dashboardTab.classList.add('bg-transparent', 'text-text-main/70', 'hover:bg-slate-200/30');
+      // Gallery Active
+      activeClasses.forEach(c => galleryTab.classList.add(c));
+      inactiveClasses.forEach(c => galleryTab.classList.remove(c));
+
+      // Dashboard Inactive
+      inactiveClasses.forEach(c => dashboardTab.classList.add(c));
+      activeClasses.forEach(c => dashboardTab.classList.remove(c));
 
       galleryContent.classList.remove('hidden');
       dashboardContent.classList.add('hidden');
+      if (promptHelper) {
+        promptHelper.classList.remove('hidden');
+      }
     });
 
     dashboardTab.addEventListener('click', () => {
-      dashboardTab.classList.add('bg-accent-primary', 'text-white');
-      dashboardTab.classList.remove('bg-transparent', 'text-text-main/70', 'hover:bg-slate-200/30');
-      galleryTab.classList.remove('bg-accent-primary', 'text-white');
-      galleryTab.classList.add('bg-transparent', 'text-text-main/70', 'hover:bg-slate-200/30');
+      // Dashboard Active
+      activeClasses.forEach(c => dashboardTab.classList.add(c));
+      inactiveClasses.forEach(c => dashboardTab.classList.remove(c));
+
+      // Gallery Inactive
+      inactiveClasses.forEach(c => galleryTab.classList.add(c));
+      activeClasses.forEach(c => galleryTab.classList.remove(c));
 
       dashboardContent.classList.remove('hidden');
       galleryContent.classList.add('hidden');
+      if (promptHelper) {
+        promptHelper.classList.add('hidden');
+      }
+    });
+  }
+
+  // Internal tab redirect button click
+  const activateTabBtn = document.getElementById('activate-dashboard-tab-btn');
+  if (activateTabBtn && dashboardTab) {
+    activateTabBtn.addEventListener('click', () => {
+      dashboardTab.click();
     });
   }
 
@@ -357,15 +428,36 @@ const shouldNoindex = project.data.draft || project.data.seo.noindex;
     });
   }
 
+  // Iframe load spinner logic
+  const iframe = document.getElementById('dashboard-iframe') as HTMLIFrameElement | null;
+  const loader = document.getElementById('iframe-loader');
+  if (iframe && loader) {
+    iframe.addEventListener('load', () => {
+      loader.style.opacity = '0';
+      setTimeout(() => loader.classList.add('hidden'), 300);
+      iframe.style.opacity = '1';
+    });
+  }
+
   // Adblock-resilient dynamic WhatsApp redirection for CTAs
   const registerCta = (id: string, textGetter: () => string) => {
     const btn = document.getElementById(id);
     if (btn) {
       btn.addEventListener('click', () => {
         const msg = textGetter();
+
+        // Track CTA click
+        const slug = window.location.pathname.split('/').filter(Boolean).pop() || '';
+        trackEvent({
+          event: 'cta_click',
+          cta_text: btn.textContent?.trim() || id,
+          cta_type: 'whatsapp',
+          context_slug: slug
+        });
+
         const domainParts = ['wa', 'me'];
         const targetDomain = domainParts.join('.');
-        const recipientNum = '201202353381';
+        const recipientNum = '201017749925';
         const redirectUrl = `https://${targetDomain}/${recipientNum}?text=${encodeURIComponent(msg)}`;
         window.open(redirectUrl, '_blank', 'noopener,noreferrer');
       });
@@ -374,11 +466,6 @@ const shouldNoindex = project.data.draft || project.data.seo.noindex;
 
   registerCta('start-project-btn', () => {
     const btn = document.getElementById('start-project-btn');
-    return btn?.getAttribute('data-msg') || '';
-  });
-
-  registerCta('open-dashboard-btn', () => {
-    const btn = document.getElementById('open-dashboard-btn');
     return btn?.getAttribute('data-msg') || '';
   });
 </script>

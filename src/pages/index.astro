@@ -1,13 +1,17 @@
 ---
-// Root page redirection to default locale /en/
+// Root page — SEO-safe redirect to default locale /en/
+// Uses meta refresh (Google-friendly) instead of JS-only redirect
 ---
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Redirecting...</title>
+    <title>Mousa Analytics | Data & Marketing Simplified</title>
+    <meta name="description" content="Mousa Analytics: We simplify data to help business owners make the right decisions." />
+    <link rel="canonical" href="https://mousaanalytics.com/en/" />
+    <meta http-equiv="refresh" content="0;url=/en/" />
     <script is:inline>
-      // History-safe client redirect
+      // Fallback client redirect
       window.location.replace('/en/');
     </script>
   </head>

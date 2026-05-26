@@ -9,6 +9,6 @@ statLeftTitle: "SALES ENGINE"
 statLeftVal: "+182%"
 statRightTitle: "SYSTEM INTEGRATION"
 statRightVal: "Data + Ads"
-trendingLabel: "Trending Services:"
-trendingItems: "Data Tracking • Ad Scaling • Conversion Optimization"
+trendingLabel: "Service Guarantees:"
+trendingItems: "Secure Data • Full Transparency • On-Time Delivery"
 ---

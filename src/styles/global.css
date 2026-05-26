@@ -12,7 +12,8 @@
   --color-hero-ice-blue: #2563EB;
   --color-hero-ice-blue-hover: #1D4ED8;
   --color-hero-surface: #F8F9FA;
-  --color-hero-glow: rgba(37, 99, 235, 0.12); /* Subtle blue tech glow aura */
+  --color-hero-glow: rgba(37, 99, 235, 0.12);
+  /* Subtle blue tech glow aura */
   --color-hero-card: #FFFFFF;
 
   /* Success State Design Tokens (WhatsApp / Confirmation CTAs) */
@@ -22,19 +23,20 @@
   --color-success-border: rgba(22, 163, 74, 0.15);
   --shadow-success: 0 4px 14px rgba(22, 163, 74, 0.15);
   --shadow-success-hover: 0 6px 20px rgba(22, 163, 74, 0.25);
-  
+
   --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-logo: 'Cinzel', serif;
 }
 
 @layer base {
   html {
     @apply scroll-smooth antialiased;
   }
-  
+
   body {
     @apply bg-primary-bg text-text-main font-sans selection:bg-accent-primary selection:text-white;
-    background-image: 
+    background-image:
       linear-gradient(to right, rgba(10, 25, 47, 0.03) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(10, 25, 47, 0.03) 1px, transparent 1px);
     background-size: 3.5rem 3.5rem;
@@ -50,6 +52,7 @@
     html {
       @apply scroll-auto;
     }
+
     * {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
@@ -100,7 +103,10 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }

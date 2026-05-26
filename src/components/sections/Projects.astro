@@ -46,38 +46,40 @@ const getProjectIcon = (slug: string) => {
       
       <!-- Navigation Arrows (Desktop overlay only) -->
       <button 
-        class="absolute top-1/2 -translate-y-1/2 start-0 md:-start-6 z-10 w-12 h-12 rounded-full border border-slate-200 bg-white shadow-md flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all duration-200 active:scale-90 select-none carousel-btn-left"
+        class="absolute top-1/2 -translate-y-1/2 start-0 md:-start-6 z-10 w-12 h-12 rounded-full border border-slate-200 bg-white shadow-md hidden md:flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all duration-200 active:scale-90 select-none carousel-btn-left"
         aria-label={isAr ? "التمرير للأمام" : "Scroll back"}
       >
         <svg class="w-4 h-4 text-text-main/70 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
       </button>
 
       <button 
-        class="absolute top-1/2 -translate-y-1/2 end-0 md:-end-6 z-10 w-12 h-12 rounded-full border border-slate-200 bg-white shadow-md flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all duration-200 active:scale-90 select-none carousel-btn-right"
+        class="absolute top-1/2 -translate-y-1/2 end-0 md:-end-6 z-10 w-12 h-12 rounded-full border border-slate-200 bg-white shadow-md hidden md:flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all duration-200 active:scale-90 select-none carousel-btn-right"
         aria-label={isAr ? "التمرير للخلف" : "Scroll forward"}
       >
         <svg class="w-4 h-4 text-text-main/70 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
       </button>
 
       <!-- Horizontal scroll snap list -->
-      <div class="project-carousel-list flex gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar pb-6 px-1">
+      <div class="project-carousel-list flex gap-5 md:gap-8 overflow-x-auto overflow-y-hidden touch-pan-x scroll-smooth snap-x snap-mandatory no-scrollbar pb-6 px-6 md:px-0 -mx-6 md:mx-0">
         {projects.length === 0 ? (
           <div class="w-full text-center py-12 text-slate-400 font-sans">
             {isAr ? "لا توجد مشاريع متاحة حالياً." : "No projects found."}
           </div>
         ) : (
           projects.map((project) => (
-            <div class="premium-card-global !p-0 overflow-hidden flex flex-col h-full flex-shrink-0 w-[85vw] md:w-[420px] snap-center">
+            <div class="group premium-card-global !p-0 overflow-hidden flex flex-col h-full flex-shrink-0 w-[76vw] sm:w-[335px] md:w-[420px] snap-center relative">
               
               <!-- Top Half: Project Preview Image -->
               <a 
                 href={getProjectUrl(project.slug)} 
-                class="h-56 relative border-b border-slate-100 bg-slate-50 overflow-hidden block"
+                class="h-40 sm:h-44 md:h-56 relative border-b border-slate-100 bg-slate-50 overflow-hidden block"
               >
                 <Image 
                   src={project.data.coverImage} 
                   alt={project.data.title} 
                   class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  width={800}
+                  quality={90}
                   loading="lazy"
                 />
                 
@@ -87,6 +89,15 @@ const getProjectIcon = (slug: string) => {
                   </span>
                 )}
 
+                <!-- GPU-Accelerated Mobile Click/Tap Indicator Badge -->
+                <div class="absolute bottom-3 end-3 md:hidden z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/75 border border-white/10 text-white text-[8px] font-bold tracking-wider uppercase font-mono shadow-md animate-gpu-pulse">
+                  <span class="relative flex h-1.5 w-1.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-primary"></span>
+                  </span>
+                  <span>{isAr ? "اضغط هنا لتفاصيل المشروع ↗" : "TAP FOR PROJECT DETAILS ↗"}</span>
+                </div>
+
                 <!-- Floating Icon Badge (Bottom-Left) -->
                 <div class="absolute -bottom-3 start-4 w-9 h-9 rounded-xl bg-white border border-slate-200 shadow-md flex items-center justify-center text-accent-primary z-10">
                   <i class={`${getProjectIcon(project.slug)} text-sm`}></i>
@@ -94,8 +105,8 @@ const getProjectIcon = (slug: string) => {
               </a>
 
               <!-- Bottom Half: Content details -->
-              <div class="p-6 pt-8 bg-white flex-grow flex flex-col justify-between">
-                <div class="space-y-4">
+              <div class="p-4 pt-5 pb-24 md:p-6 md:pt-8 md:pb-28 bg-white flex-grow flex flex-col justify-between">
+                <div class="space-y-2.5 md:space-y-4">
                   
                   <!-- Category pill tag -->
                   <div>
@@ -105,7 +116,7 @@ const getProjectIcon = (slug: string) => {
                   </div>
 
                   <!-- Title -->
-                  <h3 class="text-lg font-bold text-text-main font-serif leading-snug">
+                  <h3 class="text-sm sm:text-base md:text-lg font-bold text-text-main font-serif leading-snug">
                     <a 
                       href={getProjectUrl(project.slug)} 
                       class="hover:text-accent-primary transition-colors"
@@ -123,8 +134,8 @@ const getProjectIcon = (slug: string) => {
                   )}
 
                   <!-- Description -->
-                  <p class="text-text-main/70 text-sm leading-relaxed font-sans min-h-[4.5rem]">
-                    {project.data.problemText.length > 150 ? project.data.problemText.substring(0, 147) + '...' : project.data.problemText}
+                  <p class="text-text-main/70 text-xs sm:text-sm leading-relaxed font-sans line-clamp-2 md:line-clamp-none min-h-[2.5rem] md:min-h-0">
+                    {project.data.problemText}
                   </p>
 
                   <!-- Tech Stack tags -->
@@ -136,21 +147,48 @@ const getProjectIcon = (slug: string) => {
                     ))}
                   </div>
                 </div>
+              </div>
 
-                <div class="mt-6">
-                  <!-- Subtle divider line -->
-                  <hr class="border-slate-100 my-4" />
+              <!-- Action Area Wrapper (Default Explore button - Desktop only) -->
+              <div class="absolute inset-x-0 bottom-0 p-6 bg-white pointer-events-none md:block hidden md:group-hover:opacity-0 transition-opacity duration-200">
+                <!-- Subtle Divider -->
+                <hr class="border-slate-100 mb-4" />
+                <div class="flex justify-end pointer-events-auto">
+                  <a 
+                    href={getProjectUrl(project.slug)} 
+                    class="h-11 px-5 rounded-lg bg-accent-primary/5 hover:bg-accent-primary/10 text-accent-primary border border-accent-primary/20 font-semibold text-xs transition-all duration-200 active:scale-95 flex items-center gap-1.5 cursor-pointer justify-center"
+                  >
+                    {isAr ? "استكشف التفاصيل" : "Explore Details"}
+                    <span class="text-sm font-sans">→</span>
+                  </a>
+                </div>
+              </div>
 
-                  <!-- Explore CTA Button (Touch target height of 44px) -->
-                  <div class="flex justify-end">
-                    <a 
-                      href={getProjectUrl(project.slug)} 
-                      class="h-11 px-5 rounded-lg bg-accent-primary/5 hover:bg-accent-primary/10 text-accent-primary border border-accent-primary/20 font-semibold text-xs transition-all duration-200 active:scale-95 flex items-center gap-1.5 cursor-pointer justify-center"
-                    >
-                      {isAr ? "استكشف التفاصيل" : "Explore Details"}
-                      <span class="text-sm font-sans">→</span>
-                    </a>
-                  </div>
+              <!-- Hover Overlay (Desktop slide-up, mobile always visible) -->
+              <div class="absolute inset-x-0 bottom-0 bg-white p-5 border-t border-slate-100 flex items-center justify-between gap-2 z-20 shadow-[0_-8px_24px_rgba(10,25,47,0.06)] opacity-100 translate-y-0 pointer-events-auto md:translate-y-full md:opacity-0 md:pointer-events-none md:transition-all md:duration-300 md:ease-out md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-hover:pointer-events-auto">
+                <!-- Quick Connect Actions -->
+                <div class="flex items-center gap-2 w-full">
+                  <!-- Call Button (Circular) -->
+                  <a 
+                    href="tel:+201017749925" 
+                    class="w-11 h-11 rounded-full bg-slate-100 hover:bg-slate-200 text-text-main flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0 border border-slate-200/50 project-phone-cta"
+                    aria-label={isAr ? "اتصال هاتفي" : "Call now"}
+                  >
+                    <i class="fa-solid fa-phone text-sm"></i>
+                  </a>
+
+                  <!-- WhatsApp Button (Green) -->
+                  <a 
+                    href={`https://wa.me/201017749925?text=${encodeURIComponent(project.data.whatsappStartProjectMsg)}`}
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="h-11 flex-grow rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all duration-200 border-none project-whatsapp-cta"
+                    data-project-title={project.data.title}
+                    data-project-slug={project.slug}
+                  >
+                    <i class="fa-brands fa-whatsapp text-base"></i>
+                    <span>{isAr ? "واتس اب" : "WhatsApp"}</span>
+                  </a>
                 </div>
               </div>
 
@@ -164,6 +202,41 @@ const getProjectIcon = (slug: string) => {
 </section>
 
 <script>
+  import { trackEvent } from '../../scripts/analytics';
+
+  // Setup click listeners for hover contacts
+  const setupHoverContacts = () => {
+    const phoneBtns = document.querySelectorAll('.project-phone-cta');
+    phoneBtns.forEach(btn => {
+      if (btn.hasAttribute('data-tracking-bound')) return;
+      btn.setAttribute('data-tracking-bound', 'true');
+      btn.addEventListener('click', () => {
+        trackEvent({
+          event: 'cta_click',
+          cta_text: 'Phone Icon Call',
+          cta_type: 'call',
+          context_slug: 'homepage-project-hover'
+        });
+      });
+    });
+
+    const whatsappBtns = document.querySelectorAll('.project-whatsapp-cta');
+    whatsappBtns.forEach(btn => {
+      if (btn.hasAttribute('data-tracking-bound')) return;
+      btn.setAttribute('data-tracking-bound', 'true');
+      btn.addEventListener('click', () => {
+        const slug = btn.getAttribute('data-project-slug') || '';
+        const cleanSlug = slug.split('/').pop() || '';
+        trackEvent({
+          event: 'cta_click',
+          cta_text: 'WhatsApp',
+          cta_type: 'whatsapp',
+          context_slug: cleanSlug || undefined
+        });
+      });
+    });
+  };
+
   // Setup logic for navigation trigger events
   const setupCarousel = () => {
     const carousels = document.querySelectorAll('.project-carousel-container');
@@ -207,7 +280,28 @@ const getProjectIcon = (slug: string) => {
 
   // Run on page load
   setupCarousel();
+  setupHoverContacts();
 
   // Run on Astro View Transitions navigation swap
-  document.addEventListener('astro:after-swap', setupCarousel);
+  document.addEventListener('astro:after-swap', () => {
+    setupCarousel();
+    setupHoverContacts();
+  });
 </script>
+
+<style>
+  @keyframes gpu-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.85;
+    }
+    50% {
+      transform: scale(1.04);
+      opacity: 1;
+    }
+  }
+  .animate-gpu-pulse {
+    animation: gpu-pulse 2s infinite ease-in-out;
+    will-change: transform, opacity;
+  }
+</style>

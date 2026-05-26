@@ -25,9 +25,12 @@ const getServiceUrl = (slug: string) => {
   return `/${lang}/services/${cleanSlug}/`;
 };
 
-// Helper to get service image by matching the slug
-const getServiceImage = (slug: string) => {
-  const cleanSlug = slug.split('/').pop();
+// Helper to get service image dynamically from frontmatter with local fallbacks
+const getServiceImage = (service: any) => {
+  if (service.data.coverImage) {
+    return service.data.coverImage;
+  }
+  const cleanSlug = service.slug.split('/').pop();
   switch (cleanSlug) {
     case 'data-analytics': return powerBiImg;
     case 'marketing-strategy': return mediaBuyingImg;
@@ -63,7 +66,7 @@ const getServiceImage = (slug: string) => {
     </div>
 
     <!-- Cards Container: Horizontal swipeable deck on mobile (<768px), Custom grid spans on desktop (>=768px) -->
-    <div class="flex md:grid md:grid-cols-12 gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none no-scrollbar pb-6 md:pb-0 px-4 md:px-0 -mx-4 md:mx-0">
+    <div class="flex md:grid md:grid-cols-12 gap-5 md:gap-8 overflow-x-auto overflow-y-hidden touch-pan-x md:overflow-visible snap-x snap-mandatory md:snap-none no-scrollbar pb-6 md:pb-0 px-6 md:px-0 -mx-6 md:mx-0">
       {services.map((service, index) => {
         // Button style matching the user's mockup: Make all buttons consistent (Outline Blue)
         const isSolid = false;
@@ -81,38 +84,41 @@ const getServiceImage = (slug: string) => {
         }
 
         return (
-          <div class={`premium-card-global group !p-0 overflow-hidden flex flex-col h-full flex-shrink-0 w-[85vw] md:w-auto snap-center md:snap-align-none relative ${spanClass}`}>
+          <div class={`premium-card-global group !p-0 overflow-hidden flex flex-col h-full flex-shrink-0 w-[78vw] md:w-auto snap-center md:snap-align-none relative ${spanClass}`}>
             
             <!-- Clickable Card Body (Wraps top and main details to go to details page) -->
             <a href={getServiceUrl(service.slug)} class="flex flex-col h-full flex-grow hover:no-underline group/body">
               <!-- Top Half: Service Image (Full Cover) -->
-              <div class="h-44 relative border-b border-slate-100 overflow-hidden bg-slate-50">
+              <div class="h-44 relative border-b border-text-main/10 overflow-hidden bg-primary-bg">
                 <Image 
-                  src={getServiceImage(service.slug)} 
-                  alt={service.data.title}
+                  src={getServiceImage(service)} 
+                  alt={isAr ? `خدمة ${service.data.title}` : `Service cover for ${service.data.title}`}
                   class="w-full h-full object-cover group-hover/body:scale-105 transition-transform duration-500"
+                  width={800}
+                  quality={90}
+                  loading="lazy"
                 />
                 <!-- Service Pill Tag -->
-                <span class="absolute top-4 start-4 text-[9px] font-bold tracking-wider text-text-main/60 uppercase border border-text-main/10 px-2 py-0.5 rounded bg-white/90 font-mono z-10">
+                <span class="absolute top-4 start-4 text-[9px] font-bold tracking-wider text-text-main/60 uppercase border border-text-main/10 px-2 py-0.5 rounded bg-hero-card/90 font-mono z-10">
                   {isAr ? "خدمة" : "SERVICE"}
                 </span>
                 
                 {service.isFallback && (
-                  <span class="absolute top-4 end-4 text-[8px] font-bold tracking-wider text-white uppercase px-2 py-0.5 rounded bg-amber-600 font-sans z-10">
+                  <span class="absolute top-4 end-4 text-[8px] font-bold tracking-wider text-white uppercase px-2 py-0.5 rounded bg-amber-800 font-sans z-10">
                     {isAr ? "غير مترجم" : "NOT TRANSLATED"}
                   </span>
                 )}
               </div>
 
-              <!-- Bottom Half: Details (Solid White background, text only) -->
-              <div class="p-6 pb-28 bg-white flex-grow flex flex-col justify-between">
+              <!-- Bottom Half: Details (Solid Card White background, text only) -->
+              <div class="p-6 pb-28 bg-hero-card flex-grow flex flex-col justify-between">
                 <div class="space-y-3">
                   <h3 class="text-lg font-bold text-text-main font-serif leading-snug group-hover/body:text-accent-primary transition-colors">
                     {service.data.title}
                   </h3>
                   
                   {service.isFallback && (
-                    <div class="text-[10px] text-amber-600 bg-amber-500/5 px-2.5 py-1.5 rounded border border-amber-500/10 font-sans leading-tight">
+                    <div class="text-[10px] text-amber-800 bg-amber-900/5 px-2.5 py-1.5 rounded border border-amber-800/20 font-sans leading-tight">
                       {isAr 
                         ? "⚠️ هذه الخدمة غير متوفرة بالعربية بعد، يتم عرض النسخة الإنجليزية." 
                         : "⚠️ Arabic version unavailable, English details shown."}
@@ -127,12 +133,14 @@ const getServiceImage = (slug: string) => {
             </a>
 
             <!-- Action Area Wrapper (Default Explore button - Desktop only) -->
-            <div class="absolute inset-x-0 bottom-0 p-6 bg-white pointer-events-none md:block hidden md:group-hover:opacity-0 transition-opacity duration-200">
+            <div class="absolute inset-x-0 bottom-0 p-6 bg-hero-card pointer-events-none md:block hidden md:group-hover:opacity-0 transition-opacity duration-200">
               <!-- Subtle Divider -->
-              <hr class="border-slate-100 mb-4" />
+              <hr class="border-text-main/10 mb-4" />
               <div class="flex justify-end pointer-events-auto">
                 <a 
                   href={getServiceUrl(service.slug)}
+                  tabindex="-1"
+                  aria-hidden="true"
                   class:list={[
                     "h-11 px-5 rounded-full font-semibold text-xs transition-all duration-200 active:scale-95 inline-flex items-center justify-center gap-1.5 cursor-pointer",
                     isSolid 
@@ -141,30 +149,31 @@ const getServiceImage = (slug: string) => {
                   ]}
                 >
                   {service.slug.includes('web-portfolios') ? (isAr ? "طلب استشارة" : "Request Consultation") : (isAr ? "استكشف التفاصيل" : "Explore Details")}
-                  <span class="text-sm font-sans">→</span>
                 </a>
               </div>
             </div>
 
             <!-- Hover Overlay (Desktop slide-up, mobile always visible) -->
-            <div class="absolute inset-x-0 bottom-0 bg-white p-5 border-t border-slate-100 flex items-center justify-between gap-2 z-20 shadow-[0_-8px_24px_rgba(10,25,47,0.06)] opacity-100 translate-y-0 pointer-events-auto md:translate-y-full md:opacity-0 md:pointer-events-none md:transition-all md:duration-300 md:ease-out md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-hover:pointer-events-auto">
+            <div class="absolute inset-x-0 bottom-0 bg-hero-card p-5 border-t border-text-main/10 flex items-center justify-between gap-2 z-20 shadow-[0_-8px_24px_rgba(10,25,47,0.06)] opacity-100 translate-y-0 pointer-events-auto visible md:translate-y-full md:opacity-0 md:pointer-events-none md:invisible md:transition-all md:duration-300 md:ease-out md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-hover:pointer-events-auto md:group-hover:visible">
               <!-- Quick Connect Actions -->
               <div class="flex items-center gap-2 w-full">
                 <!-- Call Button (Circular) -->
                 <a 
-                  href="tel:+201202353381" 
-                  class="w-11 h-11 rounded-full bg-slate-100 hover:bg-slate-200 text-text-main flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0 border border-slate-200/50"
+                  href="tel:+201017749925" 
+                  class="w-11 h-11 rounded-full bg-primary-bg hover:bg-text-main/10 text-text-main flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0 border border-text-main/10"
                   aria-label={isAr ? "اتصال هاتفي" : "Call now"}
                 >
                   <i class="fa-solid fa-phone text-sm"></i>
                 </a>
 
-                <!-- WhatsApp Button (Green) -->
+                <!-- WhatsApp Button (Green / Success Theme Tokens) -->
                 <a 
-                  href={`https://wa.me/201202353381?text=${encodeURIComponent(isAr ? `مرحباً عمرو، أود الاستفسار عن خدمة: ${service.data.title}` : `Hi Amr, I would like to inquire about: ${service.data.title}`)}`}
+                  href={`https://wa.me/201017749925?text=${encodeURIComponent(isAr ? `مرحباً عمرو، أود الاستفسار عن خدمة: ${service.data.title}` : `Hi Amr, I would like to inquire about: ${service.data.title}`)}`}
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  class="h-11 flex-grow rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all duration-200 border-none"
+                  class="h-11 flex-grow rounded-full bg-success-primary hover:bg-success-hover text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all duration-200 border-none service-whatsapp-cta"
+                  data-service-title={service.data.title}
+                  data-service-slug={service.slug}
                 >
                   <i class="fa-brands fa-whatsapp text-base"></i>
                   <span>{isAr ? "واتس اب" : "WhatsApp"}</span>
@@ -178,3 +187,32 @@ const getServiceImage = (slug: string) => {
     </div>
   </div>
 </section>
+
+<script>
+  import { lifecycle } from '../../scripts/lifecycle';
+  import { trackEvent } from '../../scripts/analytics';
+
+  const setupServicesTracking = () => {
+    const whatsappBtns = document.querySelectorAll('.service-whatsapp-cta');
+    whatsappBtns.forEach(btn => {
+      if (btn.hasAttribute('data-tracking-bound')) return;
+      btn.setAttribute('data-tracking-bound', 'true');
+
+      lifecycle.addListener(btn, 'click', () => {
+        const slug = btn.getAttribute('data-service-slug') || '';
+        const cleanSlug = slug.split('/').pop() || '';
+        trackEvent({
+          event: 'cta_click',
+          cta_text: 'WhatsApp',
+          cta_type: 'whatsapp',
+          context_slug: cleanSlug || undefined
+        });
+      });
+    });
+  };
+
+  setupServicesTracking();
+  document.addEventListener('astro:after-swap', setupServicesTracking);
+</script>
+
+

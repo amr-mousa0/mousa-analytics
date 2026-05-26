@@ -21,7 +21,8 @@ galleryImages:
   - "../../../assets/images/uploads/marketing/1756149438816.jpg"
   - "../../../assets/images/uploads/marketing/1756149438820.jpg"
   - "../../../assets/images/uploads/marketing/1756149438875.jpg"
-githubUrl: "https://github.com/amr-mousa"
+githubUrl: "https://github.com/amr-mousa0"
+dashboardUrl: "https://app.powerbi.com/view?r=eyJrIjoiZmQ1NmJmMWEtMmJhMy00YTg2LTg2NGItYTEzYWFhMjhiOWVmIiwidCI6IjJiYjZlNWJjLWMxMDktNDdmYi05NDMzLWMxYzZmNGZhMzNmZiIsImMiOjl9"
 whatsappStartProjectMsg: "Hi Amr, I'd like to inquire about the Marketing Campaign ROI Analytics project and discuss starting a similar system for my business."
 whatsappOpenDashboardMsg: "Hi Amr, I'd like to request the interactive Power BI dashboard link for the Marketing Campaign ROI Analytics project to test it out."
 priority: 2

@@ -1,6 +1,6 @@
 ---
 name: "لينكد إن"
-url: "https://linkedin.com/in/amr-mousa"
+url: "https://www.linkedin.com/in/amr-mousa0/"
 icon: "fa-brands fa-linkedin-in"
 priority: 1
 ---

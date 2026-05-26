@@ -21,7 +21,7 @@ test.describe('Locale Redirection & Routing', () => {
       await arToggle.click({ force: true });
       await expect(page).toHaveURL(/\/ar\//);
       // Main heading should contain Arabic greeting or content
-      await expect(page.locator('main h1')).toContainText('بسطناها');
+      await expect(page.locator('main h1')).toContainText('الرؤية');
     }
   });
 
@@ -35,14 +35,14 @@ test.describe('Locale Redirection & Routing', () => {
     await expect(aboutLink).toBeVisible();
     await aboutLink.click({ force: true });
     await expect(page).toHaveURL(/\/en\/about\//);
-    await expect(page.locator('main h1')).toContainText('How I Drive Business Growth');
+    await expect(page.locator('main h1')).toContainText('Mousa');
 
     // Switch to Arabic
     const arToggle = page.locator('header a:has-text("AR")').first();
     if (await arToggle.isVisible()) {
       await arToggle.click({ force: true });
       await expect(page).toHaveURL(/\/ar\/about\//);
-      await expect(page.locator('main h1')).toContainText('كيف أحقق النتائج الفعالة');
+      await expect(page.locator('main h1')).toContainText('موسى');
     }
   });
 });

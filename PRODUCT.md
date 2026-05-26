@@ -19,7 +19,7 @@ Generic SaaS landing-page clichés (cookie-cutter icon grids, overused illustrat
 ## Design Principles
 1. **Precision Infrastructure**: Fine, subtle grid lines reflecting data pipeline architecture.
 2. **Editorial Contrast**: High contrast stacked typography (bold serif vs. refined sans-serif) reflecting craftsmanship.
-3. **High-Ticket CTA**: Highly focused conversion pathways with tailored statistical performance cards.
+3. **High-Ticket CTA**: Highly focused conversion pathways routing users directly to WhatsApp/email (the inline Contact section and contact modal have been deleted).
 
 ## Accessibility & Inclusion
 Clean, high-contrast layouts ensuring WCAG AA compatibility, readable line lengths (65-75ch), and clear focus indicator rings for keyboard navigation.

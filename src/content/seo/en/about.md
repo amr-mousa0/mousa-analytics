@@ -1,7 +1,7 @@
 ---
-title: "About Amr Mousa | Funnel Optimization & Data Analyst"
-description: "Meet Amr Mousa, a Data & Marketing Analyst specializing in Shopify conversion optimization, data audits, and paid acquisition funnel scaling."
-keywords: ["about amr mousa", "data analyst", "marketing analyst", "funnel optimization", "shopify expert", "conversion audits"]
+title: "About Amr Mousa | Mousa Analytics"
+description: "Amr Mousa: Founder of Mousa Analytics. I help business owners understand their data and make informed decisions without complexity."
+keywords: ["about amr mousa", "mousa analytics", "data analyst", "marketing analyst"]
 ogImage: "/images/og-image.png"
 ---
 # About Amr Mousa

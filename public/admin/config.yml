@@ -39,12 +39,42 @@ collections:
     fields:
       - { label: "Title", name: "title", widget: "string", required: true }
       - { label: "Slug", name: "slug", widget: "slug", readonly: true, required: true, hint: "Read-only after creation to prevent broken routes." }
-      - { label: "Description", name: "description", widget: "text", required: true }
-      - { label: "Icon Name", name: "icon", widget: "string", required: true, hint: "Lucide icon key (e.g. chart-line, database)" }
+      - { label: "Description (Teaser)", name: "description", widget: "text", required: true }
+      - { label: "Icon Name", name: "icon", widget: "string", required: true, hint: "Lucide icon key (e.g. table, database)" }
       - { label: "Priority (Order)", name: "priority", widget: "number", value_type: "int", required: true }
       - { label: "Category", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
       - { label: "Tags", name: "tags", widget: "list", required: false }
-      - { label: "Features List", name: "features", widget: "list", required: false, hint: "Deliverable points for the service" }
+      - { label: "Cover Image", name: "coverImage", widget: "image", required: false }
+      
+      # Detailed Proposal Fields
+      - { label: "Executive Summary Text", name: "execSummaryText", widget: "text", required: true }
+      - { label: "Scope Section Title", name: "scopeTitle", widget: "string", required: false, default: "What I Will Do (Scope of Work)" }
+      - label: "Scope of Work Items"
+        name: "scopeItems"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Item Title", name: "title", widget: "string", required: true }
+          - { label: "Item Description", name: "desc", widget: "text", required: true }
+      - { label: "Deliverables Section Title", name: "deliverablesTitle", widget: "string", required: false, default: "What You Will Get (Business ROI & Deliverables)" }
+      - label: "Deliverables List"
+        name: "deliverablesItems"
+        widget: "list"
+        required: false
+        field: { label: "Deliverable Point", name: "item", widget: "string" }
+      - { label: "CTA Section Title", name: "ctaTitle", widget: "string", required: false, default: "Accept Proposal & Start Project" }
+      - { label: "CTA Description", name: "ctaDesc", widget: "text", required: false }
+      - { label: "CTA Button Text", name: "ctaBtn", widget: "string", required: false, default: "Accept Proposal & Start Project" }
+      - { label: "WhatsApp Message Text", name: "whatsappMessage", widget: "string", required: false }
+      - { label: "FAQ Section Title", name: "faqTitle", widget: "string", required: false, default: "Frequently Asked Questions" }
+      - label: "FAQ Items"
+        name: "faqItems"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Question", name: "q", widget: "string", required: true }
+          - { label: "Answer", name: "a", widget: "text", required: true }
+
       # Content States
       - { label: "Draft", name: "draft", widget: "boolean", default: false, hint: "If checked, hidden from public builds" }
       - { label: "Featured", name: "featured", widget: "boolean", default: false, hint: "If checked, pinned at top of lists" }
@@ -61,12 +91,42 @@ collections:
     fields:
       - { label: "العنوان", name: "title", widget: "string", required: true }
       - { label: "الرابط البديل (Slug)", name: "slug", widget: "slug", readonly: true, required: true }
-      - { label: "الوصف", name: "description", widget: "text", required: true }
-      - { label: "اسم الأيقونة", name: "icon", widget: "string", required: true, hint: "اسم أيقونة Lucide (مثل chart-line)" }
+      - { label: "الوصف القصير", name: "description", widget: "text", required: true }
+      - { label: "اسم الأيقونة", name: "icon", widget: "string", required: true, hint: "اسم أيقونة Lucide (مثل table)" }
       - { label: "الأولوية (الترتيب)", name: "priority", widget: "number", value_type: "int", required: true }
       - { label: "التصنيف", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
       - { label: "الوسوم (Tags)", name: "tags", widget: "list", required: false }
-      - { label: "قائمة المخرجات (Features)", name: "features", widget: "list", required: false }
+      - { label: "صورة الغلاف", name: "coverImage", widget: "image", required: false }
+
+      # Detailed Proposal Fields (Arabic UI)
+      - { label: "نص الملخص التنفيذي", name: "execSummaryText", widget: "text", required: true }
+      - { label: "عنوان قسم نطاق العمل", name: "scopeTitle", widget: "string", required: false, default: "ما سأقوم به (نطاق العمل)" }
+      - label: "عناصر نطاق العمل"
+        name: "scopeItems"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "عنوان العنصر", name: "title", widget: "string", required: true }
+          - { label: "وصف العنصر", name: "desc", widget: "text", required: true }
+      - { label: "عنوان قسم المخرجات", name: "deliverablesTitle", widget: "string", required: false, default: "ما ستحصل عليه (العائد والنتائج)" }
+      - label: "قائمة المخرجات"
+        name: "deliverablesItems"
+        widget: "list"
+        required: false
+        field: { label: "بند المخرجات", name: "item", widget: "string" }
+      - { label: "عنوان قسم دعوة العمل (CTA)", name: "ctaTitle", widget: "string", required: false, default: "قبول المقترح وبدء المشروع" }
+      - { label: "وصف دعوة العمل", name: "ctaDesc", widget: "text", required: false }
+      - { label: "نص زر دعوة العمل", name: "ctaBtn", widget: "string", required: false, default: "الموافقة على المقترح والبدء الآن" }
+      - { label: "نص رسالة الواتساب", name: "whatsappMessage", widget: "string", required: false }
+      - { label: "عنوان قسم الأسئلة الشائعة", name: "faqTitle", widget: "string", required: false, default: "الأسئلة الشائعة حول الخدمة" }
+      - label: "الأسئلة الشائعة"
+        name: "faqItems"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "السؤال", name: "q", widget: "string", required: true }
+          - { label: "الإجابة", name: "a", widget: "text", required: true }
+
       # Content States (Arabic UI)
       - { label: "مسودة (Draft)", name: "draft", widget: "boolean", default: false, hint: "إخفاء من الموقع في وضع الإنتاج" }
       - { label: "مميز (Featured)", name: "featured", widget: "boolean", default: false, hint: "تثبيت في أعلى القوائم" }

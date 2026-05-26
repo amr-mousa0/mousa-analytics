@@ -8,9 +8,9 @@ export interface SeoData {
 }
 
 const DEFAULT_SEO: SeoData = {
-  title: "Amr Mousa | Data Analyst & Marketer",
-  description: "Portfolio of Amr Mousa, Data Analyst and Digital Marketing Strategist.",
-  keywords: ["data analyst", "digital marketing", "portfolio"],
+  title: "Mousa Analytics",
+  description: "Mousa Analytics: Simplifying data to help business owners make the right decisions.",
+  keywords: ["data analyst", "digital marketing", "analytics agency"],
   ogImage: "",
 };
 

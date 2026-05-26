@@ -22,7 +22,8 @@ galleryImages:
   - "../../../assets/images/uploads/gym/1759149287723.jpg"
   - "../../../assets/images/uploads/gym/1759149287810.jpg"
   - "../../../assets/images/uploads/gym/1759149287882.jpg"
-githubUrl: "https://github.com/amr-mousa"
+githubUrl: "https://github.com/amr-mousa0"
+dashboardUrl: "https://app.powerbi.com/view?r=eyJrIjoiYzY5ZmVjZWUtYjg2NC00YWQ4LTllZGEtNDM4YjkzMjY2YTI1IiwidCI6IjJiYjZlNWJjLWMxMDktNDdmYi05NDMzLWMxYzZmNGZhMzNmZiIsImMiOjl9"
 whatsappStartProjectMsg: "مرحباً عمرو، أود الاستفسار عن مشروع التحول المالي لنادي أكسجين الرياضي والبدء في مشروع مشابه لعملي."
 whatsappOpenDashboardMsg: "مرحباً عمرو، أود الحصول على رابط لوحة مؤشرات الأداء التفاعلية لمشروع التحول المالي لنادي أكسجين لتجربتها."
 priority: 3
