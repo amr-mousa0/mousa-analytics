@@ -40,7 +40,10 @@ const fallbackSeo = (await getSafeSeo(lang, pageId).catch(() => ({}))) as Record
 const seoTitle = title || fallbackSeo.title || "Amr Mousa";
 const seoDescription = description || fallbackSeo.description || "";
 const seoKeywords = fallbackSeo.keywords || [];
-const seoOgImage = ogImage || fallbackSeo.ogImage;
+const rawOgImage = ogImage || fallbackSeo.ogImage;
+const seoOgImage = rawOgImage 
+  ? (rawOgImage.startsWith('http') ? rawOgImage : new URL(rawOgImage, Astro.site || Astro.url.origin).href)
+  : undefined;
 
 // Automatically noindex staging environments/deploy previews and fallback translations
 const isStagingPreview = typeof process !== 'undefined' && process.env && 
