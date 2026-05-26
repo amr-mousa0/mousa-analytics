@@ -176,7 +176,7 @@ const isAr = lang === 'ar';
   .preloader-exit {
     opacity: 0 !important;
     pointer-events: none !important;
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   /* Progress bar animation binding to variable duration */
@@ -237,8 +237,8 @@ const isAr = lang === 'ar';
     let isHiding = false;
     
     const hasSeen = sessionStorage.getItem('mousa_preloader_seen');
-    const MIN_INITIAL_DURATION = isBot ? 0 : (hasSeen ? 500 : 1500); // Instant bypass (0ms) for bots, standard reveal for users
-    const MIN_TRANSITION_DURATION = isBot ? 0 : 400; // Instant swap (0ms) for bots
+    const MIN_INITIAL_DURATION = isBot ? 0 : (hasSeen ? 100 : 300); // Fast, premium load (300ms first time, 100ms on refresh)
+    const MIN_TRANSITION_DURATION = isBot ? 0 : 150; // Snappy swap (150ms) for transitions
 
     function showPreloader(isTransition = false) {
       showStartTime = Date.now();
@@ -294,8 +294,8 @@ const isAr = lang === 'ar';
           } catch (e) {}
         }
 
-        // Wait exactly 800ms (or 0ms if bot) for CSS opacity transition to complete before setting display none
-        const finishDelay = isBot ? 0 : 800;
+        // Wait exactly 300ms (or 0ms if bot) for CSS opacity transition to complete before setting display none
+        const finishDelay = isBot ? 0 : 300;
         setTimeout(() => {
           preloader.style.display = 'none';
           preloader.classList.remove('preloader-active');
