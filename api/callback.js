@@ -44,12 +44,17 @@ export default async function handler(req, res) {
             const token = "${token}";
             const payload = JSON.stringify({ token, provider: 'github' });
             
-            const opener = window.opener || window.parent;
-            if (opener) {
-              opener.postMessage("authorizing:github", "*");
-              opener.postMessage("authorization:github:success:" + payload, "*");
-            } else {
-              document.body.innerHTML = "<h3>Authentication succeeded!</h3><p>You can close this window now.</p>";
+            try {
+              const opener = window.opener;
+              if (opener) {
+                opener.postMessage("authorizing:github", "*");
+                opener.postMessage("authorization:github:success:" + payload, "*");
+                window.close();
+              } else {
+                document.body.innerHTML = "<h3>Authentication Succeeded</h3><p>No opener window found. You can close this window now.</p>";
+              }
+            } catch (err) {
+              document.body.innerHTML = "<h3>Communication Error</h3><p>" + err.message + "</p>";
             }
           })()
         </script>
