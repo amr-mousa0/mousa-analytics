@@ -4,8 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Content Manager | Mousa Analytics</title>
-    <!-- Netlify Identity Widget -->
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
     <style>
       /* Base styles for the admin login/loader page */
       body {
@@ -139,16 +138,10 @@
       CMS.registerPreviewTemplate("projects_en", ProjectsPreview);
       CMS.registerPreviewTemplate("projects_ar", ProjectsPreview);
 
-      // Netlify Identity redirection handler
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", user => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => {
-              document.location.href = "/admin/";
-            });
-          }
-        });
-      }
+      // Global OAuth message debugger for console auditing
+      window.addEventListener("message", (e) => {
+        console.log("DEBUG: Admin window received message event:", e.origin, e.data);
+      });
     </script>
   </body>
 </html>
