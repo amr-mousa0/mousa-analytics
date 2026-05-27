@@ -19,7 +19,7 @@ const socials = await getSafeSocials(lang);
 // Fetch localized hero data dynamically without hardcoding
 const heroEntry = await getEntry('hero', lang);
 const heroData = heroEntry?.data || {
-  title: isAr ? "بياناتك وتسويقك... بسطناها" : "Your Data & Marketing... Simplified.",
+  title: isAr ? "البيانات، التسويق، وأنظمة الأعمال... بسطناها." : "Data, Marketing & Business Systems. Simplified.",
   eyebrow: isAr ? "وظّف عقلاً تحليلياً" : "HIRE AN ANALYTICAL MIND",
   bio: isAr ? "المنظومة الموحدة لتتبع البيانات وإدارة الحملات لتحقيق نمو قابل للتنبؤ." : "The unified analytics system to track metrics and scale ad campaigns for predictable business growth.",
   primaryBtn: isAr ? "ناقش استراتيجيتك" : "Discuss Your Strategy",

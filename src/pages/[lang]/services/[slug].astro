@@ -93,6 +93,10 @@ const faqTitle = service.data.faqTitle || (isAr ? "الأسئلة الشائعة
 const whatsappMessage = service.data.whatsappMessage || (isAr 
   ? `مرحباً عمرو، أود الموافقة على مقترح ${service.data.title} والبدء في تفاصيل المشروع الحالية.`
   : `Hi Amr, I'd like to accept the ${service.data.title} proposal and discuss starting the project.`);
+
+// Fetch matching projects of the current category (T013)
+const allProjects = await getCollection('projects');
+const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWith(`${lang}/`) && p.data.category === service.data.category);
 ---
 
 <Layout 
@@ -253,6 +257,58 @@ const whatsappMessage = service.data.whatsappMessage || (isAr
           </button>
         </div>
       </div>
+
+      <!-- FAQ Schema Injection (T015) -->
+      {service.data.faqItems.length > 0 && (
+        <script type="application/ld+json" is:inline set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": service.data.faqItems.map((faq: any) => ({
+            "@type": "Question",
+            "name": faq.q,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": faq.a
+            }
+          }))
+        }).replace(/</g, '\\u003c')} />
+      )}
+
+      <!-- Related Projects Section (T013) -->
+      {activeProjects.length > 0 && (
+        <div class="space-y-6 pt-6">
+          <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-text-main font-serif text-center md:text-start flex items-center justify-center md:justify-start gap-2">
+            <span class="text-xl">💼</span>
+            {isAr ? "المشاريع ودراسات الحالة ذات الصلة" : "Related Case Studies & Projects"}
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+            {activeProjects.map((project) => {
+              const projectSlug = project.slug.split('/').pop();
+              return (
+                <a href={`/${lang}/projects/${projectSlug}/`} class="glass-card glass-card-hover group rounded-2xl p-4 flex flex-col gap-3 transition-all duration-300">
+                  {project.data.coverImage && (
+                    <div class="overflow-hidden rounded-xl border border-text-main/10 aspect-video">
+                      <Image 
+                        src={project.data.coverImage} 
+                        alt={project.data.title}
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        width={400}
+                        quality={80}
+                      />
+                    </div>
+                  )}
+                  <div class="space-y-1">
+                    <span class="text-[9px] font-bold text-accent-primary uppercase tracking-wider">{project.data.projectBadge}</span>
+                    <h3 class="text-sm font-bold text-text-main group-hover:text-accent-primary transition-colors duration-300 font-serif leading-tight">
+                      {project.data.title}
+                    </h3>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <!-- FAQ Section -->
       {service.data.faqItems.length > 0 && (

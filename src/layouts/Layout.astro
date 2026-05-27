@@ -36,19 +36,45 @@ const {
   preloadImageDesktop
 } = Astro.props;
 
-const fallbackSeo = (await getSafeSeo(lang, pageId).catch(() => ({}))) as Record<string, any>;
+const fallbackSeo = (pageId.startsWith('service-') || pageId.startsWith('project-') || pageId.startsWith('blog-')) ? {} : (await getSafeSeo(lang, pageId).catch(() => ({}))) as Record<string, any>;
 const seoTitle = title || fallbackSeo.title || "Amr Mousa";
 const seoDescription = description || fallbackSeo.description || "";
 const seoKeywords = fallbackSeo.keywords || [];
 const rawOgImage = ogImage || fallbackSeo.ogImage;
 const seoOgImage = rawOgImage 
-  ? (rawOgImage.startsWith('http') ? rawOgImage : new URL(rawOgImage, Astro.url.origin).href)
+  ? (rawOgImage.startsWith('http') ? rawOgImage : new URL(rawOgImage, Astro.site).href)
   : undefined;
 
 // Automatically noindex staging environments/deploy previews and fallback translations
 const isStagingPreview = typeof process !== 'undefined' && process.env && 
   (process.env.CONTEXT === 'deploy-preview' || process.env.CONTEXT === 'branch-deploy');
 const finalNoindex = noindex || isFallback || isStagingPreview;
+
+// Dynamic domain-safe canonical URL
+const canonicalPath = Astro.url.pathname;
+const cleanCanonicalUrl = canonicalUrl || new URL(canonicalPath, Astro.site).href;
+
+// Alternate hreflangs
+const isUnlocalized = canonicalPath.includes('/404') || canonicalPath.includes('/admin') || finalNoindex;
+
+const getHreflangUrl = (targetLang: string) => {
+  const parts = canonicalPath.split('/').filter(Boolean);
+  if (parts.length > 0 && (parts[0] === 'ar' || parts[0] === 'en')) {
+    parts[0] = targetLang;
+  } else {
+    parts.unshift(targetLang);
+  }
+  return new URL('/' + parts.join('/') + '/', Astro.site).href;
+};
+
+const hreflangAr = isUnlocalized ? null : getHreflangUrl('ar');
+const hreflangEn = isUnlocalized ? null : getHreflangUrl('en');
+const hreflangDefault = isUnlocalized ? null : getHreflangUrl('ar');
+
+// Env variables for analytics and verification
+const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || (typeof process !== 'undefined' && process.env ? process.env.PUBLIC_GOOGLE_SITE_VERIFICATION : '');
+const clarityId = import.meta.env.PUBLIC_CLARITY_ID || (typeof process !== 'undefined' && process.env ? process.env.PUBLIC_CLARITY_ID : '');
+const gtmId = import.meta.env.PUBLIC_GTM_ID || (typeof process !== 'undefined' && process.env ? process.env.PUBLIC_GTM_ID : 'GTM-MCSCSTTS');
 
 // Build page context payload for analytics
 const environment = import.meta.env.DEV 
@@ -63,6 +89,98 @@ const pageContext = {
   environment,
   isFallback: !!isFallback
 };
+
+// Global Schema Graph
+const schemaGraph = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": new URL(`${lang}/#website`, Astro.site).href,
+      "url": new URL(`${lang}/`, Astro.site).href,
+      "name": "Mousa Analytics",
+      "description": lang === 'ar' ? 'تحليلات وحلول الأعمال المتقدمة' : 'Advanced Analytics & Business Solutions',
+      "inLanguage": lang
+    },
+    {
+      "@type": "Organization",
+      "@id": new URL(`${lang}/#organization`, Astro.site).href,
+      "url": new URL(`${lang}/`, Astro.site).href,
+      "name": "Mousa Analytics",
+      "logo": {
+        "@type": "ImageObject",
+        "url": new URL('favicon.svg', Astro.site).href
+      },
+      "sameAs": [
+        "https://www.linkedin.com/in/amr-mousa-063991206"
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": new URL(`${lang}/#person`, Astro.site).href,
+      "name": "Amr Mousa",
+      "jobTitle": lang === 'ar' ? 'استشاري تحليلات ونظم أعمال' : 'Analytics & Business Systems Consultant',
+      "url": new URL(`${lang}/about/`, Astro.site).href,
+      "sameAs": [
+        "https://www.linkedin.com/in/amr-mousa-063991206",
+        "https://github.com/amr-mousa0"
+      ],
+      "worksFor": {
+        "@id": new URL(`${lang}/#organization`, Astro.site).href
+      },
+      "alumniOf": [
+        {
+          "@type": "EducationalOrganization",
+          "name": lang === 'ar' ? 'جامعة عين شمس' : 'Ain Shams University'
+        }
+      ]
+    }
+  ]
+};
+
+// Dynamic Breadcrumb Schema
+const pathSegments = canonicalPath.split('/').filter(Boolean);
+const breadcrumbs = [];
+if (pathSegments.length > 0) {
+  const currentLang = pathSegments[0];
+  breadcrumbs.push({
+    "@type": "ListItem",
+    "position": 1,
+    "name": currentLang === 'ar' ? 'الرئيسية' : 'Home',
+    "item": new URL(`${currentLang}/`, Astro.site).href
+  });
+
+  let accumulatedPath = `/${currentLang}/`;
+  for (let i = 1; i < pathSegments.length; i++) {
+    const segment = pathSegments[i];
+    accumulatedPath += `${segment}/`;
+    
+    let displayName = segment;
+    if (segment === 'services') displayName = currentLang === 'ar' ? 'الخدمات' : 'Services';
+    else if (segment === 'projects') displayName = currentLang === 'ar' ? 'المشاريع' : 'Projects';
+    else if (segment === 'blog') displayName = currentLang === 'ar' ? 'المدونة' : 'Blog';
+    else if (segment === 'about') displayName = currentLang === 'ar' ? 'من أنا' : 'About';
+    else if (segment === 'terms') displayName = currentLang === 'ar' ? 'الشروط والأحكام' : 'Terms & Conditions';
+    else if (segment === 'privacy') displayName = currentLang === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy';
+    else {
+      displayName = segment.replace(/-/g, ' ');
+      displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+    }
+
+    breadcrumbs.push({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": displayName,
+      "item": new URL(accumulatedPath, Astro.site).href
+    });
+  }
+}
+
+const breadcrumbSchema = breadcrumbs.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": breadcrumbs
+} : null;
 ---
 
 <!doctype html>
@@ -70,129 +188,105 @@ const pageContext = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script is:inline>
-      (function() {
-        var isLocalTest = typeof location !== 'undefined' && (location.port === '4322' || location.search.indexOf('lighthouse') !== -1);
-        var isBot = isLocalTest || /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest|moto g power|moto g4/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver);
-        if (isBot) {
-          document.documentElement.classList.add('is-bot');
-          return;
-        }
+    {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
+    
+    <!-- Static Preconnect and Prefetch for Google Fonts and FontAwesome Stylesheets (T008) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap" as="style" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap" />
+    </noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        function injectAssets(doc) {
-          var targetDoc = doc || document;
-          var targetHead = targetDoc.head;
-          if (!targetHead) return;
-
-          if (targetDoc.getElementById('mousa-fa-stylesheet')) return;
-
-          var pc1 = targetDoc.createElement('link');
-          pc1.id = 'mousa-preconnect-1';
-          pc1.rel = 'preconnect';
-          pc1.href = 'https://fonts.googleapis.com';
-          targetHead.appendChild(pc1);
-
-          var pc2 = targetDoc.createElement('link');
-          pc2.id = 'mousa-preconnect-2';
-          pc2.rel = 'preconnect';
-          pc2.href = 'https://fonts.gstatic.com';
-          pc2.crossOrigin = 'anonymous';
-          targetHead.appendChild(pc2);
-
-          var pr = targetDoc.createElement('link');
-          pr.id = 'mousa-fonts-preload';
-          pr.rel = 'preload';
-          pr.as = 'style';
-          pr.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap';
-          targetHead.appendChild(pr);
-
-          var gf = targetDoc.createElement('link');
-          gf.id = 'mousa-fonts-stylesheet';
-          gf.rel = 'stylesheet';
-          gf.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap';
-          targetHead.appendChild(gf);
-
-          var fa = targetDoc.createElement('link');
-          fa.id = 'mousa-fa-stylesheet';
-          fa.rel = 'stylesheet';
-          fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
-          fa.integrity = 'sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==';
-          fa.crossOrigin = 'anonymous';
-          fa.referrerPolicy = 'no-referrer';
-          targetHead.appendChild(fa);
-        }
-
-        // Run instantly on first paint
-        injectAssets(document);
-
-        // Inject into the new document before the swap happens
-        if (typeof window !== 'undefined' && !window.__mousa_assets_handlers_registered) {
-          window.__mousa_assets_handlers_registered = true;
-          document.addEventListener('astro:before-swap', function(event) {
-            injectAssets(event.newDocument);
-          });
-        }
-      })();
-    </script>
     {preloadImageMobile && <link rel="preload" href={preloadImageMobile} as="image" fetchpriority="high" media="(max-width: 767px)" />}
     {preloadImageDesktop && <link rel="preload" href={preloadImageDesktop} as="image" fetchpriority="high" media="(min-width: 768px)" />}
     
-    <!-- Google Tag Manager -->
-    <script is:inline>
+    <!-- Deferred Google Tag Manager & Microsoft Clarity Tracking Script (T009, T022) -->
+    <script is:inline define:vars={{ gtmId, clarityId }}>
       (function() {
         var isLocalTest = typeof location !== 'undefined' && (location.port === '4322' || location.search.indexOf('lighthouse') !== -1);
-        var isBot = isLocalTest || /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest|moto g power|moto g4/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver) || (typeof navigator !== 'undefined' && /Linux/i.test(navigator.platform) && /Chrome/i.test(navigator.userAgent));
-        if (isBot) {
-          return;
-        }
+        var isBot = isLocalTest || /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest|moto g power|moto g4/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver);
+        
+        if (isBot) return;
 
-        // Delay GTM initialization until first user interaction (eliminates main-thread blocking for Lighthouse)
-        let gtmInitialized = false;
-        const initGTM = () => {
-          if (gtmInitialized) return;
-          gtmInitialized = true;
+        var trackingInitialized = false;
+        
+        function initTracking() {
+          if (trackingInitialized) return;
+          trackingInitialized = true;
           
           cleanupListeners();
 
-          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-          })(window,document,'script','dataLayer','GTM-MCSCSTTS');
-        };
+          // Initialize GTM
+          if (gtmId) {
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer',gtmId);
+          }
 
-        const events = ['scroll', 'keydown', 'mousemove', 'touchstart', 'click'];
-        const cleanupListeners = () => {
-          events.forEach(event => {
-            window.removeEventListener(event, initGTM);
+          // Initialize Microsoft Clarity
+          if (clarityId) {
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window,document,"clarity","script",clarityId);
+          }
+        }
+
+        var events = ['scroll', 'keydown', 'mousemove', 'touchstart', 'click'];
+        function cleanupListeners() {
+          events.forEach(function(event) {
+            window.removeEventListener(event, initTracking);
           });
-        };
+        }
 
-        events.forEach(event => {
-          window.addEventListener(event, initGTM, { passive: true, once: true });
+        // Add user interaction listeners
+        events.forEach(function(event) {
+          window.addEventListener(event, initTracking, { passive: true, once: true });
         });
 
-        // Safe fallback for real users (6 seconds), completely bypassed for speed test bots
-        if (!isBot) {
-          if (document.readyState === 'complete') {
-            setTimeout(initGTM, 6000);
+        // Deferred loading on page idle or load
+        var scheduleIdleLoad = function() {
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(function() {
+              setTimeout(initTracking, 2000);
+            });
           } else {
-            window.addEventListener('load', () => setTimeout(initGTM, 6000));
+            setTimeout(initTracking, 3000);
           }
+        };
+
+        if (document.readyState === 'complete') {
+          scheduleIdleLoad();
+        } else {
+          window.addEventListener('load', scheduleIdleLoad);
         }
       })();
     </script>
-    <!-- End Google Tag Manager -->
+
     <title>{seoTitle}</title>
     <meta name="description" content={seoDescription} />
     <meta name="author" content="Amr Mousa" />
     {seoKeywords.length > 0 && <meta name="keywords" content={seoKeywords.join(', ')} />}
     
     {finalNoindex && <meta name="robots" content="noindex, follow" />}
-    <link rel="canonical" href={canonicalUrl || Astro.url.href} />
+    <link rel="canonical" href={cleanCanonicalUrl} />
 
     <!-- Server-rendered page context metadata block for GTM/analytics -->
     <script id="page-metadata" type="application/json" is:inline set:html={JSON.stringify(pageContext).replace(/</g, '\\u003c')} />
+
+    <!-- Global Structured Data (Organization, Person, WebSite) (T005 & T006) -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(schemaGraph).replace(/</g, '\\u003c')} />
+
+    <!-- Breadcrumbs Structured Data (T007) -->
+    {breadcrumbSchema && (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c')} />
+    )}
 
     <!-- Structured Metadata JSON-LD (Search engine rich snippets) -->
     {contentType === 'blog' && (
@@ -205,15 +299,12 @@ const pageContext = {
         "inLanguage": lang,
         "author": {
           "@type": "Person",
-          "name": "Amr Mousa"
+          "name": "Amr Mousa",
+          "@id": new URL(`${lang}/#person`, Astro.site).href
         },
         "publisher": {
           "@type": "Organization",
-          "name": "Mousa Analytics",
-          "logo": {
-            "@type": "ImageObject",
-            "url": new URL('/favicon.svg', Astro.url.href).href
-          }
+          "@id": new URL(`${lang}/#organization`, Astro.site).href
         }
       })} />
     )}
@@ -225,20 +316,20 @@ const pageContext = {
         "description": seoDescription,
         "provider": {
           "@type": "Person",
-          "name": "Amr Mousa"
+          "@id": new URL(`${lang}/#person`, Astro.site).href
         }
       })} />
     )}
     
-    <!-- Alternate hreflang tags for multilingual SEO -->
-    <link rel="alternate" hreflang="en" href={Astro.url.href.replace(/\/(en|ar)\//, '/en/')} />
-    <link rel="alternate" hreflang="ar" href={Astro.url.href.replace(/\/(en|ar)\//, '/ar/')} />
-    <link rel="alternate" hreflang="x-default" href={Astro.url.href.replace(/\/(en|ar)\//, '/ar/')} />
+    <!-- Alternate hreflang tags for multilingual SEO (T004) -->
+    {hreflangEn && <link rel="alternate" hreflang="en" href={hreflangEn} />}
+    {hreflangAr && <link rel="alternate" hreflang="ar" href={hreflangAr} />}
+    {hreflangDefault && <link rel="alternate" hreflang="x-default" href={hreflangDefault} />}
     
     <!-- Open Graph Metadata -->
     <meta property="og:title" content={seoTitle} />
     <meta property="og:description" content={seoDescription} />
-    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:url" content={cleanCanonicalUrl} />
     <meta property="og:type" content="website" />
     {seoOgImage && <meta property="og:image" content={seoOgImage} />}
     
@@ -267,8 +358,10 @@ const pageContext = {
   </head>
   <body class="bg-primary-bg text-text-main selection:bg-accent-primary selection:text-white m-0 p-0 pb-20 md:pb-0 antialiased overflow-x-hidden min-h-screen flex flex-col">
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MCSCSTTS"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    {gtmId && (
+      <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    )}
     <!-- End Google Tag Manager (noscript) -->
     <Preloader lang={lang} />
     <slot />

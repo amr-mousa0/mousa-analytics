@@ -89,17 +89,18 @@ const t = {
     "@graph": [
       {
         "@type": "WebPage",
-        "@id": `https://mousa-analytics.vercel.app/${lang}/terms/`,
-        "url": `https://mousa-analytics.vercel.app/${lang}/terms/`,
+        "@id": new URL(`${lang}/terms/`, Astro.site).href,
+        "url": new URL(`${lang}/terms/`, Astro.site).href,
         "name": t.title,
         "description": t.subtitle,
         "isPartOf": {
           "@type": "WebSite",
-          "@id": `https://mousa-analytics.vercel.app/${lang}/#website`
+          "@id": new URL(`${lang}/#website`, Astro.site).href
         }
       }
     ]
   })} />
+
 
   <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent font-sans">
     <!-- Atmospheric Premium Ambient Glows -->

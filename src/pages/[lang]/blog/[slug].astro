@@ -1,0 +1,236 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../../../layouts/Layout.astro';
+import Navigation from '../../../components/ui/Navigation.astro';
+import Footer from '../../../components/ui/Footer.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const isProd = import.meta.env.PROD;
+  const showDrafts = !isProd;
+
+  const activePosts = allPosts.filter(item => showDrafts || !item.data.draft);
+
+  const postsByKey: Record<string, { en?: any; ar?: any }> = {};
+  activePosts.forEach(post => {
+    const [lang] = post.slug.split('/');
+    const key = post.data.translationKey;
+    if (!postsByKey[key]) {
+      postsByKey[key] = {};
+    }
+    if (lang === 'en') postsByKey[key].en = post;
+    if (lang === 'ar') postsByKey[key].ar = post;
+  });
+
+  const paths: any[] = [];
+  Object.entries(postsByKey).forEach(([key, versions]) => {
+    if (versions.en) {
+      paths.push({
+        params: { lang: 'en', slug: key },
+        props: { post: versions.en, isFallback: false }
+      });
+    } else if (versions.ar) {
+      paths.push({
+        params: { lang: 'en', slug: key },
+        props: { post: versions.ar, isFallback: true }
+      });
+    }
+
+    if (versions.ar) {
+      paths.push({
+        params: { lang: 'ar', slug: key },
+        props: { post: versions.ar, isFallback: false }
+      });
+    } else if (versions.en) {
+      paths.push({
+        params: { lang: 'ar', slug: key },
+        props: { post: versions.en, isFallback: true }
+      });
+    }
+  });
+
+  return paths;
+}
+
+const { lang, slug } = Astro.params;
+const { post, isFallback } = Astro.props;
+
+if (!lang || !['en', 'ar'].includes(lang)) {
+  return Astro.redirect('/ar/');
+}
+
+const isAr = lang === 'ar';
+const { Content } = await post.render();
+
+// T019: Dynamic reading time calculation based on word count
+const wordCount = post.body.split(/\s+/).filter(Boolean).length;
+const wordsPerMinute = 200;
+const readingTime = Math.ceil(wordCount / wordsPerMinute);
+
+const formattedDate = new Date(post.data.publishDate).toLocaleDateString(isAr ? 'ar-EG' : 'en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+
+const t = {
+  backBtn: isAr ? "العودة للمدونة" : "Back to Blog",
+  readingTime: isAr ? `وقت القراءة: ${readingTime} دقائق` : `${readingTime} min read`,
+  author: isAr ? "بقلم" : "By",
+  published: isAr ? "نشر في" : "Published on"
+};
+
+// Fetch related services and projects (T020)
+const allServices = await getCollection('services');
+const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWith(`${lang}/`) && s.data.category === post.data.category);
+
+const allProjects = await getCollection('projects');
+const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWith(`${lang}/`) && p.data.category === post.data.category);
+
+const shouldNoindex = post.data.draft || post.data.seo.noindex;
+---
+
+<Layout 
+  lang={lang} 
+  pageId={`blog-${slug}`}
+  title={post.data.seo.metaTitle}
+  description={post.data.seo.metaDescription}
+  ogImage={post.data.coverImage ? post.data.coverImage.src : undefined}
+  canonicalUrl={post.data.seo.canonicalUrl}
+  noindex={shouldNoindex}
+  contentType="blog"
+  slug={slug}
+  pageCategory={post.data.category}
+  isFallback={isFallback}
+>
+  <Navigation lang={lang} activePage="blog" backUrl={`/${lang}/blog/`} backText={t.backBtn} />
+
+  <!-- T019: Inject BlogPosting schema dynamically -->
+  <script type="application/ld+json" is:inline set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": new URL(`blog/${slug}/`, Astro.site).href
+    },
+    "headline": post.data.title,
+    "description": post.data.description,
+    "image": post.data.coverImage ? new URL(post.data.coverImage.src, Astro.site).href : "",
+    "datePublished": post.data.publishDate.toISOString(),
+    "dateModified": post.data.updatedDate ? post.data.updatedDate.toISOString() : post.data.publishDate.toISOString(),
+    "author": {
+      "@type": "Person",
+      "@id": new URL(`${lang}/#person`, Astro.site).href,
+      "name": isAr ? "عمرو موسى" : "Amr Mousa"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "@id": new URL(`${lang}/#organization`, Astro.site).href,
+      "name": "Mousa Analytics"
+    },
+    "inLanguage": lang,
+    "timeRequired": `PT${readingTime}M`
+  }).replace(/</g, '\\u003c')} />
+
+  <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent">
+    <!-- Atmospheric Glows -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_0%,rgba(37,99,235,0.03),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
+
+    <div class="relative z-10 w-full max-w-3xl mx-auto px-6 sm:px-8 space-y-10">
+      
+      {isFallback && (
+        <div class="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-amber-600 text-xs sm:text-sm font-sans flex items-center gap-3">
+          <i class="fa-solid fa-triangle-exclamation text-base sm:text-lg"></i>
+          <div>
+            {isAr 
+              ? "⚠️ هذه المقالة غير متوفرة باللغة العربية بعد. تم عرض النسخة الإنجليزية احتياطياً." 
+              : "⚠️ This article is not available in English yet. The Arabic version is displayed as a fallback."}
+          </div>
+        </div>
+      )}
+
+      <!-- Article Section -->
+      <article class="glass-card premium-card-global rounded-3xl p-6 sm:p-10 space-y-8">
+        
+        <!-- Header -->
+        <header class="space-y-4 border-b border-text-main/10 pb-6">
+          <div class="flex items-center gap-3 text-[10px] font-mono text-text-main/45">
+            <span class="px-2.5 py-0.5 rounded-md bg-accent-primary/10 text-accent-primary font-semibold">{post.data.category}</span>
+            <span>•</span>
+            <span>{t.readingTime}</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-text-main font-serif leading-tight">
+            {post.data.title}
+          </h1>
+          <div class="flex items-center gap-3 text-xs text-text-main/60 pt-2 font-sans">
+            <span>{t.author}: <strong class="text-text-main">{post.data.author}</strong></span>
+            <span>•</span>
+            <span>{t.published}: <time datetime={post.data.publishDate.toISOString()}>{formattedDate}</time></span>
+          </div>
+        </header>
+
+        {post.data.coverImage && (
+          <div class="overflow-hidden rounded-2xl border border-text-main/10 shadow-xs">
+            <Image 
+              src={post.data.coverImage} 
+              alt={post.data.title}
+              class="w-full max-h-96 object-cover"
+              width={800}
+              quality={90}
+            />
+          </div>
+        )}
+
+        <!-- Body content -->
+        <div class="markdown-content text-text-main/80 text-[14px] sm:text-[15px] leading-relaxed font-sans font-light space-y-6">
+          <Content />
+        </div>
+
+        <!-- T020: Reciprocal category links -->
+        {(activeServices.length > 0 || activeProjects.length > 0) && (
+          <footer class="border-t border-text-main/10 pt-8 mt-10 space-y-6">
+            <h3 class="text-sm font-bold text-text-main font-serif">
+              {isAr ? "خدمات ومشاريع ذات صلة بموضوع المقال:" : "Related Services & Projects:"}
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {activeServices.map((service) => {
+                const serviceSlug = service.slug.split('/').pop();
+                return (
+                  <a href={`/${lang}/services/${serviceSlug}/`} class="flex items-center gap-3 p-3 rounded-xl border border-text-main/5 hover:border-accent-primary/20 bg-primary-bg/50 transition-all">
+                    <div class="w-8 h-8 rounded-lg bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+                      <i class={`${service.data.icon} text-xs`} aria-hidden="true"></i>
+                    </div>
+                    <div class="space-y-0.5 overflow-hidden">
+                      <span class="text-[8px] font-mono text-text-main/45 uppercase tracking-widest">{isAr ? "الخدمات المهنية" : "Professional Service"}</span>
+                      <h4 class="text-[11px] font-bold text-text-main font-serif leading-tight truncate">{service.data.title}</h4>
+                    </div>
+                  </a>
+                );
+              })}
+
+              {activeProjects.map((project) => {
+                const projectSlug = project.slug.split('/').pop();
+                return (
+                  <a href={`/${lang}/projects/${projectSlug}/`} class="flex items-center gap-3 p-3 rounded-xl border border-text-main/5 hover:border-accent-primary/20 bg-primary-bg/50 transition-all">
+                    <div class="w-8 h-8 rounded-lg bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
+                      <i class="fa-solid fa-folder-open text-xs" aria-hidden="true"></i>
+                    </div>
+                    <div class="space-y-0.5 overflow-hidden">
+                      <span class="text-[8px] font-mono text-text-main/45 uppercase tracking-widest">{isAr ? "المشاريع ودراسات الحالة" : "Case Study"}</span>
+                      <h4 class="text-[11px] font-bold text-text-main font-serif leading-tight truncate">{project.data.title}</h4>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </footer>
+        )}
+
+      </article>
+
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+</Layout>
