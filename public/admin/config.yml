@@ -4,7 +4,7 @@ backend:
   name: github
   repo: amr-mousa0/mousa-analytics
   branch: main
-  base_url: "https://mousa-analytics.vercel.app"
+  base_url: "https://mousa-analytics.vercel.app/api"
 
 # Enable Local development mode (runs with npx decap-cms-proxy-server)
 local_backend: true
