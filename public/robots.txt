@@ -1,5 +1,5 @@
 # Mousa Analytics — robots.txt
-# https://mousaanalytics.com
+# https://mousa-analytics.vercel.app
 
 User-agent: *
 Allow: /
@@ -9,4 +9,4 @@ Disallow: /admin
 Disallow: /.backup
 
 # Sitemap location
-Sitemap: https://mousaanalytics.com/sitemap-index.xml
+Sitemap: https://mousa-analytics.vercel.app/sitemap-index.xml
