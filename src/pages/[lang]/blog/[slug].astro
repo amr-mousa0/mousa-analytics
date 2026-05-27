@@ -199,7 +199,7 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
                 return (
                   <a href={`/${lang}/services/${serviceSlug}/`} class="flex items-center gap-3 p-3 rounded-xl border border-text-main/5 hover:border-accent-primary/20 bg-primary-bg/50 transition-all">
                     <div class="w-8 h-8 rounded-lg bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
-                      <i class={`${service.data.icon} text-xs`} aria-hidden="true"></i>
+                      <i class={`fa-solid fa-${service.data.icon} text-xs`} aria-hidden="true"></i>
                     </div>
                     <div class="space-y-0.5 overflow-hidden">
                       <span class="text-[8px] font-mono text-text-main/45 uppercase tracking-widest">{isAr ? "الخدمات المهنية" : "Professional Service"}</span>

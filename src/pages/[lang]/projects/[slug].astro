@@ -363,7 +363,7 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
                 <a href={`/${lang}/services/${serviceSlug}/`} class="glass-card glass-card-hover group rounded-2xl p-5 flex flex-col gap-3 transition-all duration-300">
                   <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0 transition-colors group-hover:bg-accent-primary/20">
-                      <i class={`${service.data.icon} text-base`} aria-hidden="true"></i>
+                      <i class={`fa-solid fa-${service.data.icon} text-base`} aria-hidden="true"></i>
                     </div>
                     <div class="space-y-0.5">
                       <span class="text-[9px] font-mono text-text-main/45 uppercase tracking-widest">{service.data.category}</span>
