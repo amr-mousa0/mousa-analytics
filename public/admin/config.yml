@@ -211,3 +211,129 @@ collections:
       - { label: "تاريخ النشر", name: "publishedDate", widget: "datetime", required: true }
       - { label: "مفتاح الربط للترجمة", name: "translationKey", widget: "string", required: true, hint: "مفتاح فريد يطابق النسخة الإنجليزية (مثل coffee-shop)" }
       - *seo_fields
+
+  # 5. Blog (English)
+  - name: "blog_en"
+    label: "Blog Posts (English)"
+    folder: "src/content/blog/en"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true, hint: "Article Title (60 chars max)" }
+      - { label: "Description", name: "description", widget: "text", required: true, hint: "Article Teaser Description (160 chars max)" }
+      - { label: "Publish Date", name: "publishDate", widget: "datetime", required: true }
+      - { label: "Updated Date", name: "updatedDate", widget: "datetime", required: false }
+      - { label: "Cover Image", name: "coverImage", widget: "image", required: false }
+      - { label: "Author", name: "author", widget: "string", default: "Amr Mousa", required: true }
+      - { label: "Category", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Translation Linking Key", name: "translationKey", widget: "string", required: true, hint: "Unique key matching EN/AR versions (e.g., intro-to-analytics)" }
+      - { label: "Draft", name: "draft", widget: "boolean", default: true }
+      - *seo_fields
+      - { label: "Body", name: "body", widget: "markdown", required: true }
+
+  # 6. Blog (Arabic)
+  - name: "blog_ar"
+    label: "المقالات (العربية)"
+    folder: "src/content/blog/ar"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "العنوان", name: "title", widget: "string", required: true, hint: "عنوان المقال (أقصى 60 حرف)" }
+      - { label: "الوصف", name: "description", widget: "text", required: true, hint: "وصف مختصر للمقال (أقصى 160 حرف)" }
+      - { label: "تاريخ النشر", name: "publishDate", widget: "datetime", required: true }
+      - { label: "تاريخ التحديث", name: "updatedDate", widget: "datetime", required: false }
+      - { label: "صورة الغلاف", name: "coverImage", widget: "image", required: false }
+      - { label: "الكاتب", name: "author", widget: "string", default: "عمرو موسى", required: true }
+      - { label: "التصنيف", name: "category", widget: "select", options: ["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"], required: true }
+      - { label: "الوسوم (Tags)", name: "tags", widget: "list", required: false }
+      - { label: "مفتاح الربط للترجمة", name: "translationKey", widget: "string", required: true, hint: "مفتاح فريد يطابق النسخة الإنجليزية" }
+      - { label: "مسودة (Draft)", name: "draft", widget: "boolean", default: true }
+      - *seo_fields
+      - { label: "المحتوى", name: "body", widget: "markdown", required: true }
+
+  # 7. Hero Section Settings
+  - name: "hero"
+    label: "Hero Section Settings"
+    delete: false
+    files:
+      - name: "hero_en"
+        label: "Hero Section (English)"
+        file: "src/content/hero/en.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string", required: true }
+          - { label: "Eyebrow", name: "eyebrow", widget: "string", required: true }
+          - { label: "Bio (Subtitle)", name: "bio", widget: "text", required: true }
+          - { label: "Primary Button Text", name: "primaryBtn", widget: "string", required: true }
+          - { label: "Secondary Button Text", name: "secondaryBtn", widget: "string", required: true }
+          - { label: "Floating Badge Text", name: "floatingBadge", widget: "string", required: true }
+          - { label: "Stat Left Title", name: "statLeftTitle", widget: "string", required: true }
+          - { label: "Stat Left Value", name: "statLeftVal", widget: "string", required: true }
+          - { label: "Stat Right Title", name: "statRightTitle", widget: "string", required: true }
+          - { label: "Stat Right Value", name: "statRightVal", widget: "string", required: true }
+          - { label: "Trending Label", name: "trendingLabel", widget: "string", required: true }
+          - { label: "Trending Items", name: "trendingItems", widget: "string", required: true }
+      - name: "hero_ar"
+        label: "قسم الهيرو (العربية)"
+        file: "src/content/hero/ar.md"
+        fields:
+          - { label: "العنوان الرئيسي", name: "title", widget: "string", required: true }
+          - { label: "العنوان الصغير (Eyebrow)", name: "eyebrow", widget: "string", required: true }
+          - { label: "الوصف التعريفي (Bio)", name: "bio", widget: "text", required: true }
+          - { label: "نص الزر الرئيسي", name: "primaryBtn", widget: "string", required: true }
+          - { label: "نص الزر الفرعي", name: "secondaryBtn", widget: "string", required: true }
+          - { label: "نص الشارة العائمة", name: "floatingBadge", widget: "string", required: true }
+          - { label: "عنوان الإحصائية اليسرى", name: "statLeftTitle", widget: "string", required: true }
+          - { label: "قيمة الإحصائية اليسرى", name: "statLeftVal", widget: "string", required: true }
+          - { label: "عنوان الإحصائية اليمنى", name: "statRightTitle", widget: "string", required: true }
+          - { label: "قيمة الإحصائية اليمنى", name: "statRightVal", widget: "string", required: true }
+          - { label: "تسمية الضمانات/الروابط", name: "trendingLabel", widget: "string", required: true }
+          - { label: "عناصر الضمانات", name: "trendingItems", widget: "string", required: true }
+
+  # 8. Social Links (English)
+  - name: "socials_en"
+    label: "Social Links (English)"
+    folder: "src/content/socials/en"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Name", name: "name", widget: "string", required: true }
+      - { label: "URL", name: "url", widget: "string", required: true }
+      - { label: "FontAwesome Icon Class", name: "icon", widget: "string", required: true, hint: "e.g. fa-brands fa-github" }
+      - { label: "Priority (Order)", name: "priority", widget: "number", value_type: "int", required: true }
+
+  # 9. Social Links (Arabic)
+  - name: "socials_ar"
+    label: "روابط التواصل (العربية)"
+    folder: "src/content/socials/ar"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "الاسم", name: "name", widget: "string", required: true }
+      - { label: "الرابط", name: "url", widget: "string", required: true }
+      - { label: "كلاس أيقونة FontAwesome", name: "icon", widget: "string", required: true, hint: "مثال: fa-brands fa-github" }
+      - { label: "الأولوية (الترتيب)", name: "priority", widget: "number", value_type: "int", required: true }
+
+  # 10. Page SEO & Metadata (English)
+  - name: "seo_en"
+    label: "Page SEO & Metadata (English)"
+    folder: "src/content/seo/en"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Meta Title", name: "title", widget: "string", required: true, hint: "Search result title (60 chars max)" }
+      - { label: "Meta Description", name: "description", widget: "text", required: true, hint: "Search snippet (160 chars max)" }
+      - { label: "Keywords", name: "keywords", widget: "list", required: false }
+      - { label: "OG Image (Social Share)", name: "ogImage", widget: "image", required: false }
+
+  # 11. Page SEO & Metadata (Arabic)
+  - name: "seo_ar"
+    label: "تهيئة محركات البحث (العربية)"
+    folder: "src/content/seo/ar"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "العنوان التعريفي (Meta Title)", name: "title", widget: "string", required: true, hint: "العنوان في نتائج البحث (أقصى 60 حرف)" }
+      - { label: "الوصف التعريفي (Meta Description)", name: "description", widget: "text", required: true, hint: "الوصف في نتائج البحث (أقصى 160 حرف)" }
+      - { label: "الكلمات المفتاحية (Keywords)", name: "keywords", widget: "list", required: false }
+      - { label: "صورة المشاركة الاجتماعية (OG Image)", name: "ogImage", widget: "image", required: false }
