@@ -51,7 +51,10 @@ export default async function handler(req, res) {
                 opener.postMessage("authorization:github:success:" + payload, "*");
                 
                 if (token && token !== "undefined") {
-                  window.close();
+                  // Wait 200ms before closing popup to guarantee the parent window receives the postMessage in all browsers
+                  setTimeout(function() {
+                    window.close();
+                  }, 200);
                 } else {
                   document.body.innerHTML = "<h3>OAuth Debugger</h3><p style='color:red;'>Warning: Token is empty or undefined. Please verify your Vercel Environment Variables (OAUTH_CLIENT_ID & OAUTH_CLIENT_SECRET) and your GitHub OAuth App settings.</p><p>Payload sent: <code>" + payload + "</code></p>";
                 }
