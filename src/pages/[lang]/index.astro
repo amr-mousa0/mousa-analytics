@@ -33,39 +33,7 @@ const mobileImg = await getImage({ src: analyticsBgImgMobile, quality: 80, forma
 ---
 
 <Layout lang={lang} pageId="homepage" preloadImageMobile={mobileImg.src} preloadImageDesktop={desktopImg.src}>
-  <!-- Inject Schema.org JSON-LD Metadata -->
-  <script is:inline type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "ProfessionalService",
-        "@id": `${Astro.site}${lang}/#organization`,
-        "name": isAr ? "موسى للتحليلات" : "Mousa Analytics",
-        "url": `${Astro.site}${lang}/`,
-        "logo": `${Astro.site}favicon.svg`,
-        "image": `${Astro.site}images/og-image.png`,
-        "description": isAr 
-          ? "موسى للتحليلات: خيارك الأفضل لخدمات تحليل البيانات والميديا باينج لتضاعف أرباح مشروعك."
-          : "Mousa Analytics: Your premier choice for data analytics and media buying services to scale your business.",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Cairo",
-          "addressCountry": "EG"
-        },
-        "telephone": "+201099661462",
-        "priceRange": "$$$"
-      },
-      {
-        "@type": "WebSite",
-        "@id": `${Astro.site}${lang}/#website`,
-        "url": `${Astro.site}${lang}/`,
-        "name": isAr ? "موسى للتحليلات" : "Mousa Analytics",
-        "publisher": {
-          "@id": `${Astro.site}${lang}/#organization`
-        }
-      }
-    ]
-  })} />
+
 
   <Navigation lang={lang} activePage="home" />
   <main class="flex-grow">

@@ -38,9 +38,9 @@ const excludedSlugs = getExcludedSlugs();
 
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.VERCEL_PROJECT_PRODUCTION_URL
+  site: process.env.SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://mousa-analytics.vercel.app'),
+    : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://mousa-analytics.vercel.app')),
   integrations: [
     sitemap({
       filter: (page) => {

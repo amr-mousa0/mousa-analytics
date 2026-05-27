@@ -91,51 +91,72 @@ const pageContext = {
 };
 
 // Global Schema Graph
-const schemaGraph = {
-  "@context": "https://schema.org",
-  "@graph": [
+const graph = [];
+
+// 1. WebSite Schema (Homepage ONLY to prevent duplication and satisfy Google rules)
+if (pageId === 'homepage') {
+  graph.push({
+    "@type": "WebSite",
+    "@id": new URL(`${lang}/#website`, Astro.site).href,
+    "url": new URL(`${lang}/`, Astro.site).href,
+    "name": lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics',
+    "alternateName": ["Mousa Analytics", "موسى للتحليلات"],
+    "description": lang === 'ar' ? 'تحليلات وحلول الأعمال المتقدمة' : 'Advanced Analytics & Business Solutions',
+    "inLanguage": lang
+  });
+}
+
+// 2. ProfessionalService Schema (Replaces Organization to unify SEO signals)
+graph.push({
+  "@type": "ProfessionalService",
+  "@id": new URL(`${lang}/#organization`, Astro.site).href,
+  "url": new URL(`${lang}/`, Astro.site).href,
+  "name": lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics',
+  "logo": {
+    "@type": "ImageObject",
+    "url": new URL('favicon.svg', Astro.site).href
+  },
+  "image": new URL('images/og-image.png', Astro.site).href,
+  "description": lang === 'ar' 
+    ? "موسى للتحليلات: خيارك الأفضل لخدمات تحليل البيانات والميديا باينج لتضاعف أرباح مشروعك."
+    : "Mousa Analytics: Your premier choice for data analytics and media buying services to scale your business.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Cairo",
+    "addressCountry": "EG"
+  },
+  "telephone": "+201099661462",
+  "priceRange": "$$$",
+  "sameAs": [
+    "https://www.linkedin.com/in/amr-mousa-063991206"
+  ]
+});
+
+// 3. Person Schema
+graph.push({
+  "@type": "Person",
+  "@id": new URL(`${lang}/#person`, Astro.site).href,
+  "name": "Amr Mousa",
+  "jobTitle": lang === 'ar' ? 'استشاري تحليلات ونظم أعمال' : 'Analytics & Business Systems Consultant',
+  "url": new URL(`${lang}/about/`, Astro.site).href,
+  "sameAs": [
+    "https://www.linkedin.com/in/amr-mousa-063991206",
+    "https://github.com/amr-mousa0"
+  ],
+  "worksFor": {
+    "@id": new URL(`${lang}/#organization`, Astro.site).href
+  },
+  "alumniOf": [
     {
-      "@type": "WebSite",
-      "@id": new URL(`${lang}/#website`, Astro.site).href,
-      "url": new URL(`${lang}/`, Astro.site).href,
-      "name": "Mousa Analytics",
-      "description": lang === 'ar' ? 'تحليلات وحلول الأعمال المتقدمة' : 'Advanced Analytics & Business Solutions',
-      "inLanguage": lang
-    },
-    {
-      "@type": "Organization",
-      "@id": new URL(`${lang}/#organization`, Astro.site).href,
-      "url": new URL(`${lang}/`, Astro.site).href,
-      "name": "Mousa Analytics",
-      "logo": {
-        "@type": "ImageObject",
-        "url": new URL('favicon.svg', Astro.site).href
-      },
-      "sameAs": [
-        "https://www.linkedin.com/in/amr-mousa-063991206"
-      ]
-    },
-    {
-      "@type": "Person",
-      "@id": new URL(`${lang}/#person`, Astro.site).href,
-      "name": "Amr Mousa",
-      "jobTitle": lang === 'ar' ? 'استشاري تحليلات ونظم أعمال' : 'Analytics & Business Systems Consultant',
-      "url": new URL(`${lang}/about/`, Astro.site).href,
-      "sameAs": [
-        "https://www.linkedin.com/in/amr-mousa-063991206",
-        "https://github.com/amr-mousa0"
-      ],
-      "worksFor": {
-        "@id": new URL(`${lang}/#organization`, Astro.site).href
-      },
-      "alumniOf": [
-        {
-          "@type": "EducationalOrganization",
-          "name": lang === 'ar' ? 'جامعة عين شمس' : 'Ain Shams University'
-        }
-      ]
+      "@type": "EducationalOrganization",
+      "name": lang === 'ar' ? 'جامعة عين شمس' : 'Ain Shams University'
     }
   ]
+});
+
+const schemaGraph = {
+  "@context": "https://schema.org",
+  "@graph": graph
 };
 
 // Dynamic Breadcrumb Schema
@@ -326,6 +347,11 @@ const breadcrumbSchema = breadcrumbs.length > 0 ? {
     {hreflangAr && <link rel="alternate" hreflang="ar" href={hreflangAr} />}
     {hreflangDefault && <link rel="alternate" hreflang="x-default" href={hreflangDefault} />}
     
+    <!-- Search Branding & Site Name Signals -->
+    <meta property="og:site_name" content={lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics'} />
+    <meta name="application-name" content={lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics'} />
+    <meta name="apple-mobile-web-app-title" content={lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics'} />
+
     <!-- Open Graph Metadata -->
     <meta property="og:title" content={seoTitle} />
     <meta property="og:description" content={seoDescription} />
@@ -339,7 +365,11 @@ const breadcrumbSchema = breadcrumbs.length > 0 ? {
     <meta name="twitter:description" content={seoDescription} />
     {seoOgImage && <meta name="twitter:image" content={seoOgImage} />}
     
+    <!-- Multi-format Favicons & Apple Touch Icon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#F8F9FA" />
     <script is:inline>
