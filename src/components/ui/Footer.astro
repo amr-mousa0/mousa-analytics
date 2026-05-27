@@ -10,6 +10,7 @@ const isAr = lang === 'ar';
 const aboutPath = `/${lang}/about/`;
 const privacyPath = `/${lang}/privacy/`;
 const termsPath = `/${lang}/terms/`;
+const blogPath = `/${lang}/blog/`;
 ---
 
 <footer id="footer" class="footer-luxury text-start text-white relative z-10" role="contentinfo">
@@ -112,6 +113,7 @@ const termsPath = `/${lang}/terms/`;
 
       <!-- Standard links left aligned -->
       <div class="flex items-center justify-center gap-5 order-1 md:order-2">
+        <a href={blogPath} class="hover:text-white transition-colors duration-200">{isAr ? "المدونة" : "Blog"}</a>
         <a href={privacyPath} class="hover:text-white transition-colors duration-200">{isAr ? "سياسة الخصوصية" : "Privacy Policy"}</a>
         <a href={termsPath} class="hover:text-white transition-colors duration-200">{isAr ? "الشروط والأحكام" : "Terms of Service"}</a>
       </div>

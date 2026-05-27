@@ -18,6 +18,7 @@ const aboutPath = `/${lang}/about/`;
 const servicesPath = `/${lang}/#services`;
 const projectsPath = `/${lang}/#projects`;
 const contactPath = `/${lang}/#contact`;
+const blogPath = `/${lang}/blog/`;
 
 const targetLang = isAr ? 'en' : 'ar';
 
@@ -94,6 +95,12 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
         class="transition-all hover:text-hero-accent text-text-main/70"
       >
         {isAr ? "المشاريع" : "Portfolio"}
+      </a>
+      <a 
+        href={blogPath} 
+        class={`transition-all hover:text-hero-accent ${activePage === 'blog' ? 'text-hero-accent' : 'text-text-main/70'}`}
+      >
+        {isAr ? "المدونة" : "Blog"}
       </a>
       <a 
         href={contactPath} 
@@ -195,6 +202,12 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
       <a href={projectsPath} class="mobile-drawer-link flex items-center justify-between py-3.5 border-b border-text-main/5 text-text-main/80 hover:text-hero-accent transition-all duration-300 font-semibold text-[14px]">
         <span>{isAr ? "المشاريع" : "Projects"}</span>
         <i class="fa-solid fa-briefcase text-text-main/25 text-xs"></i>
+      </a>
+
+      <!-- Blog Link -->
+      <a href={blogPath} class="mobile-drawer-link flex items-center justify-between py-3.5 border-b border-text-main/5 text-text-main/80 hover:text-hero-accent transition-all duration-300 font-semibold text-[14px]">
+        <span>{isAr ? "المدونة" : "Blog"}</span>
+        <i class="fa-solid fa-book-open text-text-main/25 text-xs"></i>
       </a>
 
       <!-- Contact Link -->
