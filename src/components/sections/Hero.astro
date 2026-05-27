@@ -222,10 +222,17 @@ const highlightText = (text: string) => {
 </div>
 
 <script>
-  // High-performance background image scroll parallax
+  // High-performance background image scroll parallax (desktop only)
   function initScrollParallax() {
     const bgImg = document.querySelector('.scroll-bg-image') as HTMLElement | null;
     if (!bgImg) return;
+    
+    // Skip parallax on mobile - the 0.05 speed is barely visible but wastes scroll performance
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      bgImg.style.transform = '';
+      return;
+    }
 
     const onScroll = () => {
       // Respect prefers-reduced-motion setting
@@ -234,8 +241,7 @@ const highlightText = (text: string) => {
         return;
       }
       const scrolled = window.scrollY;
-      const speed = window.innerWidth < 768 ? 0.05 : 0.12;
-      bgImg.style.transform = `translate3d(0, ${scrolled * speed}px, 0)`;
+      bgImg.style.transform = `translate3d(0, ${scrolled * 0.12}px, 0)`;
     };
 
     let ticked = false;

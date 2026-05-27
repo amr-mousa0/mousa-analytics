@@ -72,7 +72,7 @@
 }
 
 .glass-card-hover {
-  @apply transition-all duration-300;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .glass-card-hover:hover {
@@ -89,7 +89,7 @@
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(10, 25, 47, 0.03);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (hover: hover) and (pointer: fine) {

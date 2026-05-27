@@ -246,6 +246,7 @@ const isAr = lang === 'ar';
 
     let showStartTime = 0;
     let isHiding = false;
+    let transitionFailsafeTimer = null;
     
     const hasSeen = sessionStorage.getItem('mousa_preloader_seen');
     const MIN_INITIAL_DURATION = isBot ? 0 : (hasSeen ? 500 : 1500); // Original premium 1.5s load for users, bypassed for bots
@@ -253,7 +254,14 @@ const isAr = lang === 'ar';
 
     function showPreloader(isTransition = false) {
       showStartTime = Date.now();
+      // CRITICAL FIX: Always reset isHiding so the preloader can never get permanently stuck
       isHiding = false;
+      
+      // Clear any previous failsafe timer
+      if (transitionFailsafeTimer) {
+        clearTimeout(transitionFailsafeTimer);
+        transitionFailsafeTimer = null;
+      }
       
       try {
         document.documentElement.classList.add('preloader-lock');
@@ -285,11 +293,24 @@ const isAr = lang === 'ar';
           }
         });
       });
+      
+      // CRITICAL FIX: Failsafe for transitions - guarantee preloader hides even if astro:page-load never fires
+      if (isTransition) {
+        transitionFailsafeTimer = setTimeout(() => {
+          hidePreloader(true);
+        }, 4000);
+      }
     }
 
     function hidePreloader(isTransition = false) {
       if (isHiding) return;
       isHiding = true;
+      
+      // Clear failsafe timer since we're now actively hiding
+      if (transitionFailsafeTimer) {
+        clearTimeout(transitionFailsafeTimer);
+        transitionFailsafeTimer = null;
+      }
 
       const minDuration = isTransition ? MIN_TRANSITION_DURATION : MIN_INITIAL_DURATION;
       const elapsed = Date.now() - showStartTime;
@@ -345,6 +366,18 @@ const isAr = lang === 'ar';
       // When the new page is fully loaded and swapped (transition ends)
       document.addEventListener('astro:page-load', () => {
         hidePreloader(true);
+      });
+      
+      // CRITICAL FIX: Handle browser back/forward navigation (popstate)
+      // Sometimes astro:page-load doesn't fire reliably on popstate, causing the preloader to stay stuck
+      window.addEventListener('popstate', () => {
+        // Give Astro's own handler a chance to fire first, then force-hide as safety net
+        setTimeout(() => {
+          if (preloader.style.display !== 'none') {
+            isHiding = false; // Reset so hidePreloader can run
+            hidePreloader(true);
+          }
+        }, 1500);
       });
     }
   })();
