@@ -1,5 +1,5 @@
 ---
-title: Where Vision Guides, and Data Delivers
+title: Where Vision Guides, and Data Delivers.
 bio: I turn your data into smart decisions and your campaigns into real profit —
   without the complexity.
 primaryBtn: Discuss Your Strategy
