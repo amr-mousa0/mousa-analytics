@@ -49,7 +49,12 @@ export default async function handler(req, res) {
               if (opener) {
                 opener.postMessage("authorizing:github", "*");
                 opener.postMessage("authorization:github:success:" + payload, "*");
-                window.close();
+                
+                if (token && token !== "undefined") {
+                  window.close();
+                } else {
+                  document.body.innerHTML = "<h3>OAuth Debugger</h3><p style='color:red;'>Warning: Token is empty or undefined. Please verify your Vercel Environment Variables (OAUTH_CLIENT_ID & OAUTH_CLIENT_SECRET) and your GitHub OAuth App settings.</p><p>Payload sent: <code>" + payload + "</code></p>";
+                }
               } else {
                 document.body.innerHTML = "<h3>Authentication Succeeded</h3><p>No opener window found. You can close this window now.</p>";
               }
