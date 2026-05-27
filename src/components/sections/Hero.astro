@@ -20,15 +20,9 @@ const socials = await getSafeSocials(lang);
 const heroEntry = await getEntry('hero', lang);
 const heroData = heroEntry?.data || {
   title: isAr ? "البيانات، التسويق، وأنظمة الأعمال... بسطناها." : "Data, Marketing & Business Systems. Simplified.",
-  eyebrow: isAr ? "وظّف عقلاً تحليلياً" : "HIRE AN ANALYTICAL MIND",
   bio: isAr ? "المنظومة الموحدة لتتبع البيانات وإدارة الحملات لتحقيق نمو قابل للتنبؤ." : "The unified analytics system to track metrics and scale ad campaigns for predictable business growth.",
   primaryBtn: isAr ? "ناقش استراتيجيتك" : "Discuss Your Strategy",
   secondaryBtn: isAr ? "استكشف الخدمات" : "Explore Services",
-  floatingBadge: isAr ? "البيانات + شراء الإعلانات" : "Data + Media Buying",
-  statLeftTitle: isAr ? "محرك المبيعات" : "SALES ENGINE",
-  statLeftVal: "+182%",
-  statRightTitle: isAr ? "تكامل النظام" : "SYSTEM INTEGRATION",
-  statRightVal: isAr ? "بيانات + إعلانات" : "Data + Ads",
   trendingLabel: isAr ? "ضمانات الخدمة:" : "Service Guarantees:",
   trendingItems: isAr ? "بيانات آمنة • شفافية كاملة • تسليم دقيق" : "Secure Data • Full Transparency • On-Time Delivery"
 };

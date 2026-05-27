@@ -10,7 +10,6 @@ tags:
   - sql
 coverImage: ../../../assets/images/power bi.png
 execSummaryText: "Stop making decisions in the dark. I transform raw databases into robust Power BI dashboards and clean SQL models, mapping out every bottleneck in your operations and marketing to drive actionable growth."
-scopeTitle: "What I Will Do (Scope of Work)"
 scopeItems:
   - title: "Interactive Sales & KPI Dashboards"
     desc: "Analyze your current POS, Google Sheets, or CRM databases to map data flows."
@@ -20,17 +19,13 @@ scopeItems:
     desc: "Build an interactive Star Schema model in Power BI with weekly automated refreshes."
   - title: "Data Cleaning & Processing"
     desc: "Code custom DAX measures to track CPA, ROAS, seasonal variations, and profit margins."
-deliverablesTitle: "What You Will Get (Business ROI & Deliverables)"
 deliverablesItems:
   - "Instant clarity on peak hours, high-margin products, and operational bottlenecks."
   - "A fully tailored interactive dashboard with filterable views for different roles."
   - "Save 10+ hours weekly by replacing manual data processing with automated systems."
   - "Detailed action plan outlining the top 5 areas to immediately cut cost and scale."
-ctaTitle: "Accept Proposal & Start Project"
 ctaDesc: "Ready to transform your business data and marketing efficiency? Click below to accept this proposal and start collaborating directly on WhatsApp."
-ctaBtn: "Accept Proposal & Start Project"
 whatsappMessage: "Hi Amr, I'd like to accept the Data Analytics & BI Dashboards proposal and discuss starting the project."
-faqTitle: "Frequently Asked Questions"
 faqItems:
   - q: "What data sources and databases do you support?"
     a: "I support integration with SQL databases (MySQL, PostgreSQL, SQL Server), Google Analytics (GA4), e-commerce platforms like Shopify and WooCommerce, CRMs such as HubSpot, and standard spreadsheets like Google Sheets & Excel."
@@ -43,10 +38,5 @@ faqItems:
 draft: false
 featured: true
 publishedDate: "2026-05-23T12:00:00Z"
-translationKey: "data-analytics"
-seo:
-  metaTitle: "Data Analytics & BI Dashboards | Amr Mousa"
-  metaDescription: "Make faster, data-driven B2B decisions. Professional Power BI, SQL, and database structuring services by Amr Mousa."
-  noindex: false
 ---
 Data Analytics & BI Dashboards

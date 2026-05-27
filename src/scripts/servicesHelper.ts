@@ -29,9 +29,11 @@ export async function getSafeServices(lang: string): Promise<ExtendedService[]> 
     const otherLocaleServices = activeServices.filter(item => item.slug.startsWith(`${otherLocale}/`));
 
     otherLocaleServices.forEach(otherService => {
-      const existsInCurrent = currentLocaleServices.some(
-        curr => curr.data.translationKey === otherService.data.translationKey
-      );
+      const otherBase = otherService.slug.split('/').slice(1).join('/');
+      const existsInCurrent = currentLocaleServices.some(curr => {
+        const currBase = curr.slug.split('/').slice(1).join('/');
+        return currBase === otherBase;
+      });
       if (!existsInCurrent) {
         currentLocaleServices.push({
           ...otherService,

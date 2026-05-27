@@ -1,14 +1,9 @@
 ---
-title: "Data, Marketing & Business Systems. Simplified."
-eyebrow: "HIRE AN ANALYTICAL MIND"
-bio: "I turn your data into smart decisions and your campaigns into real profit — without the complexity."
-primaryBtn: "Discuss Your Strategy"
-secondaryBtn: "Explore Services"
-floatingBadge: "Data + Media Buying"
-statLeftTitle: "SALES ENGINE"
-statLeftVal: "+182%"
-statRightTitle: "SYSTEM INTEGRATION"
-statRightVal: "Data + Ads"
+title: Where Vision Guides, and Data Delivers
+bio: I turn your data into smart decisions and your campaigns into real profit —
+  without the complexity.
+primaryBtn: Discuss Your Strategy
+secondaryBtn: Explore Services
 trendingLabel: "Service Guarantees:"
-trendingItems: "Secure Data • Full Transparency • On-Time Delivery"
+trendingItems: Secure Data • Full Transparency • On-Time Delivery
 ---

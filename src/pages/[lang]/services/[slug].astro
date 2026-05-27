@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
 import Navigation from '../../../components/ui/Navigation.astro';
 import Footer from '../../../components/ui/Footer.astro';
+import { resolveDynamicSeo } from '../../../scripts/seoResolver';
 
 // Dynamic static route generations with fallback support
 export async function getStaticPaths() {
@@ -19,7 +20,7 @@ export async function getStaticPaths() {
   activeServices.forEach(service => {
     // Slugs are defined as "en/advanced-excel" or similar
     const [lang] = service.slug.split('/');
-    const key = service.data.translationKey;
+    const key = service.slug.split('/').slice(1).join('/');
     if (!servicesByKey[key]) {
       servicesByKey[key] = {};
     }
@@ -77,8 +78,11 @@ const t = {
   execSummaryTitle: isAr ? "الملخص التنفيذي" : "Executive Summary",
 };
 
-// Check if noindex should be applied (e.g. if the service is draft or has noindex checked)
-const shouldNoindex = service.data.draft || service.data.seo.noindex;
+// Resolve SEO from central source ONLY (Single Source of Truth)
+const seoData = await resolveDynamicSeo(lang, slug, 'service');
+
+// Check if noindex should be applied (draft OR central SEO noindex flag)
+const shouldNoindex = service.data.draft || seoData.noindex;
 
 // Resolve dynamic template fields with sensible fallbacks
 const scopeTitle = service.data.scopeTitle || (isAr ? "ما سأقوم به (نطاق العمل)" : "What I Will Do (Scope of Work)");
@@ -97,15 +101,17 @@ const whatsappMessage = service.data.whatsappMessage || (isAr
 // Fetch matching projects of the current category (T013)
 const allProjects = await getCollection('projects');
 const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWith(`${lang}/`) && p.data.category === service.data.category);
+
+
 ---
 
 <Layout 
   lang={lang} 
   pageId={`service-${slug}`}
-  title={service.data.seo.metaTitle}
-  description={service.data.seo.metaDescription}
-  ogImage={service.data.seo.ogImage || (service.data.coverImage ? service.data.coverImage.src : undefined)}
-  canonicalUrl={service.data.seo.canonicalUrl}
+  title={seoData.title}
+  description={seoData.description}
+  ogImage={seoData.ogImage || (service.data.coverImage ? service.data.coverImage.src : undefined)}
+  canonicalUrl={seoData.canonicalUrl}
   noindex={shouldNoindex}
   contentType="service"
   slug={slug}

@@ -262,15 +262,9 @@ collections:
         file: "src/content/hero/en.md"
         fields:
           - { label: "Title", name: "title", widget: "string", required: true }
-          - { label: "Eyebrow", name: "eyebrow", widget: "string", required: true }
           - { label: "Bio (Subtitle)", name: "bio", widget: "text", required: true }
           - { label: "Primary Button Text", name: "primaryBtn", widget: "string", required: true }
           - { label: "Secondary Button Text", name: "secondaryBtn", widget: "string", required: true }
-          - { label: "Floating Badge Text", name: "floatingBadge", widget: "string", required: true }
-          - { label: "Stat Left Title", name: "statLeftTitle", widget: "string", required: true }
-          - { label: "Stat Left Value", name: "statLeftVal", widget: "string", required: true }
-          - { label: "Stat Right Title", name: "statRightTitle", widget: "string", required: true }
-          - { label: "Stat Right Value", name: "statRightVal", widget: "string", required: true }
           - { label: "Trending Label", name: "trendingLabel", widget: "string", required: true }
           - { label: "Trending Items", name: "trendingItems", widget: "string", required: true }
       - name: "hero_ar"
@@ -278,15 +272,9 @@ collections:
         file: "src/content/hero/ar.md"
         fields:
           - { label: "العنوان الرئيسي", name: "title", widget: "string", required: true }
-          - { label: "العنوان الصغير (Eyebrow)", name: "eyebrow", widget: "string", required: true }
           - { label: "الوصف التعريفي (Bio)", name: "bio", widget: "text", required: true }
           - { label: "نص الزر الرئيسي", name: "primaryBtn", widget: "string", required: true }
           - { label: "نص الزر الفرعي", name: "secondaryBtn", widget: "string", required: true }
-          - { label: "نص الشارة العائمة", name: "floatingBadge", widget: "string", required: true }
-          - { label: "عنوان الإحصائية اليسرى", name: "statLeftTitle", widget: "string", required: true }
-          - { label: "قيمة الإحصائية اليسرى", name: "statLeftVal", widget: "string", required: true }
-          - { label: "عنوان الإحصائية اليمنى", name: "statRightTitle", widget: "string", required: true }
-          - { label: "قيمة الإحصائية اليمنى", name: "statRightVal", widget: "string", required: true }
           - { label: "تسمية الضمانات/الروابط", name: "trendingLabel", widget: "string", required: true }
           - { label: "عناصر الضمانات", name: "trendingItems", widget: "string", required: true }
 

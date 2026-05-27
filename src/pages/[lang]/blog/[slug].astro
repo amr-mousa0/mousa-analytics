@@ -15,7 +15,7 @@ export async function getStaticPaths() {
   const postsByKey: Record<string, { en?: any; ar?: any }> = {};
   activePosts.forEach(post => {
     const [lang] = post.slug.split('/');
-    const key = post.data.translationKey;
+    const key = post.slug.split('/').slice(1).join('/');
     if (!postsByKey[key]) {
       postsByKey[key] = {};
     }

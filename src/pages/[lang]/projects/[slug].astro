@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
 import Navigation from '../../../components/ui/Navigation.astro';
 import Footer from '../../../components/ui/Footer.astro';
+import { resolveDynamicSeo } from '../../../scripts/seoResolver';
 
 // Dynamic static route generations with fallback support
 export async function getStaticPaths() {
@@ -18,7 +19,7 @@ export async function getStaticPaths() {
   const projectsByKey: Record<string, { en?: any; ar?: any }> = {};
   activeProjects.forEach(project => {
     const [lang] = project.slug.split('/');
-    const key = project.data.translationKey;
+    const key = project.slug.split('/').slice(1).join('/');
     if (!projectsByKey[key]) {
       projectsByKey[key] = {};
     }
@@ -73,23 +74,50 @@ const isAr = lang === 'ar';
 const t = {
   backBtn: isAr ? "العودة للمشاريع" : "Back to Projects",
   githubBtn: isAr ? "عرض مستودع GitHub" : "View GitHub Repository",
+  problemTitle: isAr ? "المشكلة" : "The Problem",
+  solutionTitle: isAr ? "الحل والقيمة المضافة" : "The Solution & Value",
+  impactTitle: isAr ? "الأثر والنتائج" : "Sales Funnel Impact",
+  galleryTab: isAr ? "معرض صور المشروع" : "Project Gallery",
+  dashboardTab: isAr ? "لوحة البيانات التفاعلية" : "Live Interactive Dashboard",
+  dashboardPrompt: isAr ? "هل ترغب في تصفية البيانات واستكشاف المؤشرات بشكل تفاعلي؟" : "Want to filter the data and explore the metrics interactively?",
+  dashboardBtn: isAr ? "فتح لوحة البيانات التفاعلية" : "Open Live Interactive Dashboard",
+  inquireTitle: isAr ? "استفسر عن هذه الخدمة" : "Inquire About This Service",
+  inquireDesc: isAr ? "احصل على كفاءة تشغيلية أعلى ونظم بيانات تفاعلية دقيقة لمشروعك اليوم." : "Unlock optimized performance, streamlined operations, and high-impact analytics for your business today.",
+  inquireBtn: isAr ? "ابدأ مشروعاً مشابهاً الآن" : "Start a Similar Project",
 };
 
-// Check if noindex should be applied (e.g. if the project is draft or has noindex checked)
-const shouldNoindex = project.data.draft || project.data.seo.noindex;
+// Resolve dynamic template fields with sensible fallbacks
+const problemTitle = project.data.problemTitle || t.problemTitle;
+const solutionTitle = project.data.solutionTitle || t.solutionTitle;
+const impactTitle = project.data.impactTitle || t.impactTitle;
+const galleryTab = project.data.galleryTab || t.galleryTab;
+const dashboardTab = project.data.dashboardTab || t.dashboardTab;
+const dashboardPrompt = project.data.dashboardPrompt || t.dashboardPrompt;
+const dashboardBtn = project.data.dashboardBtn || t.dashboardBtn;
+const inquireTitle = project.data.inquireTitle || t.inquireTitle;
+const inquireDesc = project.data.inquireDesc || t.inquireDesc;
+const inquireBtn = project.data.inquireBtn || t.inquireBtn;
+
+// Resolve SEO from central source ONLY (Single Source of Truth)
+const seoData = await resolveDynamicSeo(lang, slug, 'project');
+
+// Check if noindex should be applied (draft OR central SEO noindex flag)
+const shouldNoindex = project.data.draft || seoData.noindex;
 
 // Fetch related services of matching category (T014)
 const allServices = await getCollection('services');
 const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWith(`${lang}/`) && s.data.category === project.data.category);
+
+
 ---
 
 <Layout 
   lang={lang} 
   pageId={`project-${slug}`}
-  title={project.data.seo.metaTitle}
-  description={project.data.seo.metaDescription}
-  ogImage={project.data.seo.ogImage?.src || project.data.coverImage.src}
-  canonicalUrl={project.data.seo.canonicalUrl}
+  title={seoData.title}
+  description={seoData.description}
+  ogImage={seoData.ogImage || project.data.coverImage.src}
+  canonicalUrl={seoData.canonicalUrl}
   noindex={shouldNoindex}
   contentType="project"
   slug={slug}
@@ -159,7 +187,7 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
             <div class="p-6 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition-all duration-300 shadow-xs space-y-3">
               <h2 class="text-xs font-bold uppercase tracking-widest text-text-main/75 font-sans flex items-center gap-2">
                 <i class="fa-solid fa-triangle-exclamation text-amber-500" aria-hidden="true"></i>
-                {project.data.problemTitle}
+                {problemTitle}
               </h2>
               <p class="text-text-main/80 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
                 {project.data.problemText}
@@ -170,7 +198,7 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
             <div class="p-6 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition-all duration-300 shadow-xs space-y-3">
               <h2 class="text-xs font-bold uppercase tracking-widest text-text-main/75 font-sans flex items-center gap-2">
                 <i class="fa-solid fa-lightbulb text-blue-500" aria-hidden="true"></i>
-                {project.data.solutionTitle}
+                {solutionTitle}
               </h2>
               <p class="text-text-main/80 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
                 {project.data.solutionText}
@@ -181,7 +209,7 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
             <div class="p-6 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition-all duration-300 shadow-xs space-y-3">
               <h2 class="text-xs font-bold uppercase tracking-widest text-text-main/75 font-sans flex items-center gap-2">
                 <i class="fa-solid fa-chart-line text-emerald-500" aria-hidden="true"></i>
-                {project.data.impactTitle}
+                {impactTitle}
               </h2>
               <p class="text-text-main/80 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
                 {project.data.impactText}
@@ -203,14 +231,14 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
                   class="flex-1 py-3 px-6 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer bg-accent-primary text-white shadow-md border-none lg:py-2 lg:px-3 lg:rounded-lg lg:text-[11px] lg:shadow-none"
                 >
                   <i class="fa-regular fa-image text-sm lg:text-xs" aria-hidden="true"></i>
-                  <span>{project.data.galleryTab}</span>
+                  <span>{galleryTab}</span>
                 </button>
                 <button 
                   id="tab-dashboard" 
                   class="flex-1 py-3 px-6 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer bg-slate-100 border border-slate-200/60 text-text-main/70 shadow-none lg:py-2 lg:px-3 lg:rounded-lg lg:text-[11px] lg:bg-transparent lg:border-none lg:hover:bg-slate-200/30"
                 >
                   <i class="fa-solid fa-chart-pie text-sm lg:text-xs" aria-hidden="true"></i>
-                  <span>{project.data.dashboardTab}</span>
+                  <span>{dashboardTab}</span>
                 </button>
               </div>
 
@@ -309,14 +337,14 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
               <!-- Dashboard Prompt helper (nested inside the card, responsive layout) -->
               <div id="dashboard-prompt-helper" class="p-5 rounded-2xl bg-blue-50/50 border border-blue-100/40 flex flex-col items-center text-center gap-4 mt-4 transition-all duration-300">
                 <p class="text-text-main/70 text-[11px] leading-relaxed max-w-xs">
-                  {project.data.dashboardPrompt}
+                  {dashboardPrompt}
                 </p>
                 <button 
                   id="activate-dashboard-tab-btn"
                   class="h-10 px-6 rounded-full bg-accent-primary hover:bg-accent-highlight text-white font-semibold text-[10px] tracking-wider flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all duration-300 cursor-pointer w-full sm:w-auto"
                 >
                   <i class="fa-regular fa-circle-play text-xs" aria-hidden="true"></i>
-                  <span>{project.data.dashboardBtn}</span>
+                  <span>{dashboardBtn}</span>
                 </button>
               </div>
 
@@ -330,10 +358,10 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
         <div class="p-6 sm:p-8 bg-white rounded-[24px] border border-slate-100 lg:border-none lg:border-t lg:border-slate-100 lg:rounded-none shadow-xs lg:shadow-none flex flex-col items-center text-center gap-6">
           <div class="space-y-2 max-w-xl">
             <h3 class="text-lg md:text-xl font-bold text-text-main font-serif">
-              {project.data.inquireTitle}
+              {inquireTitle}
             </h3>
             <p class="text-text-main/60 text-[13px] md:text-sm leading-relaxed font-sans font-light">
-              {project.data.inquireDesc}
+              {inquireDesc}
             </p>
           </div>
 
@@ -342,7 +370,7 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
             data-msg={project.data.whatsappStartProjectMsg}
             class="h-12 px-8 rounded-full bg-gradient-to-r from-accent-primary to-accent-highlight hover:shadow-lg hover:brightness-110 text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all duration-300 cursor-pointer border-none"
           >
-            <span>{project.data.inquireBtn}</span>
+            <span>{inquireBtn}</span>
             <span class="text-sm font-sans">{isAr ? "←" : "→"}</span>
           </button>
         </div>
@@ -511,7 +539,7 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
   "@context": "https://schema.org",
   "@type": "CreativeWork",
   "name": project.data.title,
-  "description": project.data.seo.metaDescription,
+  "description": seoData.description,
   "image": project.data.coverImage.src,
   "genre": project.data.category,
   "inLanguage": lang,

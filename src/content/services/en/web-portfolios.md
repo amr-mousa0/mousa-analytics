@@ -11,7 +11,6 @@ tags:
   - speed
 coverImage: ../../../assets/images/Portfolio.jpeg
 execSummaryText: "Your online presence is your ultimate sales presentation. I design and code ultra-fast, premium web portfolios and conversion landing pages styled with luxury aesthetics, engineered to convert cold visitors into high-paying clients."
-scopeTitle: "What I Will Do (Scope of Work)"
 scopeItems:
   - title: "High-Converting Landing Pages"
     desc: "Custom UI/UX styling matching your distinct branding, typography, and color palette."
@@ -21,17 +20,13 @@ scopeItems:
     desc: "Flawless mobile-first responsiveness, cross-browser compatibility, and fast image optimization."
   - title: "Performance & SEO Optimization"
     desc: "Full SEO integration, site maps, structured metadata, and Google search console setup."
-deliverablesTitle: "What You Will Get (Business ROI & Deliverables)"
 deliverablesItems:
   - "An exquisite, high-end online home that commands authority and beats competitors."
   - "Lightning-fast load speed (under 1 second) optimizing mobile search ranking."
   - "Interactive case studies and structured CTA funnel that captures contact information."
   - "Hosting setup, custom domain routing, and 30 days of direct post-launch support."
-ctaTitle: "Accept Proposal & Start Project"
 ctaDesc: "Ready to build your premium online presence and start acquiring high-value clients? Click below to accept this proposal and start collaborating directly on WhatsApp."
-ctaBtn: "Accept Proposal & Start Project"
 whatsappMessage: "Hi Amr, I'd like to accept the Custom Web Portfolios & Landing Pages proposal and discuss starting the project."
-faqTitle: "Frequently Asked Questions"
 faqItems:
   - q: "What technology stack do you use to build websites?"
     a: "I build websites using modern, performance-first tools like Astro (the fastest static-site framework), Tailwind CSS for responsive and modern styling, and clean TypeScript to ensure robust, bug-free interactive elements."
@@ -44,10 +39,5 @@ faqItems:
 draft: false
 featured: false
 publishedDate: "2026-05-23T12:00:00Z"
-translationKey: "web-portfolios"
-seo:
-  metaTitle: "Custom Web Portfolios & Landing Pages | Amr Mousa"
-  metaDescription: "Fast, modern, and highly-optimized landing pages and B2B web portfolios built for high conversions."
-  noindex: false
 ---
 Custom Web Portfolios & Landing Pages

@@ -29,9 +29,11 @@ export async function getSafeProjects(lang: string): Promise<ExtendedProject[]> 
     const otherLocaleProjects = activeProjects.filter(item => item.slug.startsWith(`${otherLocale}/`));
 
     otherLocaleProjects.forEach(otherProject => {
-      const existsInCurrent = currentLocaleProjects.some(
-        curr => curr.data.translationKey === otherProject.data.translationKey
-      );
+      const otherBase = otherProject.slug.split('/').slice(1).join('/');
+      const existsInCurrent = currentLocaleProjects.some(curr => {
+        const currBase = curr.slug.split('/').slice(1).join('/');
+        return currBase === otherBase;
+      });
       if (!existsInCurrent) {
         currentLocaleProjects.push({
           ...otherProject,
