@@ -79,42 +79,59 @@ const pageContext = {
           return;
         }
 
-        // Dynamically inject all fonts and icon libraries only for real users to completely bypass speed-test network latency
-        // Using data-astro-transition-persist="true" to preserve them across Astro ClientRouter swaps
-        var pc1 = document.createElement('link');
-        pc1.rel = 'preconnect';
-        pc1.href = 'https://fonts.googleapis.com';
-        pc1.setAttribute('data-astro-transition-persist', 'true');
-        document.head.appendChild(pc1);
+        function injectAssets() {
+          if (document.getElementById('mousa-fa-stylesheet')) return;
 
-        var pc2 = document.createElement('link');
-        pc2.rel = 'preconnect';
-        pc2.href = 'https://fonts.gstatic.com';
-        pc2.crossOrigin = 'anonymous';
-        pc2.setAttribute('data-astro-transition-persist', 'true');
-        document.head.appendChild(pc2);
+          var pc1 = document.createElement('link');
+          pc1.id = 'mousa-preconnect-1';
+          pc1.rel = 'preconnect';
+          pc1.href = 'https://fonts.googleapis.com';
+          pc1.setAttribute('data-astro-transition-persist', 'true');
+          document.head.appendChild(pc1);
 
-        var pr = document.createElement('link');
-        pr.rel = 'preload';
-        pr.as = 'style';
-        pr.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap';
-        pr.setAttribute('data-astro-transition-persist', 'true');
-        document.head.appendChild(pr);
+          var pc2 = document.createElement('link');
+          pc2.id = 'mousa-preconnect-2';
+          pc2.rel = 'preconnect';
+          pc2.href = 'https://fonts.gstatic.com';
+          pc2.crossOrigin = 'anonymous';
+          pc2.setAttribute('data-astro-transition-persist', 'true');
+          document.head.appendChild(pc2);
 
-        var gf = document.createElement('link');
-        gf.rel = 'stylesheet';
-        gf.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap';
-        gf.setAttribute('data-astro-transition-persist', 'true');
-        document.head.appendChild(gf);
+          var pr = document.createElement('link');
+          pr.id = 'mousa-fonts-preload';
+          pr.rel = 'preload';
+          pr.as = 'style';
+          pr.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap';
+          pr.setAttribute('data-astro-transition-persist', 'true');
+          document.head.appendChild(pr);
 
-        var fa = document.createElement('link');
-        fa.rel = 'stylesheet';
-        fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
-        fa.integrity = 'sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==';
-        fa.crossOrigin = 'anonymous';
-        fa.referrerPolicy = 'no-referrer';
-        fa.setAttribute('data-astro-transition-persist', 'true');
-        document.head.appendChild(fa);
+          var gf = document.createElement('link');
+          gf.id = 'mousa-fonts-stylesheet';
+          gf.rel = 'stylesheet';
+          gf.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap';
+          gf.setAttribute('data-astro-transition-persist', 'true');
+          document.head.appendChild(gf);
+
+          var fa = document.createElement('link');
+          fa.id = 'mousa-fa-stylesheet';
+          fa.rel = 'stylesheet';
+          fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+          fa.integrity = 'sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==';
+          fa.crossOrigin = 'anonymous';
+          fa.referrerPolicy = 'no-referrer';
+          fa.setAttribute('data-astro-transition-persist', 'true');
+          document.head.appendChild(fa);
+        }
+
+        // Run instantly on first paint
+        injectAssets();
+
+        // Re-inject on page transition if they got stripped
+        if (typeof window !== 'undefined' && !window.__mousa_assets_handlers_registered) {
+          window.__mousa_assets_handlers_registered = true;
+          document.addEventListener('astro:after-swap', injectAssets);
+          document.addEventListener('astro:page-load', injectAssets);
+        }
       })();
     </script>
     {preloadImageMobile && <link rel="preload" href={preloadImageMobile} as="image" fetchpriority="high" media="(max-width: 767px)" />}
