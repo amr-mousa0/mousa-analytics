@@ -80,7 +80,8 @@ test.describe('Visual Regression Tests - Desktop & Mobile', () => {
 
   for (const lang of locales) {
     test(`Visual parity of Home Page [${lang}]`, async ({ page }) => {
-      await page.goto(`/${lang}/`);
+      const targetPath = lang === 'ar' ? '/' : '/en/';
+      await page.goto(targetPath);
       await stabilizePage(page);
 
       // Full Page Screenshot
@@ -101,7 +102,8 @@ test.describe('Visual Regression Tests - Desktop & Mobile', () => {
     });
 
     test(`Visual parity of About Page [${lang}]`, async ({ page }) => {
-      await page.goto(`/${lang}/about/`);
+      const targetPath = lang === 'ar' ? '/about/' : '/en/about/';
+      await page.goto(targetPath);
       await stabilizePage(page);
 
       // Full Page Screenshot

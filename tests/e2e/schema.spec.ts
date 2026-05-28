@@ -28,7 +28,7 @@ async function getJsonLdSchemas(page: Page) {
 }
 
 test.describe('Structured Data & Schema.org Validations', () => {
-  const paths = ['/ar/', '/en/', '/ar/about/', '/en/about/'];
+  const paths = ['/', '/en/', '/about/', '/en/about/'];
 
   for (const path of paths) {
     test(`Verify JSON-LD existence and schema types on: ${path}`, async ({ page }) => {

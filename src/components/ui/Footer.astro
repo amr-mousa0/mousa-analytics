@@ -9,10 +9,10 @@ const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
 // Links
-const aboutPath = `/${lang}/about/`;
-const privacyPath = `/${lang}/privacy/`;
-const termsPath = `/${lang}/terms/`;
-const blogPath = `/${lang}/blog/`;
+const aboutPath = isAr ? '/about/' : '/en/about/';
+const privacyPath = isAr ? '/privacy/' : '/en/privacy/';
+const termsPath = isAr ? '/terms/' : '/en/terms/';
+const blogPath = isAr ? '/blog/' : '/en/blog/';
 ---
 
 <footer id="footer" class="footer-luxury text-start text-white relative z-10" role="contentinfo">

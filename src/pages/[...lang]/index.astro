@@ -14,32 +14,33 @@ import analyticsBgImgMobile from '../../assets/images/analyst-side-bg-mobile.png
 export function getStaticPaths() {
   return [
     { params: { lang: 'en' } },
-    { params: { lang: 'ar' } },
+    { params: { lang: undefined } },
   ];
 }
 
 const { lang } = Astro.params;
 
 // Route Parameter Guard
-if (!lang || !['en', 'ar'].includes(lang)) {
-  return Astro.redirect('/ar/');
+if (lang !== undefined && lang !== 'en') {
+  return Astro.redirect('/');
 }
 
-const isAr = lang === 'ar';
+const currentLang = lang || 'ar';
+const isAr = currentLang === 'ar';
 
 // Pre-optimize hero images at build time for preloading
 const desktopImg = await getImage({ src: analyticsBgImgDesktop, quality: 85, format: 'webp' });
 const mobileImg = await getImage({ src: analyticsBgImgMobile, quality: 80, format: 'webp' });
 ---
 
-<Layout lang={lang} pageId="homepage" preloadImageMobile={mobileImg.src} preloadImageDesktop={desktopImg.src}>
+<Layout lang={currentLang} pageId="homepage" preloadImageMobile={mobileImg.src} preloadImageDesktop={desktopImg.src}>
 
 
-  <Navigation lang={lang} activePage="home" />
+  <Navigation lang={currentLang} activePage="home" />
   <main class="flex-grow">
-    <Hero lang={lang} desktopImg={desktopImg} mobileImg={mobileImg} />
-    <Services lang={lang} />
-    <Projects lang={lang} />
+    <Hero lang={currentLang} desktopImg={desktopImg} mobileImg={mobileImg} />
+    <Services lang={currentLang} />
+    <Projects lang={currentLang} />
   </main>
-  <Footer lang={lang} />
+  <Footer lang={currentLang} />
 </Layout>

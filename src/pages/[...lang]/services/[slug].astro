@@ -47,13 +47,13 @@ export async function getStaticPaths() {
     // Generate Arabic page
     if (versions.ar) {
       paths.push({
-        params: { lang: 'ar', slug: key },
+        params: { lang: undefined, slug: key },
         props: { service: versions.ar, isFallback: false }
       });
     } else if (versions.en) {
       // Fallback: Arabic page uses English content
       paths.push({
-        params: { lang: 'ar', slug: key },
+        params: { lang: undefined, slug: key },
         props: { service: versions.en, isFallback: true }
       });
     }
@@ -65,11 +65,12 @@ export async function getStaticPaths() {
 const { lang, slug } = Astro.params;
 const { service, isFallback } = Astro.props;
 
-if (!lang || !['en', 'ar'].includes(lang)) {
-  return Astro.redirect('/ar/');
+if (lang !== undefined && lang !== 'en') {
+  return Astro.redirect('/');
 }
 
-const isAr = lang === 'ar';
+const currentLang = lang || 'ar';
+const isAr = currentLang === 'ar';
 
 // Localization UI Texts
 const t = {
@@ -79,7 +80,7 @@ const t = {
 };
 
 // Resolve SEO from central source ONLY (Single Source of Truth)
-const seoData = await resolveDynamicSeo(lang, slug, 'service');
+const seoData = await resolveDynamicSeo(currentLang, slug, 'service');
 
 // Check if noindex should be applied (draft OR central SEO noindex flag)
 const shouldNoindex = service.data.draft || seoData.noindex;
@@ -100,13 +101,13 @@ const whatsappMessage = service.data.whatsappMessage || (isAr
 
 // Fetch matching projects of the current category (T013)
 const allProjects = await getCollection('projects');
-const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWith(`${lang}/`) && p.data.category === service.data.category);
+const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWith(`${currentLang}/`) && p.data.category === service.data.category);
 
 
 ---
 
 <Layout 
-  lang={lang} 
+  lang={currentLang} 
   pageId={`service-${slug}`}
   title={seoData.title}
   description={seoData.description}
@@ -118,7 +119,7 @@ const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWit
   pageCategory={service.data.category}
   isFallback={isFallback}
 >
-  <Navigation lang={lang} activePage="services" backUrl={`/${lang}/#services`} backText={t.backBtn} />
+  <Navigation lang={currentLang} activePage="services" backUrl={currentLang === 'ar' ? '/#services' : '/en/#services'} backText={t.backBtn} />
 
   <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent">
     
@@ -291,7 +292,7 @@ const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWit
             {activeProjects.map((project) => {
               const projectSlug = project.slug.split('/').pop();
               return (
-                <a href={`/${lang}/projects/${projectSlug}/`} class="glass-card glass-card-hover group rounded-2xl p-4 flex flex-col gap-3 transition-all duration-300">
+                <a href={currentLang === 'ar' ? `/projects/${projectSlug}/` : `/en/projects/${projectSlug}/`} class="glass-card glass-card-hover group rounded-2xl p-4 flex flex-col gap-3 transition-all duration-300">
                   {project.data.coverImage && (
                     <div class="overflow-hidden rounded-xl border border-text-main/10 aspect-video">
                       <Image 
@@ -348,7 +349,7 @@ const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWit
     </div>
   </main>
 
-  <Footer lang={lang} />
+  <Footer lang={currentLang} />
 </Layout>
 
 <script>

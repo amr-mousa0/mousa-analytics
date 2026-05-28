@@ -8,8 +8,8 @@ import Layout from '../layouts/Layout.astro';
     const match = path.match(/^\/([^\/]+)/);
     if (match) {
       const lang = match[1];
-      if (lang !== 'en' && lang !== 'ar' && lang !== 'admin') {
-        window.location.replace('/ar/');
+      if (lang !== 'en' && lang !== 'admin') {
+        window.location.replace('/');
       }
     }
   </script>
@@ -33,7 +33,7 @@ import Layout from '../layouts/Layout.astro';
           <a href="/en/" class="h-11 px-6 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs tracking-wider flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
             Go to English Home
           </a>
-          <a href="/ar/" class="h-11 px-6 rounded-full bg-transparent border border-blue-600 text-blue-600 font-semibold text-xs tracking-wider flex items-center justify-center transition-all duration-200 hover:bg-blue-600/5 active:scale-95">
+          <a href="/" class="h-11 px-6 rounded-full bg-transparent border border-blue-600 text-blue-600 font-semibold text-xs tracking-wider flex items-center justify-center transition-all duration-200 hover:bg-blue-600/5 active:scale-95">
             الذهاب للرئيسية بالعربية
           </a>
         </div>

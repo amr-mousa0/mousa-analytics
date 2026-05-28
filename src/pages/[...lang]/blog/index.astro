@@ -8,17 +8,24 @@ import Footer from '../../../components/ui/Footer.astro';
 export function getStaticPaths() {
   return [
     { params: { lang: 'en' } },
-    { params: { lang: 'ar' } },
+    { params: { lang: undefined } },
   ];
 }
 
 const { lang } = Astro.params;
-const isAr = lang === 'ar';
+
+// Route Parameter Guard
+if (lang !== undefined && lang !== 'en') {
+  return Astro.redirect('/blog/');
+}
+
+const currentLang = lang || 'ar';
+const isAr = currentLang === 'ar';
 
 // Fetch and filter localized blog posts
 const allPosts = await getCollection('blog');
 const activePosts = allPosts
-  .filter(post => !post.data.draft && post.slug.startsWith(`${lang}/`))
+  .filter(post => !post.data.draft && post.slug.startsWith(`${currentLang}/`))
   .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 
 const t = {
@@ -31,11 +38,11 @@ const t = {
 ---
 
 <Layout 
-  lang={lang} 
+  lang={currentLang} 
   pageId="blog"
   contentType="page"
 >
-  <Navigation lang={lang} activePage="blog" />
+  <Navigation lang={currentLang} activePage="blog" />
 
   <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent">
     <!-- Ambient Glows -->
@@ -67,7 +74,7 @@ const t = {
             });
 
             return (
-              <a href={`/${lang}/blog/${postSlug}/`} class="glass-card glass-card-hover group rounded-[20px] p-5 flex flex-col gap-4 transition-all duration-300">
+              <a href={currentLang === 'ar' ? `/blog/${postSlug}/` : `/en/blog/${postSlug}/`} class="glass-card glass-card-hover group rounded-[20px] p-5 flex flex-col gap-4 transition-all duration-300">
                 {post.data.coverImage && (
                   <div class="overflow-hidden rounded-xl border border-text-main/10 aspect-video">
                     <Image 
@@ -110,5 +117,5 @@ const t = {
     </div>
   </main>
 
-  <Footer lang={lang} />
+  <Footer lang={currentLang} />
 </Layout>

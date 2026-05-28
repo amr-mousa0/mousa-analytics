@@ -4,14 +4,14 @@
   },
   "redirects": [
     {
-      "source": "/",
+      "source": "/ar/:path*",
       "has": [
         {
           "type": "host",
           "value": "www.mousa-analytics.vercel.app"
         }
       ],
-      "destination": "https://mousa-analytics.vercel.app/ar/",
+      "destination": "https://mousa-analytics.vercel.app/:path*",
       "permanent": true
     },
     {
@@ -26,8 +26,8 @@
       "permanent": true
     },
     {
-      "source": "/",
-      "destination": "/ar/",
+      "source": "/ar/:path*",
+      "destination": "/:path*",
       "permanent": true
     }
   ],

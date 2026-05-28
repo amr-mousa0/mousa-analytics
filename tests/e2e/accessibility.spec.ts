@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.describe('Accessibility Audits (Axe-Core & Keyboard Navigation)', () => {
-  const routes = ['/ar/', '/en/', '/ar/about/', '/en/about/'];
+  const routes = ['/', '/en/', '/about/', '/en/about/'];
 
   for (const route of routes) {
     test(`Automated accessibility scan on: ${route}`, async ({ page }) => {

@@ -39,12 +39,12 @@ export async function getStaticPaths() {
 
     if (versions.ar) {
       paths.push({
-        params: { lang: 'ar', slug: key },
+        params: { lang: undefined, slug: key },
         props: { post: versions.ar, isFallback: false }
       });
     } else if (versions.en) {
       paths.push({
-        params: { lang: 'ar', slug: key },
+        params: { lang: undefined, slug: key },
         props: { post: versions.en, isFallback: true }
       });
     }
@@ -56,11 +56,12 @@ export async function getStaticPaths() {
 const { lang, slug } = Astro.params;
 const { post, isFallback } = Astro.props;
 
-if (!lang || !['en', 'ar'].includes(lang)) {
-  return Astro.redirect('/ar/');
+if (lang !== undefined && lang !== 'en') {
+  return Astro.redirect('/');
 }
 
-const isAr = lang === 'ar';
+const currentLang = lang || 'ar';
+const isAr = currentLang === 'ar';
 const { Content } = await post.render();
 
 // T019: Dynamic reading time calculation based on word count
@@ -83,16 +84,16 @@ const t = {
 
 // Fetch related services and projects (T020)
 const allServices = await getCollection('services');
-const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWith(`${lang}/`) && s.data.category === post.data.category);
+const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWith(`${currentLang}/`) && s.data.category === post.data.category);
 
 const allProjects = await getCollection('projects');
-const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWith(`${lang}/`) && p.data.category === post.data.category);
+const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWith(`${currentLang}/`) && p.data.category === post.data.category);
 
 const shouldNoindex = post.data.draft || post.data.seo.noindex;
 ---
 
 <Layout 
-  lang={lang} 
+  lang={currentLang} 
   pageId={`blog-${slug}`}
   title={post.data.seo.metaTitle}
   description={post.data.seo.metaDescription}
@@ -104,7 +105,7 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
   pageCategory={post.data.category}
   isFallback={isFallback}
 >
-  <Navigation lang={lang} activePage="blog" backUrl={`/${lang}/blog/`} backText={t.backBtn} />
+  <Navigation lang={currentLang} activePage="blog" backUrl={currentLang === 'ar' ? '/blog/' : '/en/blog/'} backText={t.backBtn} />
 
   <!-- T019: Inject BlogPosting schema dynamically -->
   <script type="application/ld+json" is:inline set:html={JSON.stringify({
@@ -112,7 +113,7 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": new URL(`blog/${slug}/`, Astro.site).href
+      "@id": new URL(currentLang === 'ar' ? `blog/${slug}/` : `en/blog/${slug}/`, Astro.site).href
     },
     "headline": post.data.title,
     "description": post.data.description,
@@ -121,15 +122,15 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
     "dateModified": post.data.updatedDate ? post.data.updatedDate.toISOString() : post.data.publishDate.toISOString(),
     "author": {
       "@type": "Person",
-      "@id": new URL(`${lang}/#person`, Astro.site).href,
+      "@id": new URL(`${currentLang === 'ar' ? '' : 'en/'}#person`, Astro.site).href,
       "name": isAr ? "عمرو موسى" : "Amr Mousa"
     },
     "publisher": {
       "@type": "Organization",
-      "@id": new URL(`${lang}/#organization`, Astro.site).href,
+      "@id": new URL(`${currentLang === 'ar' ? '' : 'en/'}#organization`, Astro.site).href,
       "name": "Mousa Analytics"
     },
-    "inLanguage": lang,
+    "inLanguage": currentLang,
     "timeRequired": `PT${readingTime}M`
   }).replace(/</g, '\\u003c')} />
 
@@ -197,7 +198,7 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
               {activeServices.map((service) => {
                 const serviceSlug = service.slug.split('/').pop();
                 return (
-                  <a href={`/${lang}/services/${serviceSlug}/`} class="flex items-center gap-3 p-3 rounded-xl border border-text-main/5 hover:border-accent-primary/20 bg-primary-bg/50 transition-all">
+                  <a href={currentLang === 'ar' ? `/services/${serviceSlug}/` : `/en/services/${serviceSlug}/`} class="flex items-center gap-3 p-3 rounded-xl border border-text-main/5 hover:border-accent-primary/20 bg-primary-bg/50 transition-all">
                     <div class="w-8 h-8 rounded-lg bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
                       <i class={`fa-solid fa-${service.data.icon} text-xs`} aria-hidden="true"></i>
                     </div>
@@ -212,7 +213,7 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
               {activeProjects.map((project) => {
                 const projectSlug = project.slug.split('/').pop();
                 return (
-                  <a href={`/${lang}/projects/${projectSlug}/`} class="flex items-center gap-3 p-3 rounded-xl border border-text-main/5 hover:border-accent-primary/20 bg-primary-bg/50 transition-all">
+                  <a href={currentLang === 'ar' ? `/projects/${projectSlug}/` : `/en/projects/${projectSlug}/`} class="flex items-center gap-3 p-3 rounded-xl border border-text-main/5 hover:border-accent-primary/20 bg-primary-bg/50 transition-all">
                     <div class="w-8 h-8 rounded-lg bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
                       <i class="fa-solid fa-folder-open text-xs" aria-hidden="true"></i>
                     </div>
@@ -232,5 +233,5 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
     </div>
   </main>
 
-  <Footer lang={lang} />
+  <Footer lang={currentLang} />
 </Layout>

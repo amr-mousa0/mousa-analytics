@@ -14,15 +14,16 @@ async function waitForPreloader(page: import('@playwright/test').Page, timeout =
 }
 
 test.describe('Locale Redirection & Routing', () => {
-  test('redirects root / to default locale /ar/', async ({ page }) => {
+  test('serves default Arabic locale directly at root /', async ({ page }) => {
     await page.goto('/');
-    // Check that we are redirected to /ar/
-    await expect(page).toHaveURL(/\/ar\//);
+    // Check that we stay at root /
+    await expect(page).toHaveURL('/');
+    await expect(page.locator('main h1')).toContainText('الرؤية');
   });
 
-  test('redirects invalid locale to /ar/', async ({ page }) => {
+  test('redirects invalid locale to /', async ({ page }) => {
     await page.goto('/fr/');
-    await expect(page).toHaveURL(/\/ar\//);
+    await expect(page).toHaveURL('/');
   });
 
   test('supports language switching', async ({ page }) => {
@@ -33,7 +34,8 @@ test.describe('Locale Redirection & Routing', () => {
     await waitForPreloader(page);
     await expect(arToggle).toBeVisible();
     await arToggle.click();
-    await expect(page).toHaveURL(/\/ar\//);
+    
+    await expect(page).toHaveURL('/');
     // Main heading should contain Arabic greeting or content
     await expect(page.locator('main h1')).toContainText('الرؤية');
   });
@@ -46,7 +48,7 @@ test.describe('Locale Redirection & Routing', () => {
     await waitForPreloader(page);
     await expect(aboutLink).toBeVisible();
     await aboutLink.click();
-    await expect(page).toHaveURL(/\/en\/about\//);
+    await expect(page).toHaveURL('/en/about/');
     // After ViewTransitions swap, preloader may be stuck — use graceful wait
     await waitForPreloader(page, 3000);
     await expect(page.locator('main h1')).toContainText('Mousa');
@@ -56,7 +58,7 @@ test.describe('Locale Redirection & Routing', () => {
     await waitForPreloader(page, 3000);
     await expect(arToggle).toBeVisible();
     await arToggle.click();
-    await expect(page).toHaveURL(/\/ar\/about\//);
+    await expect(page).toHaveURL('/about/');
     await waitForPreloader(page, 3000);
     await expect(page.locator('main h1')).toContainText('موسى');
   });

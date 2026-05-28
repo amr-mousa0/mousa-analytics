@@ -59,23 +59,23 @@ test.describe('Performance & Core Web Vitals Audits', () => {
   });
 
   const testPages = [
-    '/ar/',
+    '/',
     '/en/',
-    '/ar/about/',
+    '/about/',
     '/en/about/',
-    '/ar/privacy/',
+    '/privacy/',
     '/en/privacy/',
-    '/ar/terms/',
+    '/terms/',
     '/en/terms/',
-    '/ar/services/data-analytics/',
+    '/services/data-analytics/',
     '/en/services/data-analytics/',
-    '/ar/services/advanced-excel/',
+    '/services/advanced-excel/',
     '/en/services/advanced-excel/',
-    '/ar/services/custom-crm/',
+    '/services/custom-crm/',
     '/en/services/custom-crm/',
-    '/ar/services/web-portfolios/',
+    '/services/web-portfolios/',
     '/en/services/web-portfolios/',
-    '/ar/services/marketing-strategy/',
+    '/services/marketing-strategy/',
     '/en/services/marketing-strategy/'
   ];
 

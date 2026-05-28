@@ -25,7 +25,7 @@ function monitorPageConsoleAndErrors(page: Page, errors: string[]) {
 }
 
 test.describe('Hydration, Console Audits, & Link Validations', () => {
-  const routes = ['/ar/', '/en/', '/ar/about/', '/en/about/'];
+  const routes = ['/', '/en/', '/about/', '/en/about/'];
 
   for (const route of routes) {
     test(`Verify console integrity and hydration on: ${route}`, async ({ page }) => {
@@ -62,7 +62,7 @@ test.describe('Hydration, Console Audits, & Link Validations', () => {
 
     for (const href of uniqueHrefs) {
       // 1. Anchor links on same page (e.g. #services, #contact)
-      if (href.startsWith('#') || href.startsWith('/en/#') || href.startsWith('/ar/#')) {
+      if (href.startsWith('#') || href.startsWith('/en/#') || href.startsWith('/#')) {
         const hash = href.substring(href.indexOf('#') + 1);
         if (hash) {
           // Verify that element with id = hash exists

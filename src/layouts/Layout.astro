@@ -60,19 +60,29 @@ const cleanCanonicalUrl = canonicalUrl || new URL(canonicalPath, Astro.site).hre
 // Alternate hreflangs
 const isUnlocalized = canonicalPath.includes('/404') || canonicalPath.includes('/admin') || finalNoindex;
 
-const getHreflangUrl = (targetLang: string) => {
-  const parts = canonicalPath.split('/').filter(Boolean);
-  if (parts.length > 0 && (parts[0] === 'ar' || parts[0] === 'en')) {
-    parts[0] = targetLang;
+const getLocalizedPath = (targetLang: string) => {
+  const hasEnPrefix = canonicalPath.startsWith('/en/');
+  const isEnRoot = canonicalPath === '/en' || canonicalPath === '/en/';
+  
+  if (targetLang === 'en') {
+    if (hasEnPrefix || isEnRoot) {
+      return canonicalPath;
+    }
+    return canonicalPath === '/' ? '/en/' : `/en${canonicalPath}`;
   } else {
-    parts.unshift(targetLang);
+    if (hasEnPrefix) {
+      return canonicalPath.substring(3);
+    }
+    if (isEnRoot) {
+      return '/';
+    }
+    return canonicalPath;
   }
-  return new URL('/' + parts.join('/') + '/', Astro.site).href;
 };
 
-const hreflangAr = isUnlocalized ? null : getHreflangUrl('ar');
-const hreflangEn = isUnlocalized ? null : getHreflangUrl('en');
-const hreflangDefault = isUnlocalized ? null : getHreflangUrl('ar');
+const hreflangAr = isUnlocalized ? null : new URL(getLocalizedPath('ar'), Astro.site).href;
+const hreflangEn = isUnlocalized ? null : new URL(getLocalizedPath('en'), Astro.site).href;
+const hreflangDefault = hreflangAr;
 
 // Env variables for analytics and verification
 const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || (typeof process !== 'undefined' && process.env ? process.env.PUBLIC_GOOGLE_SITE_VERIFICATION : '');
@@ -93,6 +103,8 @@ const pageContext = {
   isFallback: !!isFallback
 };
 
+const langPath = lang === 'ar' ? '' : 'en/';
+
 // Global Schema Graph
 const graph = [];
 
@@ -100,8 +112,8 @@ const graph = [];
 if (pageId === 'homepage') {
   graph.push({
     "@type": "WebSite",
-    "@id": new URL(`${lang}/#website`, Astro.site).href,
-    "url": new URL(`${lang}/`, Astro.site).href,
+    "@id": new URL(`${langPath}#website`, Astro.site).href,
+    "url": new URL(`${langPath}`, Astro.site).href,
     "name": lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics',
     "alternateName": ["Mousa Analytics", "موسى للتحليلات"],
     "description": lang === 'ar' ? 'تحليلات وحلول الأعمال المتقدمة' : 'Advanced Analytics & Business Solutions',
@@ -112,8 +124,8 @@ if (pageId === 'homepage') {
 // 2. ProfessionalService Schema (Replaces Organization to unify SEO signals)
 graph.push({
   "@type": "ProfessionalService",
-  "@id": new URL(`${lang}/#organization`, Astro.site).href,
-  "url": new URL(`${lang}/`, Astro.site).href,
+  "@id": new URL(`${langPath}#organization`, Astro.site).href,
+  "url": new URL(`${langPath}`, Astro.site).href,
   "name": lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics',
   "logo": {
     "@type": "ImageObject",
@@ -138,16 +150,16 @@ graph.push({
 // 3. Person Schema
 graph.push({
   "@type": "Person",
-  "@id": new URL(`${lang}/#person`, Astro.site).href,
+  "@id": new URL(`${langPath}#person`, Astro.site).href,
   "name": "Amr Mousa",
   "jobTitle": lang === 'ar' ? 'استشاري تحليلات ونظم أعمال' : 'Analytics & Business Systems Consultant',
-  "url": new URL(`${lang}/about/`, Astro.site).href,
+  "url": new URL(`${langPath}about/`, Astro.site).href,
   "sameAs": [
     "https://www.linkedin.com/in/amr-mousa-063991206",
     "https://github.com/amr-mousa0"
   ],
   "worksFor": {
-    "@id": new URL(`${lang}/#organization`, Astro.site).href
+    "@id": new URL(`${langPath}#organization`, Astro.site).href
   },
   "alumniOf": [
     {
@@ -165,42 +177,42 @@ const schemaGraph = {
 // Dynamic Breadcrumb Schema
 const pathSegments = canonicalPath.split('/').filter(Boolean);
 const breadcrumbs = [];
-if (pathSegments.length > 0) {
-  const currentLang = pathSegments[0];
+
+breadcrumbs.push({
+  "@type": "ListItem",
+  "position": 1,
+  "name": lang === 'ar' ? 'الرئيسية' : 'Home',
+  "item": new URL(lang === 'ar' ? '/' : '/en/', Astro.site).href
+});
+
+const startIndex = lang === 'en' ? 1 : 0;
+let accumulatedPath = lang === 'en' ? '/en/' : '/';
+
+for (let i = startIndex; i < pathSegments.length; i++) {
+  const segment = pathSegments[i];
+  accumulatedPath += `${segment}/`;
+  
+  let displayName = segment;
+  if (segment === 'services') displayName = lang === 'ar' ? 'الخدمات' : 'Services';
+  else if (segment === 'projects') displayName = lang === 'ar' ? 'المشاريع' : 'Projects';
+  else if (segment === 'blog') displayName = lang === 'ar' ? 'المدونة' : 'Blog';
+  else if (segment === 'about') displayName = lang === 'ar' ? 'من أنا' : 'About';
+  else if (segment === 'terms') displayName = lang === 'ar' ? 'الشروط والأحكام' : 'Terms & Conditions';
+  else if (segment === 'privacy') displayName = lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy';
+  else {
+    displayName = segment.replace(/-/g, ' ');
+    displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+  }
+
   breadcrumbs.push({
     "@type": "ListItem",
-    "position": 1,
-    "name": currentLang === 'ar' ? 'الرئيسية' : 'Home',
-    "item": new URL(`${currentLang}/`, Astro.site).href
+    "position": breadcrumbs.length + 1,
+    "name": displayName,
+    "item": new URL(accumulatedPath, Astro.site).href
   });
-
-  let accumulatedPath = `/${currentLang}/`;
-  for (let i = 1; i < pathSegments.length; i++) {
-    const segment = pathSegments[i];
-    accumulatedPath += `${segment}/`;
-    
-    let displayName = segment;
-    if (segment === 'services') displayName = currentLang === 'ar' ? 'الخدمات' : 'Services';
-    else if (segment === 'projects') displayName = currentLang === 'ar' ? 'المشاريع' : 'Projects';
-    else if (segment === 'blog') displayName = currentLang === 'ar' ? 'المدونة' : 'Blog';
-    else if (segment === 'about') displayName = currentLang === 'ar' ? 'من أنا' : 'About';
-    else if (segment === 'terms') displayName = currentLang === 'ar' ? 'الشروط والأحكام' : 'Terms & Conditions';
-    else if (segment === 'privacy') displayName = currentLang === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy';
-    else {
-      displayName = segment.replace(/-/g, ' ');
-      displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
-    }
-
-    breadcrumbs.push({
-      "@type": "ListItem",
-      "position": i + 1,
-      "name": displayName,
-      "item": new URL(accumulatedPath, Astro.site).href
-    });
-  }
 }
 
-const breadcrumbSchema = breadcrumbs.length > 0 ? {
+const breadcrumbSchema = breadcrumbs.length > 1 ? {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": breadcrumbs
@@ -265,11 +277,11 @@ const breadcrumbSchema = breadcrumbs.length > 0 ? {
         "author": {
           "@type": "Person",
           "name": "Amr Mousa",
-          "@id": new URL(`${lang}/#person`, Astro.site).href
+          "@id": new URL(`${langPath}#person`, Astro.site).href
         },
         "publisher": {
           "@type": "Organization",
-          "@id": new URL(`${lang}/#organization`, Astro.site).href
+          "@id": new URL(`${langPath}#organization`, Astro.site).href
         }
       })} />
     )}
@@ -281,7 +293,7 @@ const breadcrumbSchema = breadcrumbs.length > 0 ? {
         "description": seoDescription,
         "provider": {
           "@type": "Person",
-          "@id": new URL(`${lang}/#person`, Astro.site).href
+          "@id": new URL(`${langPath}#person`, Astro.site).href
         }
       })} />
     )}

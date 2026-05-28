@@ -15,18 +15,18 @@ const { lang, activePage, backUrl, backText, actionUrl, actionText, actionIcon }
 const isAr = lang === 'ar';
 
 // Localized Navigation Links
-const homePath = `/${lang}/`;
-const aboutPath = `/${lang}/about/`;
-const servicesPath = `/${lang}/#services`;
-const projectsPath = `/${lang}/#projects`;
-const contactPath = `/${lang}/#contact`;
-const blogPath = `/${lang}/blog/`;
-
-const targetLang = isAr ? 'en' : 'ar';
+const homePath = isAr ? '/' : '/en/';
+const aboutPath = isAr ? '/about/' : '/en/about/';
+const servicesPath = homePath + '#services';
+const projectsPath = homePath + '#projects';
+const contactPath = homePath + '#contact';
+const blogPath = isAr ? '/blog/' : '/en/blog/';
 
 // Dynamically resolve target language switch URL based on current path
 const pathname = Astro.url.pathname;
-const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
+const langTogglePath = isAr 
+  ? (pathname === '/' ? '/en/' : '/en' + pathname) 
+  : (pathname.replace(/^\/en\/?/, '/'));
 ---
 
 <header class="fixed top-0 inset-x-0 w-full h-16 md:h-20 bg-hero-surface/75 backdrop-blur-md border-b border-text-main/8 z-50 transition-all duration-300">

@@ -7,18 +7,19 @@ import Footer from '../../components/ui/Footer.astro';
 export function getStaticPaths() {
   return [
     { params: { lang: 'en' } },
-    { params: { lang: 'ar' } },
+    { params: { lang: undefined } },
   ];
 }
 
 const { lang } = Astro.params;
 
 // Route Parameter Guard
-if (!lang || !['en', 'ar'].includes(lang)) {
-  return Astro.redirect('/ar/');
+if (lang !== undefined && lang !== 'en') {
+  return Astro.redirect('/');
 }
 
-const isAr = lang === 'ar';
+const currentLang = lang || 'ar';
+const isAr = currentLang === 'ar';
 
 // Page-specific text content matching high-ticket B2B agency style
 const t = {
@@ -75,8 +76,8 @@ const t = {
 };
 ---
 
-<Layout lang={lang} pageId="privacy">
-  <Navigation lang={lang} activePage="" />
+<Layout lang={currentLang} pageId="privacy">
+  <Navigation lang={currentLang} activePage="" />
 
   <!-- Inject Schema.org JSON-LD Metadata for Legal Page -->
   <script is:inline type="application/ld+json" set:html={JSON.stringify({
@@ -84,13 +85,13 @@ const t = {
     "@graph": [
       {
         "@type": "WebPage",
-        "@id": new URL(`${lang}/privacy/`, Astro.site).href,
-        "url": new URL(`${lang}/privacy/`, Astro.site).href,
+        "@id": new URL(currentLang === 'ar' ? 'privacy/' : 'en/privacy/', Astro.site).href,
+        "url": new URL(currentLang === 'ar' ? 'privacy/' : 'en/privacy/', Astro.site).href,
         "name": t.title,
         "description": t.subtitle,
         "isPartOf": {
           "@type": "WebSite",
-          "@id": new URL(`${lang}/#website`, Astro.site).href
+          "@id": new URL(currentLang === 'ar' ? '#website' : 'en/#website', Astro.site).href
         }
       }
     ]
@@ -232,7 +233,7 @@ const t = {
           <span>{t.contactBtn}</span>
         </a>
         <a 
-          href={`/${lang}/`} 
+          href={currentLang === 'ar' ? '/' : '/en/'} 
           class="h-11 px-6 rounded-full bg-transparent border border-text-main/15 hover:bg-text-main/5 text-text-main text-[11px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 w-full sm:w-auto"
         >
           <span>{t.homeBtn}</span>
@@ -242,5 +243,5 @@ const t = {
     </article>
   </main>
 
-  <Footer lang={lang} />
+  <Footer lang={currentLang} />
 </Layout>

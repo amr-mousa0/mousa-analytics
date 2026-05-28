@@ -14,7 +14,7 @@ test.describe('Responsive Layout & Overflow Validations', () => {
       // Set the viewport size dynamically for this test
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
 
-      await page.goto('/ar/');
+      await page.goto('/');
       await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });
 
       // 1. Detect Horizontal Scroll Overflow

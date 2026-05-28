@@ -48,12 +48,6 @@ export default defineConfig({
         if (page.includes('/.backup') || page.includes('/admin') || page.includes('/404')) {
           return false;
         }
-        // Exclude the root redirecting URL itself from sitemap
-        const siteUrl = 'https://mousa-analytics.vercel.app';
-        const pageUrl = page.replace(/\/$/, '');
-        if (pageUrl === siteUrl) {
-          return false;
-        }
         // Exclude any page whose path matches an excluded draft/noindex slug
         return !excludedSlugs.some(slug => page.includes(`/${slug}/`) || page.endsWith(`/${slug}`));
       }
