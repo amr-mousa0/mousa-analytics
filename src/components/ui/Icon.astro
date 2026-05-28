@@ -11,7 +11,9 @@ const { name, class: className = '', 'aria-hidden': ariaHidden = 'true' } = Astr
 const cleanName = name
   .replace(/fa-solid|fa-regular|fa-brands|fa-/g, '')
   .trim()
-  .toLowerCase();
+  .toLowerCase()
+  .replace('-f', '')
+  .replace('-in', '');
 
 // Define SVG icons paths (standard Lucide / FontAwesome shapes)
 const icons: Record<string, { viewBox: string; svg: string }> = {
@@ -106,15 +108,26 @@ const icons: Record<string, { viewBox: string; svg: string }> = {
 };
 
 const icon = icons[cleanName] || icons['laptop-code'];
+const isBrand = ['whatsapp', 'github', 'linkedin', 'facebook'].includes(cleanName);
 ---
 
-<svg 
-  viewBox={icon.viewBox}
-  class={className}
-  aria-hidden={ariaHidden}
-  fill="none"
-  stroke="currentColor"
-  stroke-linecap="round"
-  stroke-linejoin="round"
-  set:html={icon.svg}
-/>
+{isBrand ? (
+  <svg 
+    viewBox={icon.viewBox}
+    class={className}
+    aria-hidden={ariaHidden}
+    fill="currentColor"
+    set:html={icon.svg}
+  />
+) : (
+  <svg 
+    viewBox={icon.viewBox}
+    class={className}
+    aria-hidden={ariaHidden}
+    fill="none"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    set:html={icon.svg}
+  />
+)}
