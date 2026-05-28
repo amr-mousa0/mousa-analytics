@@ -355,28 +355,33 @@ const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWit
 <script>
   import { trackEvent } from '../../../scripts/analytics';
 
-  // Adblock-resilient dynamic WhatsApp redirection
-  const btn = document.getElementById('accept-proposal-btn');
-  if (btn) {
-    btn.addEventListener('click', () => {
-      const msg = btn.getAttribute('data-msg') || '';
+  function initServicePage() {
+    // Adblock-resilient dynamic WhatsApp redirection
+    const btn = document.getElementById('accept-proposal-btn');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        const msg = btn.getAttribute('data-msg') || '';
 
-      // Track CTA click
-      const slug = window.location.pathname.split('/').filter(Boolean).pop() || '';
-      trackEvent({
-        event: 'cta_click',
-        cta_text: btn.textContent?.trim() || 'Accept Proposal',
-        cta_type: 'whatsapp',
-        context_slug: slug
+        // Track CTA click
+        const slug = window.location.pathname.split('/').filter(Boolean).pop() || '';
+        trackEvent({
+          event: 'cta_click',
+          cta_text: btn.textContent?.trim() || 'Accept Proposal',
+          cta_type: 'whatsapp',
+          context_slug: slug
+        });
+
+        const domainParts = ['wa', 'me'];
+        const targetDomain = domainParts.join('.');
+        const recipientNum = '201017749925';
+        const redirectUrl = `https://${targetDomain}/${recipientNum}?text=${encodeURIComponent(msg)}`;
+        window.open(redirectUrl, '_blank', 'noopener,noreferrer');
       });
-
-      const domainParts = ['wa', 'me'];
-      const targetDomain = domainParts.join('.');
-      const recipientNum = '201017749925';
-      const redirectUrl = `https://${targetDomain}/${recipientNum}?text=${encodeURIComponent(msg)}`;
-      window.open(redirectUrl, '_blank', 'noopener,noreferrer');
-    });
+    }
   }
+
+  // Bind to page load event
+  document.addEventListener('astro:page-load', initServicePage);
 </script>
 
 <style>

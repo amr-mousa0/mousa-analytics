@@ -22,7 +22,7 @@ const services = await getSafeServices(lang);
 // Helper to get service URL dynamically based on slug
 const getServiceUrl = (slug: string) => {
   const cleanSlug = slug.split('/').pop();
-  return `/${lang}/services/${cleanSlug}/`;
+  return lang === 'ar' ? `/services/${cleanSlug}/` : `/en/services/${cleanSlug}/`;
 };
 
 // Helper to get service image dynamically from frontmatter with local fallbacks
@@ -458,7 +458,7 @@ const getServiceImage = (service: any) => {
         };
 
         // Details button href mapping
-        detailsBtn.setAttribute('href', `/${isArabic ? 'ar' : 'en'}/services/${data.slug}/`);
+        detailsBtn.setAttribute('href', isArabic ? `/services/${data.slug}/` : `/en/services/${data.slug}/`);
 
         // Show panel with smooth transition
         panel.classList.remove('hidden');

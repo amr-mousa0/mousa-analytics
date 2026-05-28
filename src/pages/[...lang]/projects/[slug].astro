@@ -420,120 +420,125 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
 <script>
   import { trackEvent } from '../../../scripts/analytics';
 
-  // Tab switching logic
-  const galleryTab = document.getElementById('tab-gallery');
-  const dashboardTab = document.getElementById('tab-dashboard');
-  const galleryContent = document.getElementById('content-gallery');
-  const dashboardContent = document.getElementById('content-dashboard');
-  const promptHelper = document.getElementById('dashboard-prompt-helper');
+  function initProjectPage() {
+    // Tab switching logic
+    const galleryTab = document.getElementById('tab-gallery');
+    const dashboardTab = document.getElementById('tab-dashboard');
+    const galleryContent = document.getElementById('content-gallery');
+    const dashboardContent = document.getElementById('content-dashboard');
+    const promptHelper = document.getElementById('dashboard-prompt-helper');
 
-  const activeClasses = ['bg-accent-primary', 'text-white', 'shadow-md', 'border-none', 'lg:shadow-none'];
-  const inactiveClasses = ['bg-slate-100', 'border', 'border-slate-200/60', 'text-text-main/70', 'shadow-none', 'lg:bg-transparent', 'lg:border-none', 'lg:hover:bg-slate-200/30'];
+    const activeClasses = ['bg-accent-primary', 'text-white', 'shadow-md', 'border-none', 'lg:shadow-none'];
+    const inactiveClasses = ['bg-slate-100', 'border', 'border-slate-200/60', 'text-text-main/70', 'shadow-none', 'lg:bg-transparent', 'lg:border-none', 'lg:hover:bg-slate-200/30'];
 
-  if (galleryTab && dashboardTab && galleryContent && dashboardContent) {
-    galleryTab.addEventListener('click', () => {
-      // Gallery Active
-      activeClasses.forEach(c => galleryTab.classList.add(c));
-      inactiveClasses.forEach(c => galleryTab.classList.remove(c));
+    if (galleryTab && dashboardTab && galleryContent && dashboardContent) {
+      galleryTab.addEventListener('click', () => {
+        // Gallery Active
+        activeClasses.forEach(c => galleryTab.classList.add(c));
+        inactiveClasses.forEach(c => galleryTab.classList.remove(c));
 
-      // Dashboard Inactive
-      inactiveClasses.forEach(c => dashboardTab.classList.add(c));
-      activeClasses.forEach(c => dashboardTab.classList.remove(c));
+        // Dashboard Inactive
+        inactiveClasses.forEach(c => dashboardTab.classList.add(c));
+        activeClasses.forEach(c => dashboardTab.classList.remove(c));
 
-      galleryContent.classList.remove('hidden');
-      dashboardContent.classList.add('hidden');
-      if (promptHelper) {
-        promptHelper.classList.remove('hidden');
-      }
-    });
-
-    dashboardTab.addEventListener('click', () => {
-      // Dashboard Active
-      activeClasses.forEach(c => dashboardTab.classList.add(c));
-      inactiveClasses.forEach(c => dashboardTab.classList.remove(c));
-
-      // Gallery Inactive
-      inactiveClasses.forEach(c => galleryTab.classList.add(c));
-      activeClasses.forEach(c => galleryTab.classList.remove(c));
-
-      dashboardContent.classList.remove('hidden');
-      galleryContent.classList.add('hidden');
-      if (promptHelper) {
-        promptHelper.classList.add('hidden');
-      }
-    });
-  }
-
-  // Internal tab redirect button click
-  const activateTabBtn = document.getElementById('activate-dashboard-tab-btn');
-  if (activateTabBtn && dashboardTab) {
-    activateTabBtn.addEventListener('click', () => {
-      dashboardTab.click();
-    });
-  }
-
-  // Thumbnail click logic
-  const thumbnails = document.querySelectorAll('.gallery-thumbnail');
-  const mainImage = document.getElementById('main-gallery-image') as HTMLImageElement | null;
-
-  if (thumbnails.length > 0 && mainImage) {
-    thumbnails.forEach(thumb => {
-      thumb.addEventListener('click', () => {
-        // Remove active border from all thumbnails
-        thumbnails.forEach(t => t.classList.remove('border-accent-primary', 'ring-2', 'ring-accent-primary/20'));
-        // Add active border to clicked thumbnail
-        thumb.classList.add('border-accent-primary', 'ring-2', 'ring-accent-primary/20');
-        // Update main image source with smooth crossfade
-        const newSrc = thumb.getAttribute('data-src') || '';
-        mainImage.style.opacity = '0';
-        setTimeout(() => {
-          mainImage.src = newSrc;
-          mainImage.style.opacity = '1';
-        }, 150);
+        galleryContent.classList.remove('hidden');
+        dashboardContent.classList.add('hidden');
+        if (promptHelper) {
+          promptHelper.classList.remove('hidden');
+        }
       });
-    });
-  }
 
-  // Iframe load spinner logic
-  const iframe = document.getElementById('dashboard-iframe') as HTMLIFrameElement | null;
-  const loader = document.getElementById('iframe-loader');
-  if (iframe && loader) {
-    iframe.addEventListener('load', () => {
-      loader.style.opacity = '0';
-      setTimeout(() => loader.classList.add('hidden'), 300);
-      iframe.style.opacity = '1';
-    });
-  }
+      dashboardTab.addEventListener('click', () => {
+        // Dashboard Active
+        activeClasses.forEach(c => dashboardTab.classList.add(c));
+        inactiveClasses.forEach(c => dashboardTab.classList.remove(c));
 
-  // Adblock-resilient dynamic WhatsApp redirection for CTAs
-  const registerCta = (id: string, textGetter: () => string) => {
-    const btn = document.getElementById(id);
-    if (btn) {
-      btn.addEventListener('click', () => {
-        const msg = textGetter();
+        // Gallery Inactive
+        inactiveClasses.forEach(c => galleryTab.classList.add(c));
+        activeClasses.forEach(c => galleryTab.classList.remove(c));
 
-        // Track CTA click
-        const slug = window.location.pathname.split('/').filter(Boolean).pop() || '';
-        trackEvent({
-          event: 'cta_click',
-          cta_text: btn.textContent?.trim() || id,
-          cta_type: 'whatsapp',
-          context_slug: slug
-        });
-
-        const domainParts = ['wa', 'me'];
-        const targetDomain = domainParts.join('.');
-        const recipientNum = '201017749925';
-        const redirectUrl = `https://${targetDomain}/${recipientNum}?text=${encodeURIComponent(msg)}`;
-        window.open(redirectUrl, '_blank', 'noopener,noreferrer');
+        dashboardContent.classList.remove('hidden');
+        galleryContent.classList.add('hidden');
+        if (promptHelper) {
+          promptHelper.classList.add('hidden');
+        }
       });
     }
-  };
 
-  registerCta('start-project-btn', () => {
-    const btn = document.getElementById('start-project-btn');
-    return btn?.getAttribute('data-msg') || '';
-  });
+    // Internal tab redirect button click
+    const activateTabBtn = document.getElementById('activate-dashboard-tab-btn');
+    if (activateTabBtn && dashboardTab) {
+      activateTabBtn.addEventListener('click', () => {
+        dashboardTab.click();
+      });
+    }
+
+    // Thumbnail click logic
+    const thumbnails = document.querySelectorAll('.gallery-thumbnail');
+    const mainImage = document.getElementById('main-gallery-image') as HTMLImageElement | null;
+
+    if (thumbnails.length > 0 && mainImage) {
+      thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+          // Remove active border from all thumbnails
+          thumbnails.forEach(t => t.classList.remove('border-accent-primary', 'ring-2', 'ring-accent-primary/20'));
+          // Add active border to clicked thumbnail
+          thumb.classList.add('border-accent-primary', 'ring-2', 'ring-accent-primary/20');
+          // Update main image source with smooth crossfade
+          const newSrc = thumb.getAttribute('data-src') || '';
+          mainImage.style.opacity = '0';
+          setTimeout(() => {
+            mainImage.src = newSrc;
+            mainImage.style.opacity = '1';
+          }, 150);
+        });
+      });
+    }
+
+    // Iframe load spinner logic
+    const iframe = document.getElementById('dashboard-iframe') as HTMLIFrameElement | null;
+    const loader = document.getElementById('iframe-loader');
+    if (iframe && loader) {
+      iframe.addEventListener('load', () => {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.classList.add('hidden'), 300);
+        iframe.style.opacity = '1';
+      });
+    }
+
+    // Adblock-resilient dynamic WhatsApp redirection for CTAs
+    const registerCta = (id: string, textGetter: () => string) => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const msg = textGetter();
+
+          // Track CTA click
+          const slug = window.location.pathname.split('/').filter(Boolean).pop() || '';
+          trackEvent({
+            event: 'cta_click',
+            cta_text: btn.textContent?.trim() || id,
+            cta_type: 'whatsapp',
+            context_slug: slug
+          });
+
+          const domainParts = ['wa', 'me'];
+          const targetDomain = domainParts.join('.');
+          const recipientNum = '201017749925';
+          const redirectUrl = `https://${targetDomain}/${recipientNum}?text=${encodeURIComponent(msg)}`;
+          window.open(redirectUrl, '_blank', 'noopener,noreferrer');
+        });
+      }
+    };
+
+    registerCta('start-project-btn', () => {
+      const btn = document.getElementById('start-project-btn');
+      return btn?.getAttribute('data-msg') || '';
+    });
+  }
+
+  // Bind to page load event for initial load and page changes
+  document.addEventListener('astro:page-load', initProjectPage);
 </script>
 
 <script type="application/ld+json" is:inline set:html={JSON.stringify({

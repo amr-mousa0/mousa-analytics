@@ -14,7 +14,7 @@ const projects = await getSafeProjects(lang);
 
 const getProjectUrl = (slug: string) => {
   const cleanSlug = slug.split('/').pop();
-  return `/${lang}/projects/${cleanSlug}/`;
+  return lang === 'ar' ? `/projects/${cleanSlug}/` : `/en/projects/${cleanSlug}/`;
 };
 
 const getProjectIcon = (slug: string) => {
