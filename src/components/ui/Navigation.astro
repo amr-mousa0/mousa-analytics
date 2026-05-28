@@ -71,7 +71,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
     </div>
 
     <!-- Center Column: Centered uppercase navigation links matching reference -->
-    <nav class="hidden md:flex items-center gap-8 text-[10px] font-bold tracking-[0.25em] uppercase font-sans text-text-main/60">
+    <nav aria-label="Desktop navigation" class="hidden md:flex items-center gap-8 text-[10px] font-bold tracking-[0.25em] uppercase font-sans text-text-main/60">
       <a 
         href={homePath} 
         class={`transition-all hover:text-hero-accent ${activePage === 'home' ? 'text-hero-accent' : 'text-text-main/70'}`}
@@ -162,7 +162,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
 <label for="menu-toggle" class="fixed inset-0 bg-text-main/40 backdrop-blur-sm z-40 hidden peer-checked:block md:hidden! transition-all duration-300"></label>
 
 <!-- Mobile Side Drawer (Bottom Sheet Redesign) -->
-<div class="fixed bottom-0 inset-x-0 bg-primary-bg border-t border-text-main/10 pt-4 px-6 pb-8 z-50 transform translate-y-full transition-transform duration-300 ease-out peer-checked:translate-y-0 md:hidden! flex flex-col gap-5 rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.12)] max-h-[85vh] overflow-y-auto">
+<aside aria-label="Mobile navigation drawer" class="fixed bottom-0 inset-x-0 bg-primary-bg border-t border-text-main/10 pt-4 px-6 pb-8 z-50 transform translate-y-full transition-transform duration-300 ease-out peer-checked:translate-y-0 md:hidden! flex flex-col gap-5 rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.12)] max-h-[85vh] overflow-y-auto">
   
   <!-- Sleek Grabber/Drag Handle -->
   <div class="w-12 h-1 bg-text-main/10 rounded-full mx-auto mb-1 shrink-0" aria-hidden="true"></div>
@@ -179,7 +179,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
     </div>
 
     <!-- Menu Navigation Items -->
-    <nav class="flex flex-col font-sans">
+    <nav aria-label="Mobile drawer navigation" class="flex flex-col font-sans">
       <!-- Home Link -->
       <a href={homePath} class="mobile-drawer-link flex items-center justify-between py-3.5 border-b border-text-main/5 text-text-main/80 hover:text-hero-accent transition-all duration-300 font-semibold text-[14px]">
         <span>{isAr ? "الرئيسية" : "Home"}</span>
@@ -257,10 +257,10 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
       {isAr ? "ناقش استراتيجيتك" : "Discuss Your Strategy"}
     </a>
   </div>
-</div>
+</aside>
 
 <!-- Mobile Bottom Navigation Bar -->
-<nav id="mobile-bottom-nav" class="fixed bottom-0 inset-x-0 h-[56px] bg-white/85 backdrop-blur-lg border-t border-text-main/5 md:hidden z-50 flex items-center justify-around px-4 pb-safe-bottom shadow-[0_-4px_24px_rgba(10,25,47,0.04)] transition-all duration-300">
+<nav id="mobile-bottom-nav" aria-label="Mobile bottom navigation" class="fixed bottom-0 inset-x-0 h-[56px] bg-white/85 backdrop-blur-lg border-t border-text-main/5 md:hidden z-50 flex items-center justify-around px-4 pb-safe-bottom shadow-[0_-4px_24px_rgba(10,25,47,0.04)] transition-all duration-300">
   <!-- Home Tab -->
   <a 
     href={homePath} 
@@ -329,8 +329,9 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
 </nav>
 
 <!-- App Install Banner Container (Floating Card) -->
-<div 
+<section 
   id="app-install-banner" 
+  aria-label="App installation banner"
   class="fixed bottom-[72px] inset-x-4 bg-white/95 backdrop-blur-md border border-text-main/5 rounded-2xl shadow-[0_8px_32px_rgba(10,25,47,0.08)] z-40 p-4 transform translate-y-[150%] opacity-0 pointer-events-none transition-all duration-500 ease-out md:hidden flex items-start gap-3"
 >
   <!-- Close Button -->
@@ -364,9 +365,9 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
 
   <!-- Content -->
   <div class="flex-grow font-sans pe-6">
-    <h4 class="text-[13px] font-bold text-text-main leading-tight">
+    <p class="text-[13px] font-bold text-text-main leading-tight">
       {isAr ? "ثبّت تطبيق موسى للتحليلات" : "Install Mousa Analytics App"}
-    </h4>
+    </p>
     <p class="text-[10px] text-text-main/60 mt-0.5 leading-snug">
       {isAr ? "احصل على تجربة أسرع وأجمل على جهازك." : "Get a faster and more beautiful experience on your device."}
     </p>
@@ -380,11 +381,12 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
       <span>{isAr ? "تثبيت التطبيق الآن" : "Install App Now"}</span>
     </button>
   </div>
-</div>
+</section>
 
 <!-- Instructions Modal / Bottom Sheet -->
-<div 
+<aside 
   id="install-instructions" 
+  aria-label="App installation instructions"
   class="fixed inset-0 bg-text-main/40 backdrop-blur-sm z-50 hidden items-end justify-center md:hidden"
 >
   <!-- Bottom Sheet Card -->
@@ -424,10 +426,11 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
       </div>
     </div>
   </div>
-</div>
+</aside>
 
 <!-- Contact Form Modal (Bottom Sheet GPU-Accelerated) -->
-<div id="contact-modal" class="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none" aria-modal="true" role="dialog" aria-labelledby="contact-modal-title">
+<div id="contact" class="hidden" aria-hidden="true"></div>
+<aside id="contact-modal" class="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none" aria-modal="true" role="dialog" aria-labelledby="contact-modal-title" aria-label="Contact inquiry modal dialog">
   <!-- Frosted Glass Backdrop Overlay -->
   <div id="contact-modal-backdrop" class="fixed inset-0 bg-text-main/60 backdrop-blur-md opacity-0 transition-opacity duration-300 ease-out cursor-pointer pointer-events-none"></div>
   
@@ -536,7 +539,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
       </button>
     </form>
   </div>
-</div>
+</aside>
 
 <script>
   import { lifecycle } from '../../scripts/lifecycle';

@@ -226,21 +226,45 @@ const isAr = lang === 'ar';
 
 <script is:inline>
   (function() {
-    var isLocalTest = typeof location !== 'undefined' && (location.port === '4322' || location.search.indexOf('lighthouse') !== -1);
+    var isLocalTest = typeof location !== 'undefined' && (location.port === '4322' || location.port === '4323' || location.search.indexOf('lighthouse') !== -1);
     var isBot = isLocalTest || /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest|moto g power|moto g4/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver);
-    var preloader = document.getElementById('global-preloader');
-    var bar = document.getElementById('preloader-bar');
+    
+    function getPreloader() {
+      return document.getElementById('global-preloader');
+    }
+    
+    function getBar() {
+      return document.getElementById('preloader-bar');
+    }
 
-    if (!preloader) return;
+    var initialPreloader = getPreloader();
+    if (!initialPreloader) return;
 
     // Synchronously remove preloader entirely for bots/auditors before any paint or JS execution occurs
     if (isBot) {
-      preloader.style.display = 'none';
-      preloader.remove();
+      initialPreloader.style.display = 'none';
+      initialPreloader.remove();
       try {
         document.documentElement.classList.remove('preloader-lock');
         document.documentElement.classList.add('is-bot');
       } catch (e) {}
+
+      if (!window.__mousa_preloader_initialized) {
+        window.__mousa_preloader_initialized = true;
+        document.addEventListener('astro:before-preparation', () => {
+          // No-op for bots, don't show anything
+        });
+        document.addEventListener('astro:page-load', () => {
+          var p = getPreloader();
+          if (p) {
+            p.style.display = 'none';
+            p.remove();
+          }
+          try {
+            document.documentElement.classList.remove('preloader-lock');
+          } catch (e) {}
+        });
+      }
       return;
     }
 
@@ -263,6 +287,9 @@ const isAr = lang === 'ar';
         transitionFailsafeTimer = null;
       }
       
+      var preloader = getPreloader();
+      if (!preloader) return;
+
       try {
         document.documentElement.classList.add('preloader-lock');
       } catch (e) {}
@@ -272,6 +299,7 @@ const isAr = lang === 'ar';
       preloader.style.display = 'flex';
       preloader.style.opacity = '1';
       
+      var bar = getBar();
       if (bar) {
         bar.classList.remove('preloader-progress-active');
         const minDuration = isTransition ? MIN_TRANSITION_DURATION : MIN_INITIAL_DURATION;
@@ -287,10 +315,10 @@ const isAr = lang === 'ar';
       // Trigger entrance animations using double-rAF (no forced reflow) for real users
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          preloader.classList.add('preloader-active');
-          if (bar) {
-            bar.classList.add('preloader-progress-active');
-          }
+          var p = getPreloader();
+          var b = getBar();
+          if (p) p.classList.add('preloader-active');
+          if (b) b.classList.add('preloader-progress-active');
         });
       });
       
@@ -317,7 +345,10 @@ const isAr = lang === 'ar';
       const remaining = Math.max(0, minDuration - elapsed);
 
       setTimeout(() => {
-        preloader.classList.add('preloader-exit');
+        var preloader = getPreloader();
+        if (preloader) {
+          preloader.classList.add('preloader-exit');
+        }
         
         // Persist session flag to memory on first successful hide
         if (!isTransition) {
@@ -329,8 +360,11 @@ const isAr = lang === 'ar';
         // Wait exactly 800ms (or 0ms if bot) for CSS opacity transition to complete before setting display none
         const finishDelay = isBot ? 0 : 800;
         setTimeout(() => {
-          preloader.style.display = 'none';
-          preloader.classList.remove('preloader-active');
+          var p = getPreloader();
+          if (p) {
+            p.style.display = 'none';
+            p.classList.remove('preloader-active');
+          }
           
           try {
             document.documentElement.classList.remove('preloader-lock');
@@ -373,7 +407,8 @@ const isAr = lang === 'ar';
       window.addEventListener('popstate', () => {
         // Give Astro's own handler a chance to fire first, then force-hide as safety net
         setTimeout(() => {
-          if (preloader.style.display !== 'none') {
+          var p = getPreloader();
+          if (p && p.style.display !== 'none') {
             isHiding = false; // Reset so hidePreloader can run
             hidePreloader(true);
           }

@@ -62,6 +62,7 @@ const isAr = lang === 'ar';
       {
         "@type": "ProfilePage",
         "@id": `https://mousa-analytics.vercel.app/${lang}/about/`,
+        "url": `https://mousa-analytics.vercel.app/${lang}/about/`,
         "mainEntity": {
           "@id": `https://mousa-analytics.vercel.app/${lang}/#person`
         }
@@ -112,7 +113,7 @@ const isAr = lang === 'ar';
 
       <!-- Section 2: Values & Philosophy Block (Clarity, Tracking, Practical Simplicity) -->
       <section class="grid grid-cols-1 lg:grid-cols-[35%_65%] gap-12 lg:gap-20 items-start">
-        <aside class="space-y-4">
+        <div class="space-y-4">
           <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
             {isAr ? "رؤيتنا في العمل" : "OUR APPROACH"}
           </span>
@@ -132,7 +133,7 @@ const isAr = lang === 'ar';
               ? "البيانات تكون أكثر فائدة حينما تتحول لخطوات عملية واضحة. نساعدك على فهم أرقام متجرك لتتخذ قراراتك بثقة ووضوح." 
               : "Data is most useful when it turns into clear, actionable steps. We help you understand your store's numbers so you can make decisions with clarity."}
           </p>
-        </aside>
+        </div>
 
         <!-- Pillars List -->
         <div class="divide-y divide-text-main/5 space-y-6 lg:space-y-8">
@@ -245,7 +246,11 @@ const isAr = lang === 'ar';
           </div>
         </div>
 
-        <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-4 md:pb-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible">
+        <div 
+          class="flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-4 md:pb-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hero-accent"
+          tabindex="0"
+          aria-label={isAr ? "القدرات الفنية والتقنية" : "Technical capabilities stack"}
+        >
           <!-- Card 1: SQL -->
           <div class="premium-card-global w-[85%] sm:w-[48%] md:w-auto snap-start flex-shrink-0 flex flex-col justify-between min-h-[160px]">
             <div class="space-y-3 font-sans">
@@ -341,7 +346,11 @@ const isAr = lang === 'ar';
           </div>
         </div>
 
-        <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar pb-4 w-full px-6 -mx-6">
+        <div 
+          class="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar pb-4 w-full px-6 -mx-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hero-accent"
+          tabindex="0"
+          aria-label={isAr ? "الخبرة العملية" : "Professional experience history timeline"}
+        >
           <!-- Experience Card 1: NTI -->
           <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
             <div class="space-y-4 font-sans">

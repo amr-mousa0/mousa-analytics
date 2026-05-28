@@ -6,9 +6,13 @@ on:
   pull_request:
     branches: [ main, master ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
-    name: Build Validation
+    name: Build & E2E Validation
     runs-on: ubuntu-latest
 
     steps:
@@ -29,3 +33,42 @@ jobs:
 
       - name: Build Production Bundle
         run: npm run build
+
+      - name: Run Bundle Size Audit
+        run: node scripts/check-bundle-size.mjs
+
+      - name: Get Playwright Version
+        id: playwright-version
+        run: echo "version=$(npm show @playwright/test version)" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright Browsers
+        id: cache-playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ steps.playwright-version.outputs.version }}-${{ runner.os }}
+
+      - name: Install Playwright Browsers with Deps (Cache Miss)
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+
+      - name: Install Playwright System Dependencies (Cache Hit)
+        if: steps.cache-playwright.outputs.cache-hit == 'true'
+        run: npx playwright install-deps
+
+      - name: Run Playwright E2E Tests
+        run: npm run test:e2e
+
+      - name: Run Lighthouse Category Audits
+        run: node scripts/lighthouse-audit.mjs
+
+      - name: Upload Test Failure Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-and-lighthouse
+          path: |
+            playwright-report/
+            test-results/
+            lighthouse-reports/
+          retention-days: 14

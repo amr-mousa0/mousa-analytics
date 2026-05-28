@@ -10,16 +10,16 @@
   /* Hero section — Luxury Agency / Consultancy Palette (Classic Tech Indigo / Royal Blue + Platinum) */
   --color-hero-accent: #2563EB;
   --color-hero-accent-highlight: #1D4ED8;
-  --color-hero-ice-blue: #2563EB;
-  --color-hero-ice-blue-hover: #1D4ED8;
+  --color-hero-ice-blue: #1D4ED8;
+  --color-hero-ice-blue-hover: #1E40AF;
   --color-hero-surface: #F8F9FA;
   --color-hero-glow: rgba(37, 99, 235, 0.12);
   /* Subtle blue tech glow aura */
   --color-hero-card: #FFFFFF;
 
   /* Success State Design Tokens (WhatsApp / Confirmation CTAs) */
-  --color-success-primary: #16A34A;
-  --color-success-hover: #15803D;
+  --color-success-primary: #15803D;
+  --color-success-hover: #166534;
   --color-success-bg: rgba(22, 163, 74, 0.05);
   --color-success-border: rgba(22, 163, 74, 0.15);
   --shadow-success: 0 4px 14px rgba(22, 163, 74, 0.15);
