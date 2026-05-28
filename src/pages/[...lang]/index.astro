@@ -26,7 +26,6 @@ if (lang !== undefined && lang !== 'en') {
 }
 
 const currentLang = lang || 'ar';
-const isAr = currentLang === 'ar';
 
 // Pre-optimize hero images at build time for preloading
 const desktopImg = await getImage({ src: analyticsBgImgDesktop, quality: 85, format: 'webp' });

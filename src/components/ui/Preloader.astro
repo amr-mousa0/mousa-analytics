@@ -302,7 +302,6 @@ const isAr = lang === 'ar';
     let isHiding = false;
     let transitionFailsafeTimer = null;
     
-    const hasSeen = sessionStorage.getItem('mousa_preloader_seen');
     // Completely bypass artificial duration to prevent PageSpeed/Lighthouse bottlenecks (anti-cloaking safe)
     const MIN_INITIAL_DURATION = 0; 
     const MIN_TRANSITION_DURATION = isBot ? 0 : 200; // Snappier transitions between pages

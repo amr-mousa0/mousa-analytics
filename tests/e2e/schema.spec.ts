@@ -80,6 +80,7 @@ test.describe('Structured Data & Schema.org Validations', () => {
       // Assert that core pages contain valid schema blocks
       if (path.includes('/about/')) {
         expect(hasWebPage).toBe(true);
+        expect(hasPersonOrOrg).toBe(true);
       } else {
         expect(hasWebSite || hasWebPage).toBe(true);
       }
