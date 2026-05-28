@@ -298,7 +298,7 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
                         <iframe
                           id="dashboard-iframe"
                           title={`${project.data.title} Live Dashboard`}
-                          src={project.data.dashboardUrl}
+                          data-src={project.data.dashboardUrl}
                           class="w-full h-full border-none opacity-0 transition-opacity duration-300"
                           allowfullscreen="true"
                           loading="lazy"
@@ -461,6 +461,15 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
         galleryContent.classList.add('hidden');
         if (promptHelper) {
           promptHelper.classList.add('hidden');
+        }
+
+        // Dynamically load the dashboard iframe to protect initial load performance
+        const iframe = document.getElementById('dashboard-iframe') as HTMLIFrameElement | null;
+        if (iframe && !iframe.src) {
+          const dSrc = iframe.getAttribute('data-src');
+          if (dSrc) {
+            iframe.src = dSrc;
+          }
         }
       });
     }
