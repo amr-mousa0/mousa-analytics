@@ -1,6 +1,7 @@
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
+import zlib from 'zlib';
 import lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
 
@@ -38,8 +39,23 @@ function startStaticServer() {
       else if (ext === '.svg') contentType = 'image/svg+xml';
       else if (ext === '.xml') contentType = 'application/xml';
       
-      res.writeHead(200, { 'Content-Type': contentType });
-      fs.createReadStream(filePath).pipe(res);
+      const acceptEncoding = req.headers['accept-encoding'] || '';
+      const raw = fs.createReadStream(filePath);
+      
+      if (acceptEncoding.includes('gzip')) {
+        res.writeHead(200, { 
+          'Content-Type': contentType,
+          'Content-Encoding': 'gzip',
+          'Cache-Control': 'public, max-age=31536000, immutable'
+        });
+        raw.pipe(zlib.createGzip()).pipe(res);
+      } else {
+        res.writeHead(200, { 
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=31536000, immutable'
+        });
+        raw.pipe(res);
+      }
     } else {
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('404 Not Found');
