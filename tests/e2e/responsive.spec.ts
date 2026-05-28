@@ -42,7 +42,7 @@ test.describe('Responsive Layout & Overflow Validations', () => {
       expect(overflowInfo.hasOverflow).toBe(false);
 
       // 2. Validate viewport-height sections scale properly
-      const heroHeight = await page.locator('section').first().boundingBox();
+      const heroHeight = await page.locator('#hero').boundingBox();
       expect(heroHeight).not.toBeNull();
       if (heroHeight) {
         expect(heroHeight.height).toBeGreaterThan(200); // Should never collapse
