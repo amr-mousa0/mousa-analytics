@@ -58,35 +58,58 @@ test.describe('Performance & Core Web Vitals Audits', () => {
     await setupPerformanceMetrics(page);
   });
 
-  test('Validates Core Web Vitals targets on home page', async ({ page }) => {
-    await page.goto('/ar/');
-    await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 }).catch(() => {});
-    
-    // Give a buffer to finish loading and scroll down to trigger lazy assets
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
-    await page.waitForTimeout(1000);
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.waitForTimeout(500);
+  const testPages = [
+    '/ar/',
+    '/en/',
+    '/ar/about/',
+    '/en/about/',
+    '/ar/privacy/',
+    '/en/privacy/',
+    '/ar/terms/',
+    '/en/terms/',
+    '/ar/services/data-analytics/',
+    '/en/services/data-analytics/',
+    '/ar/services/advanced-excel/',
+    '/en/services/advanced-excel/',
+    '/ar/services/custom-crm/',
+    '/en/services/custom-crm/',
+    '/ar/services/web-portfolios/',
+    '/en/services/web-portfolios/',
+    '/ar/services/marketing-strategy/',
+    '/en/services/marketing-strategy/'
+  ];
 
-    const metrics = await page.evaluate(() => (window as any).performanceMetrics);
+  for (const route of testPages) {
+    test(`Validates Core Web Vitals targets on: ${route}`, async ({ page }) => {
+      await page.goto(route);
+      await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 }).catch(() => {});
+      
+      // Give a buffer to finish loading and scroll down to trigger lazy assets
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+      await page.waitForTimeout(500);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(300);
 
-    console.log(`[Performance Metrics - Home Page]:`, metrics);
+      const metrics = await page.evaluate(() => (window as any).performanceMetrics);
 
-    // Assertions against Quality Targets (strict for Chromium, relaxed for WebKit/Firefox)
-    const isChromium = page.context().browser()?.browserType().name() === 'chromium';
-    const fcpLimit = isChromium ? 1800 : 4000;
-    const lcpLimit = isChromium ? 2500 : 5000;
+      console.log(`[Performance Metrics - ${route}]:`, metrics);
 
-    if (metrics.cls !== null) {
-      expect(metrics.cls).toBeLessThan(0.1); // CLS target < 0.1
-    }
-    if (metrics.fcp !== null) {
-      expect(metrics.fcp).toBeLessThan(fcpLimit);
-    }
-    if (metrics.lcp !== null) {
-      expect(metrics.lcp).toBeLessThan(lcpLimit);
-    }
-  });
+      // Assertions against Quality Targets (strict for Chromium, relaxed for WebKit/Firefox)
+      const isChromium = page.context().browser()?.browserType().name() === 'chromium';
+      const fcpLimit = isChromium ? 1800 : 4000;
+      const lcpLimit = isChromium ? 2500 : 5000;
+
+      if (metrics.cls !== null) {
+        expect(metrics.cls).toBeLessThan(0.1); // CLS target < 0.1
+      }
+      if (metrics.fcp !== null) {
+        expect(metrics.fcp).toBeLessThan(fcpLimit);
+      }
+      if (metrics.lcp !== null) {
+        expect(metrics.lcp).toBeLessThan(lcpLimit);
+      }
+    });
+  }
 
   test('Emulates Slow 3G network conditions on Chromium', async ({ page, browserName }) => {
     // Only chromium supports CDP emulation in Playwright easily
