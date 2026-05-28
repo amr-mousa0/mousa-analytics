@@ -260,7 +260,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
 </aside>
 
 <!-- Mobile Bottom Navigation Bar -->
-<nav id="mobile-bottom-nav" aria-label="Mobile bottom navigation" class="fixed bottom-0 inset-x-0 h-[56px] bg-white/85 backdrop-blur-lg border-t border-text-main/5 md:hidden z-50 flex items-center justify-around px-4 pb-safe-bottom shadow-[0_-4px_24px_rgba(10,25,47,0.04)] transition-all duration-300">
+<nav id="mobile-bottom-nav" aria-label="Mobile bottom navigation" class="fixed bottom-0 inset-x-0 h-[56px] bg-white/85 backdrop-blur-lg border-t border-text-main/5 md:hidden z-50 flex items-center justify-around px-4 pb-safe-bottom shadow-[0_-4px_24px_rgba(10,25,47,0.04)] transition-all duration-300 peer-checked:translate-y-full peer-checked:opacity-0 peer-checked:pointer-events-none">
   <!-- Home Tab -->
   <a 
     href={homePath} 
@@ -430,7 +430,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
 
 <!-- Contact Form Modal (Bottom Sheet GPU-Accelerated) -->
 <div id="contact" class="hidden" aria-hidden="true"></div>
-<aside id="contact-modal" class="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none" aria-modal="true" role="dialog" aria-labelledby="contact-modal-title" aria-label="Contact inquiry modal dialog">
+<div id="contact-modal" class="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none" aria-modal="true" role="dialog" aria-labelledby="contact-modal-title" aria-label="Contact inquiry modal dialog">
   <!-- Frosted Glass Backdrop Overlay -->
   <div id="contact-modal-backdrop" class="fixed inset-0 bg-text-main/60 backdrop-blur-md opacity-0 transition-opacity duration-300 ease-out cursor-pointer pointer-events-none"></div>
   
@@ -539,7 +539,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
       </button>
     </form>
   </div>
-</aside>
+</div>
 
 <script>
   import { lifecycle } from '../../scripts/lifecycle';

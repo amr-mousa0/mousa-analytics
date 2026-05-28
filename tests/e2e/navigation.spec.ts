@@ -79,6 +79,7 @@ test.describe('Responsive Navigation Drawer', () => {
 
   test('shows drawer toggle on mobile and hides horizontal links', async ({ page }) => {
     await page.goto('/en/');
+    await waitForPreloader(page);
     const viewport = page.viewportSize();
     if (viewport && viewport.width >= 768) {
       test.skip(true, 'Skip mobile-only test on desktop layout');
@@ -104,11 +105,10 @@ test.describe('Responsive Navigation Drawer', () => {
     // doesn't intercept in Safari/WebKit.
     const aboutDrawerLink = page.locator('.mobile-drawer-link:has-text("Who I Am")').first();
     await expect(aboutDrawerLink).toBeVisible();
-    await page.waitForTimeout(500); // Wait for drawer transition (300ms) to fully settle
     await aboutDrawerLink.click();
 
     // Page should navigate via ViewTransitions
-    await expect(page).toHaveURL(/\/en\/about\//, { timeout: 10000 });
+    await page.waitForURL(/\/en\/about\//, { timeout: 10000 });
     // After ViewTransitions swap, checkbox resets to its default unchecked state
     await waitForPreloader(page, 3000);
   });
