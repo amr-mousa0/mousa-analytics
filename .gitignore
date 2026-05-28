@@ -73,3 +73,6 @@ task.md
 playwright-report/
 test-results/
 
+
+.vercel
+.env*
