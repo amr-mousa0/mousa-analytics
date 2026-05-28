@@ -112,7 +112,7 @@ async function runLighthouseAudit() {
         output: 'json',
         onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
         port: chrome.port,
-        throttlingMethod: 'provided',
+        throttlingMethod: 'simulate',
         // Emulate desktop for stable metrics, or let lighthouse use default mobile emulation
         formFactor: 'mobile',
         screenEmulation: {

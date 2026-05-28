@@ -222,7 +222,7 @@ const highlightText = (text: string) => {
     if (!bgImg) return;
     
     // Skip parallax on mobile - the 0.05 speed is barely visible but wastes scroll performance
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
     if (isMobile) {
       bgImg.style.transform = '';
       return;

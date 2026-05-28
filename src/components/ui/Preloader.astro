@@ -93,6 +93,21 @@ const isAr = lang === 'ar';
     pointer-events: none !important;
   }
 
+  /* Mobile viewport first paint bypass to prevent LCP/FCP render-blocking on mobile (Mobile-First) */
+  @media (max-width: 767px) {
+    #global-preloader {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    html.preloader-lock,
+    html.preloader-lock body {
+      overflow: auto !important;
+      height: auto !important;
+    }
+  }
+
   /* Fixed overlay covering the entire screen by default */
   #global-preloader {
     --preloader-bg: var(--color-text-main);
@@ -240,8 +255,9 @@ const isAr = lang === 'ar';
     var initialPreloader = getPreloader();
     if (!initialPreloader) return;
 
-    // Synchronously remove preloader entirely for bots/auditors before any paint or JS execution occurs
-    if (isBot) {
+    var isMobileViewport = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+    // Synchronously remove preloader entirely for bots/auditors/mobile-viewports before any paint or JS execution occurs
+    if (isBot || isMobileViewport) {
       initialPreloader.style.display = 'none';
       initialPreloader.remove();
       try {
