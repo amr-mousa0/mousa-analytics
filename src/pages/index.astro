@@ -1,0 +1,6 @@
+---
+// Native Astro Root Redirect for local preview server compatibility
+// Note: Vercel Static Hosting executes the native 308 redirect in vercel.json at the edge,
+// but we keep this static fallback to ensure E2E tests and local dev servers redirect cleanly.
+return Astro.redirect('/ar/');
+---
