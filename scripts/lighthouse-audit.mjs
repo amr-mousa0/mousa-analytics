@@ -88,7 +88,7 @@ async function runLighthouseAudit() {
   const server = await startStaticServer();
 
   const urls = [
-    { name: 'Arabic Homepage', path: '/ar/' },
+    { name: 'Arabic Homepage', path: '/' },
     { name: 'English Homepage', path: '/en/' }
   ];
 
