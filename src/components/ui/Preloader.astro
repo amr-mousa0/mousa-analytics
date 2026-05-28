@@ -256,10 +256,20 @@ const isAr = lang === 'ar';
     if (!initialPreloader) return;
 
     var isMobileViewport = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
-    // Synchronously remove preloader entirely for bots/auditors/mobile-viewports before any paint or JS execution occurs
+    // Synchronously hide and defer-remove preloader entirely for bots/auditors/mobile-viewports to prevent LCP/FCP render-blocking
     if (isBot || isMobileViewport) {
       initialPreloader.style.display = 'none';
-      initialPreloader.remove();
+      if (typeof requestIdleCallback !== 'undefined') {
+        requestIdleCallback(function() {
+          var p = getPreloader();
+          if (p) p.remove();
+        });
+      } else {
+        setTimeout(function() {
+          var p = getPreloader();
+          if (p) p.remove();
+        }, 0);
+      }
       try {
         document.documentElement.classList.remove('preloader-lock');
         document.documentElement.classList.add('is-bot');
@@ -274,7 +284,11 @@ const isAr = lang === 'ar';
           var p = getPreloader();
           if (p) {
             p.style.display = 'none';
-            p.remove();
+            if (typeof requestIdleCallback !== 'undefined') {
+              requestIdleCallback(function() { p.remove(); });
+            } else {
+              setTimeout(function() { p.remove(); }, 0);
+            }
           }
           try {
             document.documentElement.classList.remove('preloader-lock');

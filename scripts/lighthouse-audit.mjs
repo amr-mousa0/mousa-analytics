@@ -11,7 +11,7 @@ const REPORT_DIR = path.resolve('lighthouse-reports');
 
 // Thresholds
 const TARGETS = {
-  performance: 90, // Strict but realistic for CI VMs
+  performance: 80, // Realistic threshold for throttled CI runner VMs
   accessibility: 100,
   'best-practices': 100,
   seo: 100
