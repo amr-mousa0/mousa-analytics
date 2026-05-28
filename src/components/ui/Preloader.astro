@@ -176,7 +176,7 @@ const isAr = lang === 'ar';
   .preloader-exit {
     opacity: 0 !important;
     pointer-events: none !important;
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   /* Progress bar animation binding to variable duration */
@@ -273,8 +273,9 @@ const isAr = lang === 'ar';
     let transitionFailsafeTimer = null;
     
     const hasSeen = sessionStorage.getItem('mousa_preloader_seen');
-    const MIN_INITIAL_DURATION = isBot ? 0 : (hasSeen ? 500 : 1500); // Original premium 1.5s load for users, bypassed for bots
-    const MIN_TRANSITION_DURATION = isBot ? 0 : 400; // Original premium 400ms transition for users
+    // Completely bypass artificial duration to prevent PageSpeed/Lighthouse bottlenecks (anti-cloaking safe)
+    const MIN_INITIAL_DURATION = 0; 
+    const MIN_TRANSITION_DURATION = isBot ? 0 : 200; // Snappier transitions between pages
 
     function showPreloader(isTransition = false) {
       showStartTime = Date.now();
@@ -357,8 +358,8 @@ const isAr = lang === 'ar';
           } catch (e) {}
         }
 
-        // Wait exactly 800ms (or 0ms if bot) for CSS opacity transition to complete before setting display none
-        const finishDelay = isBot ? 0 : 800;
+        // Wait exactly 400ms (or 0ms if bot) for CSS opacity transition to complete before setting display none
+        const finishDelay = isBot ? 0 : 400;
         setTimeout(() => {
           var p = getPreloader();
           if (p) {
