@@ -5,6 +5,28 @@
   "redirects": [
     {
       "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.mousa-analytics.vercel.app"
+        }
+      ],
+      "destination": "https://mousa-analytics.vercel.app/ar/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.mousa-analytics.vercel.app"
+        }
+      ],
+      "destination": "https://mousa-analytics.vercel.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/",
       "destination": "/ar/",
       "permanent": true
     }

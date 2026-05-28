@@ -9,7 +9,7 @@ translationKey: "intro-to-analytics"
 draft: false
 seo:
   metaTitle: "Understanding E-Commerce Analytics | Mousa Analytics"
-  metaDescription: "Learn how to track your online store's metrics to make data-driven decisions and reduce ad waste."
+  metaDescription: "Guide to tracking your e-commerce store's key metrics, building analytics dashboards, making data-driven decisions, and reducing advertising waste."
   noindex: false
 ---
 Data is the lifeblood of modern business. Without proper tracking, you are steering in the dark.

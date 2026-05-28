@@ -40,7 +40,7 @@ const fallbackSeo = (pageId.startsWith('service-') || pageId.startsWith('project
 const seoTitle = title || fallbackSeo.title || "Amr Mousa";
 const seoDescription = description || fallbackSeo.description || "";
 const seoKeywords = fallbackSeo.keywords || [];
-const rawOgImage = ogImage || fallbackSeo.ogImage;
+const rawOgImage = ogImage || fallbackSeo.ogImage || '/images/og-image.png';
 const seoOgImage = rawOgImage 
   ? (rawOgImage.startsWith('http') ? rawOgImage : new URL(rawOgImage, Astro.site).href)
   : undefined;
@@ -51,7 +51,10 @@ const isStagingPreview = typeof process !== 'undefined' && process.env &&
 const finalNoindex = noindex || isFallback || isStagingPreview;
 
 // Dynamic domain-safe canonical URL
-const canonicalPath = Astro.url.pathname;
+let canonicalPath = Astro.url.pathname;
+if (!canonicalPath.endsWith('/')) {
+  canonicalPath += '/';
+}
 const cleanCanonicalUrl = canonicalUrl || new URL(canonicalPath, Astro.site).href;
 
 // Alternate hreflangs
@@ -300,7 +303,7 @@ const breadcrumbSchema = breadcrumbs.length > 0 ? {
     <meta property="og:title" content={seoTitle} />
     <meta property="og:description" content={seoDescription} />
     <meta property="og:url" content={cleanCanonicalUrl} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={contentType === 'blog' ? 'article' : 'website'} />
     {seoOgImage && <meta property="og:image" content={seoOgImage} />}
     
     <!-- Twitter Card Metadata -->
