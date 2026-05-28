@@ -69,9 +69,7 @@ PRODUCT.md
 STARTER_CONSTRAINTS.md
 task.md
 
-# Testing (local dev only)
-tests/
-playwright.config.ts
+# Testing
 playwright-report/
 test-results/
 
