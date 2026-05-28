@@ -86,7 +86,7 @@ const isAr = lang === 'ar';
       <!-- Learn More Link -->
       <div class="pt-4 font-sans">
         <a 
-          href={`/${lang}/about/`} 
+          href={lang === 'ar' ? '/about/' : '/en/about/'} 
           class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-primary hover:text-accent-highlight tracking-widest uppercase transition-colors duration-300 group"
         >
           <span>{isAr ? "تعرف على رحلتنا وخبراتنا" : "Learn more about our journey"}</span>

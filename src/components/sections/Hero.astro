@@ -132,13 +132,13 @@ const highlightText = (text: string) => {
 
       <div class="flex flex-row items-center justify-center gap-3 w-full pt-2 font-sans">
         <a 
-          href={`/${lang}/#contact`} 
+          href={lang === 'ar' ? '/#contact' : '/en/#contact'} 
           class="h-11 px-6 rounded-full bg-text-main hover:bg-text-main/90 text-white text-[11px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 min-w-[140px]"
         >
           <span>{heroData.primaryBtn}</span>
         </a>
         <a 
-          href={`/${lang}/#services`} 
+          href={lang === 'ar' ? '/#services' : '/en/#services'} 
           class="h-11 px-6 rounded-full bg-transparent border border-text-main/15 hover:bg-text-main/5 text-text-main text-[11px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 min-w-[140px]"
         >
           <span>{heroData.secondaryBtn}</span>
