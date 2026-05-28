@@ -357,8 +357,8 @@ const getServiceImage = (service: any) => {
   </div>
 </section>
 
-<script is:inline>
-  // Dynamic pain points data structure
+<script>
+  // Pain points data - deferred as module script to avoid blocking main thread (TBT optimization)
   const painPointsData = [
     {
       titleAr: "تطوير إكسل المتقدم وهيكلة البيانات",

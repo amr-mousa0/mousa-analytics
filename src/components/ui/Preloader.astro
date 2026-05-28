@@ -255,7 +255,7 @@ const isAr = lang === 'ar';
     var initialPreloader = getPreloader();
     if (!initialPreloader) return;
 
-    var isMobileViewport = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+    var isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 768;
     // Synchronously hide and defer-remove preloader entirely for bots/auditors/mobile-viewports to prevent LCP/FCP render-blocking
     if (isBot || isMobileViewport) {
       initialPreloader.style.display = 'none';

@@ -25,8 +25,8 @@
   --shadow-success: 0 4px 14px rgba(22, 163, 74, 0.15);
   --shadow-success-hover: 0 6px 20px rgba(22, 163, 74, 0.25);
 
-  --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Outfit', 'Cairo', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Cormorant Garamond', 'Amiri', 'Playfair Display', Georgia, serif;
   --font-logo: 'Cinzel', serif;
 }
 
