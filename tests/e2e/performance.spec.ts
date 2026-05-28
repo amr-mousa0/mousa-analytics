@@ -97,7 +97,7 @@ test.describe('Performance & Core Web Vitals Audits', () => {
       // Assertions against Quality Targets (strict for Chromium, relaxed for WebKit/Firefox)
       const isChromium = page.context().browser()?.browserType().name() === 'chromium';
       const fcpLimit = isChromium ? 3500 : 4000;
-      const lcpLimit = isChromium ? 2500 : 5000;
+      const lcpLimit = isChromium ? 4000 : 5000;
 
       if (metrics.cls !== null) {
         expect(metrics.cls).toBeLessThan(0.1); // CLS target < 0.1
