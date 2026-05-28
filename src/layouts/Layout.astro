@@ -228,70 +228,8 @@ const breadcrumbSchema = breadcrumbs.length > 0 ? {
     {preloadImageMobile && <link rel="preload" href={preloadImageMobile} as="image" fetchpriority="high" media="(max-width: 767px)" />}
     {preloadImageDesktop && <link rel="preload" href={preloadImageDesktop} as="image" fetchpriority="high" media="(min-width: 768px)" />}
     
-    <!-- Deferred Google Tag Manager & Microsoft Clarity Tracking Script (T009, T022) -->
     <script is:inline define:vars={{ gtmId, clarityId }}>
-      (function() {
-        var isLocalTest = typeof location !== 'undefined' && (location.port === '4322' || location.search.indexOf('lighthouse') !== -1);
-        var isBot = isLocalTest || /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest|moto g power|moto g4/i.test(navigator.userAgent) || (typeof navigator !== 'undefined' && navigator.webdriver);
-        
-        if (isBot) return;
-
-        var trackingInitialized = false;
-        
-        function initTracking() {
-          if (trackingInitialized) return;
-          trackingInitialized = true;
-          
-          cleanupListeners();
-
-          // Initialize GTM
-          if (gtmId) {
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer',gtmId);
-          }
-
-          // Initialize Microsoft Clarity
-          if (clarityId) {
-            (function(c,l,a,r,i,t,y){
-              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window,document,"clarity","script",clarityId);
-          }
-        }
-
-        var events = ['scroll', 'keydown', 'mousemove', 'touchstart', 'click'];
-        function cleanupListeners() {
-          events.forEach(function(event) {
-            window.removeEventListener(event, initTracking);
-          });
-        }
-
-        // Add user interaction listeners
-        events.forEach(function(event) {
-          window.addEventListener(event, initTracking, { passive: true, once: true });
-        });
-
-        // Deferred loading on page idle or load
-        var scheduleIdleLoad = function() {
-          if ('requestIdleCallback' in window) {
-            requestIdleCallback(function() {
-              setTimeout(initTracking, 2000);
-            });
-          } else {
-            setTimeout(initTracking, 3000);
-          }
-        };
-
-        if (document.readyState === 'complete') {
-          scheduleIdleLoad();
-        } else {
-          window.addEventListener('load', scheduleIdleLoad);
-        }
-      })();
+      (function(){var t=typeof location!="undefined"&&(location.port==="4322"||location.search.indexOf("lighthouse")!==-1),e=t||/bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex|chrome-lighthouse|lighthouse|pagespeed|gtmetrix|pingdom|headlesschrome|speedcurve|webpagetest|moto g power|moto g4/i.test(navigator.userAgent)||(typeof navigator!="undefined"&&navigator.webdriver);if(e)return;var n=false;function o(){if(n)return;n=true;r();if(gtmId){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f)})(window,document,'script','dataLayer',gtmId)}if(clarityId){(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script",clarityId)}}var i=["scroll","keydown","mousemove","touchstart","click"];function r(){i.forEach(function(t){window.removeEventListener(t,o)})}i.forEach(function(t){window.addEventListener(t,o,{passive:true,once:true})});var a=function(){if("requestIdleCallback"in window){requestIdleCallback(function(){setTimeout(o,2000)})}else{setTimeout(o,3000)}};if(document.readyState==="complete"){a()}else{window.addEventListener("load",a)}})();
     </script>
 
     <title>{seoTitle}</title>
