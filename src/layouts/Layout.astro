@@ -226,29 +226,10 @@ const breadcrumbSchema = breadcrumbs.length > 0 ? {
       </>
     )}
     
-    <script is:inline>
-      // Defer FontAwesome CSS loading to prioritize critical CSS/fonts and avoid FCP/LCP network competition
-      (function() {
-        var loadFA = function() {
-          var link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
-          link.integrity = 'sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==';
-          link.crossOrigin = 'anonymous';
-          link.referrerPolicy = 'no-referrer';
-          document.head.appendChild(link);
-        };
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(function() { setTimeout(loadFA, 1200); });
-        } else {
-          window.addEventListener('load', function() { setTimeout(loadFA, 1500); });
-        }
-      })();
-    </script>
-    <noscript>
+    <!-- Load FontAwesome only on subpages to avoid performance bottlenecks on critical homepage landings -->
+    {pageId !== 'homepage' && (
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    </noscript>
-    <!-- FA fonts load naturally when deferred CSS activates - no preload needed -->
+    )}
 
     {preloadImageMobile && <link rel="preload" href={preloadImageMobile} as="image" fetchpriority="high" media="(max-width: 767px)" />}
     {preloadImageDesktop && <link rel="preload" href={preloadImageDesktop} as="image" fetchpriority="high" media="(min-width: 768px)" />}

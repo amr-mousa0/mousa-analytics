@@ -4,6 +4,7 @@ import { getEntry } from 'astro:content';
 import analyticsBgImgDesktop from '../../assets/images/analyst-side-bg-desktop.png';
 import analyticsBgImgMobile from '../../assets/images/analyst-side-bg-mobile.png';
 import { getSafeSocials } from '../../scripts/socialsHelper';
+import Icon from '../ui/Icon.astro';
 
 interface Props {
   lang: string;
@@ -154,7 +155,7 @@ const highlightText = (text: string) => {
             aria-label={item.data.name}
             title={item.data.name}
           >
-            <i class={item.data.icon} aria-hidden="true"></i>
+            <Icon name={item.data.icon} class="w-4 h-4" />
           </a>
         ))}
       </div>
@@ -193,7 +194,7 @@ const highlightText = (text: string) => {
           <div class="trust-card group glass-card glass-card-hover rounded-xl p-2 md:p-3.5 flex flex-col md:flex-row items-center gap-1.5 md:gap-3" style={`animation-delay: ${i * 120}ms`}>
             <!-- Circular Icon Container -->
             <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-accent-primary/10 flex items-center justify-center shrink-0 text-accent-primary transition-colors duration-300 group-hover:bg-accent-primary/20 group-hover:scale-105">
-              <i class={`${pillIcons[i] || 'fa-solid fa-circle-check'} text-xs`} aria-hidden="true"></i>
+              <Icon name={pillIcons[i] || 'circle-check'} class="w-3.5 h-3.5" />
             </div>
             
             <!-- Text content container -->

@@ -9,6 +9,8 @@ interface Props {
   actionIcon?: string;
 }
 
+import Icon from './Icon.astro';
+
 const { lang, activePage, backUrl, backText, actionUrl, actionText, actionIcon } = Astro.props;
 const isAr = lang === 'ar';
 
@@ -120,7 +122,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-text-main/10 bg-white/80 hover:bg-white text-text-main/75 hover:text-text-main text-[9px] font-extrabold uppercase tracking-wider shadow-sm transition-all duration-300"
           aria-label={actionText}
         >
-          {actionIcon && <i class={`${actionIcon} text-[11px]`}></i>}
+          {actionIcon && <Icon name={actionIcon} class="w-3.5 h-3.5" />}
           <span class="hidden sm:inline">{actionText}</span>
         </a>
       )}
@@ -149,7 +151,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
 
       <!-- Mobile Controls (Drawer Menu Icon) -->
       <label for="menu-toggle" class="md:hidden cursor-pointer p-1.5 text-text-main/70 hover:text-hero-accent select-none z-50 focus-visible:ring-2" aria-label="Toggle Menu">
-        <i class="fa-solid fa-bars text-base"></i>
+        <Icon name="bars" class="w-5 h-5" />
       </label>
     </div>
 
@@ -174,7 +176,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
         {isAr ? "القائمة الإرشادية" : "Navigation"}
       </span>
       <label for="menu-toggle" class="w-8 h-8 rounded-full bg-text-main/5 flex items-center justify-center text-text-main/70 hover:bg-text-main/10 hover:text-text-main transition-all cursor-pointer select-none">
-        <i class="fa-solid fa-xmark text-sm"></i>
+        <Icon name="xmark" class="w-4 h-4" />
       </label>
     </div>
 
@@ -183,37 +185,37 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
       <!-- Home Link -->
       <a href={homePath} class="mobile-drawer-link flex items-center justify-between py-3.5 border-b border-text-main/5 text-text-main/80 hover:text-hero-accent transition-all duration-300 font-semibold text-[14px]">
         <span>{isAr ? "الرئيسية" : "Home"}</span>
-        <i class="fa-solid fa-house text-text-main/25 text-xs"></i>
+        <Icon name="house" class="w-3.5 h-3.5 text-text-main/25" />
       </a>
 
       <!-- About Link -->
       <a href={aboutPath} class="mobile-drawer-link flex items-center justify-between py-3.5 border-b border-text-main/5 text-text-main/80 hover:text-hero-accent transition-all duration-300 font-semibold text-[14px]">
         <span>{isAr ? "من أنا" : "Who I Am"}</span>
-        <i class="fa-solid fa-user text-text-main/25 text-xs"></i>
+        <Icon name="user" class="w-3.5 h-3.5 text-text-main/25" />
       </a>
 
       <!-- Services Link -->
       <a href={servicesPath} class="mobile-drawer-link flex items-center justify-between py-3.5 border-b border-text-main/5 text-text-main/80 hover:text-hero-accent transition-all duration-300 font-semibold text-[14px]">
         <span>{isAr ? "الخدمات" : "Services"}</span>
-        <i class="fa-solid fa-gears text-text-main/25 text-xs"></i>
+        <Icon name="gears" class="w-3.5 h-3.5 text-text-main/25" />
       </a>
 
       <!-- Portfolio Link -->
       <a href={projectsPath} class="mobile-drawer-link flex items-center justify-between py-3.5 border-b border-text-main/5 text-text-main/80 hover:text-hero-accent transition-all duration-300 font-semibold text-[14px]">
         <span>{isAr ? "المشاريع" : "Projects"}</span>
-        <i class="fa-solid fa-briefcase text-text-main/25 text-xs"></i>
+        <Icon name="briefcase" class="w-3.5 h-3.5 text-text-main/25" />
       </a>
 
       <!-- Blog Link -->
       <a href={blogPath} class="mobile-drawer-link flex items-center justify-between py-3.5 border-b border-text-main/5 text-text-main/80 hover:text-hero-accent transition-all duration-300 font-semibold text-[14px]">
         <span>{isAr ? "المدونة" : "Blog"}</span>
-        <i class="fa-solid fa-book-open text-text-main/25 text-xs"></i>
+        <Icon name="book-open" class="w-3.5 h-3.5 text-text-main/25" />
       </a>
 
       <!-- Contact Link -->
       <a href={contactPath} class="mobile-drawer-link flex items-center justify-between py-3.5 border-b border-text-main/5 text-text-main/80 hover:text-hero-accent transition-all duration-300 font-semibold text-[14px]">
         <span>{isAr ? "اتصل بي" : "Contact"}</span>
-        <i class="fa-solid fa-envelope text-text-main/25 text-xs"></i>
+        <Icon name="envelope" class="w-3.5 h-3.5 text-text-main/25" />
       </a>
     </nav>
   </div>
@@ -266,7 +268,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
     href={homePath} 
     class={`flex flex-col items-center justify-center flex-1 h-full transition-colors group focus-visible:outline-none ${activePage === 'home' ? 'text-hero-accent' : 'text-text-main/60 hover:text-hero-accent'}`}
   >
-    <i class="fa-solid fa-house text-base transition-transform group-active:scale-90 group-focus-visible:ring-1"></i>
+    <Icon name="house" class="w-5 h-5 transition-transform group-active:scale-90" />
     <span class="text-[8px] font-bold mt-0.5 uppercase tracking-wider font-sans">{isAr ? "الرئيسية" : "Home"}</span>
   </a>
 
@@ -275,7 +277,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
     href={servicesPath} 
     class={`flex flex-col items-center justify-center flex-1 h-full transition-colors group focus-visible:outline-none ${activePage === 'services' ? 'text-hero-accent' : 'text-text-main/60 hover:text-hero-accent'}`}
   >
-    <i class="fa-solid fa-gears text-base transition-transform group-active:scale-90 group-focus-visible:ring-1"></i>
+    <Icon name="gears" class="w-5 h-5 transition-transform group-active:scale-90" />
     <span class="text-[8px] font-bold mt-0.5 uppercase tracking-wider font-sans">{isAr ? "الخدمات" : "Services"}</span>
   </a>
 
@@ -314,7 +316,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
     href={projectsPath} 
     class="flex flex-col items-center justify-center flex-1 h-full text-text-main/60 hover:text-hero-accent transition-colors group focus-visible:outline-none"
   >
-    <i class="fa-solid fa-briefcase text-base transition-transform group-active:scale-90 group-focus-visible:ring-1"></i>
+    <Icon name="briefcase" class="w-5 h-5 transition-transform group-active:scale-90" />
     <span class="text-[8px] font-bold mt-0.5 uppercase tracking-wider font-sans">{isAr ? "المشاريع" : "Portfolio"}</span>
   </a>
 
@@ -323,7 +325,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
     href={aboutPath} 
     class={`flex flex-col items-center justify-center flex-1 h-full transition-colors group focus-visible:outline-none ${activePage === 'about' ? 'text-hero-accent' : 'text-text-main/60 hover:text-hero-accent'}`}
   >
-    <i class="fa-solid fa-user text-base transition-transform group-active:scale-90 group-focus-visible:ring-1"></i>
+    <Icon name="user" class="w-5 h-5 transition-transform group-active:scale-90" />
     <span class="text-[8px] font-bold mt-0.5 uppercase tracking-wider font-sans">{isAr ? "من أنا" : "About"}</span>
   </a>
 </nav>
@@ -340,7 +342,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
     class="absolute top-2.5 end-2.5 w-6 h-6 rounded-full bg-text-main/5 flex items-center justify-center text-text-main/60 hover:bg-text-main/10 hover:text-text-main transition-colors"
     aria-label={isAr ? "إغلاق" : "Close"}
   >
-    <i class="fa-solid fa-xmark text-xs"></i>
+    <Icon name="xmark" class="w-3 h-3" />
   </button>
 
   <!-- Brand Logo Icon -->
@@ -377,7 +379,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
       id="install-app-btn" 
       class="mt-2.5 px-3.5 py-1.5 rounded-lg bg-text-main text-white hover:bg-hero-accent transition-colors text-[10px] font-bold flex items-center gap-1.5 shadow-sm active:scale-95 duration-200"
     >
-      <i class="fa-solid fa-download text-[9px]"></i>
+      <Icon name="download" class="w-3 h-3" />
       <span>{isAr ? "تثبيت التطبيق الآن" : "Install App Now"}</span>
     </button>
   </div>
@@ -399,7 +401,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
         id="close-instructions-btn" 
         class="w-8 h-8 rounded-full bg-text-main/5 flex items-center justify-center text-text-main/70 hover:bg-text-main/10"
       >
-        <i class="fa-solid fa-xmark text-sm"></i>
+        <Icon name="xmark" class="w-4 h-4" />
       </button>
     </div>
 
@@ -409,8 +411,8 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
       <div id="ios-instructions" class="hidden space-y-3">
         <p>{isAr ? "بسبب قيود نظام iOS، يرجى اتباع الآتي للتثبيت:" : "Due to iOS constraints, please follow these steps to install:"}</p>
         <ol class="list-decimal list-inside space-y-2">
-          <li>{isAr ? "اضغط على زر المشاركة في شريط المتصفح السفلي" : "Tap the Share button in the browser's bottom bar"} <i class="fa-solid fa-share-from-square text-hero-accent mx-1 text-[13px]"></i>.</li>
-          <li>{isAr ? "اسحب لأسفل واختر 'إضافة إلى الشاشة الرئيسية'" : "Scroll down and select 'Add to Home Screen'"} <i class="fa-solid fa-plus-square text-hero-accent mx-1 text-[13px]"></i>.</li>
+          <li>{isAr ? "اضغط على زر المشاركة في شريط المتصفح السفلي" : "Tap the Share button in the browser's bottom bar"} <Icon name="envelope" class="w-3.5 h-3.5 text-hero-accent mx-1 inline" />.</li>
+          <li>{isAr ? "اسحب لأسفل واختر 'إضافة إلى الشاشة الرئيسية'" : "Scroll down and select 'Add to Home Screen'"} <Icon name="gears" class="w-3.5 h-3.5 text-hero-accent mx-1 inline" />.</li>
           <li>{isAr ? "اضغط على 'إضافة' في أعلى اليمين لتأكيد التثبيت" : "Tap 'Add' in the top right corner to confirm"}.</li>
         </ol>
       </div>
@@ -419,8 +421,8 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
       <div id="android-instructions" class="hidden space-y-3">
         <p>{isAr ? "لتثبيت التطبيق على جهاز الأندرويد الخاص بك:" : "To install the app on your Android device:"}</p>
         <ol class="list-decimal list-inside space-y-2">
-          <li>{isAr ? "اضغط على زر خيارات المتصفح (الثلاث نقاط)" : "Tap the browser options button (three dots)"} <i class="fa-solid fa-ellipsis-vertical text-hero-accent mx-1 text-[13px]"></i>.</li>
-          <li>{isAr ? "اختر 'إضافة إلى الشاشة الرئيسية' أو 'تثبيت التطبيق'" : "Select 'Add to Home Screen' or 'Install App'"} <i class="fa-solid fa-plus-square text-hero-accent mx-1 text-[13px]"></i>.</li>
+          <li>{isAr ? "اضغط على زر خيارات المتصفح (الثلاث نقاط)" : "Tap the browser options button (three dots)"} <Icon name="bars" class="w-3.5 h-3.5 text-hero-accent mx-1 inline" />.</li>
+          <li>{isAr ? "اختر 'إضافة إلى الشاشة الرئيسية' أو 'تثبيت التطبيق'" : "Select 'Add to Home Screen' or 'Install App'"} <Icon name="gears" class="w-3.5 h-3.5 text-hero-accent mx-1 inline" />.</li>
           <li>{isAr ? "أكد التثبيت لتظهر الأيقونة على جهازك" : "Confirm the installation to place the icon on your device"}.</li>
         </ol>
       </div>
@@ -454,7 +456,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
         class="w-8 h-8 rounded-full bg-text-main/5 flex items-center justify-center text-text-main/70 hover:bg-text-main/10 transition-colors"
         aria-label={isAr ? "إغلاق" : "Close"}
       >
-        <i class="fa-solid fa-xmark text-sm"></i>
+        <Icon name="xmark" class="w-4 h-4" />
       </button>
     </div>
 
@@ -534,7 +536,7 @@ const langTogglePath = pathname.replace(/^\/(en|ar)\/?/, `/${targetLang}/`);
         type="submit" 
         class="w-full py-3.5 px-6 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-white text-center font-bold text-xs flex items-center justify-center gap-2 transition-all duration-300 shadow-md shadow-[#16A34A]/10 active:scale-95 cursor-pointer mt-1"
       >
-        <i class="fa-brands fa-whatsapp text-base"></i>
+        <Icon name="whatsapp" class="w-4.5 h-4.5" />
         <span>{isAr ? "إرسال الاستفسار للواتس اب" : "Send Inquiry via WhatsApp"}</span>
       </button>
     </form>

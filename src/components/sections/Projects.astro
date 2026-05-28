@@ -1,6 +1,7 @@
 ---
 import { getSafeProjects } from '../../scripts/projectsHelper';
 import { Image } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
 
 interface Props {
   lang: string;
@@ -100,7 +101,7 @@ const getProjectIcon = (slug: string) => {
 
                 <!-- Floating Icon Badge (Bottom-Left) -->
                 <div class="absolute -bottom-3 start-4 w-9 h-9 rounded-xl bg-white border border-slate-200 shadow-md flex items-center justify-center text-accent-primary z-10">
-                  <i class={`${getProjectIcon(project.slug)} text-sm`}></i>
+                  <Icon name={getProjectIcon(project.slug)} class="w-4.5 h-4.5" />
                 </div>
               </a>
 
@@ -174,7 +175,7 @@ const getProjectIcon = (slug: string) => {
                     class="w-11 h-11 rounded-full bg-slate-100 hover:bg-slate-200 text-text-main flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0 border border-slate-200/50 project-phone-cta"
                     aria-label={isAr ? "اتصال هاتفي" : "Call now"}
                   >
-                    <i class="fa-solid fa-phone text-sm"></i>
+                    <Icon name="phone" class="w-4 h-4" />
                   </a>
 
                   <!-- WhatsApp Button (Green) -->
@@ -186,7 +187,7 @@ const getProjectIcon = (slug: string) => {
                     data-project-title={project.data.title}
                     data-project-slug={project.slug}
                   >
-                    <i class="fa-brands fa-whatsapp text-base"></i>
+                    <Icon name="whatsapp" class="w-4 h-4" />
                     <span>{isAr ? "واتس اب" : "WhatsApp"}</span>
                   </a>
                 </div>

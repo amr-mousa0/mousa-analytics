@@ -1,6 +1,7 @@
 ---
 import { getSafeServices } from '../../scripts/servicesHelper';
 import { Image } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
 
 // Import service images
 import crmImg from '../../assets/images/Crm.png';
@@ -163,7 +164,7 @@ const getServiceImage = (service: any) => {
                   class="w-11 h-11 rounded-full bg-primary-bg hover:bg-text-main/10 text-text-main flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0 border border-text-main/10"
                   aria-label={isAr ? "اتصال هاتفي" : "Call now"}
                 >
-                  <i class="fa-solid fa-phone text-sm"></i>
+                  <Icon name="phone" class="w-4 h-4" />
                 </a>
 
                 <!-- WhatsApp Button (Green / Success Theme Tokens) -->
@@ -175,7 +176,7 @@ const getServiceImage = (service: any) => {
                   data-service-title={service.data.title}
                   data-service-slug={service.slug}
                 >
-                  <i class="fa-brands fa-whatsapp text-base"></i>
+                  <Icon name="whatsapp" class="w-4 h-4" />
                   <span>{isAr ? "واتس اب" : "WhatsApp"}</span>
                 </a>
               </div>

@@ -3,6 +3,8 @@ interface Props {
   lang: string;
 }
 
+import Icon from './Icon.astro';
+
 const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
@@ -73,7 +75,7 @@ const blogPath = `/${lang}/blog/`;
             aria-label={isAr ? "اتصال هاتفي" : "Call now"}
             title={isAr ? "اتصل بي" : "Call me"}
           >
-            <i class="fa-solid fa-phone text-xs"></i>
+            <Icon name="phone" class="w-3.5 h-3.5" />
           </a>
 
           <!-- WhatsApp Button -->
@@ -85,7 +87,7 @@ const blogPath = `/${lang}/blog/`;
             aria-label={isAr ? "محادثة واتس اب" : "WhatsApp now"}
             title={isAr ? "محادثة واتس اب" : "WhatsApp me"}
           >
-            <i class="fa-brands fa-whatsapp text-base"></i>
+            <Icon name="whatsapp" class="w-4 h-4" />
           </a>
         </div>
 
@@ -94,7 +96,7 @@ const blogPath = `/${lang}/blog/`;
           href={aboutPath} 
           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white/90 hover:text-white text-[11px] font-semibold shadow-sm transition-all duration-300 active:scale-95 cursor-pointer hover:border-white/25 shrink-0 mt-1"
         >
-          <i class="fa-solid fa-user text-[9px]"></i>
+          <Icon name="user" class="w-3 h-3" />
           <span>{isAr ? "من أنا؟" : "About Me"}</span>
         </a>
       </div>

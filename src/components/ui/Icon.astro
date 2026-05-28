@@ -1,0 +1,120 @@
+---
+interface Props {
+  name: string;
+  class?: string;
+  'aria-hidden'?: string;
+}
+
+const { name, class: className = '', 'aria-hidden': ariaHidden = 'true' } = Astro.props;
+
+// Normalize class names coming from FontAwesome e.g. "fa-brands fa-whatsapp" -> "whatsapp"
+const cleanName = name
+  .replace(/fa-solid|fa-regular|fa-brands|fa-/g, '')
+  .trim()
+  .toLowerCase();
+
+// Define SVG icons paths (standard Lucide / FontAwesome shapes)
+const icons: Record<string, { viewBox: string; svg: string }> = {
+  bars: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>'
+  },
+  xmark: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"/>'
+  },
+  house: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 22V12h6v10"/>'
+  },
+  user: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+  },
+  gears: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+  },
+  briefcase: {
+    viewBox: '0 0 24 24',
+    svg: '<rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+  },
+  'book-open': {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'
+  },
+  envelope: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+  },
+  phone: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>'
+  },
+  whatsapp: {
+    viewBox: '0 0 24 24',
+    svg: '<path fill="currentColor" d="M12.031 2c-5.502 0-9.969 4.468-9.969 9.97 0 1.761.461 3.479 1.336 5.002L2 22l5.176-1.359c1.479.807 3.138 1.23 4.845 1.23h.005c5.502 0 9.97-4.469 9.97-9.97 0-2.665-1.037-5.171-2.925-7.059C17.18 3.023 14.675 2 12.031 2zm5.728 13.91c-.314.882-1.83 1.614-2.5 1.677-.61.057-1.408.082-2.253-.189-3.551-1.144-5.836-4.757-6.014-4.992-.178-.236-1.442-1.921-1.442-3.666 0-1.745.912-2.6.143-2.664a.895.895 0 0 0-.663.315c-.417.417-.788 1.058-.788 1.764 0 .707.28 1.642.822 2.658 1.488 2.784 3.791 4.549 5.861 5.419.866.363 1.687.418 2.278.33.661-.098 1.83-.748 2.086-1.468.257-.72.257-1.337.18-1.468-.078-.13-.284-.213-.6-.371-.315-.157-1.859-.916-2.147-1.021-.288-.106-.5-.157-.71.157-.21.314-.813.995-.996 1.205-.183.21-.366.236-.682.079-.315-.158-1.33-.49-2.535-1.564-.937-.836-1.57-1.869-1.753-2.184-.183-.315-.02-.486.138-.643.143-.141.316-.367.473-.55.158-.184.21-.315.315-.525.105-.21.053-.394-.026-.551-.08-.158-.711-1.712-.974-2.342-.256-.613-.518-.53-.71-.54l-.604-.009c-.21 0-.55.079-.838.394-.288.315-1.1 1.076-1.1 2.624 0 1.549 1.127 3.044 1.284 3.254z"/>'
+  },
+  linkedin: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4" cy="4" r="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+  },
+  github: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>'
+  },
+  facebook: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>'
+  },
+  'shield-halved': {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'
+  },
+  eye: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+  },
+  'calendar-check': {
+    viewBox: '0 0 24 24',
+    svg: '<rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 16l2 2 4-4"/>'
+  },
+  dumbbell: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6.5 6.5h11M6.5 17.5h11M12 2v20M5 5h2v14H5zm12 0h2v14h-2z"/>'
+  },
+  'mug-hot': {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17 8h1a4 4 0 1 1 0 8h-1M2 8h15v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4zm4-7v3m4-3v3m4-3v3"/>'
+  },
+  'chart-line': {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>'
+  },
+  'laptop-code': {
+    viewBox: '0 0 24 24',
+    svg: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 7.5L6.5 10 9 12.5M15 7.5l2.5 2.5-2.5 2.5"/>'
+  },
+  download: {
+    viewBox: '0 0 24 24',
+    svg: '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>'
+  },
+  'circle-check': {
+    viewBox: '0 0 24 24',
+    svg: '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>'
+  }
+};
+
+const icon = icons[cleanName] || icons['laptop-code'];
+---
+
+<svg 
+  viewBox={icon.viewBox}
+  class={className}
+  aria-hidden={ariaHidden}
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  set:html={icon.svg}
+/>
