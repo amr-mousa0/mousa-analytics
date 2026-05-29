@@ -4,8 +4,6 @@
 
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, quickstart.md
 
-**Tests**: Tests are OPTIONAL - only run them to verify local builds and E2E checks if required.
-
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
 ## Format: `[ID] [P?] [Story] Description`
@@ -21,106 +19,107 @@
 
 ---
 
-## Phase 1: Setup (Shared Infrastructure)
+## Phase 1: Setup & Pre-Refactoring Audits (Shared Infrastructure)
 
-**Purpose**: Project initialization and basic structure verification
+**Purpose**: Prepare the repository, run baseline checks, perform a code-wide audit of all logo instances, and secure backups for rollbacks.
 
 - [ ] T001 Verify local dependencies and run initial build checks in [package.json](file:///c:/Users/HP/Downloads/new%20portofolio/package.json)
-- [ ] T002 Stage the high-resolution vector and graphic design source file containing the approved Minimal SaaS Monogram (Direction D) path coordinates in [specs/013-brand-identity-refactor/research.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/research.md)
+- [ ] T002 Create a backup directory `scratch/branding-backup/` and copy all existing brand assets (`public/favicon.*`, `public/images/og-image.png`, and a snapshot of current inline SVGs in components) for rollback purposes
+- [ ] T003 Perform a comprehensive static code search to identify all inline SVG logo paths, favicon link references, Open Graph image tags, and logo CSS properties in the `/src` and `/public` directories. Save the list of file paths and component structures to [specs/013-brand-identity-refactor/research.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/research.md)
+- [ ] T004 Conduct a trademark and visual similarity audit on the new continuous loop monogram (Direction D) defined in [specs/013-brand-identity-refactor/data-model.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/data-model.md) to ensure it does not contain Gmail envelope folds or Google design overlaps. Document this in [specs/013-brand-identity-refactor/research.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/research.md)
 
 ---
 
-## Phase 2: Foundational (Blocking Prerequisites)
+## Phase 2: Foundational (Design Verification & Tokens Setup)
 
-**Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
+**Purpose**: Define global styling tokens, create reference vectors, and establish client/team design approval checkpoint.
 
-**⚠️ CRITICAL**: No user story work can begin until this phase is complete
+**⚠️ CRITICAL**: No user story work can begin until this phase is complete and the design is approved.
 
-- [ ] T003 [P] Set up the global CSS gradient colors, shadow offsets, and stroke width properties in [src/styles/global.css](file:///c:/Users/HP/Downloads/new%20portofolio/src/styles/global.css)
-- [ ] T004 Define a reference SVG template of Direction D featuring coordinates and gradient fills inside [specs/013-brand-identity-refactor/data-model.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/data-model.md)
+- [ ] T005 [P] Add the global theme-adjusted gradient colors and CSS variables for the light and dark monogram variants inside [src/styles/global.css](file:///c:/Users/HP/Downloads/new%20portofolio/src/styles/global.css) using the values in [specs/013-brand-identity-refactor/data-model.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/data-model.md)
+- [ ] T006 Create a standalone draft SVG reference file of the new Direction D monogram in `public/images/logo-reference.svg` with its vector paths, stroke styling, and gradients as defined in [specs/013-brand-identity-refactor/data-model.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/data-model.md)
+- [ ] T007 **Design Approval Checkpoint**: Review the standalone SVG reference file `public/images/logo-reference.svg` in a browser window. Verify legibility, safe margins, and similarity checks. Obtain client sign-off on the design direction before beginning site-wide refactoring
 
-**Checkpoint**: Foundation ready - user story implementation can now begin in parallel
+**Checkpoint**: Foundation ready and Design Approved - code updates can now begin.
 
 ---
 
-## Phase 3: User Story 1 - Preloader Drawing Updates (Priority: P1) 🎯 MVP
+## Phase 3: User Story 1 - Preloader Animation Updates (Priority: P1) 🎯 MVP
 
-**Goal**: Update the self-drawing animation inside the loading screen to render the new Minimal SaaS Monogram using pure CSS stroke transitions.
+**Goal**: Update the loading screen to animate the new monogram path smoothly without external JS.
 
-**Independent Test**: Start the development server, verify that the global preloader draws the updated loop logo, and finishes transition without errors in [src/components/ui/Preloader.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Preloader.astro).
+**Independent Test & Acceptance Criteria**: Start the development server, load `http://localhost:4321`, verify that the global preloader draws the new monogram from start to end in `< 1.4s`, shows zero clipping/cropping, and passes standard Lighthouse performance tests with zero render-blocking warnings.
 
 ### Implementation for User Story 1
 
-- [ ] T005 [P] [US1] Temporarily inspect the path length of the new monogram vector in a blank HTML/browser context using `path.getTotalLength()` in [specs/013-brand-identity-refactor/quickstart.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/quickstart.md)
-- [ ] T006 [US1] Replace the inline SVG path coordinates for `.logo-path-main` and `.logo-path-shadow` with the new Direction D coordinates in [src/components/ui/Preloader.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Preloader.astro)
-- [ ] T007 [US1] Update the `stroke-dasharray` and `stroke-dashoffset` CSS values to match the calculated path length of the new monogram in [src/components/ui/Preloader.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Preloader.astro)
-- [ ] T008 [US1] Adjust the entrance transitions, timing delay parameters, and linear gradient stop colors (`#FFFFFF` to `#93C5FD` to `#2563EB`) in [src/components/ui/Preloader.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Preloader.astro)
+- [ ] T008 [P] [US1] Temporarily measure the exact path length of the monogram vector in a browser console using `path.getTotalLength()` on the reference vector in [specs/013-brand-identity-refactor/quickstart.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/quickstart.md)
+- [ ] T009 [US1] Replace the inline SVG path coordinates for the main path and the shadow path inside the preloader container in [src/components/ui/Preloader.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Preloader.astro) with the coordinates in [specs/013-brand-identity-refactor/data-model.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/data-model.md)
+- [ ] T010 [US1] Update the `stroke-dasharray` and `stroke-dashoffset` variables to match the measured path length, and adjust animation transition variables inside [src/components/ui/Preloader.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Preloader.astro)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
 ---
 
-## Phase 4: User Story 2 - Navigation & Header Updates (Priority: P2)
+## Phase 4: User Story 2 - Navigation & Header Component Updates (Priority: P2)
 
-**Goal**: Refactor all logo instances inside the header bar, mobile drawer, and bottom navigation bar to display the new monogram.
+**Goal**: Refactor header and mobile navigation logo emblems to display the new monogram.
 
-**Independent Test**: Load the site on desktop and mobile viewports, verify that the logo emblems in header navigation, mobile drawer, bottom bar, and PWA banner render correctly in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro).
+**Independent Test & Acceptance Criteria**: Inspect the page on desktop and mobile viewports. Confirm that all four logo locations (Desktop Header Logo Emblem, Mobile Drawer Logo Emblem, Mobile Bottom Tab Bar Emblem, App Install Prompt Banner Emblem) display the monogram cleanly with zero overlap or clipping.
 
 ### Implementation for User Story 2
 
-- [ ] T009 [US2] Replace the inline SVG emblem inside the Header Navigation desktop logo container (line 58) in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro)
-- [ ] T010 [US2] Replace the inline SVG emblem inside the Mobile Drawer navigation menu (line 237) in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro)
-- [ ] T011 [US2] Replace the inline SVG emblem inside the Mobile Bottom Tab Bar (line 300) in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro)
-- [ ] T012 [US2] Replace the inline SVG emblem inside the PWA App Install Prompt banner (line 358) in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro)
-- [ ] T013 [US2] Update the linear gradients and color definitions to match the adapted primary blue gradient (`logo-grad-header`, `logo-grad-drawer`, `logo-grad-tab`, `logo-grad-install`) in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro)
+- [ ] T011 [US2] Update the inline SVG main path, shadow path, and linear gradient configuration inside the Header Navigation desktop logo container in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro)
+- [ ] T012 [US2] Update the inline SVG paths and linear gradients inside the Mobile Drawer navigation menu container in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro)
+- [ ] T013 [US2] Update the inline SVG paths and linear gradients inside the Mobile Bottom Tab Bar logo placeholder container in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro)
+- [ ] T014 [US2] Update the inline SVG paths and linear gradients inside the App Install Prompt Banner emblem container in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro)
+- [ ] T015 [US2] Align the gradient coordinates, stroke values, and decorative dotted connection lines (`stroke-dasharray="1 1.5"`) for all navigation instances to match the new geometry in [src/components/ui/Navigation.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Navigation.astro)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
 ---
 
-## Phase 5: User Story 3 - Footer & Hero Updates (Priority: P3)
+## Phase 5: User Story 3 - Footer & Hero Component Updates (Priority: P3)
 
-**Goal**: Replace the remaining logo instances in the hero section and footer.
+**Goal**: Update logo instances in the hero section and footer.
 
-**Independent Test**: Inspect the hero section and footer at `http://localhost:4321` and verify that the logo emblems match Direction D and render cleanly on dark and light backgrounds.
+**Independent Test & Acceptance Criteria**: Verify that the monogram is displayed inside the Hero section header and Footer column, showing proper contrast on dark background (`#0A192F` in Footer) and light background (`#F8F9FA` in Hero).
 
 ### Implementation for User Story 3
 
-- [ ] T014 [US3] Replace the inline SVG monogram emblem path and secondary shadow path in the hero section header (line 107-113) in [src/components/sections/Hero.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/sections/Hero.astro)
-- [ ] T015 [US3] Replace the inline SVG emblem path, secondary shadow path, and supporting linear gradient parameters (line 41-47) in [src/components/ui/Footer.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Footer.astro)
-- [ ] T016 [P] [US3] Align the styling, border opacity, and responsive width classes of the logo containers in both [src/components/sections/Hero.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/sections/Hero.astro) and [src/components/ui/Footer.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Footer.astro)
+- [ ] T016 [US3] Replace the inline SVG paths, linear gradient, and shadow offset in the Hero section monogram header emblem container in [src/components/sections/Hero.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/sections/Hero.astro)
+- [ ] T017 [US3] Replace the inline SVG paths, linear gradient, and shadow offset in the Footer brand emblem container in [src/components/ui/Footer.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Footer.astro)
+- [ ] T018 [P] [US3] Align the responsive sizing classes, container padding, and wrapper borders of the logo emblems in [src/components/sections/Hero.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/sections/Hero.astro) and [src/components/ui/Footer.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/ui/Footer.astro) to prevent layout shifts
 
 **Checkpoint**: All user stories should now be independently functional
 
 ---
 
-## Phase 6: User Story 4 - Favicons, PWA Manifest, & Open Graph Image (Priority: P4)
+## Phase 6: User Story 4 - Multi-format Favicons & Manifest Asset Generation (Priority: P4)
 
-**Goal**: Standardize the favicon suite and social sharing card images in the `/public` directory to use the new monogram icon.
+**Goal**: Regenerate, test, and optimize all public assets and metadata.
 
-**Independent Test**: Run a local production build, verify that favicon metadata tags are present, sitemap/manifest files parse without issues, and no 404 resource errors occur for favicon/manifest assets.
+**Independent Test & Acceptance Criteria**: Ensure all raster and vector icons exist in `/public` directory. Confirm that the site favicon is legible at `16x16px` and that the web manifest and Open Graph preview image (1200x630px) load without errors.
 
 ### Implementation for User Story 4
 
-- [ ] T017 [P] [US4] Regenerate and overwrite the vector favicon asset in [public/favicon.svg](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon.svg) using the new Direction D vector path and background parameters
-- [ ] T018 [P] [US4] Generate optimized square PNG favicon versions at the verified dimensions and overwrite [public/favicon-48x48.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon-48x48.png) and [public/favicon-96x96.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon-96x96.png)
-- [ ] T019 [P] [US4] Generate and overwrite the iOS home screen icon [public/favicon-180x180.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon-180x180.png) and PWA app icons [public/favicon-192x192.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon-192x192.png) and [public/favicon-512x512.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon-512x512.png)
-- [ ] T020 [P] [US4] Compile the multi-resolution fallback icon [public/favicon.ico](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon.ico) containing sizes (16, 32, 48)
-- [ ] T021 [P] [US4] Update metadata and icon bindings in PWA schema configuration file [public/manifest.json](file:///c:/Users/HP/Downloads/new%20portofolio/public/manifest.json)
-- [ ] T022 [P] [US4] Replace the social preview card asset [public/images/og-image.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/images/og-image.png) with the new design (1200x630px)
+- [ ] T019 [P] [US4] Generate the modern vector favicon [public/favicon.svg](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon.svg) featuring the new monogram coordinates, circular navy theme background, and proper margins
+- [ ] T020 [P] [US4] Export optimized PNG favicon variants at the required resolutions: `48x48px` ([public/favicon-48x48.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon-48x48.png)), `96x96px` ([public/favicon-96x96.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon-96x96.png)), `180x180px` ([public/favicon-180x180.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon-180x180.png)), `192x192px` ([public/favicon-192x192.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon-192x192.png)), and `512x512px` ([public/favicon-512x512.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon-512x512.png))
+- [ ] T021 [P] [US4] Create a multi-resolution `.ico` fallback file [public/favicon.ico](file:///c:/Users/HP/Downloads/new%20portofolio/public/favicon.ico) containing standard sizes (16, 32, 48)
+- [ ] T022 [P] [US4] Create the new social card share preview image (1200x630px) at [public/images/og-image.png](file:///c:/Users/HP/Downloads/new%20portofolio/public/images/og-image.png)
+- [ ] T023 [P] [US4] Verify the PWA manifest bindings, background colors, and icon links inside [public/manifest.json](file:///c:/Users/HP/Downloads/new%20portofolio/public/manifest.json)
 
 **Checkpoint**: Favicons, manifest configurations, and open graph image updated and validated.
 
 ---
 
-## Phase 7: Polish & Cross-Cutting Concerns
+## Phase 7: Polish, Performance Audits, & Rollback Verification
 
-**Purpose**: Improvements that affect multiple user stories, code cleanup, and performance audits
+**Purpose**: Clean code, run optimizations, build site, and verify rollback/failback path.
 
-- [ ] T023 Perform a complete codebase clean-up, removing any residual legacy coordinates or inline styling overrides in [src/components/](file:///c:/Users/HP/Downloads/new%20portofolio/src/components/) and [src/layouts/Layout.astro](file:///c:/Users/HP/Downloads/new%20portofolio/src/layouts/Layout.astro)
-- [ ] T024 Run a full production compilation check (`npm run build`) from the project root to ensure zero build errors
+- [ ] T024 Perform a complete codebase clean-up, removing any residual legacy coordinates, unused inline styling, and temporary draft files in the `/src` and `/public` directories
 - [ ] T025 Run the custom asset optimization script `node scripts/optimize-assets.mjs` to compress image exports and verify PageSpeed targets
-- [ ] T026 Conduct [specs/013-brand-identity-refactor/quickstart.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/quickstart.md) validation by testing in a local browser and inspecting asset links
+- [ ] T026 Execute the full production build command `npm run build` from the project root and verify it compiles without warning logs
+- [ ] T027 Conduct [specs/013-brand-identity-refactor/quickstart.md](file:///c:/Users/HP/Downloads/new%20portofolio/specs/013-brand-identity-refactor/quickstart.md) validation checks in a local browser and verify the rollback verification process (reverting from `scratch/branding-backup/`)
 
 ---
 
@@ -137,10 +136,10 @@
 
 ### User Story Dependencies
 
-- **User Story 1 (P1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
-- **User Story 2 (P2)**: Can start after Foundational (Phase 2) - May integrate with US1 but should be independently testable
-- **User Story 3 (P3)**: Can start after Foundational (Phase 2) - May integrate with US1/US2 but should be independently testable
-- **User Story 4 (P4)**: Can start after Foundational (Phase 2) - May integrate with other stories but is focused on static asset generation
+- **User Story 1 (US1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
+- **User Story 2 (US2)**: Can start after Foundational (Phase 2) - May integrate with US1 but should be independently testable
+- **User Story 3 (US3)**: Can start after Foundational (Phase 2) - May integrate with US1/US2 but should be independently testable
+- **User Story 4 (US4)**: Can start after Foundational (Phase 2) - May integrate with other stories but is focused on static asset generation
 
 ### Within Each User Story
 
@@ -161,9 +160,9 @@
 
 ```bash
 # Generate favicon assets and icons in parallel
-Task: "Regenerate and overwrite the vector favicon asset in public/favicon.svg"
-Task: "Generate optimized square PNG favicon versions at the verified dimensions..."
-Task: "Generate and overwrite the iOS home screen icon public/favicon-180x180.png..."
+Task: "Generate the modern vector favicon public/favicon.svg..."
+Task: "Export optimized PNG favicon variants at the required resolutions..."
+Task: "Create the new social card share preview image public/images/og-image.png..."
 Task: "Compile the multi-resolution fallback icon public/favicon.ico..."
 ```
 
