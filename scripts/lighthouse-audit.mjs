@@ -115,12 +115,24 @@ async function runLighthouseAudit() {
   });
 
 
+  const RUNS_PER_URL = 3; // Run multiple times and take the median to reduce CI flakiness
+
+  // Helper: return the median value from an array of numbers
+  function median(arr) {
+    const sorted = [...arr].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+  }
+
   let failed = false;
   const auditResults = [];
 
   for (const item of urls) {
     const url = `http://localhost:${PORT}${item.path}`;
-    console.log(`\n🔍 Auditing: ${item.name} (${url})...`);
+    console.log(`\n🔍 Auditing: ${item.name} (${url}) — ${RUNS_PER_URL} runs...`);
+
+    const allRunScores = [];
+    let lastReportJson = null;
 
     try {
       const options = {
@@ -140,30 +152,44 @@ async function runLighthouseAudit() {
         },
       };
 
-      const runnerResult = await lighthouse(url, options);
-      const reportJson = runnerResult.report;
-      const lhr = runnerResult.lhr;
+      for (let run = 1; run <= RUNS_PER_URL; run++) {
+        console.log(`   🔄 Run ${run}/${RUNS_PER_URL}...`);
+        const runnerResult = await lighthouse(url, options);
+        const lhr = runnerResult.lhr;
 
-      // Save reports
+        const runScores = {
+          performance: Math.round(lhr.categories.performance.score * 100),
+          accessibility: Math.round(lhr.categories.accessibility.score * 100),
+          'best-practices': Math.round(lhr.categories['best-practices'].score * 100),
+          seo: Math.round(lhr.categories.seo.score * 100)
+        };
+        allRunScores.push(runScores);
+        lastReportJson = runnerResult.report;
+
+        console.log(`      Perf: ${runScores.performance}  A11y: ${runScores.accessibility}  BP: ${runScores['best-practices']}  SEO: ${runScores.seo}`);
+      }
+
+      // Save the last report for detailed inspection
       const filenameBase = item.name.toLowerCase().replace(/\s+/g, '-');
-      fs.writeFileSync(path.join(REPORT_DIR, `${filenameBase}.json`), reportJson);
+      fs.writeFileSync(path.join(REPORT_DIR, `${filenameBase}.json`), lastReportJson);
 
+      // Compute median across all runs for each category
       const scores = {
-        performance: Math.round(lhr.categories.performance.score * 100),
-        accessibility: Math.round(lhr.categories.accessibility.score * 100),
-        'best-practices': Math.round(lhr.categories['best-practices'].score * 100),
-        seo: Math.round(lhr.categories.seo.score * 100)
+        performance: median(allRunScores.map(s => s.performance)),
+        accessibility: median(allRunScores.map(s => s.accessibility)),
+        'best-practices': median(allRunScores.map(s => s['best-practices'])),
+        seo: median(allRunScores.map(s => s.seo))
       };
 
       auditResults.push({ name: item.name, scores });
 
-      console.log(`   Results for ${item.name}:`);
+      console.log(`   📊 Median results for ${item.name} (${RUNS_PER_URL} runs):`);
       console.log(`   - Performance    : ${scores.performance} / 100 (Target: >= ${TARGETS.performance})`);
       console.log(`   - Accessibility  : ${scores.accessibility} / 100 (Target: ${TARGETS.accessibility})`);
       console.log(`   - Best Practices : ${scores['best-practices']} / 100 (Target: ${TARGETS['best-practices']})`);
       console.log(`   - SEO            : ${scores.seo} / 100 (Target: ${TARGETS.seo})`);
 
-      // Assertions
+      // Assertions against the median
       if (scores.performance < TARGETS.performance ||
           scores.accessibility < TARGETS.accessibility ||
           scores['best-practices'] < TARGETS['best-practices'] ||
