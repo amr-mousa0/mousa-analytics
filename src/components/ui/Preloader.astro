@@ -100,20 +100,7 @@ const isAr = lang === 'ar';
     pointer-events: none !important;
   }
 
-  /* Mobile viewport first paint bypass to prevent LCP/FCP render-blocking on mobile (Mobile-First) */
-  @media (max-width: 767px) {
-    #global-preloader {
-      display: none !important;
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-    }
-    html.preloader-lock,
-    html.preloader-lock body {
-      overflow: auto !important;
-      height: auto !important;
-    }
-  }
+  /* Mobile viewport bypass removed to allow preloader on mobile devices */
 
   /* Fixed overlay covering the entire screen by default */
   #global-preloader {
@@ -290,8 +277,8 @@ const isAr = lang === 'ar';
       port: typeof location !== 'undefined' ? location.port : null,
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : null
     });
-    // Synchronously hide and defer-remove preloader entirely for bots/auditors/mobile-viewports to prevent LCP/FCP render-blocking
-    if (isBot || isMobileViewport) {
+    // Synchronously hide and defer-remove preloader entirely for bots/auditors to prevent LCP/FCP render-blocking
+    if (isBot) {
       initialPreloader.style.display = 'none';
       if (typeof requestIdleCallback !== 'undefined') {
         requestIdleCallback(function() {
