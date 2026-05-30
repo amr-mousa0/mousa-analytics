@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand Identity — M Monogram</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600&display=swap');
+
+    :root {
+      --bg: #F8F9FA;
+      --text: #0A192F;
+      --card-bg: #FFFFFF;
+      --primary: #2563EB;
+      --accent: #64FFDA;
+      --border: rgba(10, 25, 47, 0.08);
+      --shadow: 0 12px 40px rgba(10, 25, 47, 0.04);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 100px 24px;
+      line-height: 1.6;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(3rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .sub {
+      text-align: center;
+      font-size: 1.125rem;
+      color: rgba(10, 25, 47, 0.6);
+      max-width: 600px;
+      margin-inline: auto;
+      margin-bottom: 80px;
+      font-weight: 300;
+    }
+
+    .showcase {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 80px 64px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .logo-hero {
+      width: 380px;
+      height: 380px;
+      margin-bottom: 64px;
+    }
+
+    .logo-hero svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 20px 30px rgba(37, 99, 235, 0.15));
+    }
+
+    .caption {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.75rem;
+      font-style: italic;
+      color: var(--text);
+      text-align: center;
+      max-width: 600px;
+      line-height: 1.4;
+      padding-bottom: 64px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 64px;
+    }
+
+    .sizes-grid {
+      display: flex;
+      align-items: flex-end;
+      gap: 64px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .sizes-grid > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .sizes-grid span {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: rgba(10, 25, 47, 0.4);
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+
+<body>
+
+  <span class="badge">Brand Identity</span>
+  <h1>The Monogram</h1>
+  <p class="sub">Precision data architecture mapped into a unified corporate mark. The twin pillars represent structured scaling, anchored by a conversion trendline.</p>
+
+  <div class="showcase">
+    
+    <div class="logo-hero">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="primary-grad" x1="20" y1="10" x2="90" y2="60" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#0F4C5C" />
+            <stop offset="100%" stop-color="#1D4ED8" />
+          </linearGradient>
+          <linearGradient id="accent-grad" x1="10" y1="35" x2="30" y2="60" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#38BDF8" />
+            <stop offset="100%" stop-color="#64FFDA" />
+          </linearGradient>
+        </defs>
+        <g transform="translate(2.5, 12.5) scale(0.95)">
+          <!-- Shape 0: Smooth Left Dot -->
+          <path
+            d="M 21.5,59.5 C 16.5,59.5 13.0,55.0 12.0,49.0 C 11.0,43.0 14.0,37.0 18.0,37.5 C 22.0,38.0 25.0,44.0 27.5,48.0 C 30.0,52.0 26.5,59.5 21.5,59.5 Z"
+            fill="url(#accent-grad)" />
+
+          <!-- Shape 1: Left Peak (Middle Pillar) -->
+          <path
+            d="M 52.38,59.37 C 48.00,59.37 45.00,57.50 44.50,55.95 L 28.44,22.34 C 26.80,21.00 24.72,21.00 23.09,21.75 C 26.00,14.50 29.50,10.00 32.16,10.00 C 34.83,10.00 37.00,11.00 38.85,12.23 L 56.10,47.32 C 58.00,48.36 60.00,48.36 61.15,47.62 C 58.00,56.00 55.00,59.37 52.38,59.37 Z M 45.62,26.00 Q 47.67,30.16 52.79,26.00 L 52.79,35.00 L 45.62,35.00 Z"
+            fill="url(#primary-grad)" />
+
+          <!-- Shape 2: Right Arch -->
+          <path
+            d="M 81.22,59.37 C 76.84,59.37 73.84,57.50 73.34,55.95 L 64.28,37.00 Q 62.31,32.87 57.26,37.00 L 52.82,40.63 L 50.00,59.37 L 36.52,39.28 L 57.28,22.34 C 55.64,21.00 53.56,21.00 51.93,21.75 C 54.84,14.50 58.34,10.00 61.00,10.00 C 63.67,10.00 65.84,11.00 67.69,12.23 L 84.94,47.32 C 86.84,48.36 88.84,48.36 89.99,47.62 C 86.84,56.00 83.84,59.37 81.22,59.37 Z"
+            fill="url(#primary-grad)" />
+
+          <!-- Trend Line -->
+          <path d="M 19.80,48.50 L 53.98,43.00 L 82.82,43.00" stroke="#2563EB" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="1" />
+          <circle cx="19.80" cy="48.50" r="3" fill="#38BDF8" />
+          <circle cx="53.98" cy="43.00" r="3" fill="#38BDF8" />
+          <circle cx="82.82" cy="43.00" r="3" fill="#38BDF8" />
+        </g>
+      </svg>
+    </div>
+
+    <p class="caption">"Structural layering and high-contrast precision. A mark designed for executive trust."</p>
+
+    <div class="sizes-grid">
+      <div>
+        <svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <use href="#primary-grad" />
+          <use href="#accent-grad" />
+          <g transform="translate(2.5, 12.5) scale(0.95)">
+            <path d="M 21.5,59.5 C 16.5,59.5 13.0,55.0 12.0,49.0 C 11.0,43.0 14.0,37.0 18.0,37.5 C 22.0,38.0 25.0,44.0 27.5,48.0 C 30.0,52.0 26.5,59.5 21.5,59.5 Z" fill="url(#accent-grad)" />
+            <path d="M 52.38,59.37 C 48.00,59.37 45.00,57.50 44.50,55.95 L 28.44,22.34 C 26.80,21.00 24.72,21.00 23.09,21.75 C 26.00,14.50 29.50,10.00 32.16,10.00 C 34.83,10.00 37.00,11.00 38.85,12.23 L 56.10,47.32 C 58.00,48.36 60.00,48.36 61.15,47.62 C 58.00,56.00 55.00,59.37 52.38,59.37 Z M 45.62,26.00 Q 47.67,30.16 52.79,26.00 L 52.79,35.00 L 45.62,35.00 Z" fill="url(#primary-grad)" />
+            <path d="M 81.22,59.37 C 76.84,59.37 73.84,57.50 73.34,55.95 L 64.28,37.00 Q 62.31,32.87 57.26,37.00 L 52.82,40.63 L 50.00,59.37 L 36.52,39.28 L 57.28,22.34 C 55.64,21.00 53.56,21.00 51.93,21.75 C 54.84,14.50 58.34,10.00 61.00,10.00 C 63.67,10.00 65.84,11.00 67.69,12.23 L 84.94,47.32 C 86.84,48.36 88.84,48.36 89.99,47.62 C 86.84,56.00 83.84,59.37 81.22,59.37 Z" fill="url(#primary-grad)" />
+            <path d="M 19.80,48.50 L 53.98,43.00 L 82.82,43.00" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="1" />
+            <circle cx="19.80" cy="48.50" r="3" fill="#38BDF8" />
+            <circle cx="53.98" cy="43.00" r="3" fill="#38BDF8" />
+            <circle cx="82.82" cy="43.00" r="3" fill="#38BDF8" />
+          </g>
+        </svg>
+        <span>64px</span>
+      </div>
+
+      <div>
+        <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <use href="#primary-grad" />
+          <use href="#accent-grad" />
+          <g transform="translate(2.5, 12.5) scale(0.95)">
+            <path d="M 21.5,59.5 C 16.5,59.5 13.0,55.0 12.0,49.0 C 11.0,43.0 14.0,37.0 18.0,37.5 C 22.0,38.0 25.0,44.0 27.5,48.0 C 30.0,52.0 26.5,59.5 21.5,59.5 Z" fill="url(#accent-grad)" />
+            <path d="M 52.38,59.37 C 48.00,59.37 45.00,57.50 44.50,55.95 L 28.44,22.34 C 26.80,21.00 24.72,21.00 23.09,21.75 C 26.00,14.50 29.50,10.00 32.16,10.00 C 34.83,10.00 37.00,11.00 38.85,12.23 L 56.10,47.32 C 58.00,48.36 60.00,48.36 61.15,47.62 C 58.00,56.00 55.00,59.37 52.38,59.37 Z M 45.62,26.00 Q 47.67,30.16 52.79,26.00 L 52.79,35.00 L 45.62,35.00 Z" fill="url(#primary-grad)" />
+            <path d="M 81.22,59.37 C 76.84,59.37 73.84,57.50 73.34,55.95 L 64.28,37.00 Q 62.31,32.87 57.26,37.00 L 52.82,40.63 L 50.00,59.37 L 36.52,39.28 L 57.28,22.34 C 55.64,21.00 53.56,21.00 51.93,21.75 C 54.84,14.50 58.34,10.00 61.00,10.00 C 63.67,10.00 65.84,11.00 67.69,12.23 L 84.94,47.32 C 86.84,48.36 88.84,48.36 89.99,47.62 C 86.84,56.00 83.84,59.37 81.22,59.37 Z" fill="url(#primary-grad)" />
+            <path d="M 19.80,48.50 L 53.98,43.00 L 82.82,43.00" stroke="#2563EB" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="1" />
+            <circle cx="19.80" cy="48.50" r="3.5" fill="#38BDF8" />
+            <circle cx="53.98" cy="43.00" r="3.5" fill="#38BDF8" />
+            <circle cx="82.82" cy="43.00" r="3.5" fill="#38BDF8" />
+          </g>
+        </svg>
+        <span>48px</span>
+      </div>
+
+      <div>
+        <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <use href="#primary-grad" />
+          <use href="#accent-grad" />
+          <g transform="translate(2.5, 12.5) scale(0.95)">
+            <path d="M 21.5,59.5 C 16.5,59.5 13.0,55.0 12.0,49.0 C 11.0,43.0 14.0,37.0 18.0,37.5 C 22.0,38.0 25.0,44.0 27.5,48.0 C 30.0,52.0 26.5,59.5 21.5,59.5 Z" fill="url(#accent-grad)" />
+            <path d="M 52.38,59.37 C 48.00,59.37 45.00,57.50 44.50,55.95 L 28.44,22.34 C 26.80,21.00 24.72,21.00 23.09,21.75 C 26.00,14.50 29.50,10.00 32.16,10.00 C 34.83,10.00 37.00,11.00 38.85,12.23 L 56.10,47.32 C 58.00,48.36 60.00,48.36 61.15,47.62 C 58.00,56.00 55.00,59.37 52.38,59.37 Z M 45.62,26.00 Q 47.67,30.16 52.79,26.00 L 52.79,35.00 L 45.62,35.00 Z" fill="url(#primary-grad)" />
+            <path d="M 81.22,59.37 C 76.84,59.37 73.84,57.50 73.34,55.95 L 64.28,37.00 Q 62.31,32.87 57.26,37.00 L 52.82,40.63 L 50.00,59.37 L 36.52,39.28 L 57.28,22.34 C 55.64,21.00 53.56,21.00 51.93,21.75 C 54.84,14.50 58.34,10.00 61.00,10.00 C 63.67,10.00 65.84,11.00 67.69,12.23 L 84.94,47.32 C 86.84,48.36 88.84,48.36 89.99,47.62 C 86.84,56.00 83.84,59.37 81.22,59.37 Z" fill="url(#primary-grad)" />
+            <path d="M 19.80,48.50 L 53.98,43.00 L 82.82,43.00" stroke="#2563EB" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="1" />
+            <circle cx="19.80" cy="48.50" r="4.5" fill="#38BDF8" />
+            <circle cx="53.98" cy="43.00" r="4.5" fill="#38BDF8" />
+            <circle cx="82.82" cy="43.00" r="4.5" fill="#38BDF8" />
+          </g>
+        </svg>
+        <span>32px</span>
+      </div>
+
+      <div>
+        <svg width="16" height="16" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <use href="#primary-grad" />
+          <use href="#accent-grad" />
+          <g transform="translate(2.5, 12.5) scale(0.95)">
+            <path d="M 21.5,59.5 C 16.5,59.5 13.0,55.0 12.0,49.0 C 11.0,43.0 14.0,37.0 18.0,37.5 C 22.0,38.0 25.0,44.0 27.5,48.0 C 30.0,52.0 26.5,59.5 21.5,59.5 Z" fill="url(#accent-grad)" />
+            <path d="M 52.38,59.37 C 48.00,59.37 45.00,57.50 44.50,55.95 L 28.44,22.34 C 26.80,21.00 24.72,21.00 23.09,21.75 C 26.00,14.50 29.50,10.00 32.16,10.00 C 34.83,10.00 37.00,11.00 38.85,12.23 L 56.10,47.32 C 58.00,48.36 60.00,48.36 61.15,47.62 C 58.00,56.00 55.00,59.37 52.38,59.37 Z M 45.62,26.00 Q 47.67,30.16 52.79,26.00 L 52.79,35.00 L 45.62,35.00 Z" fill="url(#primary-grad)" />
+            <path d="M 81.22,59.37 C 76.84,59.37 73.84,57.50 73.34,55.95 L 64.28,37.00 Q 62.31,32.87 57.26,37.00 L 52.82,40.63 L 50.00,59.37 L 36.52,39.28 L 57.28,22.34 C 55.64,21.00 53.56,21.00 51.93,21.75 C 54.84,14.50 58.34,10.00 61.00,10.00 C 63.67,10.00 65.84,11.00 67.69,12.23 L 84.94,47.32 C 86.84,48.36 88.84,48.36 89.99,47.62 C 86.84,56.00 83.84,59.37 81.22,59.37 Z" fill="url(#primary-grad)" />
+          </g>
+        </svg>
+        <span>16px</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
