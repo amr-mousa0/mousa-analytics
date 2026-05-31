@@ -291,6 +291,7 @@ const breadcrumbSchema = breadcrumbs.length > 1 ? {
         "@type": "Service",
         "name": seoTitle,
         "description": seoDescription,
+        "image": seoOgImage || "",
         "provider": {
           "@type": "Person",
           "@id": new URL(`${langPath}#person`, Astro.site).href

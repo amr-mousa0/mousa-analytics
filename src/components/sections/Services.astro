@@ -65,293 +65,288 @@ const getServiceImage = (service: any) => {
       </p>
     </div>
 
-    <!-- Pain-Point Selector Widget (محدد المشاكل التفاعلي) -->
-    <div class="glass-card rounded-[24px] p-6 sm:p-8 md:p-10 border border-text-main/10 bg-hero-card/50 space-y-8 relative overflow-hidden">
-      <!-- Glow effects inside -->
-      <div class="absolute -right-20 -top-20 w-48 h-48 rounded-full bg-accent-primary/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
-      <div class="absolute -left-20 -bottom-20 w-48 h-48 rounded-full bg-success-primary/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+    <!-- Cards Container: Horizontal swipeable deck on mobile (<768px), Custom grid spans on desktop (>=768px) -->
+    <div class="flex md:grid md:grid-cols-12 gap-5 md:gap-8 overflow-x-auto overflow-y-hidden touch-auto md:overflow-visible snap-x snap-mandatory md:snap-none no-scrollbar pb-6 md:pb-0 px-6 md:px-0 -mx-6 md:mx-0">
+      {services.map((service, index) => {
+        const isSolid = false;
+        
+        let spanClass = '';
+        if (index === 0) {
+          spanClass = 'md:col-span-6 lg:col-span-7'; // ~60% width
+        } else if (index === 1) {
+          spanClass = 'md:col-span-6 lg:col-span-5'; // ~40% width
+        } else if (index === 2 || index === 3) {
+          spanClass = 'md:col-span-6 lg:col-span-4'; // 1/3 width
+        } else {
+          spanClass = 'md:col-span-12 lg:col-span-4'; // 1/3 width on desktop
+        }
 
-      <div class="space-y-2 text-center">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-accent-primary/20 bg-accent-primary/5 text-accent-primary text-[10px] font-bold tracking-wider uppercase font-mono">
-          <span class="h-1.5 w-1.5 rounded-full bg-accent-primary animate-pulse"></span>
-          {isAr ? "حل المشاكل المعقدة" : "PROBLEM SOLVER"}
-        </span>
-        <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-text-main font-serif">
-          {isAr ? "إيه أكتر مشكلة معطلاك ومضايقاك في شغلك حالياً؟" : "What is your biggest business bottleneck right now?"}
-        </h3>
-        <p class="text-text-main/60 text-xs sm:text-sm font-sans">
-          {isAr ? "اختر التحدي اللي بيواجهك عشان تشوف الحل والنتيجة المقترحة فوراً" : "Select the challenge you face to see the suggested solution and outcome instantly."}
-        </p>
-      </div>
-
-      <!-- Grid of 4 Pain Point cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Option 1 -->
-        <button 
-          type="button" 
-          data-pain-index="0"
-          class="pain-point-card group relative p-5 rounded-2xl border text-start transition-all duration-300 cursor-pointer select-none bg-hero-card border-text-main/10 hover:border-accent-primary/30 hover:shadow-[0_4px_20px_var(--color-hero-glow)] active:scale-98"
-        >
-          <div class="absolute top-4 end-4 w-2 h-2 rounded-full bg-accent-primary/40 group-hover:bg-accent-primary transition-colors"></div>
-          <div class="space-y-3">
-            <span class="w-8 h-8 rounded-xl bg-accent-primary/10 text-accent-highlight flex items-center justify-center text-sm font-bold font-mono">01</span>
-            <p class="text-text-main/90 text-xs sm:text-[13px] font-semibold font-sans leading-relaxed">
-              {isAr ? "عندي لخبطة في حسابات المحل والمخازن ومش عارف أظبطها" : "My store accounts & inventory are a mess, I can't keep track."}
-            </p>
-          </div>
-        </button>
-
-        <!-- Option 2 -->
-        <button 
-          type="button" 
-          data-pain-index="1"
-          class="pain-point-card group relative p-5 rounded-2xl border text-start transition-all duration-300 cursor-pointer select-none bg-hero-card border-text-main/10 hover:border-accent-primary/30 hover:shadow-[0_4px_20px_var(--color-hero-glow)] active:scale-98"
-        >
-          <div class="absolute top-4 end-4 w-2 h-2 rounded-full bg-accent-primary/40 group-hover:bg-accent-primary transition-colors"></div>
-          <div class="space-y-3">
-            <span class="w-8 h-8 rounded-xl bg-accent-primary/10 text-accent-highlight flex items-center justify-center text-sm font-bold font-mono">02</span>
-            <p class="text-text-main/90 text-xs sm:text-[13px] font-semibold font-sans leading-relaxed">
-              {isAr ? "المبيعات بتقل ومش عارف الإعلانات بتجيب همها ولا لأ" : "Sales are dropping and I don't know if ads are bringing returns."}
-            </p>
-          </div>
-        </button>
-
-        <!-- Option 3 -->
-        <button 
-          type="button" 
-          data-pain-index="2"
-          class="pain-point-card group relative p-5 rounded-2xl border text-start transition-all duration-300 cursor-pointer select-none bg-hero-card border-text-main/10 hover:border-accent-primary/30 hover:shadow-[0_4px_20px_var(--color-hero-glow)] active:scale-98"
-        >
-          <div class="absolute top-4 end-4 w-2 h-2 rounded-full bg-accent-primary/40 group-hover:bg-accent-primary transition-colors"></div>
-          <div class="space-y-3">
-            <span class="w-8 h-8 rounded-xl bg-accent-primary/10 text-accent-highlight flex items-center justify-center text-sm font-bold font-mono">03</span>
-            <p class="text-text-main/90 text-xs sm:text-[13px] font-semibold font-sans leading-relaxed">
-              {isAr ? "العملاء بيكلمونا وبيتوهوا من السيلز ومتابعة المناديب صعبة" : "Customers are getting lost and managing sales reps is too hard."}
-            </p>
-          </div>
-        </button>
-
-        <!-- Option 4 -->
-        <button 
-          type="button" 
-          data-pain-index="3"
-          class="pain-point-card group relative p-5 rounded-2xl border text-start transition-all duration-300 cursor-pointer select-none bg-hero-card border-text-main/10 hover:border-accent-primary/30 hover:shadow-[0_4px_20px_var(--color-hero-glow)] active:scale-98"
-        >
-          <div class="absolute top-4 end-4 w-2 h-2 rounded-full bg-accent-primary/40 group-hover:bg-accent-primary transition-colors"></div>
-          <div class="space-y-3">
-            <span class="w-8 h-8 rounded-xl bg-accent-primary/10 text-accent-highlight flex items-center justify-center text-sm font-bold font-mono">04</span>
-            <p class="text-text-main/90 text-xs sm:text-[13px] font-semibold font-sans leading-relaxed">
-              {isAr ? "عايز أعمل موقع احترافي لشركتي يظهر شغلي ويجيبلي عملاء" : "I want a professional website that represents my brand and brings leads."}
-            </p>
-          </div>
-        </button>
-      </div>
-
-      <!-- Suggested Solution Panel (Dynamically shown and loaded) -->
-      <div id="solution-panel" class="hidden transition-all duration-500 transform opacity-0 translate-y-4">
-        <div class="p-6 sm:p-8 rounded-2xl border border-accent-primary/20 bg-accent-primary/5 space-y-6 relative">
-          <!-- Suggested Solution Header -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-text-main/10 pb-4">
-            <div class="space-y-1">
-              <span class="text-[10px] font-bold text-accent-primary uppercase tracking-widest font-mono">
-                {isAr ? "الحل المقترح لشركتك:" : "Suggested Solution:"}
-              </span>
-              <h4 id="solution-title" class="text-lg sm:text-xl font-bold text-text-main font-serif">
-                <!-- Set dynamically -->
-              </h4>
-            </div>
-            <!-- Recommended Badge -->
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-success-primary/20 bg-success-primary/5 text-success-primary text-[10px] font-bold font-mono shrink-0 w-fit">
-              <Icon name="circle-check" class="w-3.5 h-3.5" />
-              <span>{isAr ? "موصى به بالكامل" : "RECOMMENDED"}</span>
-            </div>
-          </div>
-
-          <!-- Description and Before/After Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-            <!-- Left: Description and actions -->
-            <div class="flex flex-col justify-between space-y-4">
-              <p id="solution-desc" class="text-text-main/70 text-sm leading-relaxed font-sans font-light">
-                <!-- Set dynamically -->
-              </p>
-
-              <!-- CTA Area -->
-              <div class="pt-4 flex flex-col sm:flex-row items-center gap-4">
-                <button 
-                  id="solution-whatsapp-btn"
-                  class="h-12 px-6 rounded-full bg-success-primary hover:bg-success-hover text-white font-semibold text-xs tracking-wider flex items-center justify-center gap-2 shadow-success hover:shadow-success-hover active:scale-95 transition-all duration-300 w-full sm:w-auto text-center border-none cursor-pointer"
-                >
-                  <Icon name="whatsapp" class="w-4 h-4" />
-                  <span>{isAr ? "ابدأ حل مشكلتك على واتساب" : "Start Solving on WhatsApp"}</span>
-                </button>
+        return (
+          <div class={`premium-card-global group !p-0 overflow-hidden flex flex-col h-[470px] md:h-full flex-shrink-0 w-[78vw] md:w-auto snap-center md:snap-align-none relative ${spanClass}`}>
+            
+            <!-- Clickable Card Body -->
+            <a href={getServiceUrl(service.slug)} class="flex flex-col h-full flex-grow hover:no-underline group/body">
+              <!-- Top Half: Service Image -->
+              <div class="h-44 relative border-b border-text-main/10 overflow-hidden bg-primary-bg">
+                <Image 
+                  src={getServiceImage(service)} 
+                  alt={isAr ? `خدمة ${service.data.title}` : `Service cover for ${service.data.title}`}
+                  class="w-full h-full object-cover group-hover/body:scale-105 transition-transform duration-500"
+                  width={500}
+                  quality={75}
+                  loading="lazy"
+                />
+                <!-- Service Pill Tag -->
+                <span class="absolute top-4 start-4 text-[9px] font-bold tracking-wider text-text-main/60 uppercase border border-text-main/10 px-2 py-0.5 rounded bg-hero-card/90 font-mono z-10">
+                  {isAr ? "خدمة" : "SERVICE"}
+                </span>
                 
+                {service.isFallback && (
+                  <span class="absolute top-4 end-4 text-[8px] font-bold tracking-wider text-white uppercase px-2 py-0.5 rounded bg-amber-800 font-sans z-10">
+                    {isAr ? "غير مترجم" : "NOT TRANSLATED"}
+                  </span>
+                )}
+              </div>
+
+              <!-- Bottom Half: Details -->
+              <div class="p-6 pb-28 bg-hero-card flex-grow flex flex-col justify-between">
+                <div class="space-y-3">
+                  <h3 class="text-lg font-bold text-text-main font-serif leading-snug group-hover/body:text-accent-primary transition-colors">
+                    {service.data.title}
+                  </h3>
+                  
+                  {service.isFallback && (
+                    <div class="text-[10px] text-amber-800 bg-amber-900/5 px-2.5 py-1.5 rounded border border-amber-800/20 font-sans leading-tight">
+                      {isAr 
+                        ? "⚠️ هذه الخدمة غير متوفرة بالعربية بعد، يتم عرض النسخة الإنجليزية." 
+                        : "⚠️ Arabic version unavailable, English details shown."}
+                    </div>
+                  )}
+
+                  <p class="text-text-main/70 text-sm leading-relaxed font-sans min-h-[4.2rem]">
+                    {service.data.description}
+                  </p>
+                </div>
+              </div>
+            </a>
+
+            <!-- Action Area Wrapper (Default Explore button - Desktop only) -->
+            <div class="absolute inset-x-0 bottom-0 p-6 bg-hero-card pointer-events-none md:block hidden md:group-hover:opacity-0 transition-opacity duration-200">
+              <hr class="border-text-main/10 mb-4" />
+              <div class="flex justify-end pointer-events-auto">
                 <a 
-                  id="solution-details-btn"
-                  href="#"
-                  class="h-12 px-6 rounded-full bg-transparent hover:bg-accent-primary/5 text-accent-primary border border-accent-primary font-semibold text-xs tracking-wider flex items-center justify-center gap-1.5 transition-all duration-300 w-full sm:w-auto text-center"
+                  href={getServiceUrl(service.slug)}
+                  tabindex="-1"
+                  aria-hidden="true"
+                  class:list={[
+                    "h-11 px-5 rounded-full font-semibold text-xs transition-all duration-200 active:scale-95 inline-flex items-center justify-center gap-1.5 cursor-pointer",
+                    isSolid 
+                      ? "bg-accent-primary hover:bg-accent-highlight text-white shadow-sm" 
+                      : "bg-transparent hover:bg-accent-primary/5 text-accent-primary border border-accent-primary"
+                  ]}
                 >
-                  <span>{isAr ? "تفاصيل المقترح الكامل" : "View Full Proposal"}</span>
+                  {service.slug.includes('web-portfolios') ? (isAr ? "طلب استشارة" : "Request Consultation") : (isAr ? "استكشف التفاصيل" : "Explore Details")}
                 </a>
               </div>
             </div>
 
-            <!-- Right: Before/After Comparison cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
-              <!-- Before Card -->
-              <div class="p-5 rounded-xl border border-amber-500/15 bg-amber-500/5 flex flex-col justify-between space-y-4 relative overflow-hidden group">
-                <div class="absolute -right-6 -bottom-6 w-12 h-12 bg-amber-500/5 rounded-full pointer-events-none"></div>
-                <div class="space-y-2">
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-amber-500/20 bg-amber-500/10 text-amber-700 text-[9px] font-bold font-mono">
-                    {isAr ? "الوضع الحالي العشوائي 📉" : "Before (Random & Messy) 📉"}
-                  </span>
-                  <p id="before-text" class="text-text-main/80 text-xs sm:text-[13px] leading-relaxed font-sans font-light">
-                    <!-- Set dynamically -->
-                  </p>
+            <!-- Hover Overlay (Desktop slide-up, mobile always visible) -->
+            <div class="absolute inset-x-0 bottom-0 bg-hero-card p-5 border-t border-text-main/10 flex items-center justify-between gap-2 z-20 shadow-[0_-8px_24px_rgba(10,25,47,0.06)] opacity-100 translate-y-0 pointer-events-auto visible md:translate-y-full md:opacity-0 md:pointer-events-none md:invisible md:transition-all md:duration-300 md:ease-out md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-hover:pointer-events-auto md:group-hover:visible">
+              <!-- Quick Connect Actions -->
+              <div class="flex items-center gap-2 w-full">
+                <!-- Call Button (Circular) -->
+                <a 
+                  href="tel:+201017749925" 
+                  class="w-11 h-11 rounded-full bg-primary-bg hover:bg-text-main/10 text-text-main flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0 border border-text-main/10"
+                  aria-label={isAr ? "اتصال هاتفي" : "Call now"}
+                >
+                  <Icon name="phone" class="w-4 h-4" />
+                </a>
+
+                <!-- WhatsApp Button -->
+                <a 
+                  href={`https://wa.me/201017749925?text=${encodeURIComponent(
+                    service.data.whatsappMessage || (isAr ? `مرحباً عمرو، أود الاستفسار عن خدمة: ${service.data.title}` : `Hi Amr, I would like to inquire about: ${service.data.title}`)
+                  )}`}
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="h-11 flex-grow rounded-full bg-success-primary hover:bg-success-hover text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all duration-200 border-none service-whatsapp-cta"
+                  data-service-title={service.data.title}
+                  data-service-slug={service.slug}
+                >
+                  <Icon name="whatsapp" class="w-4 h-4" />
+                  <span>{isAr ? "واتس اب" : "WhatsApp"}</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Pain-Point Selector Widget (محدد المشاكل التفاعلي) -->
+    <div class="border-t border-text-main/10 pt-16">
+      <div class="glass-card rounded-[24px] p-6 sm:p-8 md:p-10 border border-text-main/10 bg-hero-card/50 space-y-8 relative overflow-hidden">
+        <!-- Glow effects inside -->
+        <div class="absolute -right-20 -top-20 w-48 h-48 rounded-full bg-accent-primary/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+        <div class="absolute -left-20 -bottom-20 w-48 h-48 rounded-full bg-success-primary/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+        <div class="space-y-2 text-center">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-accent-primary/20 bg-accent-primary/5 text-accent-primary text-[10px] font-bold tracking-wider uppercase font-mono">
+            <span class="h-1.5 w-1.5 rounded-full bg-accent-primary animate-pulse"></span>
+            {isAr ? "حل المشاكل المعقدة" : "PROBLEM SOLVER"}
+          </span>
+          <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-text-main font-serif">
+            {isAr ? "إيه أكتر مشكلة معطلاك ومضايقاك في شغلك حالياً؟" : "What is your biggest business bottleneck right now?"}
+          </h3>
+          <p class="text-text-main/60 text-xs sm:text-sm font-sans">
+            {isAr ? "اختر التحدي اللي بيواجهك عشان تشوف الحل والنتيجة المقترحة فوراً" : "Select the challenge you face to see the suggested solution and outcome instantly."}
+          </p>
+        </div>
+
+        <!-- Grid of 4 Pain Point cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Option 1 -->
+          <button 
+            type="button" 
+            data-pain-index="0"
+            class="pain-point-card group relative p-5 rounded-2xl border text-start transition-all duration-300 cursor-pointer select-none bg-hero-card border-text-main/10 hover:border-accent-primary/30 hover:shadow-[0_4px_20px_var(--color-hero-glow)] active:scale-98"
+          >
+            <div class="absolute top-4 end-4 w-2 h-2 rounded-full bg-accent-primary/40 group-hover:bg-accent-primary transition-colors"></div>
+            <div class="space-y-3">
+              <span class="w-8 h-8 rounded-xl bg-accent-primary/10 text-accent-highlight flex items-center justify-center text-sm font-bold font-mono">01</span>
+              <p class="text-text-main/90 text-xs sm:text-[13px] font-semibold font-sans leading-relaxed">
+                {isAr ? "عندي لخبطة في حسابات المحل والمخازن ومش عارف أظبطها" : "My store accounts & inventory are a mess, I can't keep track."}
+              </p>
+            </div>
+          </button>
+
+          <!-- Option 2 -->
+          <button 
+            type="button" 
+            data-pain-index="1"
+            class="pain-point-card group relative p-5 rounded-2xl border text-start transition-all duration-300 cursor-pointer select-none bg-hero-card border-text-main/10 hover:border-accent-primary/30 hover:shadow-[0_4px_20px_var(--color-hero-glow)] active:scale-98"
+          >
+            <div class="absolute top-4 end-4 w-2 h-2 rounded-full bg-accent-primary/40 group-hover:bg-accent-primary transition-colors"></div>
+            <div class="space-y-3">
+              <span class="w-8 h-8 rounded-xl bg-accent-primary/10 text-accent-highlight flex items-center justify-center text-sm font-bold font-mono">02</span>
+              <p class="text-text-main/90 text-xs sm:text-[13px] font-semibold font-sans leading-relaxed">
+                {isAr ? "المبيعات بتقل ومش عارف الإعلانات بتجيب همها ولا لأ" : "Sales are dropping and I don't know if ads are bringing returns."}
+              </p>
+            </div>
+          </button>
+
+          <!-- Option 3 -->
+          <button 
+            type="button" 
+            data-pain-index="2"
+            class="pain-point-card group relative p-5 rounded-2xl border text-start transition-all duration-300 cursor-pointer select-none bg-hero-card border-text-main/10 hover:border-accent-primary/30 hover:shadow-[0_4px_20px_var(--color-hero-glow)] active:scale-98"
+          >
+            <div class="absolute top-4 end-4 w-2 h-2 rounded-full bg-accent-primary/40 group-hover:bg-accent-primary transition-colors"></div>
+            <div class="space-y-3">
+              <span class="w-8 h-8 rounded-xl bg-accent-primary/10 text-accent-highlight flex items-center justify-center text-sm font-bold font-mono">03</span>
+              <p class="text-text-main/90 text-xs sm:text-[13px] font-semibold font-sans leading-relaxed">
+                {isAr ? "العملاء بيكلمونا وبيتوهوا من السيلز ومتابعة المناديب صعبة" : "Customers are getting lost and managing sales reps is too hard."}
+              </p>
+            </div>
+          </button>
+
+          <!-- Option 4 -->
+          <button 
+            type="button" 
+            data-pain-index="3"
+            class="pain-point-card group relative p-5 rounded-2xl border text-start transition-all duration-300 cursor-pointer select-none bg-hero-card border-text-main/10 hover:border-accent-primary/30 hover:shadow-[0_4px_20px_var(--color-hero-glow)] active:scale-98"
+          >
+            <div class="absolute top-4 end-4 w-2 h-2 rounded-full bg-accent-primary/40 group-hover:bg-accent-primary transition-colors"></div>
+            <div class="space-y-3">
+              <span class="w-8 h-8 rounded-xl bg-accent-primary/10 text-accent-highlight flex items-center justify-center text-sm font-bold font-mono">04</span>
+              <p class="text-text-main/90 text-xs sm:text-[13px] font-semibold font-sans leading-relaxed">
+                {isAr ? "عايز أعمل موقع احترافي لشركتي يظهر شغلي ويجيبلي عملاء" : "I want a professional website that represents my brand and brings leads."}
+              </p>
+            </div>
+          </button>
+        </div>
+
+        <!-- Suggested Solution Panel (Dynamically shown and loaded) -->
+        <div id="solution-panel" class="hidden transition-all duration-500 transform opacity-0 translate-y-4">
+          <div class="p-6 sm:p-8 rounded-2xl border border-accent-primary/20 bg-accent-primary/5 space-y-6 relative">
+            <!-- Suggested Solution Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-text-main/10 pb-4">
+              <div class="space-y-1">
+                <span class="text-[10px] font-bold text-accent-primary uppercase tracking-widest font-mono">
+                  {isAr ? "الحل المقترح لشركتك:" : "Suggested Solution:"}
+                </span>
+                <h4 id="solution-title" class="text-lg sm:text-xl font-bold text-text-main font-serif">
+                  <!-- Set dynamically -->
+                </h4>
+              </div>
+              <!-- Recommended Badge -->
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-success-primary/20 bg-success-primary/5 text-success-primary text-[10px] font-bold font-mono shrink-0 w-fit">
+                <Icon name="circle-check" class="w-3.5 h-3.5" />
+                <span>{isAr ? "موصى به بالكامل" : "RECOMMENDED"}</span>
+              </div>
+            </div>
+
+            <!-- Description and Before/After Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+              <!-- Left: Description and actions -->
+              <div class="flex flex-col justify-between space-y-4">
+                <p id="solution-desc" class="text-text-main/70 text-sm leading-relaxed font-sans font-light">
+                  <!-- Set dynamically -->
+                </p>
+
+                <!-- CTA Area -->
+                <div class="pt-4 flex flex-col sm:flex-row items-center gap-4">
+                  <button 
+                    id="solution-whatsapp-btn"
+                    class="h-12 px-6 rounded-full bg-success-primary hover:bg-success-hover text-white font-semibold text-xs tracking-wider flex items-center justify-center gap-2 shadow-success hover:shadow-success-hover active:scale-95 transition-all duration-300 w-full sm:w-auto text-center border-none cursor-pointer"
+                  >
+                    <Icon name="whatsapp" class="w-4 h-4" />
+                    <span>{isAr ? "ابدأ حل مشكلتك على واتساب" : "Start Solving on WhatsApp"}</span>
+                  </button>
+                  
+                  <a 
+                    id="solution-details-btn"
+                    href="#"
+                    class="h-12 px-6 rounded-full bg-transparent hover:bg-accent-primary/5 text-accent-primary border border-accent-primary font-semibold text-xs tracking-wider flex items-center justify-center gap-1.5 transition-all duration-300 w-full sm:w-auto text-center"
+                  >
+                    <span>{isAr ? "تفاصيل المقترح الكامل" : "View Full Proposal"}</span>
+                  </a>
                 </div>
               </div>
 
-              <!-- After Card -->
-              <div class="p-5 rounded-xl border border-success-primary/20 bg-success-primary/5 flex flex-col justify-between space-y-4 relative overflow-hidden group shadow-[inset_0_1px_2px_rgba(22,163,74,0.01)] glowing-border-success">
-                <div class="absolute -right-6 -bottom-6 w-12 h-12 bg-success-primary/5 rounded-full pointer-events-none"></div>
-                <div class="space-y-2">
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-success-primary/30 bg-success-primary/10 text-success-primary text-[9px] font-bold font-mono">
-                    {isAr ? "الوضع مع موسى للتحليلات 📈" : "After (Organized & Optimized) 📈"}
-                  </span>
-                  <p id="after-text" class="text-text-main/90 text-xs sm:text-[13px] leading-relaxed font-sans font-medium">
-                    <!-- Set dynamically -->
-                  </p>
+              <!-- Right: Before/After Comparison cards -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+                <!-- Before Card -->
+                <div class="p-5 rounded-xl border border-amber-500/15 bg-amber-500/5 flex flex-col justify-between space-y-4 relative overflow-hidden group">
+                  <div class="absolute -right-6 -bottom-6 w-12 h-12 bg-amber-500/5 rounded-full pointer-events-none"></div>
+                  <div class="space-y-2">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-amber-500/20 bg-amber-500/10 text-amber-700 text-[9px] font-bold font-mono">
+                      {isAr ? "الوضع الحالي العشوائي 📉" : "Before (Random & Messy) 📉"}
+                    </span>
+                    <p id="before-text" class="text-text-main/80 text-xs sm:text-[13px] leading-relaxed font-sans font-light">
+                      <!-- Set dynamically -->
+                    </p>
+                  </div>
+                </div>
+
+                <!-- After Card -->
+                <div class="p-5 rounded-xl border border-success-primary/20 bg-success-primary/5 flex flex-col justify-between space-y-4 relative overflow-hidden group shadow-[inset_0_1px_2px_rgba(22,163,74,0.01)] glowing-border-success">
+                  <div class="absolute -right-6 -bottom-6 w-12 h-12 bg-success-primary/5 rounded-full pointer-events-none"></div>
+                  <div class="space-y-2">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-success-primary/30 bg-success-primary/10 text-success-primary text-[9px] font-bold font-mono">
+                      {isAr ? "الوضع مع موسى للتحليلات 📈" : "After (Organized & Optimized) 📈"}
+                    </span>
+                    <p id="after-text" class="text-text-main/90 text-xs sm:text-[13px] leading-relaxed font-sans font-medium">
+                      <!-- Set dynamically -->
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Divider or title for all cards -->
-    <div class="border-t border-text-main/10 pt-10">
-      <h3 class="text-sm font-bold text-text-main/50 uppercase tracking-widest font-mono text-center md:text-start mb-8">
-        {isAr ? "جميع الخدمات المتاحة بالتفصيل" : "ALL AVAILABLE SERVICES IN DETAIL"}
-      </h3>
-      
-      <!-- Cards Container: Horizontal swipeable deck on mobile (<768px), Custom grid spans on desktop (>=768px) -->
-      <div class="flex md:grid md:grid-cols-12 gap-5 md:gap-8 overflow-x-auto overflow-y-hidden touch-auto md:overflow-visible snap-x snap-mandatory md:snap-none no-scrollbar pb-6 md:pb-0 px-6 md:px-0 -mx-6 md:mx-0">
-        {services.map((service, index) => {
-          const isSolid = false;
-          
-          let spanClass = '';
-          if (index === 0) {
-            spanClass = 'md:col-span-6 lg:col-span-7'; // ~60% width
-          } else if (index === 1) {
-            spanClass = 'md:col-span-6 lg:col-span-5'; // ~40% width
-          } else if (index === 2 || index === 3) {
-            spanClass = 'md:col-span-6 lg:col-span-4'; // 1/3 width
-          } else {
-            spanClass = 'md:col-span-12 lg:col-span-4'; // 1/3 width on desktop
-          }
-
-          return (
-            <div class={`premium-card-global group !p-0 overflow-hidden flex flex-col h-[470px] md:h-full flex-shrink-0 w-[78vw] md:w-auto snap-center md:snap-align-none relative ${spanClass}`}>
-              
-              <!-- Clickable Card Body -->
-              <a href={getServiceUrl(service.slug)} class="flex flex-col h-full flex-grow hover:no-underline group/body">
-                <!-- Top Half: Service Image -->
-                <div class="h-44 relative border-b border-text-main/10 overflow-hidden bg-primary-bg">
-                  <Image 
-                    src={getServiceImage(service)} 
-                    alt={isAr ? `خدمة ${service.data.title}` : `Service cover for ${service.data.title}`}
-                    class="w-full h-full object-cover group-hover/body:scale-105 transition-transform duration-500"
-                    width={500}
-                    quality={75}
-                    loading="lazy"
-                  />
-                  <!-- Service Pill Tag -->
-                  <span class="absolute top-4 start-4 text-[9px] font-bold tracking-wider text-text-main/60 uppercase border border-text-main/10 px-2 py-0.5 rounded bg-hero-card/90 font-mono z-10">
-                    {isAr ? "خدمة" : "SERVICE"}
-                  </span>
-                  
-                  {service.isFallback && (
-                    <span class="absolute top-4 end-4 text-[8px] font-bold tracking-wider text-white uppercase px-2 py-0.5 rounded bg-amber-800 font-sans z-10">
-                      {isAr ? "غير مترجم" : "NOT TRANSLATED"}
-                    </span>
-                  )}
-                </div>
-
-                <!-- Bottom Half: Details -->
-                <div class="p-6 pb-28 bg-hero-card flex-grow flex flex-col justify-between">
-                  <div class="space-y-3">
-                    <h3 class="text-lg font-bold text-text-main font-serif leading-snug group-hover/body:text-accent-primary transition-colors">
-                      {service.data.title}
-                    </h3>
-                    
-                    {service.isFallback && (
-                      <div class="text-[10px] text-amber-800 bg-amber-900/5 px-2.5 py-1.5 rounded border border-amber-800/20 font-sans leading-tight">
-                        {isAr 
-                          ? "⚠️ هذه الخدمة غير متوفرة بالعربية بعد، يتم عرض النسخة الإنجليزية." 
-                          : "⚠️ Arabic version unavailable, English details shown."}
-                      </div>
-                    )}
-
-                    <p class="text-text-main/70 text-sm leading-relaxed font-sans min-h-[4.2rem]">
-                      {service.data.description}
-                    </p>
-                  </div>
-                </div>
-              </a>
-
-              <!-- Action Area Wrapper (Default Explore button - Desktop only) -->
-              <div class="absolute inset-x-0 bottom-0 p-6 bg-hero-card pointer-events-none md:block hidden md:group-hover:opacity-0 transition-opacity duration-200">
-                <hr class="border-text-main/10 mb-4" />
-                <div class="flex justify-end pointer-events-auto">
-                  <a 
-                    href={getServiceUrl(service.slug)}
-                    tabindex="-1"
-                    aria-hidden="true"
-                    class:list={[
-                      "h-11 px-5 rounded-full font-semibold text-xs transition-all duration-200 active:scale-95 inline-flex items-center justify-center gap-1.5 cursor-pointer",
-                      isSolid 
-                        ? "bg-accent-primary hover:bg-accent-highlight text-white shadow-sm" 
-                        : "bg-transparent hover:bg-accent-primary/5 text-accent-primary border border-accent-primary"
-                    ]}
-                  >
-                    {service.slug.includes('web-portfolios') ? (isAr ? "طلب استشارة" : "Request Consultation") : (isAr ? "استكشف التفاصيل" : "Explore Details")}
-                  </a>
-                </div>
-              </div>
-
-              <!-- Hover Overlay (Desktop slide-up, mobile always visible) -->
-              <div class="absolute inset-x-0 bottom-0 bg-hero-card p-5 border-t border-text-main/10 flex items-center justify-between gap-2 z-20 shadow-[0_-8px_24px_rgba(10,25,47,0.06)] opacity-100 translate-y-0 pointer-events-auto visible md:translate-y-full md:opacity-0 md:pointer-events-none md:invisible md:transition-all md:duration-300 md:ease-out md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-hover:pointer-events-auto md:group-hover:visible">
-                <!-- Quick Connect Actions -->
-                <div class="flex items-center gap-2 w-full">
-                  <!-- Call Button (Circular) -->
-                  <a 
-                    href="tel:+201017749925" 
-                    class="w-11 h-11 rounded-full bg-primary-bg hover:bg-text-main/10 text-text-main flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0 border border-text-main/10"
-                    aria-label={isAr ? "اتصال هاتفي" : "Call now"}
-                  >
-                    <Icon name="phone" class="w-4 h-4" />
-                  </a>
-
-                  <!-- WhatsApp Button -->
-                  <a 
-                    href={`https://wa.me/201017749925?text=${encodeURIComponent(
-                      service.data.whatsappMessage || (isAr ? `مرحباً عمرو، أود الاستفسار عن خدمة: ${service.data.title}` : `Hi Amr, I would like to inquire about: ${service.data.title}`)
-                    )}`}
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    class="h-11 flex-grow rounded-full bg-success-primary hover:bg-success-hover text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all duration-200 border-none service-whatsapp-cta"
-                    data-service-title={service.data.title}
-                    data-service-slug={service.slug}
-                  >
-                    <Icon name="whatsapp" class="w-4 h-4" />
-                    <span>{isAr ? "واتس اب" : "WhatsApp"}</span>
-                  </a>
-                </div>
-              </div>
-
-            </div>
-          );
-        })}
       </div>
     </div>
   </div>
@@ -361,7 +356,7 @@ const getServiceImage = (service: any) => {
   // Pain points data - deferred as module script to avoid blocking main thread (TBT optimization)
   const painPointsData = [
     {
-      titleAr: "تطوير إكسل المتقدم وهيكلة البيانات",
+      titleAr: "تصميم شيتات إكسيل محاسبية احترافية",
       titleEn: "Advanced Excel & Data Structuring",
       descAr: "شيتات الإكسيل بتبوظ منك كل شوية والمعادلات بتضرب؟ هنسهلك الدنيا ونصمملك شيت إكسيل محاسبي احترافي متفصل بالملي على قد حجم شغلك، يمنع الأخطاء البشرية ويخلص الحسابات في ثواني.",
       descEn: "Tired of broken spreadsheet formulas? We will design a custom, protected Excel sheet customized exactly to your business, preventing human errors.",
@@ -374,7 +369,7 @@ const getServiceImage = (service: any) => {
       slug: "advanced-excel"
     },
     {
-      titleAr: "تحليل البيانات ولوحات مؤشرات الأداء (BI)",
+      titleAr: "داشبورد تفاعلي لأرقام وأرباح شركتك",
       titleEn: "Data Analytics & BI Dashboards",
       descAr: "بلاش تاخد قرارات في الضلمة أو تعتمد على الإحساس والفهلوة. هحولك أرقام شركتك وقواعد البيانات المتلخبطة لداشبورد Power BI تفاعلي وسهل يوريك كل تفصيلة في ثانية عشان تاخد قرارك الصح.",
       descEn: "Stop making critical decisions in the dark. We will restructure your databases and connect them to a smart dashboard so you can see actual profits.",
@@ -387,7 +382,7 @@ const getServiceImage = (service: any) => {
       slug: "data-analytics"
     },
     {
-      titleAr: "تطوير أنظمة إدارة العملاء (CRM) والأنظمة المخصصة",
+      titleAr: "بناء سيستم CRM خاص لشركتك (بدون اشتراك شهري)",
       titleEn: "Custom CRM & Systems Automation",
       descAr: "العملاء بيتوهوا منك والسيلز مش عارف يتابعهم؟ هبني لك سيستم CRM بسيط باللغة العربية متفصل بالكامل على طريقة شغلك، يجمع كل عملائك وحركات البيع ويربط موقعك بالتحليلات من غير أي اشتراك شهري متكرر.",
       descEn: "We will build a simple, secure Arabic sales and CRM system that tracks all deals and automates workflow without any monthly subscription fees.",
@@ -400,7 +395,7 @@ const getServiceImage = (service: any) => {
       slug: "custom-crm"
     },
     {
-      titleAr: "المواقع الشخصية وصفحات الهبوط المخصصة",
+      titleAr: "تصميم مواقع ويب وصفحات هبوط سريعة",
       titleEn: "Custom Websites & High-Converting Landing Pages",
       descAr: "موقع شركتك بطيء وبيطفش الزوار أول ما يدخلوا، أو شكله قديم ومش بيعبر عن جودة شغلك بجد؟ هصمملك موقع بورتفوليو أو صفحة هبوط سريعة جداً وجذابة تظهر شغلك وتخلي شكلك قدام عملائك براند عالمي.",
       descEn: "We will build a premium, ultra-fast portfolio website or landing page to showcase your work, fully mobile responsive and SEO optimized.",
