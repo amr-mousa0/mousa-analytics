@@ -116,8 +116,8 @@ async function generateOGImage() {
 
       <!-- Typography -->
       <text x="440" y="270" class="title">MOUSA ANALYTICS</text>
-      <text x="440" y="325" class="subtitle">DATA PIPELINES &amp; CONVERSION SYSTEMS</text>
-      <text x="440" y="380" class="desc">Predictable growth built on bulletproof analytical architecture.</text>
+      <text x="440" y="325" class="subtitle">DATA &amp; MARKETING ANALYTICS</text>
+      <text x="440" y="380" class="desc">Turning data into smart decisions and campaigns into real profit.</text>
     </svg>
   `;
 
