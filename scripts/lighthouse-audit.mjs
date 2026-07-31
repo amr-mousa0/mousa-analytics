@@ -6,7 +6,19 @@ import lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
 
 const PORT = 4322;
-const DIST_DIR = path.resolve('dist');
+function resolveDistDir() {
+  const candidates = [
+    path.resolve('dist/client'),
+    path.resolve('.vercel/output/static'),
+    path.resolve('dist')
+  ];
+  for (const cand of candidates) {
+    if (fs.existsSync(cand) && fs.existsSync(path.join(cand, 'index.html'))) return cand;
+  }
+  return candidates[0];
+}
+
+const DIST_DIR = resolveDistDir();
 const REPORT_DIR = path.resolve('lighthouse-reports');
 
 // Thresholds

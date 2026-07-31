@@ -1,7 +1,19 @@
 import fs from 'fs';
 import path from 'path';
 
-const DIST_DIR = path.resolve('dist/_astro');
+function resolveDistDir() {
+  const candidates = [
+    path.resolve('dist/client/_astro'),
+    path.resolve('.vercel/output/static/_astro'),
+    path.resolve('dist/_astro')
+  ];
+  for (const cand of candidates) {
+    if (fs.existsSync(cand)) return cand;
+  }
+  return candidates[0];
+}
+
+const DIST_DIR = resolveDistDir();
 
 // Limits
 const MAX_JS_CHUNK_SIZE_KB = 150; // 150KB
