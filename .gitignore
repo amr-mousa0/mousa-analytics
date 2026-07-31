@@ -1,78 +1,80 @@
-# Logs
-logs
+# ==============================================================================
+# MOUSA ANALYTICS - PRODUCTION SECURITY & GITIGNORE SPECIFICATION
+# Only essential source code & production configuration files are tracked.
+# ==============================================================================
+
+# 1. Build Outputs, Caches & Transpiled Assets
+dist/
+.astro/
+.cache/
+.vercel/
+
+# 2. Dependencies
+node_modules/
+jspm_packages/
+.npm/
+
+# 3. Logs & Diagnostics
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-# Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# Runtime data
-pids
-lib-cov
-coverage
-*.lcov
+# 4. Environment Variables & Secrets (STRICTLY PRIVATE)
+.env
+.env.*
+!.env.example
 
-# Dependency directories
-node_modules/
-jspm_packages/
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Optional npm cache directory
-.npm
-
-# Output directories
-dist/
-.astro/
-
-# IDEs and editors
-.vscode/*
-!.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/tasks.json
+# 5. OS & IDE Metadata
+.DS_Store
+Thumbs.db
 .idea/
+.vscode/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.tmp
 
-# Local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env*.local
+# 6. Playwright, Lighthouse & Test Artifacts
+playwright-report/
+test-results/
+blob-report/
+.lighthouseci/
+lighthouse-reports/
+*.report.html
+*.csv
+chromewebdata_*
 
-# OS Metadata
-.DS_Store
-Thumbs.db
-
-# Temporary and Scratch Directories
-scratch/
-.impeccable/
-.specify/
-specs/
-
-# Agent Tooling (local dev only)
+# 7. Internal AI Tooling, Agents, Internal Specs & Blueprints (STRICTLY PRIVATE)
 .agent/
 .agents/
+.impeccable/
+.specify/
+.github/agents/
+.github/prompts/
+.github/copilot-instructions.md
+specs/
+scratch/
 AGENTS.md
+CONSTITUTION.md
 DESIGN.md
 PRODUCT.md
 STARTER_CONSTRAINTS.md
+QA_INSTRUCTIONS.md
+session_checkpoint.md
+skills-lock.json
 task.md
+deployment_blueprint_mousa_analytics.md
 
-# Testing
-playwright-report/
-test-results/
-
-
-.vercel
-.env*
+# 8. Temporary scripts & legacy HTML/MP4 dumps
+add_gigs_trans.cjs
+update_*.cjs
+code.html
+index.legacy.html
+*.mp4
