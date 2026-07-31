@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import fs from 'fs';
@@ -38,6 +39,7 @@ const excludedSlugs = getExcludedSlugs();
 
 // https://astro.build/config
 export default defineConfig({
+  adapter: vercel(),
   site: process.env.SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://mousa-analytics.vercel.app')),

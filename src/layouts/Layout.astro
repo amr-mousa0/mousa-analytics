@@ -114,8 +114,8 @@ if (pageId === 'homepage') {
     "@type": "WebSite",
     "@id": new URL(`${langPath}#website`, Astro.site).href,
     "url": new URL(`${langPath}`, Astro.site).href,
-    "name": lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics',
-    "alternateName": ["Mousa Analytics", "موسى للتحليلات"],
+    "name": lang === 'ar' ? 'موسى لتحليل البيانات' : 'Mousa Analytics',
+    "alternateName": ["Mousa Analytics", "موسى لتحليل البيانات"],
     "description": lang === 'ar' ? 'تحليلات وحلول الأعمال المتقدمة' : 'Advanced Analytics & Business Solutions',
     "inLanguage": lang
   });
@@ -126,14 +126,14 @@ graph.push({
   "@type": "ProfessionalService",
   "@id": new URL(`${langPath}#organization`, Astro.site).href,
   "url": new URL(`${langPath}`, Astro.site).href,
-  "name": lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics',
+  "name": lang === 'ar' ? 'موسى لتحليل البيانات' : 'Mousa Analytics',
   "logo": {
     "@type": "ImageObject",
     "url": new URL('favicon-192x192.png', Astro.site).href
   },
   "image": new URL('images/og-image.png', Astro.site).href,
   "description": lang === 'ar' 
-    ? "موسى للتحليلات: خيارك الأفضل لخدمات تحليل البيانات والميديا باينج لتضاعف أرباح مشروعك."
+    ? "موسى لتحليل البيانات: خيارك الأفضل لخدمات تحليل البيانات والميديا باينج لتضاعف أرباح مشروعك."
     : "Mousa Analytics: Your premier choice for data analytics and media buying services to scale your business.",
   "address": {
     "@type": "PostalAddress",
@@ -305,9 +305,9 @@ const breadcrumbSchema = breadcrumbs.length > 1 ? {
     {hreflangDefault && <link rel="alternate" hreflang="x-default" href={hreflangDefault} />}
     
     <!-- Search Branding & Site Name Signals -->
-    <meta property="og:site_name" content={lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics'} />
-    <meta name="application-name" content={lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics'} />
-    <meta name="apple-mobile-web-app-title" content={lang === 'ar' ? 'موسى للتحليلات' : 'Mousa Analytics'} />
+    <meta property="og:site_name" content={lang === 'ar' ? 'موسى لتحليل البيانات' : 'Mousa Analytics'} />
+    <meta name="application-name" content={lang === 'ar' ? 'موسى لتحليل البيانات' : 'Mousa Analytics'} />
+    <meta name="apple-mobile-web-app-title" content={lang === 'ar' ? 'موسى لتحليل البيانات' : 'Mousa Analytics'} />
 
     <!-- Open Graph Metadata -->
     <meta property="og:title" content={seoTitle} />
