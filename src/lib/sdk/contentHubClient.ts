@@ -120,8 +120,13 @@ export class ContentHubClient {
   public static async getProjects(lang = 'en'): Promise<ContentHubProject[]> {
     try {
       const baseUrl = this.getBaseUrl();
-      const endpoint = `${baseUrl}/api/v1/projects?lang=${encodeURIComponent(lang)}`;
-      const res = await this.fetchWithSelectiveRetry(endpoint);
+      let endpoint = `${baseUrl}/api/projects?lang=${encodeURIComponent(lang)}`;
+      let res = await this.fetchWithSelectiveRetry(endpoint);
+
+      if (!res.ok && res.status === 404) {
+        endpoint = `${baseUrl}/api/v1/projects?lang=${encodeURIComponent(lang)}`;
+        res = await this.fetchWithSelectiveRetry(endpoint);
+      }
 
       if (!res.ok) {
         console.error(`[ContentHubClient] API returned HTTP ${res.status} for getProjects(${lang})`);
@@ -129,7 +134,48 @@ export class ContentHubClient {
       }
 
       const data = await res.json();
-      return Array.isArray(data.projects) ? data.projects : [];
+      const rawList = Array.isArray(data) ? data : (Array.isArray(data?.projects) ? data.projects : []);
+      
+      return rawList.map((p: any) => {
+        const title = lang === 'ar' ? (p.titleAr || p.title) : (p.titleEn || p.title);
+        const problemText = lang === 'ar' 
+          ? (p.problemAr || p.problemEn || p.problemText || p.problem || '') 
+          : (p.problemEn || p.problemText || p.problem || '');
+        const solutionText = lang === 'ar' 
+          ? (p.salesDescriptionAr || p.salesDescriptionEn || p.solutionText || p.solution || '') 
+          : (p.salesDescriptionEn || p.solutionText || p.solution || '');
+        const impactText = lang === 'ar' 
+          ? (p.salesFunnelMetricsAr || p.salesFunnelMetricsEn || p.impactText || p.impact || '') 
+          : (p.salesFunnelMetricsEn || p.impactText || p.impact || '');
+
+        const dataObj = p.data || {
+          title,
+          projectBadge: p.projectBadge || p.category || 'DATA ANALYTICS',
+          problemText,
+          solutionText,
+          impactText,
+          coverImage: p.coverImage || p.image || p.imagePath,
+          galleryImages: p.galleryImages || p.images || [],
+          githubUrl: p.githubUrl || '',
+          dashboardUrl: p.dashboardUrl || p.powerBiUrl || p.demoUrl || '',
+          whatsappStartProjectMsg: p.whatsappStartProjectMsg || `Hi Amr, I'd like to inquire about ${title}`,
+          whatsappOpenDashboardMsg: p.whatsappOpenDashboardMsg || `Hi Amr, I'd like to request access to dashboard for ${title}`,
+          priority: p.priority || 1,
+          category: p.category || 'Data Analytics',
+          tags: p.tags || p.tech || [],
+          draft: p.draft || false,
+          featured: p.featured ?? true,
+          publishedDate: p.publishedDate || p.updatedAt || new Date()
+        };
+
+        return {
+          id: p.id || p.slug,
+          slug: p.slug || p.id,
+          ...dataObj,
+          data: dataObj,
+          isFallback: p.isFallback || false
+        };
+      });
     } catch (err: any) {
       console.error(`[ContentHubClient] Graceful degradation on getProjects(${lang}):`, err?.message || err);
       return [];
