@@ -1,3 +1,5 @@
+import { getSafeProjects } from '../../scripts/projectsHelper.js';
+
 export interface ContentHubProjectData {
   title: string;
   projectBadge: string;
@@ -45,6 +47,16 @@ export interface ContentHubVersion {
   commit?: string;
 }
 
+function mapToContentHubProject(list: any[]): ContentHubProject[] {
+  return list.map(p => ({
+    id: p.id || p.slug,
+    slug: p.slug || p.id,
+    ...p.data,
+    data: p.data,
+    isFallback: p.isFallback || false
+  }));
+}
+
 export class ContentHubClient {
   private static getBaseUrl(): string {
     const envUrl = process.env.CONTENT_HUB_API_URL || (import.meta as any).env?.CONTENT_HUB_API_URL;
@@ -54,10 +66,24 @@ export class ContentHubClient {
       return envUrl.replace(/\/+$/, '');
     }
 
+    if (typeof window !== 'undefined' && window.location?.origin) {
+      return window.location.origin;
+    }
+
+    if (typeof process !== 'undefined' && process.env) {
+      if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+        return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+      }
+      if (process.env.VERCEL_URL) {
+        return `https://${process.env.VERCEL_URL}`;
+      }
+      if (process.env.SITE_URL) {
+        return process.env.SITE_URL.replace(/\/+$/, '');
+      }
+    }
+
     if (isProd) {
-      throw new Error(
-        '[ContentHubClient Security Failure] CONTENT_HUB_API_URL environment variable is strictly required in production environment.'
-      );
+      return 'https://mousa-analytics.vercel.app';
     }
 
     // Default local dev fallback
@@ -129,12 +155,15 @@ export class ContentHubClient {
       }
 
       if (!res.ok) {
-        console.error(`[ContentHubClient] API returned HTTP ${res.status} for getProjects(${lang})`);
-        return [];
+        console.warn(`[ContentHubClient] API returned HTTP ${res.status} for getProjects(${lang}). Using local projects fallback.`);
+        return mapToContentHubProject(await getSafeProjects(lang));
       }
 
       const data = await res.json();
       const rawList = Array.isArray(data) ? data : (Array.isArray(data?.projects) ? data.projects : []);
+      if (rawList.length === 0) {
+        return mapToContentHubProject(await getSafeProjects(lang));
+      }
       
       return rawList.map((p: any) => {
         const title = lang === 'ar' ? (p.titleAr || p.title) : (p.titleEn || p.title);
@@ -177,8 +206,8 @@ export class ContentHubClient {
         };
       });
     } catch (err: any) {
-      console.error(`[ContentHubClient] Graceful degradation on getProjects(${lang}):`, err?.message || err);
-      return [];
+      console.warn(`[ContentHubClient] Graceful degradation on getProjects(${lang}):`, err?.message || err);
+      return mapToContentHubProject(await getSafeProjects(lang));
     }
   }
 

@@ -254,14 +254,24 @@ const activeServices = allServices.filter((s: any) => !s.data.draft && s.slug.st
                    <!-- Main Image Display -->
                   {project.data.galleryImages.length > 0 && (
                     <div class="w-full aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 bg-white relative">
-                      <Image 
-                        id="main-gallery-image"
-                        src={project.data.galleryImages[0]} 
-                        alt="Main Project Snapshot" 
-                        class="w-full h-full object-cover transition-opacity duration-150"
-                        width={1000}
-                        quality={90}
-                      />
+                      {typeof project.data.galleryImages[0] === 'object' && project.data.galleryImages[0] !== null && 'format' in project.data.galleryImages[0] ? (
+                        <Image 
+                          id="main-gallery-image"
+                          src={project.data.galleryImages[0]} 
+                          alt="Main Project Snapshot" 
+                          class="w-full h-full object-cover transition-opacity duration-150"
+                          width={1000}
+                          quality={90}
+                        />
+                      ) : (
+                        <img 
+                          id="main-gallery-image"
+                          src={typeof project.data.galleryImages[0] === 'string' ? project.data.galleryImages[0] : (project.data.galleryImages[0] as any)?.src || '/images/og-image.png'} 
+                          alt="Main Project Snapshot" 
+                          class="w-full h-full object-cover transition-opacity duration-150"
+                          width="1000"
+                        />
+                      )}
                     </div>
                   )}
                   <!-- Thumbnails Grid -->
@@ -272,16 +282,25 @@ const activeServices = allServices.filter((s: any) => !s.data.draft && s.slug.st
                           "gallery-thumbnail aspect-[16/10] rounded-lg overflow-hidden border bg-white cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 w-16 sm:w-20 lg:w-auto shrink-0",
                           i === 0 ? "border-accent-primary ring-2 ring-accent-primary/20" : "border-slate-200 hover:border-slate-300"
                         ]}
-                        data-src={img.src}
+                        data-src={typeof img === 'string' ? img : img?.src || ''}
                         aria-label={`View image snapshot ${i + 1}`}
                       >
-                        <Image 
-                          src={img} 
-                          alt={`Thumbnail snapshot ${i + 1}`} 
-                          class="w-full h-full object-cover" 
-                          width={200}
-                          quality={90}
-                        />
+                        {typeof img === 'object' && img !== null && 'format' in img ? (
+                          <Image 
+                            src={img} 
+                            alt={`Thumbnail snapshot ${i + 1}`} 
+                            class="w-full h-full object-cover" 
+                            width={200}
+                            quality={90}
+                          />
+                        ) : (
+                          <img 
+                            src={typeof img === 'string' ? img : img?.src || '/images/og-image.png'} 
+                            alt={`Thumbnail snapshot ${i + 1}`} 
+                            class="w-full h-full object-cover" 
+                            width="200"
+                          />
+                        )}
                       </button>
                     ))}
                   </div>

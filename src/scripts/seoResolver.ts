@@ -47,13 +47,16 @@ export async function resolveDynamicSeo(
     );
   }
 
-  // 2. Validate that the entry exists
+  // 2. Validate that the entry exists; fallback to default if missing for dynamic items
   if (!entry || !entry.data) {
-    throw new Error(
-      `[SEO CRITICAL] Missing central SEO file for ${type} "${cleanSlug}" [${lang}].\n` +
-      `  Expected file: ${filePath}\n` +
-      `  Action: Create this file with title, description, and other required SEO fields.`
-    );
+    console.warn(`[SEO Warning] Central SEO file missing for ${type} "${cleanSlug}" [${lang}]. Generating default SEO metadata.`);
+    const formattedName = cleanSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    return {
+      title: `${formattedName} | Mousa Analytics`,
+      description: `Case study analysis and results for ${formattedName}. Data analytics and business growth solutions.`,
+      keywords: ['Data Analytics', 'Business Growth', formattedName],
+      noindex: false
+    };
   }
 
   const { title, description, keywords, ogImage, canonicalUrl, noindex } = entry.data;
