@@ -3,7 +3,7 @@ import path from 'path';
 import type { PipelineJob } from '../../types/providers.js';
 import type { NormalizedProjectModel, RepositoryManifest } from '../../types/manifest.js';
 import { MemoryQueueProvider } from '../providers/queueProvider.js';
-import { LocalStorageProvider } from '../providers/storageProvider.js';
+import { getProductionStorageProvider } from '../providers/storageProvider.js';
 import { DefaultTranslationProvider } from '../providers/translationProvider.js';
 import { GitHubWorker } from '../workers/githubWorker.js';
 import { TranslationWorker } from '../workers/translationWorker.js';
@@ -38,7 +38,7 @@ export interface WebhookPushPayload {
 
 export class PipelineOrchestrator {
   private static queueProvider = new MemoryQueueProvider();
-  private static storageProvider = new LocalStorageProvider();
+  private static storageProvider = getProductionStorageProvider();
   private static translationProvider = new DefaultTranslationProvider();
 
   /**
@@ -138,13 +138,15 @@ export class PipelineOrchestrator {
       const translatedModel = await TranslationWorker.process(translationJob, this.translationProvider);
       console.log(`[Pipeline] [9/15] Translation - English Title: "${translatedModel.title}", Arabic Title: "${translatedModel.titleAr || translatedModel.title}"`);
 
-      // Stage 10: Asset discovery
+      // Stage 10: Asset discovery & Selected Storage Provider
+      const activeStorageProvider = this.storageProvider.id;
+      console.log(`[Pipeline] [10/15] Asset discovery - Storage Provider selected: "${activeStorageProvider}". Cover: "${translatedModel.cover || 'None'}", Gallery items: ${translatedModel.gallery.length}`);
+
       const assetJob: PipelineJob<any> = {
         ...job,
         payload: { model: translatedModel }
       };
       const assetModel = await AssetWorker.process(assetJob, this.storageProvider);
-      console.log(`[Pipeline] [10/15] Asset discovery - Cover: "${assetModel.cover || 'None'}", Gallery items count: ${assetModel.gallery.length}`);
 
       // Stage 11: Publish target resolution
       const publishJob: PipelineJob<any> = {
@@ -163,9 +165,12 @@ export class PipelineOrchestrator {
       const publishedModel = await PublishWorker.process(publishJob);
       console.log(`[Pipeline] [11/15] Publish target resolution - Target portfolio enabled. Targets: ${Object.keys(publishedModel.publish || {}).join(', ')}`);
 
-      // Stage 12: Storage write
+      // Stage 12: Storage write & Exact location
+      const isVercel = Boolean(process.env.VERCEL);
+      const targetDir = isVercel ? '/tmp/content/projects/' : 'src/content/projects/';
       await this.writeProjectToStorage(publishedModel);
-      console.log(`[Pipeline] [12/15] Storage write - Persisted project Markdown files for "${publishedModel.projectId}" to src/content/projects/`);
+
+      console.log(`[Pipeline] [12/15] Storage write - Provider: "${activeStorageProvider}". Location: "${targetDir}${publishedModel.projectId}.md" (Note: Serverless /tmp is ephemeral across function instances)`);
 
       // Stage 13: Project store refresh
       PublishWorker.updateStore(publishedModel);
@@ -177,7 +182,7 @@ export class PipelineOrchestrator {
 
       // Stage 15: Job completed
       this.queueProvider.completeJob(job.jobId);
-      console.log(`[Pipeline] [15/15] Job completed - jobId: ${job.jobId}, projectId: ${publishedModel.projectId}, queue status: completed`);
+      console.log(`[Pipeline] [15/15] Job completed - jobId: ${job.jobId}, projectId: ${publishedModel.projectId}, status: completed`);
 
       return publishedModel;
     } catch (error: any) {
@@ -194,13 +199,16 @@ export class PipelineOrchestrator {
   }
 
   /**
-   * Helper to write project data to Markdown storage files in src/content/projects/
+   * Helper to write project data to Markdown storage files in src/content/projects/ or /tmp in Vercel
    */
   private static async writeProjectToStorage(model: NormalizedProjectModel): Promise<void> {
     try {
       const cwd = process.cwd();
-      const enDir = path.join(cwd, 'src', 'content', 'projects', 'en');
-      const arDir = path.join(cwd, 'src', 'content', 'projects', 'ar');
+      const isVercel = Boolean(process.env.VERCEL);
+      const baseDir = isVercel ? path.join('/tmp', 'content', 'projects') : path.join(cwd, 'src', 'content', 'projects');
+
+      const enDir = path.join(baseDir, 'en');
+      const arDir = path.join(baseDir, 'ar');
 
       if (!fs.existsSync(enDir)) fs.mkdirSync(enDir, { recursive: true });
       if (!fs.existsSync(arDir)) fs.mkdirSync(arDir, { recursive: true });
