@@ -6,7 +6,6 @@ vi.mock('astro:content', () => ({
 }));
 
 import { PipelineOrchestrator } from '../../src/lib/orchestrator/pipelineOrchestrator.js';
-import { fetchManifest } from '../../src/lib/services/manifestFetcher.js';
 import { getSafeProjects } from '../../src/scripts/projectsHelper.js';
 
 describe('SQL Practice Level 1 Repository Synchronization Phase Investigation', () => {

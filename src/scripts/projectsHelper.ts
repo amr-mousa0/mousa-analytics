@@ -1,7 +1,41 @@
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import { PublishWorker } from '../lib/workers/publishWorker.js';
 
-export interface ExtendedProject extends CollectionEntry<'projects'> {
+export interface ExtendedProjectData {
+  title: string;
+  projectBadge: string;
+  problemText: string;
+  solutionText: string;
+  impactText: string;
+  coverImage: any;
+  galleryImages: any[];
+  githubUrl?: string;
+  dashboardUrl?: string;
+  whatsappStartProjectMsg: string;
+  whatsappOpenDashboardMsg: string;
+  priority: number;
+  category: string;
+  tags: string[];
+  draft: boolean;
+  featured: boolean;
+  publishedDate: Date;
+  galleryTab?: string;
+  dashboardTab?: string;
+  dashboardPrompt?: string;
+  dashboardBtn?: string;
+  inquireTitle?: string;
+  inquireDesc?: string;
+  inquireBtn?: string;
+  translationKey?: string;
+}
+
+export interface ExtendedProject {
+  id: string;
+  slug: string;
+  body: string;
+  collection: 'projects';
+  data: ExtendedProjectData;
+  render?: () => Promise<any>;
   isFallback?: boolean;
 }
 
@@ -16,7 +50,7 @@ export async function getSafeProjects(lang: string): Promise<ExtendedProject[]> 
     try {
       const fileCollection = await getCollection('projects');
       if (fileCollection) {
-        allProjects = fileCollection.map(p => ({ ...p }));
+        allProjects = fileCollection.map(p => ({ ...p } as ExtendedProject));
       }
     } catch (e) {
       console.warn('[Defensive Rendering] Warning fetching static project collection:', e);
