@@ -1,6 +1,4 @@
-export interface ContentHubProject {
-  id: string;
-  slug: string;
+export interface ContentHubProjectData {
   title: string;
   projectBadge: string;
   problemText: string;
@@ -18,9 +16,15 @@ export interface ContentHubProject {
   draft: boolean;
   featured: boolean;
   publishedDate: Date | string;
-  isFallback?: boolean;
-  data?: Omit<ContentHubProject, 'data'>;
 }
+
+export interface ContentHubProject extends ContentHubProjectData {
+  id: string;
+  slug: string;
+  isFallback?: boolean;
+  data: ContentHubProjectData;
+}
+
 
 
 export interface ContentHubConfig {

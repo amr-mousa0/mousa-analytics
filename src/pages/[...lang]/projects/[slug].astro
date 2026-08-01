@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
 import Navigation from '../../../components/ui/Navigation.astro';
 import Footer from '../../../components/ui/Footer.astro';
+import { getCollection } from 'astro:content';
 import { resolveDynamicSeo } from '../../../scripts/seoResolver';
 
 // Dynamic static route generations with fallback support
@@ -110,7 +111,7 @@ const shouldNoindex = project.data.draft || seoData.noindex;
 
 // Fetch related services of matching category (T014)
 const allServices = await getCollection('services');
-const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWith(`${currentLang}/`) && s.data.category === project.data.category);
+const activeServices = allServices.filter((s: any) => !s.data.draft && s.slug.startsWith(`${currentLang}/`) && s.data.category === project.data.category);
 
 
 ---
@@ -389,7 +390,7 @@ const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWit
             {isAr ? "الخدمات المهنية ذات الصلة" : "Related Professional Services"}
           </h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
-            {activeServices.map((service) => {
+            {activeServices.map((service: any) => {
               const serviceSlug = service.slug.split('/').pop();
               return (
                 <a href={currentLang === 'ar' ? `/services/${serviceSlug}/` : `/en/services/${serviceSlug}/`} class="glass-card glass-card-hover group rounded-2xl p-5 flex flex-col gap-3 transition-all duration-300">
