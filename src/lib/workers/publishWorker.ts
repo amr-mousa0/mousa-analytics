@@ -26,6 +26,10 @@ export class PublishWorker {
     return model;
   }
 
+  public static updateStore(model: NormalizedProjectModel): void {
+    this.publishedStore.set(model.projectId, model);
+  }
+
   public static getPublishedProjects(): NormalizedProjectModel[] {
     return Array.from(this.publishedStore.values());
   }

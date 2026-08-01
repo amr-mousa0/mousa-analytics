@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { PublishWorker } from '../lib/workers/publishWorker.js';
 
 export interface ExtendedProject extends CollectionEntry<'projects'> {
   isFallback?: boolean;
@@ -7,11 +8,58 @@ export interface ExtendedProject extends CollectionEntry<'projects'> {
 /**
  * Safely fetches and sorts projects for a given language, supporting
  * translation fallbacks, draft filtering, and deterministic featured sorting.
+ * Merges published store items from PublishWorker to ensure dynamic webhooks update instantly.
  */
 export async function getSafeProjects(lang: string): Promise<ExtendedProject[]> {
   try {
-    const allProjects = await getCollection('projects');
-    if (!allProjects) return [];
+    let allProjects: ExtendedProject[] = [];
+    try {
+      const fileCollection = await getCollection('projects');
+      if (fileCollection) {
+        allProjects = fileCollection.map(p => ({ ...p }));
+      }
+    } catch (e) {
+      console.warn('[Defensive Rendering] Warning fetching static project collection:', e);
+    }
+
+    // Merge in-memory published projects from webhook pipeline runs
+    const publishedModels = PublishWorker.getPublishedProjects();
+    publishedModels.forEach(model => {
+      const slug = `${lang}/${model.projectId}`;
+      const exists = allProjects.some(p => p.slug === slug || p.slug.endsWith(`/${model.projectId}`));
+      if (!exists) {
+        const title = lang === 'ar' ? (model.titleAr || model.title) : model.title;
+        const problemText = lang === 'ar' ? (model.problemAr || model.problem || model.description) : (model.problem || model.description);
+        const solutionText = lang === 'ar' ? (model.solutionAr || model.solution || model.description) : (model.solution || model.description);
+        const impactText = lang === 'ar' ? (model.businessValueAr || model.businessValue || model.description) : (model.businessValue || model.description);
+
+        allProjects.push({
+          id: `${lang}/${model.projectId}.md`,
+          slug: `${lang}/${model.projectId}`,
+          body: `Case Study: ${title}`,
+          collection: 'projects',
+          data: {
+            title,
+            projectBadge: (model.tags?.[0] || 'Data Analytics').toUpperCase(),
+            problemText,
+            solutionText,
+            impactText,
+            coverImage: (model.cover || '../../../assets/images/uploads/marketing-roi.jpg') as any,
+            galleryImages: (model.gallery?.map(g => g.url) || []) as any,
+            githubUrl: `https://github.com/amr-mousa0/${model.sourceRepo || model.projectId}`,
+            dashboardUrl: model.demo || '',
+            whatsappStartProjectMsg: `Hi Amr, I'd like to inquire about ${title}`,
+            whatsappOpenDashboardMsg: `Hi Amr, I'd like to request access to dashboard for ${title}`,
+            priority: 1,
+            category: 'Data Analytics',
+            tags: model.tags || ['Data Analytics'],
+            draft: false,
+            featured: model.publish?.portfolio?.featured ?? true,
+            publishedDate: new Date(model.updatedAt || Date.now())
+          }
+        });
+      }
+    });
 
     const isProd = import.meta.env.PROD;
     const showDrafts = !isProd;
@@ -44,17 +92,14 @@ export async function getSafeProjects(lang: string): Promise<ExtendedProject[]> 
 
     // Deterministic sorting: Featured first, then by priority, then by date descending
     return currentLocaleProjects.sort((a, b) => {
-      // 1. Featured first
       const featA = a.data.featured ? 1 : 0;
       const featB = b.data.featured ? 1 : 0;
       if (featA !== featB) return featB - featA;
 
-      // 2. Priority ascending
       if (a.data.priority !== b.data.priority) {
         return a.data.priority - b.data.priority;
       }
 
-      // 3. Date descending
       const dateA = new Date(a.data.publishedDate).getTime();
       const dateB = new Date(b.data.publishedDate).getTime();
       return dateB - dateA;
