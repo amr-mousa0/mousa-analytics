@@ -1,5 +1,5 @@
 ---
-import { getSafeProjects } from '../../scripts/projectsHelper';
+import { ContentHubClient } from '../../lib/sdk/contentHubClient.js';
 import { Image } from 'astro:assets';
 import Icon from '../ui/Icon.astro';
 
@@ -10,7 +10,8 @@ interface Props {
 const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
-const projects = await getSafeProjects(lang);
+const projects = await ContentHubClient.getProjects(lang);
+
 
 const getProjectUrl = (slug: string) => {
   const cleanSlug = slug.split('/').pop();

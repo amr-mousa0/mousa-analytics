@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { ContentHubClient } from '../../../lib/sdk/contentHubClient.js';
 import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
 import Navigation from '../../../components/ui/Navigation.astro';
@@ -8,12 +8,15 @@ import { resolveDynamicSeo } from '../../../scripts/seoResolver';
 
 // Dynamic static route generations with fallback support
 export async function getStaticPaths() {
-  const allProjects = await getCollection('projects');
+  const enProjects = await ContentHubClient.getProjects('en');
+  const arProjects = await ContentHubClient.getProjects('ar');
+  const allProjects = [...enProjects, ...arProjects];
   const isProd = import.meta.env.PROD;
   const showDrafts = !isProd;
 
   // Filter drafts based on build mode
-  const activeProjects = allProjects.filter(item => showDrafts || !item.data.draft);
+  const activeProjects = allProjects.filter(item => showDrafts || !item.draft);
+
 
   // Group projects by translation key
   const projectsByKey: Record<string, { en?: any; ar?: any }> = {};

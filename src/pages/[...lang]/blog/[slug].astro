@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { ContentHubClient } from '../../../lib/sdk/contentHubClient.js';
 import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
 import Navigation from '../../../components/ui/Navigation.astro';
@@ -86,8 +87,8 @@ const t = {
 const allServices = await getCollection('services');
 const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWith(`${currentLang}/`) && s.data.category === post.data.category);
 
-const allProjects = await getCollection('projects');
-const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWith(`${currentLang}/`) && p.data.category === post.data.category);
+const allProjects = await ContentHubClient.getProjects(currentLang);
+const activeProjects = allProjects.filter(p => !p.draft && p.category === post.data.category);
 
 const shouldNoindex = post.data.draft || post.data.seo.noindex;
 ---

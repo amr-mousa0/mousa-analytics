@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { ContentHubClient } from '../../../lib/sdk/contentHubClient.js';
 import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
 import Navigation from '../../../components/ui/Navigation.astro';
@@ -100,8 +101,8 @@ const whatsappMessage = service.data.whatsappMessage || (isAr
   : `Hi Amr, I'd like to accept the ${service.data.title} proposal and discuss starting the project.`);
 
 // Fetch matching projects of the current category (T013)
-const allProjects = await getCollection('projects');
-const activeProjects = allProjects.filter(p => !p.data.draft && p.slug.startsWith(`${currentLang}/`) && p.data.category === service.data.category);
+const allProjects = await ContentHubClient.getProjects(currentLang);
+const activeProjects = allProjects.filter(p => !p.draft && p.category === service.data.category);
 
 
 ---
