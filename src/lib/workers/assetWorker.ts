@@ -15,12 +15,18 @@ export class AssetWorker {
     const model = { ...job.payload.model };
 
     if (model.cover) {
-      model.cover = storageProvider.getPublicUrl(model.cover);
+      model.cover = storageProvider.getPublicUrl(
+        model.cover.startsWith('assets/') ? `/${model.cover}` : model.cover
+      );
     }
 
     model.gallery = model.gallery.map(item => ({
       ...item,
-      url: storageProvider.getPublicUrl(item.url)
+      url: item.url.startsWith('http://') || item.url.startsWith('https://')
+        ? item.url
+        : storageProvider.getPublicUrl(
+            item.url.startsWith('assets/') ? `/${item.url}` : item.url
+          )
     }));
 
     console.log(`[AssetWorker] Asset optimization completed for ${model.projectId}`);
