@@ -88,17 +88,14 @@ src/content/projects/*/sql-practice-level-1.md
 # 10. Agent & Misc Junk
 .gemini/
 *.py
-*.png
-*.jpg
-*.webp
-*.svg
-!src/assets/images/*.svg
-!src/assets/images/*.png
-!src/assets/images/*.jpg
-!src/assets/images/*.webp
+/*.png
+/*.jpg
+/*.webp
+/*.svg
+!src/assets/**
 ezgif-*/
-images/
-assets/
+/images/
+/assets/
 صور/
 صور الخدمات/
 صور الخدما ت/
