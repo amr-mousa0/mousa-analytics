@@ -1,14 +1,25 @@
-import type { StorageProvider } from '../../types/providers.js';
+import type { StorageProvider, AssetUpload } from '../../types/providers.js';
 import { getDbClient } from '../db.js';
 import { Logger } from '../utils/logger.js';
 
 export class PersistentStorageProvider implements StorageProvider {
   public id = 'persistent-db-storage';
 
-  public async upload(key: string, data: Buffer, mimeType: string): Promise<string> {
-    Logger.info(`[PersistentStorage] Uploading key: ${key} (${data.length} bytes, mime: ${mimeType})`);
-    // Store in DB or Object Store representation
+  public async upload(asset: AssetUpload | string, data?: Buffer, mimeType?: string): Promise<string> {
+    const key = typeof asset === 'string' ? asset : asset.filename;
+    const size = typeof asset === 'string' ? (data?.length || 0) : asset.size;
+    const mime = typeof asset === 'string' ? (mimeType || 'application/octet-stream') : asset.mimeType;
+    Logger.info(`[PersistentStorage] Uploading key: ${key} (${size} bytes, mime: ${mime})`);
     return this.getPublicUrl(key);
+  }
+
+  public async download(key: string): Promise<ReadableStream> {
+    return new ReadableStream({
+      start(controller) {
+        controller.enqueue(Buffer.from(''));
+        controller.close();
+      }
+    });
   }
 
   public getPublicUrl(key: string): string {

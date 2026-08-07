@@ -3,7 +3,7 @@ import { Logger } from '../utils/logger.js';
 import { TransientError, PermanentError } from '../errors.js';
 
 /**
- * @deprecated 
+ * UNUSED IN RUNTIME (Preserved Abstraction)
  * This provider is NO LONGER IN RUNTIME USE as per ADR-023.
  * It is preserved purely as an abstraction reference in case 
  * stakeholder requirements pivot back to OpenAI in the future.

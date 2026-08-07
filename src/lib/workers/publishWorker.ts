@@ -35,7 +35,7 @@ export class PublishWorker {
           summaryEn: model.problem || model.description,
           contentAr: model.solutionAr || model.description,
           contentEn: model.solution || model.description,
-          category: model.category || 'Data Analytics',
+          category: (model as any).category || model.tags?.[0] || 'Data Analytics',
           tags: model.tags || [],
           featured: publishConfig?.featured ?? true
         },
@@ -46,7 +46,7 @@ export class PublishWorker {
           summaryEn: model.problem || model.description,
           contentAr: model.solutionAr || model.description,
           contentEn: model.solution || model.description,
-          category: model.category || 'Data Analytics',
+          category: (model as any).category || model.tags?.[0] || 'Data Analytics',
           tags: model.tags || [],
           featured: publishConfig?.featured ?? true
         }

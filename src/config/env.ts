@@ -12,9 +12,9 @@ const envSchema = z.object({
   UPSTASH_REDIS_REST_URL: z.string().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
   DATABASE_URL: z.string().optional(),
-  USE_PERSISTENT_STORAGE: z.string().transform((v) => v === 'true').default('false'),
-  ENABLE_IDEMPOTENCY: z.string().transform((v) => v === 'true').default('false'),
-  ENABLE_TRANSLATION_FALLBACK: z.string().transform((v) => v === 'true').default('false'),
+  USE_PERSISTENT_STORAGE: z.string().transform((v) => v === 'true').default(false),
+  ENABLE_IDEMPOTENCY: z.string().transform((v) => v === 'true').default(false),
+  ENABLE_TRANSLATION_FALLBACK: z.string().transform((v) => v === 'true').default(false),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

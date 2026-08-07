@@ -1,8 +1,6 @@
-import path from 'path';
-import type { StorageProvider } from '../../types/providers.js';
+import type { StorageProvider, AssetUpload } from '../../types/providers.js';
 import { FeatureFlagManager } from '../flags.js';
 import { PersistentStorageProvider } from './persistentStorageProvider.js';
-
 
 /**
  * Local Disk & Ephemeral Storage Provider (for development environments)
@@ -11,9 +9,21 @@ export class DiskStorageProvider implements StorageProvider {
   public id = 'disk-storage';
   private storageMap = new Map<string, Buffer>();
 
-  public async upload(key: string, data: Buffer, _mimeType: string): Promise<string> {
-    this.storageMap.set(key, data);
+  public async upload(asset: AssetUpload | string, data?: Buffer, _mimeType?: string): Promise<string> {
+    const key = typeof asset === 'string' ? asset : asset.filename;
+    const buf = typeof asset === 'string' ? (data || Buffer.from('')) : Buffer.from('');
+    this.storageMap.set(key, buf);
     return this.getPublicUrl(key);
+  }
+
+  public async download(key: string): Promise<ReadableStream> {
+    const data = this.storageMap.get(key) || Buffer.from('');
+    return new ReadableStream({
+      start(controller) {
+        controller.enqueue(data);
+        controller.close();
+      }
+    });
   }
 
   public getPublicUrl(key: string): string {
@@ -34,13 +44,20 @@ export class DiskStorageProvider implements StorageProvider {
 export class VercelBlobStorageProvider implements StorageProvider {
   public id = 'vercel-blob';
 
-  public async upload(key: string, _data: Buffer, _mimeType: string): Promise<string> {
+  public async upload(asset: AssetUpload | string, _data?: Buffer, _mimeType?: string): Promise<string> {
+    const key = typeof asset === 'string' ? asset : asset.filename;
     const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
     if (!blobToken) {
       console.warn('[VercelBlobStorageProvider] BLOB_READ_WRITE_TOKEN not set, returning asset path key');
       return this.getPublicUrl(key);
     }
     return `https://public.blob.vercel-storage.com/${key}`;
+  }
+
+  public async download(key: string): Promise<ReadableStream> {
+    const res = await fetch(this.getPublicUrl(key));
+    if (!res.body) throw new Error(`Blob download failed for key: ${key}`);
+    return res.body;
   }
 
   public getPublicUrl(key: string): string {
@@ -56,14 +73,16 @@ export class VercelBlobStorageProvider implements StorageProvider {
 }
 
 /**
- * Vercel KV / Persistent Key-Value Storage Provider (for serverless JSON project model persistence across cold starts)
+ * Vercel KV / Persistent Key-Value Storage Provider
  */
 export class VercelKVStorageProvider implements StorageProvider {
   public id = 'vercel-kv';
   private kvUrl = process.env.KV_REST_API_URL;
   private kvToken = process.env.KV_REST_API_TOKEN;
 
-  public async upload(key: string, data: Buffer, _mimeType: string): Promise<string> {
+  public async upload(asset: AssetUpload | string, data?: Buffer, _mimeType?: string): Promise<string> {
+    const key = typeof asset === 'string' ? asset : asset.filename;
+    const payload = typeof asset === 'string' ? data?.toString('utf-8') : '';
     if (this.kvUrl && this.kvToken) {
       try {
         await fetch(`${this.kvUrl}/set/${encodeURIComponent(key)}`, {
@@ -72,13 +91,30 @@ export class VercelKVStorageProvider implements StorageProvider {
             Authorization: `Bearer ${this.kvToken}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ value: data.toString('utf-8') })
+          body: JSON.stringify({ value: payload })
         });
       } catch (err: any) {
         console.warn(`[VercelKVStorageProvider] KV REST set error: ${err.message}`);
       }
     }
     return this.getPublicUrl(key);
+  }
+
+  public async download(key: string): Promise<ReadableStream> {
+    let content = '';
+    if (this.kvUrl && this.kvToken) {
+      const res = await fetch(`${this.kvUrl}/get/${encodeURIComponent(key)}`, {
+        headers: { Authorization: `Bearer ${this.kvToken}` }
+      });
+      const data = await res.json();
+      content = data.result || '';
+    }
+    return new ReadableStream({
+      start(controller) {
+        controller.enqueue(Buffer.from(content));
+        controller.close();
+      }
+    });
   }
 
   public getPublicUrl(key: string): string {
