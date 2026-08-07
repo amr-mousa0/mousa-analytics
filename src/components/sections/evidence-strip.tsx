@@ -18,7 +18,7 @@ export default function EvidenceStrip({ lang }: { lang: 'en' | 'ar' }) {
             <span className="text-3xl md:text-5xl font-sans font-bold tracking-tight text-text-main">
               {metric.value}
             </span>
-            <span className="text-xs md:text-sm font-sans font-medium uppercase tracking-[0.1em] text-text-main/50 mt-2">
+            <span className="text-xs md:text-sm font-sans font-medium uppercase tracking-[0.1em] text-text-main/75 mt-2">
               {metric.label}
             </span>
           </div>

@@ -275,7 +275,7 @@ export function CircularCarousel({
                 <p
                   className={[
                     "mt-1.5 text-xs sm:text-[13px] leading-relaxed transition-colors duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] font-sans line-clamp-2 sm:line-clamp-3",
-                    isActive ? "text-text-main/70" : "text-text-main/50",
+                    isActive ? "text-text-main/80" : "text-text-main/70",
                   ].join(" ")}
                 >
                   {item.description}

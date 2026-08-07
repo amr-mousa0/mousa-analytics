@@ -48,8 +48,8 @@
 
    /* Ink & Typography Colors */
    --text-primary: hsl(var(--palette-navy-900-hsl));
-   --text-secondary: hsl(215 16% 47%);
-   --text-muted: hsl(215 14% 60%);
+   --text-secondary: hsl(215 25% 35%);
+   --text-muted: hsl(215 20% 40%);
    --text-accent: hsl(var(--palette-blue-600-hsl));
    --text-on-accent: #FFFFFF;
 

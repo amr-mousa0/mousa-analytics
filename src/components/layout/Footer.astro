@@ -46,7 +46,7 @@ const socials = [
           <BrandMark class="w-7 h-7 text-text-primary shrink-0 transition-transform duration-300 group-hover:scale-105" />
           <span class="font-bold text-sm text-text-primary">{brandName}</span>
         </a>
-        <p class="text-xs text-text-muted leading-relaxed max-w-xs">
+        <p class="text-xs text-slate-700 leading-relaxed max-w-xs">
           {t.footer.bio}
         </p>
       </div>
@@ -62,7 +62,7 @@ const socials = [
               <li>
                 <a
                   href={link.href}
-                  class="text-text-secondary hover:text-primary transition-colors font-medium"
+                  class="text-slate-700 hover:text-primary transition-colors font-medium"
                 >
                   {link.label}
                 </a>
@@ -83,7 +83,7 @@ const socials = [
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              class="w-9 h-9 rounded-full bg-bg-card border border-border-subtle flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary transition-all duration-200"
+              class="w-9 h-9 rounded-full bg-bg-card border border-border-subtle flex items-center justify-center text-slate-700 hover:text-primary hover:border-primary transition-all duration-200"
               aria-label={social.name}
             >
               <Icon name={social.icon} class="w-4 h-4" />
@@ -92,7 +92,7 @@ const socials = [
         </div>
         <a 
           href={`tel:+${BRAND_CONSTANTS.CANONICAL_PHONE}`} 
-          class="text-xs text-text-muted hover:text-primary transition-colors font-mono tracking-wider w-fit inline-block" 
+          class="text-xs text-slate-700 hover:text-primary transition-colors font-mono tracking-wider w-fit inline-block" 
           dir="ltr"
           aria-label="Phone number"
         >
@@ -103,11 +103,11 @@ const socials = [
     </div>
 
     <!-- Bottom bar: Copyright + Legal links -->
-    <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-text-muted text-center sm:text-start">
+    <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-700 text-center sm:text-start">
       <p>© {currentYear} {brandName}. {t.footer.copyright}</p>
       <div class="flex items-center gap-5">
         {legalLinks.map((link) => (
-          <a href={link.href} class="text-text-secondary hover:text-primary transition-colors font-medium">
+          <a href={link.href} class="text-slate-700 hover:text-primary transition-colors font-medium">
             {link.label}
           </a>
         ))}

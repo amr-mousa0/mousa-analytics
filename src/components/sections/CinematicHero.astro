@@ -163,7 +163,7 @@ const galleryCards = [
       >
         {isAr ? (
           ['موسى', 'لتحليل البيانات'].map((line, li) => (
-            <span class="brand-line" aria-label={line}>
+            <span class="brand-line" role="text" aria-label={line}>
               <span
                 class="brand-char brand-char--word"
                 style={`--char-index: ${li}`}
@@ -173,7 +173,7 @@ const galleryCards = [
           ))
         ) : (
           ['MOUSA', 'DATA ANALYTICS'].map((line, li) => (
-            <span class="brand-line" aria-label={line}>
+            <span class="brand-line" role="text" aria-label={line}>
               {line.split('').map((char, ci) => (
                 <span
                   class="brand-char"
@@ -190,7 +190,7 @@ const galleryCards = [
       <p class="brand-tagline" dir={isAr ? 'rtl' : 'ltr'}>{brandTagline}</p>
 
       <!-- Premium CTA (Button-in-Button) -->
-      <div class="brand-cta-wrap" aria-hidden="true" dir={isAr ? 'rtl' : 'ltr'}>
+      <div class="brand-cta-wrap" dir={isAr ? 'rtl' : 'ltr'}>
         <button class="hero-cta group" onclick="window.dispatchEvent(new CustomEvent('open-contact-modal'))">
           <span class="hero-cta__text">{t.aboutPage.startProject}</span>
           <div class="hero-cta__icon-wrapper">
