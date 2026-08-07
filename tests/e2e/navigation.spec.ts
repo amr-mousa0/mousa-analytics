@@ -29,15 +29,15 @@ test.describe('Locale Redirection & Routing', () => {
   test('supports language switching', async ({ page }) => {
     await page.goto('/en/');
 
-    // Select Arabic language switcher (which displays "AR" in the new layout)
-    const arToggle = page.locator('header a:has-text("AR")').first();
+    // Select language switcher (aria-label starts with "Switch to")
+    const arToggle = page.locator('header a[aria-label*="Switch"]').first();
     await waitForPreloader(page);
     await expect(arToggle).toBeVisible();
     await arToggle.click();
     
     await expect(page).toHaveURL('/');
     // Main heading should contain Arabic brand content
-    await expect(page.locator('main h1')).toContainText('موسى');
+    await expect(page.locator('main h1').first()).toContainText('موسى');
   });
 
   test('navigates to about page and switch languages', async ({ page, isMobile }) => {
@@ -51,16 +51,16 @@ test.describe('Locale Redirection & Routing', () => {
     await expect(page).toHaveURL('/en/about/');
     // After ViewTransitions swap, preloader may be stuck — use graceful wait
     await waitForPreloader(page, 3000);
-    await expect(page.locator('main h1')).toContainText('Mousa');
+    await expect(page.locator('main h1').first()).toContainText('MOUSA', { ignoreCase: true });
 
     // Switch to Arabic
-    const arToggle = page.locator('header a:has-text("AR")').first();
+    const arToggle = page.locator('header a[aria-label*="Switch"]').first();
     await waitForPreloader(page, 3000);
     await expect(arToggle).toBeVisible();
     await arToggle.click();
     await expect(page).toHaveURL('/about/');
     await waitForPreloader(page, 3000);
-    await expect(page.locator('main h1')).toContainText('موسى');
+    await expect(page.locator('main h1').first()).toContainText('موسى');
   });
 });
 

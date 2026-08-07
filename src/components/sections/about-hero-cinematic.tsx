@@ -173,14 +173,14 @@ export default function AboutHeroCinematic({ lang = "en" }: AboutHeroCinematicPr
                 </h1>
               </div>
               <div ref={analyticsRef} className="w-full mt-[1%] will-change-transform">
-                <h1
-                  className="text-white font-bold leading-[0.98] tracking-normal text-[clamp(68px,15.5vw,230px)] w-full text-center m-0"
+                <span
+                  className="block text-white font-bold leading-[0.98] tracking-normal text-[clamp(68px,15.5vw,230px)] w-full text-center m-0"
                   style={{
                     textShadow: "0 4px 60px rgba(0,0,0,0.95), 0 0 120px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.9)"
                   }}
                 >
                   {arPart2}
-                </h1>
+                </span>
               </div>
             </div>
           ) : (
@@ -194,12 +194,12 @@ export default function AboutHeroCinematic({ lang = "en" }: AboutHeroCinematicPr
                 </h1>
               </div>
               <div ref={analyticsRef} className="w-full relative mt-[-2%] will-change-transform">
-                <h1
-                  className="text-white font-[800] uppercase leading-[0.9] tracking-[-0.02em] text-[clamp(48px,11.5vw,175px)] w-full text-center m-0"
+                <span
+                  className="block text-white font-[800] uppercase leading-[0.9] tracking-[-0.02em] text-[clamp(48px,11.5vw,175px)] w-full text-center m-0"
                   style={{ textShadow: "0 4px 60px rgba(0,0,0,0.95), 0 0 120px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.9)" }}
                 >
                   ANALYTICS
-                </h1>
+                </span>
               </div>
             </div>
           )}
