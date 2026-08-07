@@ -5,7 +5,7 @@ icon: "bullhorn"
 priority: 2
 category: "Digital Marketing"
 tags: ["marketing", "ads", "facebook", "google"]
-coverImage: ../../../assets/images/media-buying.jpg
+coverImage: "/images/services/marketing-strategy.png"
 execSummaryText: "بتصرف ميزانية كبيرة على الإعلانات وكلها بتضيع في الهوا من غير نتائج أو مبيعات حقيقية، ومش عارف المشكلة فين بالظبط؟ هبنيلك خطة تسويق متكاملة مبنية على الأرقام والتحليل الفعلي مش الفهلوة وتوقع الجمهور. هنسهلك إدارة حملاتك الإعلانية على فيسبوك وجوجل ونظبطلك التتبع بالملي عشان نعرف كل قرش بيروح فين وبيجيب مبيعات قد إيه."
 scopeItems:
   - title: "إدارة حملات إعلانات Meta"

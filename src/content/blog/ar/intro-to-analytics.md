@@ -4,6 +4,7 @@ description: "تعرف على كيفية تتبع مقاييس متجرك الإ
 publishDate: "2026-05-27"
 author: "عمرو موسى"
 category: "Data Analytics"
+coverImage: "/images/services/data-analytics.png"
 tags: ["التجارة الإلكترونية", "بور بي آي", "التتبع"]
 translationKey: "intro-to-analytics"
 draft: false

@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import react from '@astrojs/react';
 import fs from 'fs';
 import path from 'path';
 
@@ -44,6 +45,7 @@ export default defineConfig({
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://mousa-analytics.vercel.app')),
   integrations: [
+    react(),
     sitemap({
       filter: (page) => {
         // Exclude backups, admin dashboard, and 404 pages
@@ -62,6 +64,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      // Removed React from optimizeDeps to fix `jsxDEV is not a function` in React 19
+    },
     server: {
       watch: {
         ignored: ['**/.impeccable/**'],

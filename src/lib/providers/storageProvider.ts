@@ -1,5 +1,7 @@
 import path from 'path';
 import type { StorageProvider } from '../../types/providers.js';
+import { FeatureFlagManager } from '../flags.js';
+import { PersistentStorageProvider } from './persistentStorageProvider.js';
 
 
 /**
@@ -100,6 +102,10 @@ export class VercelKVStorageProvider implements StorageProvider {
 }
 
 export function getProductionStorageProvider(): StorageProvider {
+  if (FeatureFlagManager.isEnabled('USE_PERSISTENT_STORAGE')) {
+    return new PersistentStorageProvider();
+  }
+
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     return new VercelKVStorageProvider();
   }

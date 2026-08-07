@@ -1,0 +1,27 @@
+---
+import { getCardClasses } from './card.styles';
+
+interface Props {
+  variant?: 'default' | 'glass' | 'bordered' | 'flat';
+  hoverable?: boolean;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  class?: string;
+  id?: string;
+  [key: string]: any;
+}
+
+const {
+  variant = 'default',
+  hoverable = true,
+  padding = 'md',
+  class: className = '',
+  id,
+  ...rest
+} = Astro.props;
+
+const classes = getCardClasses({ variant, hoverable, padding, className });
+---
+
+<div class={classes} id={id} {...rest}>
+  <slot />
+</div>

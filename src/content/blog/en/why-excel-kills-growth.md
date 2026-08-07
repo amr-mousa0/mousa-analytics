@@ -4,6 +4,7 @@ description: "Discover the hidden costs of managing your sales pipeline on sprea
 publishDate: "2026-05-27"
 author: "Amr Mousa"
 category: "Systems Automation"
+coverImage: "/images/services/advanced-excel.jpg"
 tags: ["CRM", "Sales Funnel", "Automation", "Excel"]
 translationKey: "why-excel-kills-growth"
 draft: false

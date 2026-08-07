@@ -1,0 +1,31 @@
+---
+export interface Props {
+  variant?: 'default' | 'featured' | 'interactive' | 'bordered';
+  class?: string;
+  as?: string;
+  [key: string]: any;
+}
+
+const {
+  variant = 'default',
+  class: className = '',
+  as: TagName = 'div',
+  ...rest
+} = Astro.props as Props;
+
+const Tag = TagName as any;
+
+const variantClasses: Record<'default' | 'featured' | 'interactive' | 'bordered', string> = {
+  default: 'bg-hero-card border border-text-main/10 shadow-sm rounded-2xl p-6 sm:p-8',
+  featured: 'bg-gradient-to-b from-hero-card to-hero-surface border border-hero-accent/30 shadow-md rounded-2xl p-6 sm:p-8',
+  interactive: 'bg-hero-card hover:bg-hero-card/80 border border-text-main/10 hover:border-hero-accent/30 shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl p-6 sm:p-8',
+  bordered: 'bg-transparent border border-text-main/15 rounded-2xl p-6 sm:p-8'
+};
+
+const selectedVariantClass = variantClasses[variant] || variantClasses.default;
+const combinedClasses = `${selectedVariantClass} ${className}`.trim();
+---
+
+<Tag class={combinedClasses} {...rest}>
+  <slot />
+</Tag>

@@ -1,16 +1,18 @@
-import fs from 'fs';
-import path from 'path';
 import type { PipelineJob } from '../../types/providers.js';
 import type { NormalizedProjectModel, RepositoryManifest } from '../../types/manifest.js';
 import { MemoryQueueProvider } from '../providers/queueProvider.js';
 import { getProductionStorageProvider } from '../providers/storageProvider.js';
-import { DefaultTranslationProvider } from '../providers/translationProvider.js';
+import { TranslationProviderFactory } from '../providers/translationProviderFactory.js';
 import { GitHubWorker } from '../workers/githubWorker.js';
 import { TranslationWorker } from '../workers/translationWorker.js';
 import { AssetWorker } from '../workers/assetWorker.js';
 import { PublishWorker } from '../workers/publishWorker.js';
 import { fetchManifest } from '../services/manifestFetcher.js';
 import { getSafeProjects } from '../../scripts/projectsHelper.js';
+import { getDbClient } from '../db.js';
+import { FeatureFlagManager } from '../flags.js';
+import { TransientError, PermanentError } from '../errors.js';
+import { Logger } from '../utils/logger.js';
 
 export interface WebhookPushPayload {
   ref?: string;
@@ -38,8 +40,47 @@ export interface WebhookPushPayload {
 
 export class PipelineOrchestrator {
   private static queueProvider = new MemoryQueueProvider();
-  private static storageProvider = getProductionStorageProvider();
-  private static translationProvider = new DefaultTranslationProvider();
+
+  private static get storageProvider() {
+    return getProductionStorageProvider();
+  }
+
+  private static get translationProvider() {
+    return TranslationProviderFactory.getProvider();
+  }
+
+  private static async updateJobState(jobId: string, traceId: string, status: string, stage: number, payload: any, error?: string): Promise<void> {
+    try {
+      const db = getDbClient();
+      await db.jobState.upsert({
+        where: { jobId },
+        create: {
+          jobId,
+          traceId,
+          type: 'repo_sync',
+          status,
+          currentStage: stage,
+          payload: JSON.parse(JSON.stringify(payload)), // Strip undefined
+          error: error || null
+        },
+        update: {
+          status,
+          currentStage: stage,
+          payload: JSON.parse(JSON.stringify(payload)),
+          error: error || null
+        }
+      });
+      Logger.debug(`[JobState] Updated jobId: ${jobId} -> Stage: ${stage} (${status})`);
+    } catch (dbErr: any) {
+      Logger.warn(`[JobState] Failed to persist state for ${jobId}: ${dbErr.message}`);
+    }
+  }
+
+  private static checkAbort(signal?: AbortSignal) {
+    if (signal?.aborted) {
+      throw new TransientError('Job interrupted by graceful shutdown (AbortSignal).');
+    }
+  }
 
   /**
    * Stage 2: Enqueue repository synchronization job into pipeline queue.
@@ -53,7 +94,7 @@ export class PipelineOrchestrator {
     const traceId = `trace_${Math.random().toString(36).slice(2, 10)}`;
     const correlationId = `corr_${Math.random().toString(36).slice(2, 10)}`;
 
-    console.log(`[Pipeline] [2/15] PipelineOrchestrator.enqueueRepoSync() - Job created (jobId: ${jobId}, repo: ${repoFullName})`);
+    Logger.info(`[Pipeline] [2/15] PipelineOrchestrator.enqueueRepoSync() - Job created (jobId: ${jobId}, repo: ${repoFullName})`);
 
     const job = await this.queueProvider.enqueue({
       jobId,
@@ -74,200 +115,172 @@ export class PipelineOrchestrator {
       }
     });
 
-    // Stage 3: Queue status
-    console.log(`[Pipeline] [3/15] Queue status: Job ${job.jobId} enqueued in MemoryQueueProvider. Status: ${job.status}`);
+    await this.updateJobState(jobId, traceId, 'QUEUED', 3, job.payload);
+    Logger.info(`[Pipeline] [3/15] Queue status: Job ${job.jobId} enqueued in MemoryQueueProvider. Status: ${job.status}`);
 
-    // Immediately dequeue & process the job
     const result = await this.processRepoSyncJob(job);
     return { jobId, traceId, result };
   }
 
   /**
-   * Process all 15 stages of the repository sync pipeline with structured logging.
+   * Process all 15 stages of the repository sync pipeline.
    */
-  public static async processRepoSyncJob(enqueuedJob: PipelineJob<any>): Promise<NormalizedProjectModel> {
-    // Stage 4: Dequeue job & start execution
+  public static async processRepoSyncJob(enqueuedJob: PipelineJob<any>, signal?: AbortSignal): Promise<NormalizedProjectModel> {
     const job = await this.queueProvider.dequeue('repo_sync') || enqueuedJob;
-    const payload = job.payload;
+    
+    // Recovery Phase: Fetch previous state if this is a retry
+    let previousState: any = null;
+    try {
+      const db = getDbClient();
+      previousState = await db.jobState.findUnique({ where: { jobId: job.jobId } });
+      if (previousState && previousState.status === 'COMPLETED') {
+        Logger.info(`[Pipeline] Job ${job.jobId} already completed. Skipping execution.`);
+        return previousState.payload as NormalizedProjectModel;
+      }
+    } catch (e) {
+      Logger.warn(`[Pipeline] Could not fetch previous state for ${job.jobId}, starting from beginning.`);
+    }
+
+    const startStage = previousState?.currentStage || 0;
+    const payload = (startStage > 3 && previousState?.payload) ? previousState.payload : job.payload;
+    
     const repoName = payload.repoName || 'SQL Practice Level 1';
     const repoFullName = payload.repoFullName || `amr-mousa0/${repoName.replace(/\s+/g, '-')}`;
     const installationId = payload.installationId || payload.fullPayload?.installation?.id || 58291043;
     const branch = payload.branch || 'main';
 
+    let currentModel: NormalizedProjectModel | any = payload.model || null;
+
     try {
-      console.log(`[Pipeline] [4/15] Job execution started - Dequeued jobId: ${job.jobId}, traceId: ${job.traceId}, status: ${job.status}`);
-
-      // Stage 5: Repository full name
-      console.log(`[Pipeline] [5/15] Repository full name: ${repoFullName} (Installation ID: ${installationId})`);
-
-      // Stage 6: Branch
-      console.log(`[Pipeline] [6/15] Branch: ${branch}`);
-
-      // Stage 7: fetchManifest()
-      console.log(`[Pipeline] [7/15] Calling fetchManifest()...`);
-      const fetchResult = await fetchManifest(repoFullName, branch, payload.manifestRaw);
-
-      let manifestRawToUse = payload.manifestRaw;
-      if (fetchResult.manifestFound && fetchResult.rawResponse) {
-        manifestRawToUse = fetchResult.rawResponse;
-      }
-
-      // Stage 8: Parsed manifest
-      const normalizedModel = await GitHubWorker.process({
-        ...job,
-        payload: {
-          repoName,
-          commitSha: payload.commitSha,
-          manifestRaw: manifestRawToUse,
-          treeRaw: payload.treeRaw,
-          readmeRaw: payload.readmeRaw,
-          githubPagesUrl: payload.githubPagesUrl
-        }
-      });
-      console.log(`[Pipeline] [8/15] Parsed manifest - Title: "${normalizedModel.title}", Project ID: "${normalizedModel.projectId}"`);
-
-      // Stage 9: Translation
-      const translationJob: PipelineJob<any> = {
-        ...job,
-        payload: {
-          model: normalizedModel,
-          sourceLang: 'en',
-          targetLang: 'ar'
-        }
-      };
-      const translatedModel = await TranslationWorker.process(translationJob, this.translationProvider);
-      console.log(`[Pipeline] [9/15] Translation - English Title: "${translatedModel.title}", Arabic Title: "${translatedModel.titleAr || translatedModel.title}"`);
-
-      // Stage 10: Asset discovery & Selected Storage Provider
-      const activeStorageProvider = this.storageProvider.id;
-      console.log(`[Pipeline] [10/15] Asset discovery - Storage Provider selected: "${activeStorageProvider}". Cover: "${translatedModel.cover || 'None'}", Gallery items: ${translatedModel.gallery.length}`);
-
-      const assetJob: PipelineJob<any> = {
-        ...job,
-        payload: { model: translatedModel }
-      };
-      const assetModel = await AssetWorker.process(assetJob, this.storageProvider);
-
-      // Stage 11: Publish target resolution
-      const publishJob: PipelineJob<any> = {
-        ...job,
-        payload: { model: assetModel, targetDestination: 'portfolio' }
-      };
+      this.checkAbort(signal);
       
-      const publishConfig = assetModel.publish?.portfolio;
-      if (publishConfig && publishConfig.enabled === false) {
-        const exitReason = `Publish target "portfolio" is explicitly disabled in manifest configuration for ${repoFullName}.`;
-        console.warn(`[Pipeline] EARLY EXIT at Stage 11 (Publish target resolution): ${exitReason}`);
-        this.queueProvider.failJob(job.jobId, exitReason);
-        throw new Error(exitReason);
-      }
-
-      const publishedModel = await PublishWorker.process(publishJob);
-      console.log(`[Pipeline] [11/15] Publish target resolution - Target portfolio enabled. Targets: ${Object.keys(publishedModel.publish || {}).join(', ')}`);
-
-      // Stage 12: Storage write & Exact location
-      const isVercel = Boolean(process.env.VERCEL);
-      const targetDir = isVercel ? '/tmp/content/projects/' : 'src/content/projects/';
-      await this.writeProjectToStorage(publishedModel);
-
-      console.log(`[Pipeline] [12/15] Storage write - Provider: "${activeStorageProvider}". Location: "${targetDir}${publishedModel.projectId}.md" (Note: Serverless /tmp is ephemeral across function instances)`);
-
-      // Stage 13: Project store refresh
-      PublishWorker.updateStore(publishedModel);
-      console.log(`[Pipeline] [13/15] Project store refresh - Updated in-memory PublishWorker store with "${publishedModel.projectId}"`);
-
-      // Stage 14: /api/projects source reload
-      const exposedProjectsEn = await getSafeProjects('en');
-      console.log(`[Pipeline] [14/15] /api/projects source reload - Reloaded sources. Total exposed projects for 'en': ${exposedProjectsEn.length}`);
-
-      // Stage 15: Job completed
-      this.queueProvider.completeJob(job.jobId);
-      console.log(`[Pipeline] [15/15] Job completed - jobId: ${job.jobId}, projectId: ${publishedModel.projectId}, status: completed`);
-
-      return publishedModel;
-    } catch (error: any) {
-      const errorMsg = error?.message || String(error);
-      if (!errorMsg.startsWith('Publish target')) {
-        console.error(`[Pipeline] EARLY EXIT during job execution (Job ID: ${job.jobId}): ${errorMsg}`);
-        if (error?.stack) {
-          console.error(`[Pipeline] Stack Trace:\n${error.stack}`);
+      if (startStage < 8) {
+        await this.updateJobState(job.jobId, job.traceId, 'FETCHING', 4, payload);
+        Logger.info(`[Pipeline] [4/15] Job execution started - Dequeued jobId: ${job.jobId}`);
+        Logger.info(`[Pipeline] [5/15] Repository full name: ${repoFullName} (Installation ID: ${installationId})`);
+        Logger.info(`[Pipeline] [6/15] Branch: ${branch}`);
+        Logger.info(`[Pipeline] [7/15] Calling fetchManifest()...`);
+        
+        const fetchResult = await fetchManifest(repoFullName, branch, payload.manifestRaw);
+        let manifestRawToUse = payload.manifestRaw;
+        if (fetchResult.manifestFound && fetchResult.rawResponse) {
+          manifestRawToUse = fetchResult.rawResponse;
         }
-        this.queueProvider.failJob(job.jobId, errorMsg);
+
+        this.checkAbort(signal);
+        await this.updateJobState(job.jobId, job.traceId, 'PARSING', 8, payload);
+        currentModel = await GitHubWorker.process({
+          ...job,
+          payload: {
+            repoName,
+            commitSha: payload.commitSha,
+            manifestRaw: manifestRawToUse,
+            treeRaw: payload.treeRaw,
+            readmeRaw: payload.readmeRaw,
+            githubPagesUrl: payload.githubPagesUrl
+          }
+        });
+        Logger.info(`[Pipeline] [8/15] Parsed manifest - Title: "${currentModel.title}"`);
+      } else {
+         Logger.info(`[Pipeline] Resuming from stage ${startStage}, skipping fetch/parse.`);
       }
+
+      if (startStage < 9) {
+        this.checkAbort(signal);
+        await this.updateJobState(job.jobId, job.traceId, 'TRANSLATING', 9, { model: currentModel });
+        
+        const translationJob: PipelineJob<any> = {
+          ...job,
+          payload: { model: currentModel, sourceLang: 'en', targetLang: 'ar' }
+        };
+        currentModel = await TranslationWorker.process(translationJob, this.translationProvider);
+        Logger.info(`[Pipeline] [9/15] Translation - Arabic Title: "${currentModel.titleAr || currentModel.title}"`);
+      }
+
+      if (startStage < 10) {
+        this.checkAbort(signal);
+        await this.updateJobState(job.jobId, job.traceId, 'ASSET_PROCESSING', 10, { model: currentModel });
+        
+        const activeStorageProvider = this.storageProvider.id;
+        Logger.info(`[Pipeline] [10/15] Asset discovery - Storage Provider: "${activeStorageProvider}"`);
+        
+        const assetJob: PipelineJob<any> = { 
+          ...job, 
+          payload: { 
+            model: currentModel,
+            repoFullName,
+            branch
+          } 
+        };
+        currentModel = await AssetWorker.process(assetJob, this.storageProvider);
+      }
+
+      if (startStage < 11) {
+        this.checkAbort(signal);
+        await this.updateJobState(job.jobId, job.traceId, 'PUBLISHING', 11, { model: currentModel });
+        
+        const publishJob: PipelineJob<any> = { ...job, payload: { model: currentModel, targetDestination: 'portfolio' } };
+        const publishConfig = currentModel.publish?.portfolio;
+        
+        if (publishConfig && publishConfig.enabled === false) {
+          const exitReason = `Publish target "portfolio" is explicitly disabled.`;
+          Logger.warn(`[Pipeline] EARLY EXIT at Stage 11: ${exitReason}`);
+          await this.updateJobState(job.jobId, job.traceId, 'COMPLETED_DISABLED', 15, { model: currentModel });
+          this.queueProvider.failJob(job.jobId, exitReason);
+          throw new PermanentError(exitReason);
+        }
+
+        currentModel = await PublishWorker.process(publishJob);
+        Logger.info(`[Pipeline] [11/15] Publish target resolution - Target portfolio enabled.`);
+      }
+
+      if (startStage < 12) {
+        this.checkAbort(signal);
+        await this.updateJobState(job.jobId, job.traceId, 'STORAGE_WRITE', 12, { model: currentModel });
+        
+        await this.writeProjectToStorage(currentModel);
+        Logger.info(`[Pipeline] [12/15] Storage write via ${this.storageProvider.id}`);
+      }
+
+      if (startStage < 13) {
+        this.checkAbort(signal);
+        await this.updateJobState(job.jobId, job.traceId, 'REFRESHING_STORE', 13, { model: currentModel });
+        
+        PublishWorker.updateStore(currentModel);
+        Logger.info(`[Pipeline] [13/15] Project store refresh - Updated in-memory PublishWorker store.`);
+      }
+
+      if (startStage < 14) {
+        const exposedProjectsEn = await getSafeProjects('en');
+        Logger.info(`[Pipeline] [14/15] /api/projects source reload - Total exposed projects for 'en': ${exposedProjectsEn.length}`);
+      }
+
+      await this.updateJobState(job.jobId, job.traceId, 'COMPLETED', 15, { model: currentModel });
+      this.queueProvider.completeJob(job.jobId);
+      Logger.info(`[Pipeline] [15/15] Job completed - jobId: ${job.jobId}, projectId: ${currentModel.projectId}`);
+
+      return currentModel;
+    } catch (error: any) {
+      const isTransient = error instanceof TransientError;
+      const finalState = isTransient ? 'FAILED_TRANSIENT' : 'FAILED_PERMANENT';
+      
+      Logger.error(`[Pipeline] EXIT during execution (Job ID: ${job.jobId}): ${error.message}`, { stack: error.stack });
+      await this.updateJobState(job.jobId, job.traceId, finalState, startStage, { model: currentModel }, error.message);
+      this.queueProvider.failJob(job.jobId, error.message);
+      
       throw error;
     }
   }
 
   /**
-   * Helper to write project data to Markdown storage files in src/content/projects/ or /tmp in Vercel
+   * Delegates entirely to the injected StorageProvider.
+   * No direct filesystem writes are allowed here anymore.
    */
   private static async writeProjectToStorage(model: NormalizedProjectModel): Promise<void> {
-    try {
-      const cwd = process.cwd();
-      const isVercel = Boolean(process.env.VERCEL);
-      const baseDir = isVercel ? path.join('/tmp', 'content', 'projects') : path.join(cwd, 'src', 'content', 'projects');
-
-      const enDir = path.join(baseDir, 'en');
-      const arDir = path.join(baseDir, 'ar');
-
-      if (!fs.existsSync(enDir)) fs.mkdirSync(enDir, { recursive: true });
-      if (!fs.existsSync(arDir)) fs.mkdirSync(arDir, { recursive: true });
-
-      const galleryPaths = model.gallery.map(g => `  - "${g.url}"`).join('\n');
-      const tagsYaml = JSON.stringify(model.tags || ['Data Analytics']);
-
-      // English Content File
-      const enContent = `---
-title: ${JSON.stringify(model.title)}
-projectBadge: ${JSON.stringify(model.tags?.[0]?.toUpperCase() || 'DATA ANALYTICS')}
-problemText: ${JSON.stringify(model.problem || model.description)}
-solutionText: ${JSON.stringify(model.solution || model.description)}
-impactText: ${JSON.stringify(model.businessValue || model.description)}
-coverImage: ${JSON.stringify(model.cover || '../../../assets/images/uploads/marketing-roi.jpg')}
-galleryImages:
-${galleryPaths || '  - "../../../assets/images/uploads/marketing-roi.jpg"'}
-githubUrl: ${JSON.stringify(`https://github.com/amr-mousa0/${model.sourceRepo || model.projectId}`)}
-dashboardUrl: ${JSON.stringify(model.demo || '')}
-whatsappStartProjectMsg: ${JSON.stringify(`Hi Amr, I'd like to inquire about the ${model.title} project.`)}
-whatsappOpenDashboardMsg: ${JSON.stringify(`Hi Amr, I'd like to request access to the ${model.title} dashboard.`)}
-priority: 1
-category: "Data Analytics"
-tags: ${tagsYaml}
-draft: false
-featured: ${model.publish?.portfolio?.featured ?? true}
-publishedDate: ${JSON.stringify(model.updatedAt || new Date().toISOString())}
----
-Case Study: ${model.title}
-`;
-
-      // Arabic Content File
-      const arContent = `---
-title: ${JSON.stringify(model.titleAr || model.title)}
-projectBadge: ${JSON.stringify(model.tags?.[0]?.toUpperCase() || 'تحليل البيانات')}
-problemText: ${JSON.stringify(model.problemAr || model.problem || model.description)}
-solutionText: ${JSON.stringify(model.solutionAr || model.solution || model.description)}
-impactText: ${JSON.stringify(model.businessValueAr || model.businessValue || model.description)}
-coverImage: ${JSON.stringify(model.cover || '../../../assets/images/uploads/marketing-roi.jpg')}
-galleryImages:
-${galleryPaths || '  - "../../../assets/images/uploads/marketing-roi.jpg"'}
-githubUrl: ${JSON.stringify(`https://github.com/amr-mousa0/${model.sourceRepo || model.projectId}`)}
-dashboardUrl: ${JSON.stringify(model.demo || '')}
-whatsappStartProjectMsg: ${JSON.stringify(`مرحباً عمرو، أود الاستفسار عن مشروع ${model.titleAr || model.title}`)}
-whatsappOpenDashboardMsg: ${JSON.stringify(`مرحباً عمرو، أود طلب رابط التقرير التفاعلي لمشروع ${model.titleAr || model.title}`)}
-priority: 1
-category: "Data Analytics"
-tags: ${tagsYaml}
-draft: false
-featured: ${model.publish?.portfolio?.featured ?? true}
-publishedDate: ${JSON.stringify(model.updatedAt || new Date().toISOString())}
----
-دراسة حالة: ${model.titleAr || model.title}
-`;
-
-      fs.writeFileSync(path.join(enDir, `${model.projectId}.md`), enContent, 'utf-8');
-      fs.writeFileSync(path.join(arDir, `${model.projectId}.md`), arContent, 'utf-8');
-    } catch (err: any) {
-      console.warn(`[Pipeline] Note: Disk storage update attempted: ${err.message}`);
+    if (this.storageProvider.saveProject) {
+      await this.storageProvider.saveProject(model);
+    } else {
+      Logger.warn(`[Pipeline] Active Storage Provider (${this.storageProvider.id}) does not implement saveProject. Skipping write.`);
     }
   }
 }

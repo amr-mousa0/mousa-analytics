@@ -9,7 +9,7 @@ tags:
   - systems
   - nocode
   - workflow
-coverImage: ../../../assets/images/Crm.png
+coverImage: "/images/services/custom-crm.png"
 execSummaryText: "Relying on expensive CRM subscriptions or messy spreadsheets that don't talk to your website? I develop custom web CRM applications tailored entirely to your workflow. I connect your orders directly with Google Analytics (GA4/GTM) and setup automated lead routing and employee privileges, ensuring not a single lead is lost and your marketing data is 100% accurate."
 scopeItems:
   - title: "Custom CRM Web Development (No Subscriptions)"

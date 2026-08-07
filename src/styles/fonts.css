@@ -1,0 +1,7 @@
+/* Import Premium B2B Arabic Display Fonts: IBM Plex Sans Arabic, Alexandria, Cairo, and Inter */
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@700;800&family=Cairo:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@600;700&family=Inter:wght@400;600;700&display=swap');
+
+/* ==========================================================================
+   Web Font Loading Pipeline
+   Governed by ADR-005, SPEC-TYPO-001, and TASK-TYP-001
+   ========================================================================== */

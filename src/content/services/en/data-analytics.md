@@ -8,7 +8,7 @@ tags:
   - analytics
   - powerbi
   - sql
-coverImage: ../../../assets/images/power bi.png
+coverImage: "/images/services/data-analytics.png"
 execSummaryText: "Stop making decisions in the dark. I transform raw databases into robust Power BI dashboards and clean SQL models, mapping out every bottleneck in your operations and marketing to drive actionable growth."
 scopeItems:
   - title: "Interactive Sales & KPI Dashboards"

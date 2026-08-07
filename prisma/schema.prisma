@@ -1,0 +1,64 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  titleAr     String
+  titleEn     String
+  summaryAr   String?
+  summaryEn   String?
+  contentAr   String
+  contentEn   String
+  category    String
+  tags        String[]
+  featured    Boolean  @default(false)
+  commitSha   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model JobState {
+  jobId          String   @id
+  traceId        String
+  correlationId String?
+  type           String
+  status         String   // QUEUED, FETCHING, TRANSLATING, PUBLISHING, COMPLETED, FAILED
+  currentStage   Int      @default(1)
+  payload        Json
+  error          String?
+  attempts       Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("job_states")
+}
+
+model IdempotencyStore {
+  key        String   @id // commit_sha or event_id or delivery_id
+  jobId      String
+  status     String   // IN_PROGRESS, COMPLETED, FAILED
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+
+  @@map("idempotency_store")
+}
+
+model AssetRegistry {
+  hash      String   @id
+  provider  String
+  url       String
+  mime      String
+  size      Int
+  createdAt DateTime @default(now())
+
+  @@map("asset_registry")
+}

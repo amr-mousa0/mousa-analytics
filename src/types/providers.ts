@@ -28,11 +28,21 @@ export interface AssetProcessor {
   generateBlurHash(buffer: Buffer): Promise<string>;
 }
 
+export interface AssetUpload {
+  stream: ReadableStream;
+  mimeType: string;
+  size: number;
+  hash: string;
+  filename: string;
+}
+
 export interface StorageProvider {
   id: string;
-  upload(key: string, data: Buffer, mimeType: string): Promise<string>;
+  upload(asset: AssetUpload): Promise<string>;
+  download(key: string): Promise<ReadableStream>;
   getPublicUrl(key: string): string;
   delete(key: string): Promise<void>;
+  saveProject?(project: any): Promise<void>;
 }
 
 export interface PipelineJob<T = any> {
@@ -42,6 +52,7 @@ export interface PipelineJob<T = any> {
   type: 'repo_sync' | 'translate' | 'process_assets' | 'publish' | 'cleanup';
   payload: T;
   status: 'pending' | 'processing' | 'completed' | 'failed';
+  currentStage?: number;
   error?: string;
   createdAt: string;
   updatedAt: string;

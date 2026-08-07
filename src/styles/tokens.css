@@ -1,0 +1,123 @@
+/* ==========================================================================
+   Mousa Analytics - Multi-Tier Design Token Architecture
+   Governed by AD-04, SPEC-DESIGN-TOKEN-001, and TASK-TOK-001
+   ========================================================================== */
+
+:root {
+   /* ------------------------------------------------------------------------
+     TIER 1: FOUNDATION PRIMITIVES (Raw HSL Palette Values)
+     ------------------------------------------------------------------------ */
+   --palette-navy-900-hsl: 215 65% 12%;
+   /* #0A192F */
+   --palette-navy-800-hsl: 215 45% 18%;
+   /* #112240 */
+   --palette-blue-700-hsl: 224 76% 48%;
+   /* #1D4ED8 */
+   --palette-blue-600-hsl: 221 83% 53%;
+   /* #2563EB */
+   --palette-blue-500-hsl: 217 91% 60%;
+   /* #3B82F6 */
+   --palette-blue-300-hsl: 212 96% 78%;
+   /* #93C5FD */
+   --palette-slate-50-hsl: 210 20% 98%;
+   /* #F8F9FA */
+   --palette-slate-100-hsl: 210 16% 93%;
+   /* #E2E8F0 */
+   --palette-slate-200-hsl: 214 13% 84%;
+   /* #CBD5E1 */
+   --palette-slate-800-hsl: 215 28% 17%;
+   /* #1E293B */
+   --palette-emerald-600-hsl: 160 84% 39%;
+   /* #15803D */
+
+   /* ------------------------------------------------------------------------
+     TIER 2: SEMANTIC DESIGN TOKENS
+     ------------------------------------------------------------------------ */
+   /* Brand Primitives */
+   --color-primary: #2563EB;
+   --color-neutral-bg: #F8F9FA;
+   --color-text-main: #0A192F;
+   --color-card-bg: #FFFFFF;
+
+   /* Surfaces */
+   --bg-primary: hsl(var(--palette-slate-50-hsl));
+   --bg-secondary: hsl(var(--palette-slate-100-hsl));
+   --bg-tertiary: hsl(var(--palette-slate-200-hsl));
+   --bg-card: #FFFFFF;
+   --bg-surface-dark: hsl(var(--palette-navy-900-hsl));
+
+   /* Ink & Typography Colors */
+   --text-primary: hsl(var(--palette-navy-900-hsl));
+   --text-secondary: hsl(215 16% 47%);
+   --text-muted: hsl(215 14% 60%);
+   --text-accent: hsl(var(--palette-blue-600-hsl));
+   --text-on-accent: #FFFFFF;
+
+   /* Borders */
+   --border-subtle: hsl(214 13% 88%);
+   --border-strong: hsl(214 13% 70%);
+   --border-accent: hsl(var(--palette-blue-600-hsl));
+
+   /* Typography Font Stacks */
+   --font-serif: 'Cormorant Garamond', Georgia, serif;
+   --font-sans: 'Outfit', Inter, sans-serif;
+   --font-arabic: 'Cairo', system-ui, sans-serif;
+   --font-latin: 'Inter', system-ui, sans-serif;
+
+   /* Border Radii */
+   --radius-sm: 4px;
+   --radius-md: 8px;
+   --radius-lg: 16px;
+   --radius-full: 9999px;
+
+   /* Spacing Scale */
+   --spacing-sm: 8px;
+   --spacing-md: 16px;
+   --spacing-lg: 32px;
+   --space-xs: 4px;
+   --space-sm: 8px;
+   --space-md: 16px;
+   --space-lg: 24px;
+   --space-xl: 32px;
+   --space-2xl: 48px;
+
+   /* Elevation & Shadows */
+   --shadow-ambient: 0 4px 20px rgba(10, 25, 47, 0.05);
+   --elevation-card: 0 4px 20px rgba(10, 25, 47, 0.05);
+   --elevation-sticky: 0 8px 32px rgba(10, 25, 47, 0.10);
+
+   /* Semantic Aliases & Compatibility Mappings */
+   --color-primary-bg: var(--color-neutral-bg);
+   --color-accent-primary: var(--color-primary);
+   --color-accent-highlight: #1D4ED8;
+   --color-accent-light: #93C5FD;
+
+   /* Hero section palette aliases */
+   --color-hero-accent: var(--color-primary);
+   --color-hero-accent-highlight: #1D4ED8;
+   --color-hero-ice-blue: #1D4ED8;
+   --color-hero-ice-blue-hover: #1E40AF;
+   --color-hero-surface: var(--color-neutral-bg);
+   --color-hero-glow: rgba(37, 99, 235, 0.12);
+   --color-hero-card: var(--color-card-bg);
+
+   /* Success State Tokens */
+   --color-success-primary: #15803D;
+   --color-success-hover: #166534;
+   --color-success-bg: rgba(22, 163, 74, 0.05);
+   --color-success-border: rgba(22, 163, 74, 0.15);
+   --shadow-success: 0 4px 14px rgba(22, 163, 74, 0.15);
+   --shadow-success-hover: 0 6px 20px rgba(22, 163, 74, 0.25);
+
+   --font-logo: var(--font-serif);
+
+   /* Motion Tokens */
+   --motion-duration-fast: 150ms;
+   --motion-duration-standard: 300ms;
+   --motion-duration-slow: 450ms;
+   --motion-easing-standard: cubic-bezier(0.16, 1, 0.3, 1);
+   --motion-scale-hover: 1.05;
+   --motion-translate-sm: 16px;
+   --motion-translate-md: 24px;
+   --motion-stagger-step: 60ms;
+}

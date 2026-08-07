@@ -1,0 +1,131 @@
+---
+import BrandMark from '../brand/BrandMark.astro';
+import MobileBottomNav from './MobileBottomNav.astro';
+import ContactModal from '../ui/ContactModal.astro';
+import DesktopContactModal from '../ui/DesktopContactModal.astro';
+import { useTranslations } from '../../lib/locales/index';
+import { BRAND_CONSTANTS } from '../../lib/constants/brand.constants';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: 'en' | 'ar';
+  activePage?: string;
+  backUrl?: string;
+  backText?: string;
+}
+
+const { lang, activePage = 'home', backUrl, backText } = Astro.props;
+const t = useTranslations(lang);
+const brandName = lang === 'ar' ? BRAND_CONSTANTS.PRIMARY_BRAND_AR : BRAND_CONSTANTS.PRIMARY_BRAND_EN;
+
+const pathname = Astro.url.pathname;
+const isHomePage = activePage === 'home' || pathname === '/' || pathname === '/en' || pathname === '/en/';
+
+const navItems = [
+  { key: 'home', href: lang === 'ar' ? '/' : '/en/', label: t.nav.home },
+  { key: 'services', href: isHomePage ? '#services' : (lang === 'ar' ? '/#services' : '/en/#services'), label: t.nav.services },
+  { key: 'projects', href: isHomePage ? '#projects' : (lang === 'ar' ? '/#projects' : '/en/#projects'), label: t.nav.projects },
+  { key: 'blog', href: lang === 'ar' ? '/blog/' : '/en/blog/', label: t.nav.blog },
+  { key: 'about', href: lang === 'ar' ? '/about/' : '/en/about/', label: t.nav.about },
+];
+
+const targetLang = lang === 'ar' ? 'en' : 'ar';
+const targetLangLabel = lang === 'ar' ? 'English' : 'العربية';
+
+// Dynamic language toggle path
+let langTogglePath = '/';
+if (lang === 'ar') {
+  langTogglePath = pathname === '/' ? '/en/' : (pathname.startsWith('/en') ? pathname : '/en' + (pathname.startsWith('/') ? pathname : '/' + pathname));
+} else {
+  langTogglePath = pathname.replace(/^\/en\/?/, '/') || '/';
+}
+---
+
+<header class="sticky top-0 z-50 w-full glass-card border-b border-border-subtle bg-bg-card/80 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 sm:h-20 gap-2">
+      <!-- Brand Logo + Name & Optional Back Button -->
+      <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+        <a href={lang === 'ar' ? '/' : '/en/'} class="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-primary rounded-md p-1 shrink-0">
+          <BrandMark class="w-7 h-7 text-text-main transition-transform duration-300 group-hover:scale-105 shrink-0" />
+          <span class={`font-bold text-xs sm:text-sm text-text-primary leading-tight whitespace-nowrap ${backUrl ? 'hidden sm:inline' : 'inline'}`}>{brandName}</span>
+        </a>
+
+        {backUrl && (
+          <a
+            href={backUrl}
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full border border-border-strong bg-bg-card hover:bg-bg-secondary text-text-primary text-xs font-semibold shadow-xs transition-all duration-200 cursor-pointer shrink-0 whitespace-nowrap"
+          >
+            <span class="text-xs font-sans shrink-0">{lang === 'ar' ? '→' : '←'}</span>
+            <span>{backText}</span>
+          </a>
+        )}
+      </div>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex items-center gap-1 sm:gap-2">
+        {navItems.map((item) => {
+          const isActive = activePage === item.key;
+          return (
+            <a
+              href={item.href}
+              class={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                isActive
+                  ? 'text-primary bg-primary/10 font-semibold'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-bg-secondary'
+              }`}
+            >
+              {item.label}
+            </a>
+          );
+        })}
+      </nav>
+
+      <!-- Action Items & Language Switcher + Mobile Menu Button -->
+      <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+        <a
+          href={langTogglePath}
+          class="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-md text-xs font-semibold border border-border-strong text-text-primary hover:bg-bg-secondary transition-colors whitespace-nowrap shrink-0"
+          aria-label={`Switch to ${targetLangLabel}`}
+        >
+          {targetLangLabel}
+        </a>
+
+        <!-- Mobile Drawer Toggle Button -->
+        <label for="mobile-nav-toggle" class="md:hidden cursor-pointer p-1.5 rounded-md border border-border-strong text-text-secondary hover:text-text-primary hover:bg-bg-secondary select-none shrink-0" aria-label="Toggle Navigation">
+          <Icon name="bars" class="w-5 h-5" />
+        </label>
+      </div>
+    </div>
+  </div>
+</header>
+
+<input type="checkbox" id="mobile-nav-toggle" class="peer hidden" />
+
+<!-- Mobile Overlay -->
+<label for="mobile-nav-toggle" class="fixed inset-0 bg-text-main/20 backdrop-blur-xs z-40 hidden peer-checked:block md:hidden! transition-all"></label>
+
+<!-- Mobile Navigation Drawer -->
+<aside class="fixed top-16 sm:top-20 inset-x-0 bg-bg-card border-b border-border-subtle p-6 z-50 transform -translate-y-full opacity-0 pointer-events-none transition-all duration-300 ease-out peer-checked:translate-y-0 peer-checked:opacity-100 peer-checked:pointer-events-auto md:hidden! flex flex-col gap-3 shadow-xl">
+  <nav class="flex flex-col gap-2">
+    {navItems.map((item) => {
+      const isActive = activePage === item.key;
+      return (
+        <a
+          href={item.href}
+          class={`px-4 py-3 rounded-lg text-sm font-semibold transition-colors duration-200 flex items-center justify-between ${
+            isActive
+              ? 'text-primary bg-primary/10'
+              : 'text-text-secondary hover:text-text-primary hover:bg-bg-secondary'
+          }`}
+        >
+          <span>{item.label}</span>
+        </a>
+      );
+    })}
+  </nav>
+</aside>
+
+<MobileBottomNav lang={lang} activePage={activePage} />
+<ContactModal lang={lang} />
+<DesktopContactModal lang={lang} />

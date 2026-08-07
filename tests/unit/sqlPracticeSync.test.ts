@@ -1,4 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterAll } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 
 vi.mock('astro:content', () => ({
   getEntry: vi.fn(),
@@ -38,7 +40,7 @@ describe('SQL Practice Level 1 Repository Synchronization Phase Investigation', 
           solution: 'Created 25+ structured SQL problems with synthetic e-commerce datasets and benchmark solutions.',
           businessValue: 'Accelerated analytical onboarding time by 40% for junior data analysts.',
           tags: ['SQL Server', 'PostgreSQL', 'Data Analytics'],
-          cover: 'assets/sql-cover.png',
+          cover: '../../../assets/images/uploads/coffee-shop.jpg',
           gallery: [
             { type: 'pdf', title: 'SQL Query Solutions Manual', url: 'docs/sql-solutions.pdf' }
           ]
@@ -70,5 +72,15 @@ describe('SQL Practice Level 1 Repository Synchronization Phase Investigation', 
     expect(exposedSqlProject?.data.title).toBe('SQL Practice Level 1 - Data Analytics Challenges');
 
     console.log('================ END RUNTIME TRACE ================================\n');
+  });
+
+  afterAll(() => {
+    const filesToDelete = [
+      path.resolve('src/content/projects/ar/sql-practice-level-1.md'),
+      path.resolve('src/content/projects/en/sql-practice-level-1.md')
+    ];
+    filesToDelete.forEach(f => {
+      if (fs.existsSync(f)) fs.unlinkSync(f);
+    });
   });
 });

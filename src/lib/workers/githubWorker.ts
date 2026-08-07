@@ -1,6 +1,7 @@
 import type { PipelineJob } from '../../types/providers.js';
 import { buildNormalizedProjectModel, type FallbackInput } from '../services/projectModelBuilder.js';
 import type { NormalizedProjectModel } from '../../types/manifest.js';
+import { ManifestSchema } from '../schemas/manifestSchema.js';
 
 export interface GitHubWorkerPayload {
   repoName: string;
@@ -18,9 +19,10 @@ export class GitHubWorker {
     let parsedManifest = undefined;
     if (job.payload.manifestRaw) {
       try {
-        parsedManifest = JSON.parse(job.payload.manifestRaw);
-      } catch (err) {
-        console.warn(`[GitHubWorker] Failed to parse manifest.json for ${job.payload.repoName}, falling back.`);
+        const rawJson = JSON.parse(job.payload.manifestRaw);
+        parsedManifest = ManifestSchema.parse(rawJson);
+      } catch (err: any) {
+        throw new Error(`[GitHubWorker] PermanentError: Invalid manifest.json for ${job.payload.repoName}: ${err.message}`);
       }
     }
 

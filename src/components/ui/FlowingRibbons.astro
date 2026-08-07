@@ -1,0 +1,375 @@
+---
+interface Props {
+  class?: string;
+  opacity?: number;
+}
+
+const { class: className = '', opacity = 0.45 } = Astro.props;
+---
+
+<div class={`flowing-ribbons-root ${className}`} aria-hidden="true" style={`--ribbon-opacity: ${opacity}`}>
+  <svg
+    class="flowing-ribbons-svg"
+    viewBox="0 0 1920 1080"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <defs>
+      <!-- ═══════════════════════════════════════════════════
+           FILTERS — Depth-of-field blur, ambient shadow, glow
+           ═══════════════════════════════════════════════════ -->
+
+      <!-- Depth blur for far-back ribbons -->
+      <filter id="depthBlurFar" x="-10%" y="-10%" width="120%" height="120%">
+        <feGaussianBlur stdDeviation="8" />
+      </filter>
+      <filter id="depthBlurMid" x="-5%" y="-5%" width="110%" height="110%">
+        <feGaussianBlur stdDeviation="3.5" />
+      </filter>
+
+      <!-- Soft drop shadow beneath ribbons -->
+      <filter id="ribbonShadow" x="-15%" y="-15%" width="130%" height="140%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="18" result="shadowBlur" />
+        <feOffset dx="0" dy="12" result="shadowOffset" />
+        <feFlood flood-color="#0a0014" flood-opacity="0.6" result="shadowColor" />
+        <feComposite in="shadowColor" in2="shadowOffset" operator="in" result="shadow" />
+        <feMerge>
+          <feMergeNode in="shadow" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+
+      <!-- Specular glow on hot-spots -->
+      <filter id="specularGlow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="glow" />
+        <feMerge>
+          <feMergeNode in="glow" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+
+      <!-- ═══════════════════════════════════════════════════
+           GRADIENTS — Rich multi-stop silk surface lighting
+           ═══════════════════════════════════════════════════ -->
+
+      <!-- Ribbon A — Deep navy-to-blue silk (primary wide band) -->
+      <linearGradient id="ribbonA" x1="0%" y1="0%" x2="100%" y2="40%">
+        <stop offset="0%"   stop-color="#112950" stop-opacity="0.9" />
+        <stop offset="18%"  stop-color="#1A3E7B" stop-opacity="0.85" />
+        <stop offset="35%"  stop-color="#2563EB" stop-opacity="0.8" />
+        <stop offset="52%"  stop-color="#3B82F6" stop-opacity="0.85" />
+        <stop offset="70%"  stop-color="#60A5FA" stop-opacity="0.8" />
+        <stop offset="85%"  stop-color="#93C5FD" stop-opacity="0.75" />
+        <stop offset="100%" stop-color="#3B82F6" stop-opacity="0.6" />
+      </linearGradient>
+
+      <!-- Ribbon A — Specular highlight -->
+      <linearGradient id="ribbonA_highlight" x1="0%" y1="0%" x2="80%" y2="60%">
+        <stop offset="0%"   stop-color="#BFDBFE" stop-opacity="0.4" />
+        <stop offset="15%"  stop-color="#93C5FD" stop-opacity="0.35" />
+        <stop offset="35%"  stop-color="#60A5FA" stop-opacity="0.2" />
+        <stop offset="55%"  stop-color="#3B82F6" stop-opacity="0.08" />
+        <stop offset="100%" stop-color="#1E3A8A" stop-opacity="0" />
+      </linearGradient>
+
+      <!-- Ribbon B — Dark navy (secondary deep band) -->
+      <linearGradient id="ribbonB" x1="100%" y1="10%" x2="0%" y2="90%">
+        <stop offset="0%"   stop-color="#0A192F" stop-opacity="0.85" />
+        <stop offset="20%"  stop-color="#112950" stop-opacity="0.8" />
+        <stop offset="45%"  stop-color="#1A3E7B" stop-opacity="0.75" />
+        <stop offset="65%"  stop-color="#2563EB" stop-opacity="0.8" />
+        <stop offset="100%" stop-color="#15335E" stop-opacity="0.75" />
+      </linearGradient>
+
+      <!-- Ribbon B — Edge light catch -->
+      <linearGradient id="ribbonB_highlight" x1="20%" y1="0%" x2="90%" y2="100%">
+        <stop offset="0%"   stop-color="#93C5FD" stop-opacity="0.3" />
+        <stop offset="30%"  stop-color="#60A5FA" stop-opacity="0.18" />
+        <stop offset="60%"  stop-color="#3B82F6" stop-opacity="0.06" />
+        <stop offset="100%" stop-color="#1E40AF" stop-opacity="0" />
+      </linearGradient>
+
+      <!-- Ribbon C — Bright blue accent band -->
+      <linearGradient id="ribbonC" x1="10%" y1="0%" x2="90%" y2="100%">
+        <stop offset="0%"   stop-color="#1E40AF" stop-opacity="0.9" />
+        <stop offset="25%"  stop-color="#2563EB" stop-opacity="0.88" />
+        <stop offset="50%"  stop-color="#3B82F6" stop-opacity="0.82" />
+        <stop offset="75%"  stop-color="#60A5FA" stop-opacity="0.7" />
+        <stop offset="100%" stop-color="#1D4ED8" stop-opacity="0.6" />
+      </linearGradient>
+
+      <!-- Ribbon C — Specular bright streak -->
+      <linearGradient id="ribbonC_highlight" x1="0%" y1="0%" x2="100%" y2="50%">
+        <stop offset="0%"   stop-color="#DBEAFE" stop-opacity="0.5" />
+        <stop offset="20%"  stop-color="#BFDBFE" stop-opacity="0.35" />
+        <stop offset="50%"  stop-color="#93C5FD" stop-opacity="0.12" />
+        <stop offset="100%" stop-color="#1E3A8A" stop-opacity="0" />
+      </linearGradient>
+
+      <!-- Ribbon D — Translucent blue overlay -->
+      <linearGradient id="ribbonD" x1="0%" y1="30%" x2="100%" y2="70%">
+        <stop offset="0%"   stop-color="#0A192F" stop-opacity="0.5" />
+        <stop offset="30%"  stop-color="#1E3A8A" stop-opacity="0.4" />
+        <stop offset="60%"  stop-color="#1D4ED8" stop-opacity="0.35" />
+        <stop offset="100%" stop-color="#0A192F" stop-opacity="0.25" />
+      </linearGradient>
+
+      <!-- Ribbon E — Deep shadow underside gradient -->
+      <linearGradient id="ribbonE" x1="50%" y1="0%" x2="50%" y2="100%">
+        <stop offset="0%"   stop-color="#020617" stop-opacity="0.95" />
+        <stop offset="40%"  stop-color="#0A192F" stop-opacity="0.85" />
+        <stop offset="100%" stop-color="#0F172A" stop-opacity="0.6" />
+      </linearGradient>
+
+      <!-- Ribbon F — Bright specular accent thin ribbon -->
+      <linearGradient id="ribbonF" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%"   stop-color="#60A5FA" stop-opacity="0.8" />
+        <stop offset="30%"  stop-color="#93C5FD" stop-opacity="0.9" />
+        <stop offset="60%"  stop-color="#BFDBFE" stop-opacity="0.7" />
+        <stop offset="100%" stop-color="#60A5FA" stop-opacity="0.5" />
+      </linearGradient>
+
+      <!-- Ambient edge glow -->
+      <radialGradient id="ambientGlow" cx="65%" cy="45%" r="45%">
+        <stop offset="0%"   stop-color="#2563EB" stop-opacity="0.12" />
+        <stop offset="60%"  stop-color="#0A192F" stop-opacity="0.04" />
+        <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LAYER 0 — Ambient atmosphere glow (deepest background)
+         ═══════════════════════════════════════════════════════════ -->
+    <ellipse cx="1250" cy="480" rx="750" ry="400" fill="url(#ambientGlow)" />
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LAYER 1 — FAR-BACK RIBBONS (blurred for depth-of-field)
+         ═══════════════════════════════════════════════════════════ -->
+    <g filter="url(#depthBlurFar)" opacity="0.55">
+      <!-- Far back deep shadow ribbon — wide, sweeping from bottom-left to upper-right -->
+      <path
+        d="M-200,920 C200,1050 500,680 900,750 C1300,820 1500,500 1700,420 C1900,340 2050,480 2150,550 L2150,680 C2000,620 1850,530 1650,580 C1450,650 1250,900 850,890 C450,880 150,1120 -200,1050 Z"
+        fill="url(#ribbonE)"
+      />
+
+      <!-- Far back violet band — passes behind main ribbons -->
+      <path
+        d="M-150,200 C150,50 450,350 780,200 C1100,50 1400,280 1650,150 C1900,20 2100,180 2200,250 L2200,350 C2050,270 1850,120 1600,260 C1350,400 1050,160 730,310 C410,460 100,130 -150,320 Z"
+        fill="url(#ribbonB)"
+      />
+    </g>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LAYER 2 — MID-DEPTH RIBBONS (slightly blurred)
+         ═══════════════════════════════════════════════════════════ -->
+    <g filter="url(#depthBlurMid)" opacity="0.7">
+      <!-- Mid ribbon — dark navy sweeping from right to left -->
+      <path
+        d="M2100,350 C1800,100 1400,550 1050,320 C700,90 400,380 100,250 C-200,120 -350,320 -400,400 L-400,530 C-300,440 -100,220 150,380 C400,520 750,180 1100,440 C1450,700 1850,210 2100,490 Z"
+        fill="url(#ribbonB)"
+      />
+      <!-- Its specular highlight top face -->
+      <path
+        d="M2100,350 C1800,100 1400,550 1050,320 C700,90 400,380 100,250 C-200,120 -350,320 -400,400 L-400,440 C-320,360 -80,170 170,330 C420,480 770,140 1120,400 C1470,660 1870,180 2100,430 Z"
+        fill="url(#ribbonB_highlight)"
+      />
+
+      <!-- Mid ribbon — translucent glass violet overlay weaving opposite direction -->
+      <path
+        d="M-300,680 C0,400 350,800 700,580 C1050,360 1250,700 1600,520 C1950,340 2100,550 2200,620 L2200,720 C2080,640 1900,430 1550,630 C1200,830 1000,450 650,690 C300,930 -50,510 -300,780 Z"
+        fill="url(#ribbonD)"
+      />
+    </g>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LAYER 3 — SHADOW CAST beneath primary ribbons
+         ═══════════════════════════════════════════════════════════ -->
+    <g opacity="0.4">
+      <path
+        d="M-200,560 C200,220 550,850 960,480 C1370,110 1650,380 1980,320 L1980,400 C1620,450 1320,170 910,540 C500,910 150,280 -200,640 Z"
+        fill="#050510"
+        filter="url(#depthBlurMid)"
+      />
+    </g>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LAYER 4 — PRIMARY 3D RIBBON (HERO BAND — Sharpest / Closest)
+         This is the main wide silk ribbon with full detail
+         ═══════════════════════════════════════════════════════════ -->
+    <g filter="url(#ribbonShadow)">
+      <!-- Base fill — wide 3D silk indigo-to-violet -->
+      <path
+        d="M-200,520 C150,180 500,820 950,440 C1400,60 1700,340 2000,280 L2000,480 C1660,520 1340,150 890,530 C440,910 90,260 -200,680 Z"
+        fill="url(#ribbonA)"
+      />
+
+      <!-- Top-face specular highlight — simulates light catching the upper curve -->
+      <path
+        d="M-200,520 C150,180 500,820 950,440 C1400,60 1700,340 2000,280 L2000,340 C1680,380 1380,100 920,480 C460,860 120,210 -200,580 Z"
+        fill="url(#ribbonA_highlight)"
+      />
+
+      <!-- Fine fabric groove lines running along the ribbon surface -->
+      <g stroke="rgba(255,255,255,0.09)" stroke-width="0.8" fill="none">
+        <path d="M-200,530 C150,190 500,830 950,450 C1400,70 1700,350 2000,290" />
+        <path d="M-200,545 C150,205 500,845 950,465 C1400,85 1700,365 2000,305" />
+        <path d="M-200,560 C150,220 500,860 950,480 C1400,100 1700,380 2000,320" />
+        <path d="M-200,575 C150,235 500,875 950,495 C1400,115 1700,395 2000,335" />
+        <path d="M-200,590 C150,250 500,890 950,510 C1400,130 1700,410 2000,350" />
+        <path d="M-200,605 C150,265 500,905 950,525 C1400,145 1700,425 2000,365" />
+        <path d="M-200,620 C150,280 500,920 950,540 C1400,160 1700,440 2000,380" />
+        <path d="M-200,635 C150,295 500,935 950,555 C1400,175 1700,455 2000,395" />
+        <path d="M-200,650 C150,310 500,950 950,570 C1400,190 1700,470 2000,410" />
+        <path d="M-200,665 C150,325 500,965 950,585 C1400,205 1700,485 2000,425" />
+      </g>
+
+      <!-- Bottom-edge dark underside — simulates shadow on the ribbon underside -->
+      <path
+        d="M-200,640 C90,300 440,890 890,520 C1340,150 1640,440 2000,410 L2000,480 C1660,520 1340,150 890,530 C440,910 90,260 -200,680 Z"
+        fill="url(#ribbonE)"
+        opacity="0.5"
+      />
+    </g>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LAYER 5 — HOT MAGENTA ACCENT RIBBON (weaving over primary)
+         Thinner but vivid, catches light intensely
+         ═══════════════════════════════════════════════════════════ -->
+    <g filter="url(#ribbonShadow)">
+      <!-- Base fill -->
+      <path
+        d="M-100,620 C250,350 580,780 980,520 C1380,260 1600,500 1900,410 L1900,510 C1570,580 1340,340 930,600 C520,860 200,430 -100,720 Z"
+        fill="url(#ribbonC)"
+      />
+
+      <!-- Magenta specular streak — bright hot catch -->
+      <path
+        d="M-100,620 C250,350 580,780 980,520 C1380,260 1600,500 1900,410 L1900,450 C1580,520 1360,290 950,550 C540,810 220,380 -100,660 Z"
+        fill="url(#ribbonC_highlight)"
+      />
+
+      <!-- Groove texture lines -->
+      <g stroke="rgba(255,255,255,0.07)" stroke-width="0.6" fill="none">
+        <path d="M-100,632 C250,362 580,792 980,532 C1380,272 1600,512 1900,422" />
+        <path d="M-100,645 C250,375 580,805 980,545 C1380,285 1600,525 1900,435" />
+        <path d="M-100,658 C250,388 580,818 980,558 C1380,298 1600,538 1900,448" />
+        <path d="M-100,671 C250,401 580,831 980,571 C1380,311 1600,551 1900,461" />
+        <path d="M-100,684 C250,414 580,844 980,584 C1380,324 1600,564 1900,474" />
+        <path d="M-100,697 C250,427 580,857 980,597 C1380,337 1600,577 1900,487" />
+      </g>
+    </g>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LAYER 6 — THIN BRIGHT SPECULAR EDGE RIBBON
+         Like a bright filament catching light along the top edge
+         ═══════════════════════════════════════════════════════════ -->
+    <g filter="url(#specularGlow)" opacity="0.75">
+      <path
+        d="M-150,500 C180,170 510,790 960,420 C1410,50 1710,330 2020,270 L2020,290 C1700,340 1400,70 950,440 C500,810 170,185 -150,520 Z"
+        fill="url(#ribbonF)"
+      />
+    </g>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LAYER 7 — FOREGROUND RIBBON CROSSING (over everything)
+         A dark ribbon band that crosses in front, adding occlusion depth
+         ═══════════════════════════════════════════════════════════ -->
+    <g opacity="0.6">
+      <!-- Dark foreground crossing ribbon -->
+      <path
+        d="M-300,780 C50,550 400,950 800,720 C1200,490 1450,800 1800,650 C2050,540 2200,700 2300,760 L2300,840 C2150,770 1980,600 1750,730 C1400,900 1150,560 750,800 C350,1040 0,620 -300,870 Z"
+        fill="url(#ribbonA)"
+        opacity="0.45"
+      />
+      <!-- Its light-catch edge -->
+      <path
+        d="M-300,780 C50,550 400,950 800,720 C1200,490 1450,800 1800,650 C2050,540 2200,700 2300,760 L2300,790 C2170,720 2010,570 1770,690 C1420,860 1170,520 770,760 C370,1000 20,580 -300,830 Z"
+        fill="url(#ribbonA_highlight)"
+        opacity="0.35"
+      />
+      <!-- Groove lines -->
+      <g stroke="rgba(255,255,255,0.06)" stroke-width="0.5" fill="none">
+        <path d="M-300,792 C50,562 400,962 800,732 C1200,502 1450,812 1800,662" />
+        <path d="M-300,805 C50,575 400,975 800,745 C1200,515 1450,825 1800,675" />
+        <path d="M-300,818 C50,588 400,988 800,758 C1200,528 1450,838 1800,688" />
+        <path d="M-300,831 C50,601 400,1001 800,771 C1200,541 1450,851 1800,701" />
+      </g>
+    </g>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LAYER 8 — UPPER ACCENT RIBBON (top area of composition)
+         Adds visual balance, weaves through upper-right quadrant
+         ═══════════════════════════════════════════════════════════ -->
+    <g opacity="0.5" filter="url(#depthBlurMid)">
+      <path
+        d="M800,100 C1050,-30 1250,250 1500,150 C1750,50 1900,200 2050,180 L2050,280 C1870,280 1710,120 1460,240 C1210,360 1010,60 760,200 Z"
+        fill="url(#ribbonC)"
+      />
+      <path
+        d="M800,100 C1050,-30 1250,250 1500,150 C1750,50 1900,200 2050,180 L2050,220 C1880,230 1720,80 1470,200 C1220,320 1020,20 770,160 Z"
+        fill="url(#ribbonC_highlight)"
+        opacity="0.5"
+      />
+    </g>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LAYER 9 — FINE DETAIL EDGE HIGHLIGHTS
+         Ultra-thin bright lines that trace the primary ribbon edges
+         like light catching polished metal edges
+         ═══════════════════════════════════════════════════════════ -->
+    <g opacity="0.6">
+      <!-- Primary ribbon top edge bright catch -->
+      <path
+        d="M-200,520 C150,180 500,820 950,440 C1400,60 1700,340 2000,280"
+        stroke="rgba(147,197,253,0.4)"
+        stroke-width="1.5"
+        fill="none"
+      />
+      <!-- Primary ribbon bottom edge subtle dark line -->
+      <path
+        d="M-200,680 C90,260 440,910 890,530 C1340,150 1660,520 2000,480"
+        stroke="rgba(10,25,47,0.5)"
+        stroke-width="1"
+        fill="none"
+      />
+      <!-- Accent ribbon top edge -->
+      <path
+        d="M-100,620 C250,350 580,780 980,520 C1380,260 1600,500 1900,410"
+        stroke="rgba(96,165,250,0.35)"
+        stroke-width="1.2"
+        fill="none"
+      />
+      <!-- Foreground crossing top edge -->
+      <path
+        d="M-300,780 C50,550 400,950 800,720 C1200,490 1450,800 1800,650"
+        stroke="rgba(59,130,246,0.2)"
+        stroke-width="0.8"
+        fill="none"
+      />
+    </g>
+
+  </svg>
+</div>
+
+<style>
+  .flowing-ribbons-root {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+    opacity: var(--ribbon-opacity, 0.45);
+  }
+
+  .flowing-ribbons-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    transform: translateZ(0);
+    will-change: auto;
+  }
+</style>

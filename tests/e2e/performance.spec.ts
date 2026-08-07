@@ -8,6 +8,7 @@ async function setupPerformanceMetrics(page: Page) {
       lcp: null,
       cls: 0,
       longTasks: 0,
+      layoutShifts: [],
     };
 
     // Each observer is wrapped in try-catch because Firefox doesn't support
@@ -39,6 +40,7 @@ async function setupPerformanceMetrics(page: Page) {
         for (const entry of entryList.getEntries() as any[]) {
           if (!entry.hadRecentInput) {
             (window as any).performanceMetrics.cls += entry.value;
+            (window as any).performanceMetrics.layoutShifts.push(entry);
           }
         }
       }).observe({ type: 'layout-shift', buffered: true });
@@ -166,5 +168,142 @@ test.describe('Performance & Core Web Vitals Audits', () => {
     }
     // We do not strictly fail yet as Astro Image component might omit them in some custom wrappers,
     // but warning helps developer audit them.
+  });
+
+  test('Services Grid zero-CLS desktop hover verification', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/');
+    await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });
+
+    const grid = page.locator('[data-services-grid]');
+    await expect(grid).toBeVisible();
+
+    const engineActive = await page.evaluate(() => (window as any).__servicesEngineActive);
+    expect(engineActive).toBe(true);
+
+    const initialCols = await page.evaluate(() => {
+      const g = document.querySelector('[data-services-grid]');
+      return g ? window.getComputedStyle(g).gridTemplateColumns : '';
+    });
+
+    // Record a baseline of layout-shift entries before the interaction window
+    const shiftsBaseline = await page.evaluate(() => (window as any).performanceMetrics.layoutShifts.length);
+
+    const firstCard = page.locator('.premium-card-global').first();
+    await firstCard.hover();
+    await page.waitForTimeout(300);
+
+    const activeCols = await page.evaluate(() => {
+      const g = document.querySelector('[data-services-grid]');
+      return g ? window.getComputedStyle(g).gridTemplateColumns : '';
+    });
+
+    expect(activeCols).toBe(initialCols);
+
+    await page.mouse.move(0, 0);
+    await page.waitForTimeout(500);
+
+    // Zero-CLS guarantee: no layout-shift entry with sources during hover/expand/collapse
+    const shiftsDuringInteraction = await page.evaluate((baseline: number) => {
+      return (window as any).performanceMetrics.layoutShifts
+        .slice(baseline)
+        .filter((entry: any) => (entry.sources?.length ?? 0) > 0)
+        .map((entry: any) => ({
+          value: entry.value,
+          sources: (entry.sources ?? []).map((s: any) => s.node?.className || s.node?.tagName || '?'),
+        }));
+    }, shiftsBaseline);
+
+    expect(shiftsDuringInteraction).toEqual([]);
+  });
+
+  test('Services entrance — cards are hidden then rise+fade once on scroll into view', async ({ page, isMobile }) => {
+    test.setTimeout(90000);
+    const viewports = [
+      { name: 'EN', route: '/en/' },
+      { name: 'AR', route: '/' },
+    ];
+
+    for (const { name, route } of viewports) {
+      await test.step(`locale ${name}`, async () => {
+        await page.setViewportSize({ width: 1280, height: 800 });
+        await page.goto(route);
+        await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });
+        // Settle layout (lazy images, fonts, ScrollTrigger refresh) before measuring
+        await page.waitForTimeout(2000);
+
+        const grid = page.locator('[data-services-grid]');
+        await expect(grid).toBeVisible();
+
+        // Entrance pre-state: below-fold cards start hidden (opacity 0, raised y)
+        const initial = await grid.evaluate(() => {
+          const first = document.querySelector('.premium-card-global');
+          if (!first) return null;
+          return {
+            opacity: getComputedStyle(first).opacity,
+            transform: getComputedStyle(first).transform,
+          };
+        });
+        expect(initial).not.toBeNull();
+        expect(Number(initial!.opacity)).toBe(0);
+
+        // Scroll into view → entrance fires once. Desktop: real wheel scrolling ensures
+        // the `top 75%` ScrollTrigger line is crossed and scroll events fire in every
+        // engine (WebKit skips events on instant scrolls). Mobile: `mouse.wheel` is
+        // unsupported, so use stepped programmatic scrolls (also fires native events).
+        await grid.scrollIntoViewIfNeeded();
+        if (isMobile) {
+          for (let i = 0; i < 20; i++) {
+            await page.evaluate(() => window.scrollBy({ top: 250, behavior: 'instant' }));
+            await page.waitForTimeout(60);
+          }
+        } else {
+          await page.mouse.move(400, 400);
+          await page.mouse.wheel(0, 1200);
+          await page.mouse.wheel(0, 800);
+        }
+        await expect.poll(async () => {
+          const state = await grid.evaluate(() => {
+            const first = document.querySelector('.premium-card-global');
+            if (!first) return null;
+            return {
+              opacity: getComputedStyle(first).opacity,
+              transform: getComputedStyle(first).transform,
+            };
+          });
+          return state;
+        }, { timeout: 15000, intervals: [250] }).toEqual({
+          opacity: '1',
+          transform: 'none',
+        });
+
+        // `clearProps` removes the entrance transform (cards return to native CSS layout)
+        const revealed = await grid.evaluate(() => ({
+          gridCols: window.getComputedStyle(document.querySelector('[data-services-grid]')!).gridTemplateColumns,
+        }));
+
+        // Column tracks frozen across the reveal — zero reflow
+        const gridColsBefore = await grid.evaluate((g) => getComputedStyle(g).gridTemplateColumns);
+        const gridColsAfter = revealed!.gridCols;
+        expect(gridColsAfter).toBe(gridColsBefore);
+      });
+    }
+  });
+
+  test('Services entrance — reduced motion shows cards instantly (no hidden state)', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/en/');
+    await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });
+
+    const firstCard = page.locator('.premium-card-global').first();
+    await expect(firstCard).toBeVisible();
+
+    const state = await firstCard.evaluate((el) => ({
+      opacity: getComputedStyle(el).opacity,
+      transform: getComputedStyle(el).transform,
+    }));
+    expect(Number(state.opacity)).toBe(1);
+    expect(state.transform).toBe('none');
   });
 });

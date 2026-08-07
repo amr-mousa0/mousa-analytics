@@ -1,0 +1,86 @@
+---
+import BrandMark from '../brand/BrandMark.astro';
+import Icon from '../ui/Icon.astro';
+import { useTranslations } from '../../lib/locales/index';
+import { getWhatsAppUrl } from '../../lib/contact/cta';
+
+interface Props {
+  lang: 'en' | 'ar';
+  activePage?: string;
+}
+
+const { lang, activePage = 'home' } = Astro.props;
+const t = useTranslations(lang);
+
+const homePath = lang === 'ar' ? '/' : '/en/';
+const servicesPath = lang === 'ar' ? '/#services' : '/en/#services';
+const projectsPath = lang === 'ar' ? '/#projects' : '/en/#projects';
+const aboutPath = lang === 'ar' ? '/about/' : '/en/about/';
+const whatsappUrl = getWhatsAppUrl({ lang: lang as 'en' | 'ar' });
+---
+
+<!-- Mobile Bottom Navigation Dock (md:hidden) -->
+<nav
+  id="mobile-bottom-nav"
+  aria-label="Mobile bottom navigation"
+  class="fixed bottom-0 inset-x-0 h-16 bg-bg-card/90 backdrop-blur-lg border-t border-border-subtle md:hidden z-50 flex items-center justify-around px-2 shadow-lg transition-all duration-300"
+>
+  <!-- Home Tab -->
+  <a
+    href={homePath}
+    class={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
+      activePage === 'home' ? 'text-primary font-bold' : 'text-text-secondary hover:text-text-primary'
+    }`}
+  >
+    <Icon name="home" class="w-5 h-5" />
+    <span class="text-[10px] mt-1">{t.nav.home}</span>
+  </a>
+
+  <!-- Services Tab -->
+  <a
+    href={servicesPath}
+    class={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
+      activePage === 'services' ? 'text-primary font-bold' : 'text-text-secondary hover:text-text-primary'
+    }`}
+  >
+    <Icon name="gears" class="w-5 h-5" />
+    <span class="text-[10px] mt-1">{t.nav.services}</span>
+  </a>
+
+  <!-- Center Floating Contact Button -> Opens Contact Modal Sheet -->
+  <button
+    type="button"
+    data-open-contact-modal
+    class="flex flex-col items-center justify-center relative -top-3 shrink-0 group cursor-pointer focus-visible:ring-2 focus-visible:ring-primary rounded-full"
+    aria-label={t.nav.contact}
+  >
+    <div class="w-12 h-12 rounded-full bg-primary text-white border-4 border-bg-card shadow-md flex items-center justify-center transition-transform duration-200 group-active:scale-95">
+      <BrandMark class="w-6 h-6 text-white" />
+    </div>
+    <span class="text-[10px] font-bold text-primary mt-0.5">{t.nav.contact}</span>
+  </button>
+
+  <!-- Projects Tab -->
+  <a
+    href={projectsPath}
+    class={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
+      activePage === 'projects' ? 'text-primary font-bold' : 'text-text-secondary hover:text-text-primary'
+    }`}
+  >
+    <Icon name="briefcase" class="w-5 h-5" />
+    <span class="text-[10px] mt-1">{t.nav.projects}</span>
+  </a>
+
+  <!-- About Tab -->
+  <a
+    href={aboutPath}
+    class={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
+      activePage === 'about' ? 'text-primary font-bold' : 'text-text-secondary hover:text-text-primary'
+    }`}
+  >
+    <Icon name="user" class="w-5 h-5" />
+    <span class="text-[10px] mt-1">{t.nav.about}</span>
+  </a>
+</nav>
+
+

@@ -1,33 +1,66 @@
 @import "tailwindcss";
+@import "./tokens.css";
+@import "./fonts.css";
+@import "./typography.css";
+@import "./motion/index.css";
 
+/* ==========================================================================
+   Design Token Bridge — Tailwind v4 @theme integration
+   Exposes semantic CSS custom properties from tokens.css into Tailwind's
+   theme resolution layer. See tokens.css for raw values.
+   ========================================================================== */
 @theme {
-  --color-primary-bg: #F8F9FA;
-  --color-text-main: #0A192F;
-  --color-accent-primary: #2563EB;
-  --color-accent-highlight: #1D4ED8;
-  --color-accent-light: #93C5FD;
+  /* Surface tokens */
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-bg-card: var(--bg-card);
+  --color-surface-dark: var(--bg-surface-dark);
 
-  /* Hero section — Luxury Agency / Consultancy Palette (Classic Tech Indigo / Royal Blue + Platinum) */
-  --color-hero-accent: #2563EB;
-  --color-hero-accent-highlight: #1D4ED8;
-  --color-hero-ice-blue: #1D4ED8;
-  --color-hero-ice-blue-hover: #1E40AF;
-  --color-hero-surface: #F8F9FA;
-  --color-hero-glow: rgba(37, 99, 235, 0.12);
-  /* Subtle blue tech glow aura */
-  --color-hero-card: #FFFFFF;
+  /* Brand primitives */
+  --color-primary: var(--color-primary);
+  --color-neutral-bg: var(--color-neutral-bg);
+  --color-text-main: var(--color-text-main);
+  --color-card-bg: var(--color-card-bg);
 
-  /* Success State Design Tokens (WhatsApp / Confirmation CTAs) */
-  --color-success-primary: #15803D;
-  --color-success-hover: #166534;
-  --color-success-bg: rgba(22, 163, 74, 0.05);
-  --color-success-border: rgba(22, 163, 74, 0.15);
-  --shadow-success: 0 4px 14px rgba(22, 163, 74, 0.15);
-  --shadow-success-hover: 0 6px 20px rgba(22, 163, 74, 0.25);
+  /* Text & Ink tokens */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-accent: var(--text-accent);
+  --color-text-on-accent: var(--text-on-accent);
 
-  --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-  --font-logo: 'Cinzel', serif;
+  /* Border tokens */
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --color-border-accent: var(--border-accent);
+
+  /* Accent & Hero tokens */
+  --color-accent-primary: var(--color-accent-primary);
+  --color-accent-highlight: var(--color-accent-highlight);
+  --color-hero-accent: var(--color-hero-accent);
+
+  /* Success state tokens */
+  --color-success-primary: var(--color-success-primary);
+  --color-success-hover: var(--color-success-hover);
+  --color-success-bg: var(--color-success-bg);
+  --color-success-border: var(--color-success-border);
+
+  /* Font stacks */
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+  --font-logo: var(--font-logo);
+
+  /* Radii */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-full: var(--radius-full);
+
+  /* Shadows */
+  --shadow-ambient: var(--shadow-ambient);
+  --shadow-success: var(--shadow-success);
+  --shadow-success-hover: var(--shadow-success-hover);
 }
 
 @layer base {
@@ -41,18 +74,17 @@
   }
 
   body {
-    @apply bg-primary-bg text-text-main font-sans selection:bg-accent-primary selection:text-white;
-    background-image:
-      linear-gradient(to right, rgba(10, 25, 47, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(10, 25, 47, 0.03) 1px, transparent 1px);
-    background-size: 3.5rem 3.5rem;
+    @apply bg-neutral-bg text-text-main font-sans selection:bg-primary selection:text-white;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
   }
 
-  input, textarea, select, [contenteditable="true"] {
+  input,
+  textarea,
+  select,
+  [contenteditable="true"] {
     -webkit-user-select: text;
     -moz-user-select: text;
     -ms-user-select: text;
@@ -61,7 +93,7 @@
 
   /* Accessible focus states */
   *:focus-visible {
-    @apply outline-none ring-2 ring-accent-highlight ring-offset-2 ring-offset-primary-bg;
+    @apply outline-none ring-2 ring-hero-accent ring-offset-2 ring-offset-neutral-bg;
   }
 
   /* Reduced motion adjustments */
@@ -100,11 +132,11 @@
 
 /* Premium Global Card styling with light theme and hover micro-interactions */
 .premium-card-global {
-  background-color: var(--color-hero-card);
+  background-color: var(--color-card-bg);
   border: 1px solid rgba(10, 25, 47, 0.06);
-  border-radius: 1rem;
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(10, 25, 47, 0.03);
+  box-shadow: var(--shadow-ambient);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -126,4 +158,59 @@
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+}
+
+/* gsap-enhanced handover — Services card hover */
+/* GSAP owns all transform/opacity/visibility during expansion, so the CSS
+   baseline must never re-apply them. Inline GSAP styles outrank these
+   non-important neutralizers; only the CSS transitions get hard-killed. */
+.gsap-enhanced [data-services-grid] .premium-card-global,
+.gsap-enhanced [data-services-grid] .card-image,
+.gsap-enhanced [data-services-grid] .card-overlay,
+.gsap-enhanced [data-services-grid] .card-actions {
+  transition: none !important;
+}
+
+.gsap-enhanced [data-services-grid] .premium-card-global:hover {
+  transform: none;
+}
+
+.gsap-enhanced .group:hover .md\:group-hover\:translate-y-0 {
+  transform: none;
+}
+
+.gsap-enhanced .group:hover .md\:group-hover\:opacity-100 {
+  opacity: 0;
+}
+
+.gsap-enhanced .group:hover .md\:group-hover\:visible {
+  visibility: hidden;
+}
+
+.gsap-enhanced .group:hover .md\:group-hover\:pointer-events-auto {
+  pointer-events: none;
+}
+
+.gsap-enhanced .group:hover .group-hover\/body\:scale-105 {
+  transform: none;
+}
+
+.gsap-enhanced .group:hover .md\:group-hover\:opacity-0 {
+  opacity: 1;
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  .premium-card-global,
+  .premium-card-global * {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .premium-card-global:hover,
+  .premium-card-global:focus-visible {
+    transform: none !important;
+  }
 }

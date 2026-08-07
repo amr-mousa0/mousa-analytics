@@ -1,0 +1,45 @@
+/* ==========================================================================
+   Dynamic Fluid Typography & Type Scale Engine
+   Governed by ADR-005, SPEC-TYPO-001, and TASK-TYP-002
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------------
+     1. FLUID FONT SIZES (clamp formulas from 375px mobile to 1440px desktop)
+     ------------------------------------------------------------------------ */
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);       /* 12px -> 14px */
+  --text-sm: clamp(0.875rem, 0.82rem + 0.28vw, 1rem);          /* 14px -> 16px */
+  --text-base: clamp(1rem, 0.94rem + 0.31vw, 1.125rem);       /* 16px -> 18px */
+  --text-lg: clamp(1.125rem, 1.05rem + 0.38vw, 1.25rem);      /* 18px -> 20px */
+  --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);         /* 20px -> 24px */
+  --text-2xl: clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem);     /* 24px -> 30px */
+  --text-3xl: clamp(1.875rem, 1.65rem + 1.13vw, 2.25rem);     /* 30px -> 36px */
+  --text-4xl: clamp(2.25rem, 1.95rem + 1.5vw, 3rem);          /* 36px -> 48px */
+  --text-5xl: clamp(3rem, 2.5rem + 2.5vw, 4rem);             /* 48px -> 64px */
+
+  /* ------------------------------------------------------------------------
+     2. LOCALE-AWARE LINE HEIGHTS (SPEC-TYPO-001 Section 8)
+     ------------------------------------------------------------------------ */
+  --leading-none: 1;
+  --leading-tight: 1.2;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* Script Line Height Modifiers */
+  --leading-arabic-normal: 1.65;
+  --leading-arabic-relaxed: 1.8;
+  --leading-latin-normal: 1.5;
+  --leading-latin-relaxed: 1.65;
+
+  /* ------------------------------------------------------------------------
+     3. LETTER SPACING (TRACKING)
+     ------------------------------------------------------------------------ */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+}

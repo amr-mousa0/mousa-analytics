@@ -5,7 +5,7 @@ icon: "table"
 priority: 3
 category: "Data Analytics"
 tags: ["excel", "vba", "automation"]
-coverImage: ../../../assets/images/Excel.jpg
+coverImage: "/images/services/advanced-excel.jpg"
 execSummaryText: "شيتات الإكسيل بتبوظ منك كل شوية والمعادلات بتضرب؟ هنسهلك الدنيا ونصمملك شيت إكسيل محاسبي احترافي متفصل بالملي على قد حجم شغلك، بالمعادلات الذكية والماكرو والألوان المنظمة عشان توفر وقتك وتضمن دقة حساباتك ومخازنك بنسبة 100%."
 scopeItems:
   - title: "تقارير ولوحات بيانات مؤتمتة"

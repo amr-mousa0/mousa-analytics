@@ -1,12 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Navigation from '../../components/ui/Navigation.astro';
-import Footer from '../../components/ui/Footer.astro';
+import Navbar from '../../components/layout/Navbar.astro';
+import Footer from '../../components/layout/Footer.astro';
 import { Image } from 'astro:assets';
-import profileImg from '../../assets/images/amr-mousa.webp';
-
-
-
+import profileImg from '../../assets/images/amr-hero-v5.png';
+import { useTranslations } from '../../i18n/index.js';
 
 // Dynamic route parameters
 export function getStaticPaths() {
@@ -25,10 +23,37 @@ if (lang !== undefined && lang !== 'en') {
 
 const currentLang = lang || 'ar';
 const isAr = currentLang === 'ar';
+const t = useTranslations(currentLang);
+const ab = t.aboutPage;
+
+import AboutHeroCinematic from '../../components/sections/about-hero-cinematic';
+import GalleryStripParallax from '../../components/sections/gallery-strip-parallax';
+import SocialCards from '../../components/ui/carousels/fan/fan-carousel';
+import EvidenceStrip from '../../components/sections/evidence-strip';
+import ReadyCtaCinematic from '../../components/sections/ready-cta-cinematic';
+import ApproachPinnedRoadmap from '../../components/sections/approach-pinned-roadmap';
+import { ContentFacade } from '../../lib/content/facade.js';
+import type { CarouselItem } from '../../components/ui/carousels/base/carousel.types';
+
+const experienceCards = ab.experienceCards || [];
+const rawCapabilities = await ContentFacade.getCapabilities({ lang: currentLang as 'en' | 'ar' });
+const capabilityItems: CarouselItem[] = rawCapabilities.map((cap) => ({
+  id: cap.slug || cap.id,
+  title: cap.data.title,
+  description: cap.data.description,
+  tag: cap.data.tag,
+  icon: cap.data.icon,
+}));
+
+const approachPillars = [
+  { number: "01", title: ab.pillar1Title, desc: ab.pillar1Desc },
+  { number: "02", title: ab.pillar2Title, desc: ab.pillar2Desc },
+  { number: "03", title: ab.pillar3Title, desc: ab.pillar3Desc },
+];
 ---
 
 <Layout lang={currentLang} pageId="about">
-  <Navigation lang={currentLang} activePage="about" />
+  <Navbar lang={currentLang === 'en' ? 'en' : 'ar'} activePage="about" />
 
   <!-- Inject Schema.org JSON-LD Metadata -->
   <script is:inline type="application/ld+json" set:html={JSON.stringify({
@@ -37,8 +62,8 @@ const isAr = currentLang === 'ar';
       {
         "@type": "Person",
         "@id": `https://mousa-analytics.vercel.app/${currentLang === 'ar' ? '' : 'en/'}#person`,
-        "name": isAr ? "عمرو موسى" : "Amr Mousa",
-        "jobTitle": isAr ? "محلل بيانات وتسويق" : "Data & Marketing Analyst",
+        "name": t.nav.authorName,
+        "jobTitle": ab.founderJobTitle,
         "knowsAbout": ["SQL", "Python", "Power BI", "Excel", "Performance Marketing", "Conversion Rate Optimization"],
         "alumniOf": [
           {
@@ -71,628 +96,260 @@ const isAr = currentLang === 'ar';
     ]
   })} />
 
-  <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent">
-    <!-- Atmospheric Ambient Glows -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_20%,oklch(75%_0.12_255_/_0.06),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,oklch(75%_0.12_255_/_0.04),transparent_60%)] pointer-events-none z-0" aria-hidden="true"></div>
+  <main class="flex-grow pb-20 relative overflow-hidden bg-transparent">
+    <!-- Section 1: TOLVA Editorial Hero Block -->
+    <AboutHeroCinematic client:load lang={currentLang} />
 
-    <article class="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 space-y-24">
+    <!-- Section 1.5: Cinematic Gallery Strip — living portfolio divider between hero and content -->
+    <GalleryStripParallax client:load />
+
+    <!-- Section 2: Evidence Strip (Trust Metrics) -->
+    <div class="relative z-10 w-full bg-primary-bg">
+      <EvidenceStrip lang={currentLang as 'en' | 'ar'} />
+    </div>
+
+    <!-- Section 3: Profile / About (High-End Dark Ethereal Glass Layout) -->
+    <section class="relative w-full bg-[#050505] text-[#FAFAFA] py-32 md:py-48 overflow-hidden z-20">
+      <!-- Ethereal Glass Glow -->
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.04)_0%,transparent_70%)] pointer-events-none"></div>
       
-      <!-- Restructured Section 1: Hero Block (Mousa Analytics B2B Agency) -->
-      <!-- Restructured Section 1: Hero Block (Mousa Analytics B2B Agency) -->
-      <section class="max-w-3xl mx-auto text-center space-y-6 pt-4 pb-8">
-        <div class="space-y-3">
-          <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
-            {isAr ? "ترتيب وفهم الأرقام" : "ORGANIZING & UNDERSTANDING DATA"}
-          </span>
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight font-serif text-text-main leading-[1.15]">
-            {isAr ? (
-              <>
-                موسى <span class="text-hero-ice-blue italic font-medium">لتحليل البيانات</span>
-              </>
-            ) : (
-              <>
-                Mousa <span class="text-hero-ice-blue italic font-medium">Analytics</span>
-              </>
-            )}
-          </h1>
-          <h2 class="text-base md:text-lg font-bold font-sans text-text-main/80 mt-2">
-            {isAr ? "تبسيط البيانات لمساعدتك على اتخاذ القرارات الصحيحة" : "Simplifying Data to Help You Make the Right Decisions"}
-          </h2>
-        </div>
+      <div class="max-w-7xl mx-auto w-full px-6 sm:px-8 lg:px-12 relative z-10">
         
-        <p class="text-sm md:text-base text-text-main/70 font-sans leading-relaxed max-w-2xl mx-auto">
-          {isAr ? (
-            "بدأت موسى لتحليل البيانات بهدف واحد: تبسيط البيانات المعقدة لأصحاب المتاجر والمشاريع. نحن نؤمن أن الأرقام لا يجب أن تكون صعبة، ولا تحتاج لشعارات تسويقية ضخمة لتقنعك بجدواها. دورنا ببساطة هو مساعدتك على رؤية أرقامك بوضوح لتتخذ قراراتك بثقة، وتقلل الهدر الإعلاني بناءً على حقائق فعلية."
-          ) : (
-            "Mousa Analytics started with a single goal: simplifying complex data for business and e-commerce owners. We believe that numbers shouldn't be difficult, and you don't need massive marketing slogans to prove their worth. Our role is simple—helping you see your numbers clearly so you can make decisions with confidence, and reduce ad spend waste based on real facts."
-          )}
-        </p>
-      </section>
-
-      <hr class="border-t border-text-main/5" />
-
-      <!-- Section 2: Values & Philosophy Block (Clarity, Tracking, Practical Simplicity) -->
-      <section class="grid grid-cols-1 lg:grid-cols-[35%_65%] gap-12 lg:gap-20 items-start">
-        <div class="space-y-4">
-          <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
-            {isAr ? "رؤيتنا في العمل" : "OUR APPROACH"}
-          </span>
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight font-serif text-text-main leading-tight">
-            {isAr ? (
-              <>
-                كيف نرى <span class="text-hero-ice-blue italic font-medium">البيانات</span>؟
-              </>
-            ) : (
-              <>
-                How We View <span class="text-hero-ice-blue italic font-medium">Data</span>
-              </>
-            )}
-          </h2>
-          <p class="text-sm text-text-main/60 font-sans leading-relaxed max-w-sm">
-            {isAr 
-              ? "البيانات تكون أكثر فائدة حينما تتحول لخطوات عملية واضحة. نساعدك على فهم أرقام متجرك لتتخذ قراراتك بثقة ووضوح." 
-              : "Data is most useful when it turns into clear, actionable steps. We help you understand your store's numbers so you can make decisions with clarity."}
-          </p>
-        </div>
-
-        <!-- Pillars List -->
-        <div class="divide-y divide-text-main/5 space-y-6 lg:space-y-8">
-          <div class="pt-0 pb-6 first:pt-0 last:pb-0 space-y-2">
-            <h3 class="text-base font-bold text-text-main font-serif flex gap-3 items-center leading-snug">
-              <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0"></span>
-              <span>{isAr ? "الوضوح والتركيز" : "Clarity & Focus"}</span>
-            </h3>
-            <p class="text-sm text-text-main/70 font-sans leading-relaxed ps-5">
-              {isAr 
-                ? "تصفية الفوضى التقنية والمقاييس الوهمية للتركيز فقط على الأرقام التي تهم عملك وتصنع فارقاً حقيقياً." 
-                : "Filtering out technical noise and vanity metrics to focus strictly on numbers that actually impact your business."}
-            </p>
-          </div>
-
-          <div class="pt-6 pb-6 first:pt-0 last:pb-0 space-y-2">
-            <h3 class="text-base font-bold text-text-main font-serif flex gap-3 items-center leading-snug">
-              <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0"></span>
-              <span>{isAr ? "منطق التتبع الصحيح" : "Accurate Tracking"}</span>
-            </h3>
-            <p class="text-sm text-text-main/70 font-sans leading-relaxed ps-5">
-              {isAr 
-                ? "ربط التتبع الفني والتحليلي بسلوك العميل الفعلي لفهم القصة الكاملة وراء الأرقام." 
-                : "Connecting analytics and tracking setup to actual buyer behavior, telling you the real story behind every click."}
-            </p>
-          </div>
-
-          <div class="pt-6 pb-0 first:pt-0 last:pb-0 space-y-2">
-            <h3 class="text-base font-bold text-text-main font-serif flex gap-3 items-center leading-snug">
-              <span class="w-1.5 h-1.5 rounded-full bg-hero-ice-blue shrink-0"></span>
-              <span>{isAr ? "البساطة العملية" : "Practical Simplicity"}</span>
-            </h3>
-            <p class="text-sm text-text-main/70 font-sans leading-relaxed ps-5">
-              {isAr 
-                ? "بناء لوحات بيانات واضحة وسهلة الفهم تساعدك على اتخاذ قراراتك اليومية بيسر وثقة." 
-                : "Building clean, straightforward dashboards that help you make daily decisions with confidence and ease."}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <hr class="border-t border-text-main/5" />
-
-      <!-- Section 3: Amr Mousa CEO & Lead Analyst Profile Monogram -->
-      <section class="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-12 lg:gap-16 items-center">
-        <!-- Visual Column: Square Premium Portrait Frame -->
-        <div class="flex flex-col items-center justify-center space-y-6">
-          <!-- The main card frame -->
-          <div class="group relative w-56 h-56 md:w-64 md:h-64 rounded-2xl p-1 bg-white border border-hero-ice-blue/20 shadow-[0_4px_20px_rgba(10,25,47,0.05)] overflow-hidden transition-all duration-300 hover:border-hero-ice-blue/50">
-            <div class="w-full h-full rounded-xl overflow-hidden relative bg-white bg-[linear-gradient(to_right,rgba(10,25,47,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(10,25,47,0.035)_1px,transparent_1px)] bg-[size:1.75rem_1.75rem]">
-              <!-- Subtle hover overlay -->
-              <div class="absolute inset-0 bg-text-main/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
-              <Image 
-                src={profileImg} 
-                alt={isAr ? "عمرو موسى" : "Amr Mousa"} 
-                class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 82%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 82%, rgba(0,0,0,0) 100%);"
-                width={512}
-                height={512}
-                quality={90}
-                loading="eager"
-              />
+        <div class="grid grid-cols-1 md:grid-cols-[38%_62%] lg:grid-cols-[35%_65%] gap-12 md:gap-20 lg:gap-24 items-center">
+          <!-- Visual Column: Double Bezel Architecture -->
+          <div class="reveal-el translate-y-16 opacity-0 blur-md transition-all duration-[1.2s] ease-[cubic-bezier(0.32,0.72,0,1)] delay-100 w-full max-w-sm mx-auto md:mx-0">
+            <div class="group relative w-full aspect-[4/5] p-2 bg-white/5 border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl">
+              <!-- Inner Core -->
+              <div class="w-full h-full relative bg-[#0a0a0a] rounded-[calc(2rem-0.5rem)] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)]">
+                <Image 
+                  src={profileImg} 
+                  alt={t.nav.authorName} 
+                  class="w-full h-full object-cover transition-transform duration-[1.5s] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
+                  width={600}
+                  height={750}
+                  quality={90}
+                />
+                <!-- Subtle overlay -->
+                <div class="absolute inset-0 bg-black/10 pointer-events-none transition-opacity duration-700 group-hover:opacity-0"></div>
+              </div>
             </div>
           </div>
-          
-          <div class="text-center space-y-1">
-            <h3 class="text-xl font-bold text-text-main font-serif">{isAr ? "عمرو موسى" : "Amr Mousa"}</h3>
-            <p class="text-xs text-hero-ice-blue font-bold tracking-widest uppercase font-sans">{isAr ? "المؤسس ومحلل البيانات الرئيسي" : "Founder & Lead Analyst"}</p>
+
+          <!-- Bio Details -->
+          <div class="space-y-10 md:pt-4 text-white/80">
+            <p class="reveal-el translate-y-16 opacity-0 blur-md transition-all duration-[1.2s] ease-[cubic-bezier(0.32,0.72,0,1)] delay-200 text-lg md:text-xl lg:text-2xl font-sans leading-[1.8] font-light tracking-wide">
+              {ab.storyP1}
+            </p>
+            <p class="reveal-el translate-y-16 opacity-0 blur-md transition-all duration-[1.2s] ease-[cubic-bezier(0.32,0.72,0,1)] delay-300 text-lg md:text-xl lg:text-2xl font-sans leading-[1.8] font-light tracking-wide text-white/50">
+              {ab.storyP2}
+            </p>
+
+            <!-- Toolkit / Capabilities Tags -->
+            <div class="reveal-el translate-y-16 opacity-0 blur-md transition-all duration-[1.2s] ease-[cubic-bezier(0.32,0.72,0,1)] delay-400 pt-8 border-t border-white/10 mt-8">
+              <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-blue-400/80 uppercase font-sans block mb-6">
+                {ab.techCapabilities}
+              </span>
+              <div class="flex flex-wrap gap-3">
+                {rawCapabilities.map((cap) => (
+                  <div class="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-xs md:text-sm text-white/90 font-sans tracking-wide shadow-sm hover:bg-white/10 transition-colors">
+                    {cap.data.title}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+      
+    </section>
 
-        <!-- Bio Details -->
-        <div class="space-y-6">
-          <div class="space-y-2">
-            <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
-              {isAr ? "تعرف عليّ" : "GET TO KNOW ME"}
+    <!-- Reopen Light Theme Wrapper -->
+    <div class="relative z-10 w-full bg-primary-bg">
+      <article class="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 space-y-24 py-24 md:py-32">
+
+      <!-- Section 4: Values & Philosophy Block (Staggered Zig-Zag Pinned Note Roadmap Cards) -->
+      <ApproachPinnedRoadmap
+        client:visible
+        eyebrow={ab.ourApproach}
+        titlePrefix={ab.viewDataTitlePrefix}
+        titleHighlight={ab.viewDataHighlight}
+        subhead={ab.heroSubhead}
+        pillars={approachPillars}
+        lang={currentLang as 'en' | 'ar'}
+      />
+
+      </article>
+    </div>
+
+    <!-- Section 5: Experience Timeline (Edge-to-Edge Dark Layout with Curves) -->
+    <section class="relative w-full bg-[#050505] text-[#FAFAFA] py-32 md:py-48 overflow-hidden z-20 dark">
+      <!-- Ethereal Glass Glow -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+        <div class="w-[34rem] sm:w-[48rem] h-[22rem] sm:h-[28rem] rounded-full bg-blue-600/10 blur-[120px]"></div>
+      </div>
+      
+
+
+      <div class="relative z-10 space-y-16 max-w-[100rem] mx-auto w-full px-4 sm:px-8 lg:px-12">
+        <div class="flex items-center justify-center text-center">
+          <div class="space-y-4 md:space-y-6">
+            <span class="reveal-el translate-y-8 opacity-0 blur-sm transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] text-[10px] md:text-xs font-semibold tracking-[0.25em] text-blue-400/80 uppercase font-sans block drop-shadow-md">
+              {ab.historyEyebrow}
             </span>
-            <h2 class="text-3xl md:text-4xl font-bold tracking-tight font-serif text-text-main">
-              {isAr ? "كيف بدأت القصة؟" : "How the Story Began"}
+            <h2 class="reveal-el translate-y-8 opacity-0 blur-sm transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] delay-100 text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/20 pb-2 drop-shadow-xl">
+              {ab.historyTitle}
             </h2>
           </div>
-
-          <p class="text-sm text-text-main/70 font-sans leading-relaxed">
-            {isAr ? (
-              "أنا عمرو موسى، بدأت موسى لتحليل البيانات كفكرة بسيطة: مساعدة أصحاب المشاريع والمتاجر على فهم أرقامهم بدون تعقيد. كمحلل بيانات ومسوق، دوري ببساطة هو ترتيب فوضى البيانات وبناء لوحات تحكم واضحة تساعدك على اتخاذ قرارات صحيحة وتقليل الهدر الإعلاني بناءً على حقائق وأرقام حقيقية، بعيداً عن الوعود الوهمية."
-            ) : (
-              "I'm Amr Mousa, and I started Mousa Analytics with a simple idea: helping business owners understand their numbers without the headache. As an analyst and marketer, my role is simple—bringing order to data chaos and building clean dashboards that help you make better decisions and reduce ad waste based on real facts, not hollow promises."
-            )}
-          </p>
-        </div>
-      </section>
-
-      <hr class="border-t border-text-main/5" />
-
-      <!-- Section 4: Core Capabilities -->
-      <section class="space-y-8">
-        <div class="flex items-center justify-between">
-          <div class="space-y-2">
-            <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
-              {isAr ? "القدرات الفنية والتقنية" : "TECHNICAL CAPABILITIES"}
-            </span>
-            <h2 class="text-3xl md:text-4xl font-bold tracking-tight font-serif text-text-main">
-              {isAr ? "التحليل الفني والنمذجة" : "Analytical & Technical Stack"}
-            </h2>
-          </div>
-          <!-- Swipe Indicator (Mobile Only) -->
-          <div class="md:hidden flex items-center gap-1.5 text-[10px] font-bold text-text-main/60 uppercase font-sans tracking-widest">
-            <span>{isAr ? "اسحب لليمين" : "Swipe"}</span>
-            <i class={`fa-solid ${isAr ? 'fa-arrow-left' : 'fa-arrow-right'} text-[8px] animate-pulse`}></i>
-          </div>
         </div>
 
-        <div 
-          class="flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-4 md:pb-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hero-accent"
-          tabindex="0"
-          aria-label={isAr ? "القدرات الفنية والتقنية" : "Technical capabilities stack"}
-        >
-          <!-- Card 1: SQL -->
-          <div class="premium-card-global w-[85%] sm:w-[48%] md:w-auto snap-start flex-shrink-0 flex flex-col justify-between min-h-[160px]">
-            <div class="space-y-3 font-sans">
-              <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 hover:scale-105 transition-transform duration-300">
-                <i class="fa-solid fa-database text-xl" aria-hidden="true" title="SQL Database"></i>
-              </div>
-              <h3 class="text-base font-bold text-text-main font-serif">
-                {isAr ? "تنظيم قواعد البيانات" : "Database Organization"}
-              </h3>
-              <p class="text-xs text-text-main/70 leading-relaxed font-light">
-                {isAr 
-                  ? "ترتيب وتجهيز البيانات الخاصة بمشروعك لجعلها دقيقة وسهلة الاستخدام في التقارير." 
-                  : "Organizing and preparing your business data to make it accurate and easy to use in reports."}
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 2: Python -->
-          <div class="premium-card-global w-[85%] sm:w-[48%] md:w-auto snap-start flex-shrink-0 flex flex-col justify-between min-h-[160px]">
-            <div class="space-y-3 font-sans">
-              <div class="w-10 h-10 rounded-xl bg-[#3776AB]/10 flex items-center justify-center text-[#3776AB] hover:scale-105 transition-transform duration-300">
-                <i class="fa-brands fa-python text-2xl" aria-hidden="true" title="Python"></i>
-              </div>
-              <h3 class="text-base font-bold text-text-main font-serif">
-                {isAr ? "أتمتة المهام اليومية" : "Task Automation"}
-              </h3>
-              <p class="text-xs text-text-main/70 leading-relaxed font-light">
-                {isAr 
-                  ? "كتابة أكواد برمجية ذكية لتنظيف البيانات، وتوفير الوقت عن طريق أتمتة المهام المتكررة." 
-                  : "Writing smart code to clean datasets and saving time by automating repetitive daily tasks."}
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 3: Excel -->
-          <div class="premium-card-global w-[85%] sm:w-[48%] md:w-auto snap-start flex-shrink-0 flex flex-col justify-between min-h-[160px]">
-            <div class="space-y-3 font-sans">
-              <div class="w-10 h-10 rounded-xl bg-[#10793F]/10 flex items-center justify-center text-[#10793F] hover:scale-105 transition-transform duration-300">
-                <i class="fa-regular fa-file-excel text-2xl" aria-hidden="true" title="Microsoft Excel"></i>
-              </div>
-              <h3 class="text-base font-bold text-text-main font-serif">
-                {isAr ? "النماذج المالية والتحليلية" : "Financial & Analytical Models"}
-              </h3>
-              <p class="text-xs text-text-main/70 leading-relaxed font-light">
-                {isAr 
-                  ? "بناء معادلات متقدمة وتصميم نماذج مالية لمشروعك لمتابعة الأرباح والمصاريف تلقائياً." 
-                  : "Building advanced formulas and designing financial models to track profits and expenses automatically."}
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 4: Power BI -->
-          <div class="premium-card-global w-[85%] sm:w-[48%] md:w-auto snap-start flex-shrink-0 flex flex-col justify-between min-h-[160px]">
-            <div class="space-y-3 font-sans">
-              <div class="w-10 h-10 rounded-xl bg-[#F2C811]/10 flex items-center justify-center text-[#F2C811] hover:scale-105 transition-transform duration-300">
-                <svg viewBox="0 0 24 24" class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" aria-label="Power BI" role="img">
-                  <title>Power BI</title>
-                  <rect x="3" y="12" width="4" height="8" rx="0.5" />
-                  <rect x="10" y="7" width="4" height="13" rx="0.5" />
-                  <rect x="17" y="2" width="4" height="18" rx="0.5" />
-                </svg>
-              </div>
-              <h3 class="text-base font-bold text-text-main font-serif">
-                {isAr ? "لوحات البيانات التفاعلية" : "Interactive Dashboards"}
-              </h3>
-              <p class="text-xs text-text-main/70 leading-relaxed font-light">
-                {isAr 
-                  ? "بناء لوحات تحكم تفاعلية وسهلة القراءة تظهر أرقام مشروعك بوضوح لاتخاذ قرارات أسرع." 
-                  : "Building interactive, clean dashboards that show your business numbers clearly for faster decision-making."}
-              </p>
-            </div>
-          </div>
+        <div class="w-full flex justify-center pt-8 pb-12">
+          <SocialCards client:load cards={experienceCards} />
         </div>
-      </section>
+      </div>
+      
 
-      <hr class="border-t border-text-main/5" />
+    </section>
 
-      <!-- Section 5: Experience Timeline (Horizontal Scroll on Mobile) -->
-      <section class="space-y-8">
-        <div class="flex items-center justify-between">
-          <div class="space-y-2">
-            <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-hero-ice-blue uppercase font-sans">
-              {isAr ? "الخبرة العملية" : "PROFESSIONAL HISTORY"}
-            </span>
-            <h2 class="text-3xl md:text-4xl font-bold tracking-tight font-serif text-text-main">
-              {isAr ? "رحلة البناء والتعلم" : "Experience & Internships"}
-            </h2>
-          </div>
-          <!-- Swipe/Scroll Indicator -->
-          <div class="flex items-center gap-1.5 text-[10px] font-bold text-text-main/60 uppercase font-sans tracking-widest">
-            <span>{isAr ? "اسحب لليمين" : "Scroll / Swipe"}</span>
-            <i class={`fa-solid ${isAr ? 'fa-arrow-left' : 'fa-arrow-right'} text-[8px] animate-pulse`}></i>
-          </div>
-        </div>
+    <!-- Reopen Light Theme Wrapper -->
+    <div class="relative z-10 w-full bg-gradient-to-b from-[#F8F9FA] to-primary-bg">
+      <article class="w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 space-y-24 pt-24 md:pt-32">
 
-        <div 
-          class="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar pb-4 w-full px-6 -mx-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hero-accent"
-          tabindex="0"
-          aria-label={isAr ? "الخبرة العملية" : "Professional experience history timeline"}
-        >
-          <!-- Experience Card 1: NTI -->
-          <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
-            <div class="space-y-4 font-sans">
-              <!-- Top Badges -->
-              <div class="flex flex-wrap gap-2.5">
-                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[10px] md:text-xs font-bold tracking-wider uppercase whitespace-nowrap">
-                  {isAr ? "فبراير 2026 - الحاضر" : "FEB 2026 – PRESENT"}
-                </span>
-                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[10px] md:text-xs font-bold tracking-wider">
-                  {isAr ? "المعهد القومي للاتصالات" : "National Telecommunication Institute - NTI"}
-                </span>
-              </div>
-              
-              <!-- Job Title -->
-              <h3 class="text-xl md:text-2xl font-bold text-text-main font-sans mt-1">
-                {isAr ? "محلل بيانات متدرب" : "Internship Data Analyst"}
-              </h3>
 
-              <!-- Custom Bullet List -->
-              <ul class="space-y-3.5 text-[13px] md:text-sm text-text-main/80 leading-relaxed font-light mt-3">
-                {isAr ? (
-                  <>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>إتمام برنامج تدريبي مكثف وعملي بمجموع 120 ساعة يركز على ذكاء الأعمال الموجه بالبيانات ومنهجيات التحليل المتقدمة.</span>
-                    </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>بناء وتسليم أكثر من 3 مشاريع تحليلية متكاملة باستخدام Excel و Power BI و Python و SQL لتحويل البيانات الأولية إلى <a href="/services/data-analytics/" class="text-accent-primary hover:underline font-normal">رؤى تحليلية استراتيجية</a>.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>التعاون ضمن فريق عمل احترافي لتطوير النماذج التحليلية وتقديم نتائج عالية التأثير من خلال عروض تقديمية فنية متعددة.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>إظهار توازن قوي بين التحليل الفني ومنطق الأعمال، وتقديم توصيات مفيدة لدعم اتخاذ القرار القائم على البيانات.</span>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Completed a 120-hour intensive internship program focused on data-driven business intelligence and advanced analytical methodologies.</span>
-                    </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Successfully delivered 3+ end-to-end projects, utilizing Excel, Power BI, Python, and SQL to transform raw data into <a href="/en/services/data-analytics/" class="text-accent-primary hover:underline font-normal">actionable analytical insights</a>.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Collaborated within a professional team to refine analytical models and presented high-impact findings through multiple technical presentations.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Demonstrated a strong balance between technical analysis and business logic, providing meaningful recommendations for data-supported decision making.</span>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </div>
-          </div>
-
-          <!-- Experience Card 2: So Care -->
-          <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
-            <div class="space-y-4 font-sans">
-              <!-- Top Badges -->
-              <div class="flex flex-wrap gap-2.5">
-                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[10px] md:text-xs font-bold tracking-wider uppercase whitespace-nowrap">
-                  {isAr ? "يناير 2026 - الحاضر" : "JAN 2026 – PRESENT"}
-                </span>
-                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[10px] md:text-xs font-bold tracking-wider">
-                  {isAr ? "سو كير" : "So Care"}
-                </span>
-              </div>
-              
-              <!-- Job Title -->
-              <h3 class="text-xl md:text-2xl font-bold text-text-main font-sans mt-1">
-                {isAr ? "ميديا باير و كونتنت ديفوليبمنت" : "Media Buyer | Content Developer"}
-              </h3>
-
-              <!-- Custom Bullet List -->
-              <ul class="space-y-3.5 text-[13px] md:text-sm text-text-main/80 leading-relaxed font-light mt-3">
-                {isAr ? (
-                  <>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>إدارة وتحسين حملات <a href="/services/marketing-strategy/" class="text-accent-primary hover:underline font-normal">تسويق الأداء المدفوع</a> المتعددة ذات التحويلات العالية، وتحقيق زيادة استثنائية بنسبة +250% في إجمالي العوائد.</span>
-                    </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>تطوير استراتيجية محتوى متكاملة نتج عنها إنتاج أكثر من 30 قالباً إعلانياً مخصصاً وأفكار مقاطع مرئية (Reels) مصممة لتحقيق أقصى قدر من التفاعل.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>سد الفجوة بين شراء الإعلانات والتنفيذ الإبداعي من خلال تطوير محتوى استراتيجي يتماشى تماماً مع أهداف أداء الحملة.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>قيادة التخطيط الاستراتيجي وتجهيز الأصول الإبداعية لحملة إطلاق موقع إلكتروني واسع النطاق قادم لدعم التوسع الرقمي.</span>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Orchestrated and optimized multiple high-conversion <a href="/en/services/marketing-strategy/" class="text-accent-primary hover:underline font-normal">performance marketing campaigns</a>, achieving a remarkable +250% increase in total revenue.</span>
-                    </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Engineered a comprehensive content strategy, resulting in the production of 30+ custom designs and creative reel concepts tailored for maximum engagement.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Bridged the gap between media buying and creative execution by developing strategic content that directly aligns with campaign performance goals.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Currently spearheading the strategic planning and asset preparation for an upcoming large-scale website launch campaign to drive digital scale.</span>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </div>
-          </div>
-
-          <!-- Experience Card 3: DEPI -->
-          <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
-            <div class="space-y-4 font-sans">
-              <!-- Top Badges -->
-              <div class="flex flex-wrap gap-2.5">
-                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[10px] md:text-xs font-bold tracking-wider uppercase whitespace-nowrap">
-                  {isAr ? "يوليو 2025 - ديسمبر 2025" : "JUL 2025 – DEC 2025"}
-                </span>
-                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[10px] md:text-xs font-bold tracking-wider">
-                  {isAr ? "رواد مصر الرقمية" : "Digital Egypt Pioneers Initiative - DEPI"}
-                </span>
-              </div>
-              
-              <!-- Job Title -->
-              <h3 class="text-xl md:text-2xl font-bold text-text-main font-sans mt-1">
-                {isAr ? "متدرب تسويق رقمي" : "Internship Digital Marketing"}
-              </h3>
-
-              <!-- Custom Bullet List -->
-              <ul class="space-y-3.5 text-[13px] md:text-sm text-text-main/80 leading-relaxed font-light mt-3">
-                {isAr ? (
-                  <>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>إتمام برنامج تدريبي مكثف بمجموع 400 ساعة متخصصة في منهجيات التسويق الرقمي المتقدمة واستراتيجيات SOSTAC®.</span>
-                    </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>إعداد عمليات تدقيق تسويقية شاملة واستراتيجيات تحسين النمو لعلامات تجارية متعددة، وتحديد عقبات التحويل وفرص اختراق السوق.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>تخطيط وإطلاق حملات إعلانية مدفوعة عبر منصات متعددة، باستخدام رسم خرائط الميزانية وتحديد شخصية العميل عبر Meta و TikTok و LinkedIn و Snapchat.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>تطبيق ممارسات تهيئة محركات البحث (SEO)، وإجراء تحسينات على الصفحات الرئيسية والمشاريع التسويقية للعلامات التجارية التقنية لزيادة المبيعات والبحث.</span>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Completed a 400-hour intensive professional training program specializing in advanced digital marketing methodologies and SOSTAC® strategy.</span>
-                    </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Developed comprehensive marketing audits and growth optimization strategies for multiple brands, identifying key conversion blockages and market penetration.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Executed multi-platform paid campaign builds, utilizing budget and audience persona mapping to launch targeted campaigns across Meta, TikTok, LinkedIn, Snapchat.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Implemented SEO best practices, conducting key page edits and marketing project for technology/hardware brands to drive search and sales growth.</span>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </div>
-          </div>
-
-          <!-- Experience Card 4: Oxygen Gym -->
-          <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
-            <div class="space-y-4 font-sans">
-              <!-- Top Badges -->
-              <div class="flex flex-wrap gap-2.5">
-                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[10px] md:text-xs font-bold tracking-wider uppercase whitespace-nowrap">
-                  {isAr ? "يناير 2025 - مايو 2025" : "JAN 2025 – MAY 2025"}
-                </span>
-                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[10px] md:text-xs font-bold tracking-wider">
-                  {isAr ? "أوكسجين جيم" : "Oxygen Gym"}
-                </span>
-              </div>
-              
-              <!-- Job Title -->
-              <h3 class="text-xl md:text-2xl font-bold text-text-main font-sans mt-1">
-                {isAr ? "محلل بيانات - البيانات المالية والإدارية (عمل حر)" : "Data Analyst – Financial & Administrative Data (Freelance)"}
-              </h3>
-
-              <!-- Custom Bullet List -->
-              <ul class="space-y-3.5 text-[13px] md:text-sm text-text-main/80 leading-relaxed font-light mt-3">
-                {isAr ? (
-                  <>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>قيادة التحول الرقمي لمجموعة بيانات قديمة تغطي 5 سنوات، ونقل السجلات اليدوية إلى قاعدة بيانات إكسل منظمة وتدريب الموظفين على بروتوكولات إدخال البيانات الرقمية.</span>
-                    </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>تصميم وتطبيق نموذج بيانات قوي (Star Schema) في Power BI، وتحويل البيانات الأولية إلى لوحات مؤشرات تفاعلية (كما هو موضح في <a href="/projects/oxygen-gym/" class="text-accent-primary hover:underline font-normal">دراسة حالة أوكسجين جيم</a>).</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>إجراء تحليل عميق للاشتراكات والنفقات، وكشف أن تدابير خفض التكاليف الصارمة كانت تقمع الإيرادات والنمو بشكل غير مقصود.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>تقديم توصيات استراتيجية قائمة على البيانات ساهمت في تحويل العمليات التجارية، مما أدى إلى زيادة موثقة بنسبة +25% في المبيعات السنوية خلال العام الأول.</span>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Spearheaded the digital transformation of a 5-year legacy dataset, migrating manual records into a structured Excel database and training staff on digital data entry protocols.</span>
-                    </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Architected and implemented a robust Star Schema data model in Power BI, detailed in the <a href="/en/projects/oxygen-gym/" class="text-accent-primary hover:underline font-normal">Oxygen Gym case study</a>, to transform operational data into interactive dashboards.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Conducted deep-dive analysis into subscriptions and expenditures, uncovering that aggressive cost-cutting measures were inadvertently suppressing revenue and growth.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Delivered data-driven strategic recommendations that pivoted business operations, resulting in a documented +25% increase in annual sales within the first year.</span>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </div>
-          </div>
-
-          <!-- Experience Card 5: Iris Communications -->
-          <div class="premium-card-global w-[76vw] md:w-[460px] lg:w-[500px] snap-start flex-shrink-0 p-6 md:p-10 flex flex-col justify-between">
-            <div class="space-y-4 font-sans">
-              <!-- Top Badges -->
-              <div class="flex flex-wrap gap-2.5">
-                <span class="px-3.5 py-1 rounded-full bg-text-main/5 text-text-main/60 text-[10px] md:text-xs font-bold tracking-wider uppercase whitespace-nowrap">
-                  {isAr ? "أغسطس 2024 - نوفمبر 2024" : "AUG 2024 – NOV 2024"}
-                </span>
-                <span class="px-3.5 py-1 rounded-full bg-hero-ice-blue/10 text-hero-ice-blue text-[10px] md:text-xs font-bold tracking-wider">
-                  {isAr ? "آيريس للاتصالات" : "Iris Communications"}
-                </span>
-              </div>
-              
-              <!-- Job Title -->
-              <h3 class="text-xl md:text-2xl font-bold text-text-main font-sans mt-1">
-                {isAr ? "محلل بيانات - تحليل المنافسين" : "Data Analyst – Competitor Analysis"}
-              </h3>
-
-              <!-- Custom Bullet List -->
-              <ul class="space-y-3.5 text-[13px] md:text-sm text-text-main/80 leading-relaxed font-light mt-3">
-                {isAr ? (
-                  <>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>إجراء مقارنة معيارية شاملة للمنافسين لصالح شركة آيريس للاتصالات، مع إجراء تحليل عميق لأداء وسائل التواصل الاجتماعي والتواجد الرقمي.</span>
-                    </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>إجراء تحليل SWOT للاعبين الرئيسيين في السوق، وتحديد نقاط القوة والضعف الاستراتيجية والتكتيكات التسويقية الأساسية لدعم اتخاذ القرار الداخلي.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>قياس مؤشرات تفاعل الجمهور عبر منصات متعددة، وتقديم رؤى مقارنة حول مدى وصول المنافسين ونمو مجتمعاتهم الرقمية.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>تطوير نظام تصنيف شامل وخارطة طريق استراتيجية، مع وضع أهداف أداء للوصول إلى ريادة السوق في التفاعل الرقمي.</span>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Conducted extensive competitor benchmarking for Iris Communications, performing deep-dive analysis into social media performance and digital presence.</span>
-                    </li>
-                    <li class="flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Executed SWOT analysis for key market players, identifying strategic strengths, weaknesses, and core marketing tactics to inform internal decision-making.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Quantified audience engagement metrics across multiple platforms, providing comparative insights into competitor reach and community growth.</span>
-                    </li>
-                    <li class="hidden md:flex gap-2.5 items-start">
-                      <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-hero-ice-blue shrink-0 mt-1.5 md:mt-2" aria-hidden="true"></span>
-                      <span>Developed a comprehensive ranking system and strategic roadmap, establishing performance targets for market-leading digital engagement.</span>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <hr class="border-t border-text-main/5" />
-
-      <!-- Section 6: Action CTA Block (Deploy the Engine) -->
-      <section class="max-w-2xl mx-auto text-center space-y-6 pb-12 font-sans">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tight font-serif text-text-main leading-tight">
-          {isAr ? "جاهز لزيادة مبيعاتك؟" : "Ready to grow your sales?"}
-        </h2>
-        <p class="text-sm text-text-main/70 max-w-lg mx-auto leading-relaxed">
-          {isAr 
-            ? "دعنا نناقش كيف نساعدك في فهم أرقامك بوضوح لزيادة أرباحك وتقليل مصاريف إعلاناتك."
-            : "Let's discuss how we can help you understand your numbers clearly to increase profits and reduce ad waste."}
-        </p>
-        <div class="pt-4 flex items-center justify-center">
-          <a 
-            href={isAr ? "/#contact" : "/en/#contact"}
-            class="h-11 px-8 rounded-full bg-hero-ice-blue hover:bg-hero-ice-blue-hover text-white text-[11px] font-bold uppercase tracking-wider flex items-center justify-center transition-all duration-300 min-w-[200px]"
-          >
-            <span>{isAr ? "ابدأ الآن" : "Get Started"}</span>
-          </a>
-        </div>
-      </section>
+      <!-- Section 6: Action CTA Block (Ready to grow sales cinematic component) -->
+      <ReadyCtaCinematic
+        client:visible
+        headline={ab.readyHeadline}
+        subhead={ab.heroSubhead}
+        buttonText={ab.getStarted}
+        targetUrl={currentLang === 'ar' ? "/#contact" : "/en/#contact"}
+        lang={currentLang as 'en' | 'ar'}
+      />
 
     </article>
+    </div>
   </main>
 
-  <Footer lang={currentLang} />
+  <Footer lang={currentLang === 'en' ? 'en' : 'ar'} />
+
+  <style is:inline>
+    /* Cursor blink keyframe for typewriter */
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    /* Accent line reveal animation */
+    .about-accent-line.is-visible {
+      animation: accent-line-grow 1.2s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+    @keyframes accent-line-grow {
+      from { width: 0; }
+      to { width: 120px; }
+    }
+    @media (min-width: 768px) {
+      @keyframes accent-line-grow {
+        from { width: 0; }
+        to { width: 180px; }
+      }
+    }
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .about-typewriter-cursor { animation: none !important; opacity: 1; }
+      .about-accent-line.is-visible { animation: none !important; width: 120px; }
+    }
+  </style>
+
+  <script is:inline>
+    const initReveal = () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('translate-y-16', 'translate-y-12', 'translate-y-24', 'opacity-0', 'blur-md', 'blur-sm', 'blur-lg');
+            entry.target.classList.add('translate-y-0', 'opacity-100', 'blur-0');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -100px 0px' });
+      
+      document.querySelectorAll('.reveal-el').forEach((el) => {
+        observer.observe(el);
+      });
+    };
+
+    /* Typewriter effect for the tagline */
+    const initTypewriter = () => {
+      const el = document.querySelector('.about-typewriter');
+      if (!el) return;
+      const fullText = el.getAttribute('data-full-text') || '';
+      const textSpan = el.querySelector('.about-typewriter-text');
+      const cursorSpan = el.querySelector('.about-typewriter-cursor');
+      if (!textSpan || !fullText) return;
+
+      let started = false;
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReduced) {
+        textSpan.textContent = fullText;
+        if (cursorSpan) cursorSpan.style.display = 'none';
+        return;
+      }
+
+      const typewriterObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !started) {
+            started = true;
+            typewriterObserver.unobserve(entry.target);
+            let i = 0;
+            const speed = 35; // ms per character
+            const type = () => {
+              if (i <= fullText.length) {
+                textSpan.textContent = fullText.slice(0, i);
+                i++;
+                setTimeout(type, speed);
+              } else {
+                // Hide cursor after typing finishes (with a brief pause)
+                setTimeout(() => {
+                  if (cursorSpan) {
+                    cursorSpan.style.transition = 'opacity 0.6s ease';
+                    cursorSpan.style.opacity = '0';
+                  }
+                }, 800);
+              }
+            };
+            // Small delay before starting to type
+            setTimeout(type, 600);
+          }
+        });
+      }, { rootMargin: '0px 0px -50px 0px' });
+
+      typewriterObserver.observe(el);
+    };
+
+    /* Accent line width animation */
+    const initAccentLine = () => {
+      const line = document.querySelector('.about-accent-line');
+      if (!line) return;
+      const lineObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            line.classList.add('is-visible');
+            lineObserver.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -50px 0px' });
+      lineObserver.observe(line);
+    };
+
+    const initAll = () => {
+      initReveal();
+      initTypewriter();
+      initAccentLine();
+    };
+
+    document.addEventListener('astro:page-load', initAll);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
+    }
+  </script>
 </Layout>

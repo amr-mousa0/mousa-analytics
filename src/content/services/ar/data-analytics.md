@@ -5,7 +5,7 @@ icon: "chart-line"
 priority: 1
 category: "Data Analytics"
 tags: ["analytics", "powerbi", "sql"]
-coverImage: ../../../assets/images/power bi.png
+coverImage: "/images/services/data-analytics.png"
 execSummaryText: "بلاش تاخد قرارات في الضلمة أو تعتمد على الإحساس والفهلوة. هحولك أرقام شركتك وقواعد البيانات المتلخبطة لداشبورد Power BI تفاعلي وسهل، يوريك كل تفصيلة في ثانية، ويطلعلك الأرباح والخسائر وساعات الذروة عشان تاخد قرارك الصح وأنت مطمن وتزود مبيعاتك."
 scopeItems:
   - title: "لوحات مبيعات ومؤشرات أداء تفاعلية"

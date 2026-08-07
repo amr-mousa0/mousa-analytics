@@ -1,0 +1,51 @@
+/* ==========================================================================
+   Motion Design System — Entrance Animations
+   Governed by MOTION.md & Constitution Article 34
+   ========================================================================== */
+
+@keyframes motion-enter-fade-keyframe {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-enter-up-keyframe {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-translate-sm), 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes motion-enter-down-keyframe {
+  from {
+    opacity: 0;
+    transform: translate3d(0, calc(-1 * var(--motion-translate-sm)), 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.motion-enter-fade {
+  animation: motion-enter-fade-keyframe var(--motion-duration-slow) var(--motion-easing-standard) both;
+}
+
+.motion-enter-up {
+  animation: motion-enter-up-keyframe var(--motion-duration-slow) var(--motion-easing-standard) both;
+}
+
+.motion-enter-down {
+  animation: motion-enter-down-keyframe var(--motion-duration-slow) var(--motion-easing-standard) both;
+}
+
+.motion-stagger {
+  animation-delay: calc(var(--motion-stagger-step) * var(--stagger-index, 0));
+}

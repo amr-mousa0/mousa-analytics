@@ -1,5 +1,6 @@
-import { getCollection } from 'astro:content';
+import { ContentFacade } from '../lib/content/facade.js';
 import { PublishWorker } from '../lib/workers/publishWorker.js';
+import { formatCardDescription } from '../lib/utils/descriptionFormatter.js';
 
 export interface ExtendedProjectData {
   title: string;
@@ -48,9 +49,15 @@ export async function getSafeProjects(lang: string): Promise<ExtendedProject[]> 
   try {
     let allProjects: ExtendedProject[] = [];
     try {
-      const fileCollection = await getCollection('projects');
+      const fileCollection = await ContentFacade.getProjects({ includeDrafts: true });
       if (fileCollection) {
-        allProjects = fileCollection.map(p => ({ ...p } as ExtendedProject));
+        allProjects = fileCollection.map((p: any) => ({
+          ...p,
+          data: {
+            ...p.data,
+            problemText: formatCardDescription(p.data?.problemText || '')
+          }
+        } as ExtendedProject));
       }
     } catch (e) {
       console.warn('[Defensive Rendering] Warning fetching static project collection:', e);
@@ -63,7 +70,8 @@ export async function getSafeProjects(lang: string): Promise<ExtendedProject[]> 
       const exists = allProjects.some(p => p.slug === slug || p.slug.endsWith(`/${model.projectId}`));
       if (!exists) {
         const title = lang === 'ar' ? (model.titleAr || model.title) : model.title;
-        const problemText = lang === 'ar' ? (model.problemAr || model.problem || model.description) : (model.problem || model.description);
+        const rawProblem = lang === 'ar' ? (model.problemAr || model.problem || model.description) : (model.problem || model.description);
+        const problemText = formatCardDescription(rawProblem);
         const solutionText = lang === 'ar' ? (model.solutionAr || model.solution || model.description) : (model.solution || model.description);
         const impactText = lang === 'ar' ? (model.businessValueAr || model.businessValue || model.description) : (model.businessValue || model.description);
 

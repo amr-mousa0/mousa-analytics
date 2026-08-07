@@ -2,6 +2,8 @@
 import { getSafeSeo } from '../scripts/seoHelper';
 import { ClientRouter } from 'astro:transitions';
 import Preloader from '../components/ui/Preloader.astro';
+import { getLocaleDirectionContext } from '../lib/i18n/direction';
+import { BRAND_CONSTANTS } from '../lib/constants/brand.constants';
 import '../styles/global.css';
 
 interface Props {
@@ -36,8 +38,11 @@ const {
   preloadImageDesktop
 } = Astro.props;
 
+const dirContext = getLocaleDirectionContext(lang);
+const defaultBrandName = dirContext.isRtl ? BRAND_CONSTANTS.PRIMARY_BRAND_AR : BRAND_CONSTANTS.PRIMARY_BRAND_EN;
+
 const fallbackSeo = (pageId.startsWith('service-') || pageId.startsWith('project-') || pageId.startsWith('blog-')) ? {} : (await getSafeSeo(lang, pageId).catch(() => ({}))) as Record<string, any>;
-const seoTitle = title || fallbackSeo.title || "Amr Mousa";
+const seoTitle = title || fallbackSeo.title || defaultBrandName;
 const seoDescription = description || fallbackSeo.description || "";
 const seoKeywords = fallbackSeo.keywords || [];
 const rawOgImage = ogImage || fallbackSeo.ogImage || '/images/og-image.png';
@@ -114,8 +119,8 @@ if (pageId === 'homepage') {
     "@type": "WebSite",
     "@id": new URL(`${langPath}#website`, Astro.site).href,
     "url": new URL(`${langPath}`, Astro.site).href,
-    "name": lang === 'ar' ? 'موسى لتحليل البيانات' : 'Mousa Analytics',
-    "alternateName": ["Mousa Analytics", "موسى لتحليل البيانات"],
+    "name": defaultBrandName,
+    "alternateName": [BRAND_CONSTANTS.PRIMARY_BRAND_EN, BRAND_CONSTANTS.PRIMARY_BRAND_AR],
     "description": lang === 'ar' ? 'تحليلات وحلول الأعمال المتقدمة' : 'Advanced Analytics & Business Solutions',
     "inLanguage": lang
   });
@@ -126,7 +131,7 @@ graph.push({
   "@type": "ProfessionalService",
   "@id": new URL(`${langPath}#organization`, Astro.site).href,
   "url": new URL(`${langPath}`, Astro.site).href,
-  "name": lang === 'ar' ? 'موسى لتحليل البيانات' : 'Mousa Analytics',
+  "name": defaultBrandName,
   "logo": {
     "@type": "ImageObject",
     "url": new URL('favicon-192x192.png', Astro.site).href
@@ -220,28 +225,11 @@ const breadcrumbSchema = breadcrumbs.length > 1 ? {
 ---
 
 <!doctype html>
-<html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'} class="scroll-smooth">
+<html lang={dirContext.htmlLang} dir={dirContext.htmlDir} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
-    
-    <!-- Google Fonts and Preloads (English only to save connection/bandwidth overhead on Arabic) -->
-    {lang === 'en' && (
-      <>
-        <link rel="preload" href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-        <link rel="preload" href="https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap" media="print" onload="this.setAttribute('media', 'all')" />
-        <noscript>
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;700&display=swap" />
-        </noscript>
-      </>
-    )}
-    
-    <!-- Load FontAwesome only on subpages to avoid performance bottlenecks on critical homepage landings -->
-    {pageId !== 'homepage' && (
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    )}
 
     {preloadImageMobile && <link rel="preload" href={preloadImageMobile} as="image" fetchpriority="high" media="(max-width: 767px)" />}
     {preloadImageDesktop && <link rel="preload" href={preloadImageDesktop} as="image" fetchpriority="high" media="(min-width: 768px)" />}
@@ -257,10 +245,10 @@ const breadcrumbSchema = breadcrumbs.length > 1 ? {
     <!-- Server-rendered page context metadata block for GTM/analytics -->
     <script id="page-metadata" type="application/json" is:inline set:html={JSON.stringify(pageContext).replace(/</g, '\\u003c')} />
 
-    <!-- Global Structured Data (Organization, Person, WebSite) (T005 & T006) -->
+    <!-- Global Structured Data (Organization, Person, WebSite) -->
     <script type="application/ld+json" is:inline set:html={JSON.stringify(schemaGraph).replace(/</g, '\\u003c')} />
 
-    <!-- Breadcrumbs Structured Data (T007) -->
+    <!-- Breadcrumbs Structured Data -->
     {breadcrumbSchema && (
       <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c')} />
     )}
@@ -299,15 +287,15 @@ const breadcrumbSchema = breadcrumbs.length > 1 ? {
       })} />
     )}
     
-    <!-- Alternate hreflang tags for multilingual SEO (T004) -->
+    <!-- Alternate hreflang tags for multilingual SEO -->
     {hreflangEn && <link rel="alternate" hreflang="en" href={hreflangEn} />}
     {hreflangAr && <link rel="alternate" hreflang="ar" href={hreflangAr} />}
     {hreflangDefault && <link rel="alternate" hreflang="x-default" href={hreflangDefault} />}
     
     <!-- Search Branding & Site Name Signals -->
-    <meta property="og:site_name" content={lang === 'ar' ? 'موسى لتحليل البيانات' : 'Mousa Analytics'} />
-    <meta name="application-name" content={lang === 'ar' ? 'موسى لتحليل البيانات' : 'Mousa Analytics'} />
-    <meta name="apple-mobile-web-app-title" content={lang === 'ar' ? 'موسى لتحليل البيانات' : 'Mousa Analytics'} />
+    <meta property="og:site_name" content={defaultBrandName} />
+    <meta name="application-name" content={defaultBrandName} />
+    <meta name="apple-mobile-web-app-title" content={defaultBrandName} />
 
     <!-- Open Graph Metadata -->
     <meta property="og:title" content={seoTitle} />
@@ -345,7 +333,7 @@ const breadcrumbSchema = breadcrumbs.length > 1 ? {
     </script>
     <ClientRouter />
   </head>
-  <body class="bg-primary-bg text-text-main selection:bg-accent-primary selection:text-white m-0 p-0 pb-20 md:pb-0 antialiased overflow-x-hidden min-h-screen flex flex-col">
+  <body class="bg-primary-bg text-text-main selection:bg-accent-primary selection:text-white m-0 p-0 antialiased overflow-x-hidden min-h-screen flex flex-col">
     <!-- Google Tag Manager (noscript) -->
     {gtmId && (
       <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}

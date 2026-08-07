@@ -18,7 +18,7 @@ test.describe('Locale Redirection & Routing', () => {
     await page.goto('/');
     // Check that we stay at root /
     await expect(page).toHaveURL('/');
-    await expect(page.locator('main h1')).toContainText('الرؤية');
+    await expect(page.locator('main h1')).toContainText('موسى');
   });
 
   test('redirects invalid locale to /', async ({ page }) => {
@@ -36,8 +36,8 @@ test.describe('Locale Redirection & Routing', () => {
     await arToggle.click();
     
     await expect(page).toHaveURL('/');
-    // Main heading should contain Arabic greeting or content
-    await expect(page.locator('main h1')).toContainText('الرؤية');
+    // Main heading should contain Arabic brand content
+    await expect(page.locator('main h1')).toContainText('موسى');
   });
 
   test('navigates to about page and switch languages', async ({ page, isMobile }) => {

@@ -1,10 +1,15 @@
 ---
 import { getImage } from 'astro:assets';
-import { getEntry } from 'astro:content';
 import analyticsBgImgDesktop from '../../assets/images/analyst-side-bg-desktop.png';
 import analyticsBgImgMobile from '../../assets/images/analyst-side-bg-mobile.png';
-import { getSafeSocials } from '../../scripts/socialsHelper';
+import powerBiImg from '../../assets/images/power bi.png';
+import mediaBuyingImg from '../../assets/images/media-buying.jpg';
+import crmImg from '../../assets/images/Crm.png';
+import portfolioImg from '../../assets/images/Portfolio.jpeg';
+import amrMousaAvatar from '../../assets/images/amr-mousa.webp';
 import Icon from '../ui/Icon.astro';
+import { useTranslations } from '../../i18n/index.js';
+import { ContentFacade } from '../../lib/content/facade.js';
 
 interface Props {
   lang: string;
@@ -14,35 +19,30 @@ interface Props {
 
 const { lang, desktopImg: propDesktopImg, mobileImg: propMobileImg } = Astro.props;
 const isAr = lang === 'ar';
+const t = useTranslations(lang);
 
-const socials = await getSafeSocials(lang);
+const socials = await ContentFacade.getSocials(lang as 'en' | 'ar');
 
-// Fetch localized hero data dynamically without hardcoding
-const heroEntry = await getEntry('hero', lang);
+// Fetch localized hero data dynamically via ContentFacade (Single Source of Truth)
+const heroEntry = await ContentFacade.getHeroEntry(lang as 'en' | 'ar');
 const heroData = heroEntry?.data || {
-  title: isAr ? "البيانات، التسويق، وأنظمة الأعمال... بسطناها." : "Data, Marketing & Business Systems. Simplified.",
-  bio: isAr ? "المنظومة الموحدة لتتبع البيانات وإدارة الحملات لتحقيق نمو قابل للتنبؤ." : "The unified analytics system to track metrics and scale ad campaigns for predictable business growth.",
-  primaryBtn: isAr ? "ناقش استراتيجيتك" : "Discuss Your Strategy",
-  secondaryBtn: isAr ? "استكشف الخدمات" : "Explore Services",
-  trendingLabel: isAr ? "ضمانات الخدمة:" : "Service Guarantees:",
-  trendingItems: isAr ? "بيانات آمنة • شفافية كاملة • تسليم دقيق" : "Secure Data • Full Transparency • On-Time Delivery"
+  title: t.hero.headline,
+  bio: t.hero.subheadline,
+  primaryBtn: t.hero.primaryCta,
+  secondaryBtn: t.hero.secondaryCta,
+  trendingLabel: t.hero.guaranteesLabel,
+  trendingItems: `${t.hero.trustCard0} • ${t.hero.trustCard1} • ${t.hero.trustCard2}`
 };
 
 // Fallback to build-time optimization if not passed as props (defensive design)
 const desktopImg = propDesktopImg || (await getImage({ src: analyticsBgImgDesktop, quality: 85, format: 'webp' }));
 const mobileImg = propMobileImg || (await getImage({ src: analyticsBgImgMobile, quality: 80, format: 'webp' }));
 
-// Parse trending items into individual pills
-const trendingPills = heroData.trendingItems.split('•').map((s: string) => s.trim()).filter(Boolean);
-
-// Icons for each trending service pill (mapped by index)
-const pillIcons = ['fa-solid fa-shield-halved', 'fa-solid fa-eye', 'fa-solid fa-calendar-check'];
-
 // Dynamically highlight key terms for title B2B aesthetics
 const highlightTitle = (text: string) => {
   let highlighted = text
     .replace(/\bSimplified\.\b/gi, '<span class="text-accent-primary italic font-medium">Simplified.</span>')
-    .replace(/بسطناها/g, '<span class="text-accent-primary italic font-medium">بسطناها</span>');
+    .replace(/بسطناها/g, '<span class="text-accent-primary font-medium">بسطناها</span>');
 
   return highlighted;
 };
@@ -56,7 +56,7 @@ const highlightText = (text: string) => {
   }
 
   let highlighted = text
-    .replace(/\bsmart decisions\b/gi, '<span class="font-serif italic font-medium text-accent-primary">smart decisions</span>')
+    .replace(/\bsmart decisions\b/gi, '<span class="italic font-medium text-accent-primary">smart decisions</span>')
     .replace(/\breal profit\b/gi, '<span class="text-text-main font-medium underline decoration-accent-primary/50 decoration-2 underline-offset-4">real profit</span>');
 
   return highlighted;
@@ -125,7 +125,7 @@ const highlightText = (text: string) => {
 
       <h1 
         class:list={[
-          "text-[clamp(1.7rem,4.2vw,2.65rem)] leading-[1.2] font-serif text-text-main max-w-xl drop-shadow-sm",
+          "text-[clamp(1.7rem,4.2vw,2.65rem)] leading-snug text-text-main max-w-xl drop-shadow-sm",
           isAr ? "font-medium tracking-normal" : "font-semibold tracking-tight"
         ]}
         set:html={highlightTitle(heroData.title)}
@@ -133,7 +133,7 @@ const highlightText = (text: string) => {
 
       <p 
         class:list={[
-          "text-[13px] md:text-[15px] text-text-main/70 leading-relaxed font-sans max-w-lg font-light",
+          "w-full text-[13px] md:text-[15px] text-text-main/70 leading-relaxed font-sans font-light text-center",
           isAr ? "tracking-normal" : "tracking-wide"
         ]}
         set:html={highlightText(heroData.bio)}
@@ -173,57 +173,108 @@ const highlightText = (text: string) => {
   </div>
 </section>
 
-<!-- Trust Cards Section (Placed below the first fold so the user has to scroll to see them) -->
-<div class="w-full bg-primary-bg border-b border-text-main/5 py-12 md:py-16 relative z-10 select-none">
-  <div class="w-full max-w-4xl mx-auto px-6 flex flex-col items-center gap-3 md:gap-4">
-    <!-- Label -->
-    <span class:list={[
-      "text-[9px] md:text-[10px] font-semibold uppercase text-text-main/60 font-sans tracking-widest",
-      isAr ? "tracking-normal" : "tracking-[0.16em]"
-    ]}>
-      {heroData.trendingLabel}
-    </span>
-    
-    <!-- Cards Grid -->
-    <div class="grid grid-cols-3 gap-2 md:gap-4 w-full px-3 md:px-0">
-      {trendingPills.map((pill: string, i: number) => {
-        // Dynamic subtitles
-        let subtitle = "";
-        if (isAr) {
-          if (i === 0) subtitle = "تشفير كامل وحماية تامة لخصوصية حساباتك.";
-          else if (i === 1) subtitle = "وصول كامل للتقارير والمنصات بدون أي حجب.";
-          else if (i === 2) subtitle = "التزام صارم بالخطط الزمنية المتفق عليها.";
-        } else {
-          if (i === 0) subtitle = "Full encryption & complete account privacy.";
-          else if (i === 1) subtitle = "Transparent direct access to reports & data.";
-          else if (i === 2) subtitle = "Strict commitment to agreed project schedules.";
-        }
+<!-- 2. Floating Visual Collage (Replaces old trust cards section) -->
+<section class="w-full relative overflow-hidden bg-primary-bg py-10 sm:py-18 md:py-28 border-b border-text-main/5 select-none min-h-[500px] sm:min-h-[640px] md:min-h-[850px] flex items-center justify-center">
+  <!-- Background Ambient Radial Glow -->
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.06)_0%,transparent_70%)] pointer-events-none" aria-hidden="true"></div>
 
-        return (
-          <div class="trust-card group glass-card glass-card-hover rounded-xl p-2 md:p-3.5 flex flex-col md:flex-row items-center gap-1.5 md:gap-3" style={`animation-delay: ${i * 120}ms`}>
-            <!-- Circular Icon Container -->
-            <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-accent-primary/10 flex items-center justify-center shrink-0 text-accent-primary transition-colors duration-300 group-hover:bg-accent-primary/20 group-hover:scale-105">
-              <Icon name={pillIcons[i] || 'circle-check'} class="w-3.5 h-3.5" />
-            </div>
-            
-            <!-- Text content container -->
-            <div class="flex flex-col text-center md:text-start gap-0.5">
-              <!-- Title -->
-              <h2 class="text-[9px] sm:text-[10px] md:text-xs font-bold font-serif text-text-main group-hover:text-accent-primary transition-colors duration-300 leading-tight whitespace-nowrap">
-                {pill}
-              </h2>
-              
-              <!-- Description (Hidden on mobile for ultra-clean look) -->
-              <p class="hidden md:block text-[9px] md:text-[10px] text-text-main/75 font-sans font-light leading-snug">
-                {subtitle}
-              </p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
+  <!-- Central Anchor Title -->
+  <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
+    <h2 class="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-text-main tracking-tighter leading-tight drop-shadow-md whitespace-pre-line select-none">
+      {t.hero.collageTitle}
+    </h2>
   </div>
-</div>
+
+  <!-- Perfectly Balanced Floating Canvas Layout -->
+  <div class="relative z-10 w-full max-w-[1400px] mx-auto min-h-[480px] sm:min-h-[620px] md:min-h-[830px]">
+    
+    <!-- 1. Top-Left: Image Card with CAPI Glass Overlay -->
+    <div class="absolute rounded-2xl sm:rounded-3xl overflow-hidden bg-hero-card/85 backdrop-blur-xl border border-text-main/15 shadow-xl sm:shadow-2xl transition-transform duration-500 hover:scale-105" 
+         style="left: 4.5%; top: 4%; width: clamp(130px, 24vw, 340px); height: clamp(95px, 17vw, 250px); z-index: 5;">
+      <img src={powerBiImg.src} alt="" class="w-full h-full object-cover opacity-90" />
+      <div class="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 bg-hero-card/90 backdrop-blur-2xl border border-text-main/15 rounded-xl sm:rounded-2xl p-1.5 sm:p-3 shadow-lg">
+        <div class="flex justify-between items-center mb-1">
+          <span class="font-mono text-[7px] sm:text-[9px] text-text-main font-bold uppercase tracking-wider truncate">{t.hero.collageTagCapi}</span>
+          <span class="font-mono text-[7px] sm:text-[9px] text-accent-primary font-bold shrink-0">99.4%</span>
+        </div>
+        <div class="w-full bg-text-main/10 rounded-full h-1 sm:h-1.5 overflow-hidden">
+          <div class="bg-accent-primary w-[99.4%] h-full rounded-full"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Top-Right: Image Card with Chart Icon -->
+    <div class="absolute rounded-2xl sm:rounded-3xl overflow-hidden bg-hero-card/85 backdrop-blur-xl border border-text-main/15 shadow-xl sm:shadow-2xl transition-transform duration-500 hover:scale-105" 
+         style="right: 4.5%; top: 5%; width: clamp(125px, 22vw, 310px); height: clamp(125px, 23vw, 330px); z-index: 5;">
+      <img src={mediaBuyingImg.src} alt="" class="w-full h-full object-cover opacity-90" />
+      <div class="absolute top-2 right-2 sm:top-3 sm:right-3 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-hero-card/80 backdrop-blur-md border border-text-main/20 flex items-center justify-center shadow-sm text-accent-primary">
+        <Icon name="chart-line" class="w-3 h-3 sm:w-4 sm:h-4" />
+      </div>
+      <div class="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 bg-hero-card/90 backdrop-blur-xl border border-text-main/15 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full shadow-sm text-center">
+        <span class="font-mono text-[7px] sm:text-[9px] font-bold text-text-main uppercase tracking-wider truncate block">{t.hero.collageTagRoas}</span>
+      </div>
+    </div>
+
+    <!-- 3. Mid-Left: Floating Glass Auto-Sync Switch -->
+    <div class="absolute rounded-xl sm:rounded-2xl overflow-hidden bg-hero-card/90 backdrop-blur-2xl border border-text-main/20 shadow-xl p-2 sm:p-3.5 flex flex-col gap-1 sm:gap-2.5 transition-transform duration-500 hover:scale-105" 
+         style="left: 2.5%; top: 44%; width: clamp(125px, 20vw, 275px); z-index: 30;">
+      <div class="flex items-center justify-between">
+        <span class="font-sans text-[8px] sm:text-xs font-bold text-text-main truncate max-w-[75%]">{t.hero.collageAutoSyncTitle}</span>
+        <div class="w-5 h-3 sm:w-8 sm:h-4.5 bg-accent-primary rounded-full relative shadow-inner shrink-0">
+          <div class="absolute right-0.5 top-0.5 w-2 h-2 sm:w-3.5 sm:h-3.5 bg-white rounded-full shadow-sm"></div>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 sm:gap-2.5">
+        <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-accent-primary/10 text-accent-primary flex items-center justify-center shrink-0">
+          <Icon name="rotate" class="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" />
+        </div>
+        <div class="flex flex-col overflow-hidden">
+          <span class="font-mono text-[7px] sm:text-[10px] font-bold text-text-main truncate">Meta CAPI & GA4</span>
+          <span class="font-sans text-[6px] sm:text-[9px] text-text-main/70 truncate">{t.hero.collageAutoSyncStatus}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Mid-Right: Image Card with CRM Badge -->
+    <div class="absolute rounded-2xl sm:rounded-3xl overflow-hidden bg-hero-card/85 backdrop-blur-xl border border-text-main/15 shadow-xl sm:shadow-2xl transition-transform duration-500 hover:scale-105" 
+         style="right: 3%; top: 48%; width: clamp(130px, 23vw, 330px); height: clamp(90px, 16vw, 230px); z-index: 30;">
+      <img src={crmImg.src} alt="" class="w-full h-full object-cover opacity-90" />
+      <div class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-hero-card/90 backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-text-main/15 shadow-sm flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-success-primary animate-pulse"></span>
+        <span class="font-mono text-[7px] sm:text-[9px] font-bold text-text-main uppercase tracking-wider truncate">{t.hero.collageTagCrm}</span>
+      </div>
+    </div>
+
+    <!-- 5. Bottom-Left: Conversion Funnel Image Card -->
+    <div class="absolute rounded-2xl sm:rounded-3xl overflow-hidden bg-hero-card/85 backdrop-blur-xl border border-text-main/15 shadow-xl sm:shadow-2xl transition-transform duration-500 hover:scale-105" 
+         style="left: 8.5%; top: 72%; width: clamp(135px, 24vw, 370px); height: clamp(95px, 17vw, 250px); z-index: 5;">
+      <img src={portfolioImg.src} alt="" class="w-full h-full object-cover opacity-90" />
+      <div class="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 bg-hero-card/90 backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-text-main/15 shadow-sm flex items-center gap-1 text-accent-primary">
+        <Icon name="sliders" class="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+        <span class="font-mono text-[7px] sm:text-[9px] font-bold text-text-main uppercase tracking-wider truncate">{t.hero.collageTagFunnel}</span>
+      </div>
+    </div>
+
+    <!-- 6. Bottom-Right: Wide Preview Card -->
+    <div class="absolute rounded-2xl sm:rounded-3xl overflow-hidden bg-hero-card/85 backdrop-blur-xl border border-text-main/15 shadow-xl sm:shadow-2xl transition-transform duration-500 hover:scale-105" 
+         style="right: 8.5%; top: 76%; width: clamp(130px, 23vw, 350px); height: clamp(90px, 16vw, 230px); z-index: 5;">
+      <img src={powerBiImg.src} alt="" class="w-full h-full object-cover opacity-90" />
+    </div>
+
+    <!-- 7. Bottom Center: Floating Profile Pill Badge (Top Layer z-40) -->
+    <div class="absolute bg-hero-card/95 backdrop-blur-2xl rounded-full flex items-center gap-2 sm:gap-3 px-3 py-1.5 sm:px-4 sm:py-2 shadow-2xl border border-text-main/20 z-40 transition-transform duration-500 hover:scale-105" 
+         style="left: 50%; top: 90%; transform: translateX(-50%); width: max-content;">
+      <div class="w-6 h-6 sm:w-9 sm:h-9 rounded-full overflow-hidden shadow-sm border border-accent-primary/40 shrink-0">
+        <img src={amrMousaAvatar.src} alt="Amr Mousa" class="w-full h-full object-cover" />
+      </div>
+      <div class="flex flex-col pr-1.5 sm:pr-2.5 text-start">
+        <span class="font-sans text-[9px] sm:text-[11px] text-text-main font-bold">{t.hero.collageProfileName}</span>
+        <span class="font-sans text-[8px] sm:text-[11px] text-accent-primary font-semibold leading-tight">{t.hero.collageProfileQuote}</span>
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <script>
   // High-performance background image scroll parallax (desktop only)

@@ -34,7 +34,7 @@ const servicesCollection = defineCollection({
     draft: z.boolean().default(false).describe("If true, this page won't be built in production"),
     featured: z.boolean().default(false).describe("If true, this service will be featured first on the homepage"),
     publishedDate: z.coerce.date().describe("Date when the service was first published"),
-    coverImage: image().optional().describe("The main cover image for the service proposal card"),
+    coverImage: z.any().optional().describe("The main cover image for the service proposal card"),
     
     // Detailed Proposal Fields
     execSummaryText: z.string().describe("Main executive summary text explaining the value proposition"),
@@ -75,8 +75,8 @@ const projectsCollection = defineCollection({
     inquireTitle: z.string().optional().describe("Custom heading for the bottom inquiry section"),
     inquireDesc: z.string().optional().describe("Custom description for the bottom inquiry section"),
     inquireBtn: z.string().optional().describe("Custom inquiry button text"),
-    galleryImages: z.array(image()).describe("Snapshots of the project/dashboard for the visual gallery"),
-    coverImage: image().describe("The main cover image showing in lists and header"),
+    galleryImages: z.array(z.any()).default([]).describe("Snapshots of the project/dashboard for the visual gallery"),
+    coverImage: z.any().optional().describe("The main cover image showing in lists and header"),
     githubUrl: z.string().url().optional().describe("Optional link to the public GitHub code repository"),
     dashboardUrl: z.string().url().optional().describe("Optional link to embed the live Power BI / looker dashboard"),
     whatsappStartProjectMsg: z.string().describe("Pre-filled WhatsApp message for initiating a similar project"),
@@ -120,13 +120,25 @@ const blogCollection = defineCollection({
     description: z.string().max(160, "Meta description should be under 160 characters for search snippets"),
     publishDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
-    coverImage: image().optional(),
+    coverImage: z.any().optional(),
     author: z.string().default("Amr Mousa"),
     category: z.enum(["Data Analytics", "Digital Marketing", "Systems Automation", "Web Development"]),
     tags: z.array(z.string()).default([]),
     translationKey: z.string().optional().describe("Legacy translation mapping key, replaced by filename slug"),
     draft: z.boolean().default(true),
     seo: seoFieldsSchema,
+  }),
+});
+
+const capabilitiesCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string().describe("Capability title"),
+    description: z.string().describe("Brief capability description"),
+    tag: z.string().optional().describe("Category tag badge"),
+    icon: z.string().optional().describe("Optional icon identifier"),
+    priority: z.number().int().default(0).describe("Sort order priority"),
+    draft: z.boolean().default(false).describe("Draft status flag"),
   }),
 });
 
@@ -137,5 +149,6 @@ export const collections = {
   hero: heroCollection,
   projects: projectsCollection,
   blog: blogCollection,
+  capabilities: capabilitiesCollection,
 };
 

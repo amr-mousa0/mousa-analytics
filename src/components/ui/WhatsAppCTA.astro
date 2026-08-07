@@ -1,0 +1,38 @@
+---
+import ActionButton from './ActionButton.astro';
+import { getWhatsAppUrl } from '../../lib/contact/cta.js';
+
+interface Props {
+  message?: string;
+  lang?: 'en' | 'ar';
+  size?: 'sm' | 'md' | 'lg';
+  label?: string;
+  class?: string;
+  id?: string;
+}
+
+const {
+  message,
+  lang = 'ar',
+  size = 'md',
+  label,
+  class: className = '',
+  id,
+} = Astro.props;
+
+const whatsappUrl = getWhatsAppUrl({ message, lang });
+const defaultLabel = lang === 'ar' ? 'محادثة عبر واتساب' : 'Chat via WhatsApp';
+---
+
+<ActionButton
+  id={id}
+  href={whatsappUrl}
+  target="_blank"
+  variant="whatsapp"
+  size={size}
+  icon="whatsapp"
+  iconPosition="left"
+  class={className}
+>
+  {label || defaultLabel}
+</ActionButton>

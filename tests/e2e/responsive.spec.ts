@@ -63,4 +63,28 @@ test.describe('Responsive Layout & Overflow Validations', () => {
       }
     });
   }
+
+  test.use({
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 375, height: 667 },
+  });
+
+  test('Services mobile swipe deck integrity (<768px)', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });
+
+    const grid = page.locator('[data-services-grid]');
+    await expect(grid).toBeVisible();
+
+    const engineActive = await page.evaluate(() => (window as any).__servicesEngineActive);
+    expect(engineActive).toBe(false);
+
+    const cards = page.locator('.premium-card-global');
+    const cardCount = await cards.count();
+    expect(cardCount).toBeGreaterThan(0);
+
+    const whatsappButtons = page.locator('.service-whatsapp-cta');
+    await expect(whatsappButtons.first()).toBeVisible();
+  });
 });

@@ -1,13 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
-import { ContentHubClient } from '../../../lib/sdk/contentHubClient.js';
-import { Image } from 'astro:assets';
+import Icon from '../../../components/ui/Icon.astro';
+import { ContentFacade } from '../../../lib/content/facade.js';
+import { getImageUrl } from '../../../scripts/imageHelper';
 import Layout from '../../../layouts/Layout.astro';
-import Navigation from '../../../components/ui/Navigation.astro';
-import Footer from '../../../components/ui/Footer.astro';
+import Navbar from '../../../components/layout/Navbar.astro';
+import Footer from '../../../components/layout/Footer.astro';
+import { useTranslations } from '../../../i18n/index.js';
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection('blog');
+  const allPosts = await ContentFacade.getBlogPosts({ includeDrafts: true });
   const isProd = import.meta.env.PROD;
   const showDrafts = !isProd;
 
@@ -63,6 +64,8 @@ if (lang !== undefined && lang !== 'en') {
 
 const currentLang = lang || 'ar';
 const isAr = currentLang === 'ar';
+const t = useTranslations(currentLang);
+const b = t.blogPage;
 const { Content } = await post.render();
 
 // T019: Dynamic reading time calculation based on word count
@@ -76,21 +79,17 @@ const formattedDate = new Date(post.data.publishDate).toLocaleDateString(isAr ? 
   day: 'numeric'
 });
 
-const t = {
-  backBtn: isAr ? "العودة للمدونة" : "Back to Blog",
-  readingTime: isAr ? `وقت القراءة: ${readingTime} دقائق` : `${readingTime} min read`,
-  author: isAr ? "بقلم" : "By",
-  published: isAr ? "نشر في" : "Published on"
-};
+const readingTimeText = `${readingTime} ${b.minRead}`;
 
 // Fetch related services and projects (T020)
-const allServices = await getCollection('services');
-const activeServices = allServices.filter(s => !s.data.draft && s.slug.startsWith(`${currentLang}/`) && s.data.category === post.data.category);
+const allServices = await ContentFacade.getServices({ lang: currentLang });
+const activeServices = allServices.filter(s => s.data.category === post.data.category);
 
-const allProjects = await ContentHubClient.getProjects(currentLang);
-const activeProjects = allProjects.filter(p => !p.draft && p.category === post.data.category);
+const allProjects = await ContentFacade.getProjects({ lang: currentLang });
+const activeProjects = allProjects.filter(p => p.data.category === post.data.category);
 
 const shouldNoindex = post.data.draft || post.data.seo.noindex;
+const coverImgSrc = getImageUrl(post?.data?.coverImage);
 ---
 
 <Layout 
@@ -98,7 +97,7 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
   pageId={`blog-${slug}`}
   title={post.data.seo.metaTitle}
   description={post.data.seo.metaDescription}
-  ogImage={post.data.coverImage ? post.data.coverImage.src : undefined}
+  ogImage={coverImgSrc}
   canonicalUrl={post.data.seo.canonicalUrl}
   noindex={shouldNoindex}
   contentType="blog"
@@ -106,7 +105,7 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
   pageCategory={post.data.category}
   isFallback={isFallback}
 >
-  <Navigation lang={currentLang} activePage="blog" backUrl={currentLang === 'ar' ? '/blog/' : '/en/blog/'} backText={t.backBtn} />
+  <Navbar lang={currentLang === 'en' ? 'en' : 'ar'} activePage="blog" backUrl={currentLang === 'ar' ? '/blog/' : '/en/blog/'} backText={b.backToBlog} />
 
   <!-- T019: Inject BlogPosting schema dynamically -->
   <script type="application/ld+json" is:inline set:html={JSON.stringify({
@@ -124,7 +123,7 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
     "author": {
       "@type": "Person",
       "@id": new URL(`${currentLang === 'ar' ? '' : 'en/'}#person`, Astro.site).href,
-      "name": isAr ? "عمرو موسى" : "Amr Mousa"
+      "name": t.nav.authorName
     },
     "publisher": {
       "@type": "Organization",
@@ -143,11 +142,9 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
       
       {isFallback && (
         <div class="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-amber-600 text-xs sm:text-sm font-sans flex items-center gap-3">
-          <i class="fa-solid fa-triangle-exclamation text-base sm:text-lg"></i>
+          <Icon name="xmark" class="w-5 h-5" />
           <div>
-            {isAr 
-              ? "⚠️ هذه المقالة غير متوفرة باللغة العربية بعد. تم عرض النسخة الإنجليزية احتياطياً." 
-              : "⚠️ This article is not available in English yet. The Arabic version is displayed as a fallback."}
+            {b.fallbackNotice}
           </div>
         </div>
       )}
@@ -160,26 +157,26 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
           <div class="flex items-center gap-3 text-[10px] font-mono text-text-main/45">
             <span class="px-2.5 py-0.5 rounded-md bg-accent-primary/10 text-accent-primary font-semibold">{post.data.category}</span>
             <span>•</span>
-            <span>{t.readingTime}</span>
+            <span>{readingTimeText}</span>
           </div>
-          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-text-main font-serif leading-tight">
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-text-main leading-tight">
             {post.data.title}
           </h1>
           <div class="flex items-center gap-3 text-xs text-text-main/60 pt-2 font-sans">
-            <span>{t.author}: <strong class="text-text-main">{post.data.author}</strong></span>
+            <span>{b.byAuthor}: <strong class="text-text-main">{post.data.author}</strong></span>
             <span>•</span>
-            <span>{t.published}: <time datetime={post.data.publishDate.toISOString()}>{formattedDate}</time></span>
+            <span>{b.publishedOn}: <time datetime={post.data.publishDate.toISOString()}>{formattedDate}</time></span>
           </div>
         </header>
 
-        {post.data.coverImage && (
+        {coverImgSrc && (
           <div class="overflow-hidden rounded-2xl border border-text-main/10 shadow-xs">
-            <Image 
-              src={post.data.coverImage} 
-              alt={post.data.title}
+            <img 
+              src={coverImgSrc} 
+              alt={post.data.title || ''}
               class="w-full max-h-96 object-cover"
-              width={800}
-              quality={90}
+              width="800"
+              height="400"
             />
           </div>
         )}
@@ -192,8 +189,8 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
         <!-- T020: Reciprocal category links -->
         {(activeServices.length > 0 || activeProjects.length > 0) && (
           <footer class="border-t border-text-main/10 pt-8 mt-10 space-y-6">
-            <h3 class="text-sm font-bold text-text-main font-serif">
-              {isAr ? "خدمات ومشاريع ذات صلة بموضوع المقال:" : "Related Services & Projects:"}
+            <h3 class="text-sm font-bold text-text-main">
+              {b.relatedItemsTitle}
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {activeServices.map((service) => {
@@ -201,11 +198,11 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
                 return (
                   <a href={currentLang === 'ar' ? `/services/${serviceSlug}/` : `/en/services/${serviceSlug}/`} class="flex items-center gap-3 p-3 rounded-xl border border-text-main/5 hover:border-accent-primary/20 bg-primary-bg/50 transition-all">
                     <div class="w-8 h-8 rounded-lg bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
-                      <i class={`fa-solid fa-${service.data.icon} text-xs`} aria-hidden="true"></i>
+                      <Icon name={service.data.icon} class="w-4 h-4" />
                     </div>
                     <div class="space-y-0.5 overflow-hidden">
-                      <span class="text-[8px] font-mono text-text-main/45 uppercase tracking-widest">{isAr ? "الخدمات المهنية" : "Professional Service"}</span>
-                      <h4 class="text-[11px] font-bold text-text-main font-serif leading-tight truncate">{service.data.title}</h4>
+                      <span class="text-[8px] font-mono text-text-main/45 uppercase tracking-widest">{b.professionalService}</span>
+                      <h4 class="text-[11px] font-bold text-text-main leading-tight truncate">{service.data.title}</h4>
                     </div>
                   </a>
                 );
@@ -216,11 +213,11 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
                 return (
                   <a href={currentLang === 'ar' ? `/projects/${projectSlug}/` : `/en/projects/${projectSlug}/`} class="flex items-center gap-3 p-3 rounded-xl border border-text-main/5 hover:border-accent-primary/20 bg-primary-bg/50 transition-all">
                     <div class="w-8 h-8 rounded-lg bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0">
-                      <i class="fa-solid fa-folder-open text-xs" aria-hidden="true"></i>
+                      <Icon name="briefcase" class="w-4 h-4" />
                     </div>
                     <div class="space-y-0.5 overflow-hidden">
-                      <span class="text-[8px] font-mono text-text-main/45 uppercase tracking-widest">{isAr ? "المشاريع ودراسات الحالة" : "Case Study"}</span>
-                      <h4 class="text-[11px] font-bold text-text-main font-serif leading-tight truncate">{project.data.title}</h4>
+                      <span class="text-[8px] font-mono text-text-main/45 uppercase tracking-widest">{b.caseStudyTag}</span>
+                      <h4 class="text-[11px] font-bold text-text-main leading-tight truncate">{project.data.title}</h4>
                     </div>
                   </a>
                 );
@@ -234,5 +231,5 @@ const shouldNoindex = post.data.draft || post.data.seo.noindex;
     </div>
   </main>
 
-  <Footer lang={currentLang} />
+  <Footer lang={currentLang === 'en' ? 'en' : 'ar'} />
 </Layout>

@@ -1,4 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterAll } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 
 vi.mock('astro:content', () => ({
   getEntry: vi.fn(),
@@ -36,7 +38,7 @@ describe('PipelineOrchestrator Full Pipeline Execution Trace', () => {
           solution: 'Built an enterprise Star Schema model with DAX measures for YTD growth and variance analysis.',
           businessValue: 'Increased regional sales forecast accuracy by 35% and saved 12 hours of manual reporting per week.',
           tags: ['Power BI', 'SQL Server', 'DAX'],
-          cover: 'assets/sales-cover.png',
+          cover: '../../../assets/images/uploads/coffee-shop.jpg',
           gallery: [
             { type: 'powerbi', title: 'Interactive Sales Dashboard', url: 'https://app.powerbi.com/view?r=sample-sales-demo' },
             { type: 'pdf', title: 'Sales Performance Spec Sheet', url: 'docs/sales-spec.pdf' }
@@ -93,9 +95,21 @@ describe('PipelineOrchestrator Full Pipeline Execution Trace', () => {
     await expect(PipelineOrchestrator.enqueueRepoSync(disabledPayload)).rejects.toThrow();
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('EARLY EXIT at Stage 11 (Publish target resolution)')
+      expect.stringContaining('EARLY EXIT at Stage 11: Publish target "portfolio" is explicitly disabled.')
     );
 
     consoleWarnSpy.mockRestore();
+  });
+
+  afterAll(() => {
+    const filesToDelete = [
+      path.resolve('src/content/projects/ar/sales-performance-analytics.md'),
+      path.resolve('src/content/projects/en/sales-performance-analytics.md'),
+      path.resolve('src/content/projects/ar/sql-practice-level-1.md'),
+      path.resolve('src/content/projects/en/sql-practice-level-1.md')
+    ];
+    filesToDelete.forEach(f => {
+      if (fs.existsSync(f)) fs.unlinkSync(f);
+    });
   });
 });

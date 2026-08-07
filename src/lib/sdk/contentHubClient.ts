@@ -1,4 +1,5 @@
 import { getSafeProjects } from '../../scripts/projectsHelper.js';
+import { formatCardDescription } from '../utils/descriptionFormatter.js';
 
 export interface ContentHubProjectData {
   title: string;
@@ -48,13 +49,21 @@ export interface ContentHubVersion {
 }
 
 function mapToContentHubProject(list: any[]): ContentHubProject[] {
-  return list.map(p => ({
-    id: p.id || p.slug,
-    slug: p.slug || p.id,
-    ...p.data,
-    data: p.data,
-    isFallback: p.isFallback || false
-  }));
+  return list.map(p => {
+    const rawProblem = p.data?.problemText || p.problemText || p.problem || '';
+    const formattedProblem = formatCardDescription(rawProblem);
+    const dataObj = {
+      ...(p.data || p),
+      problemText: formattedProblem
+    };
+    return {
+      id: p.id || p.slug,
+      slug: p.slug || p.id,
+      ...dataObj,
+      data: dataObj,
+      isFallback: p.isFallback || false
+    };
+  });
 }
 
 export class ContentHubClient {
@@ -161,40 +170,39 @@ export class ContentHubClient {
 
       const data = await res.json();
       const rawList = Array.isArray(data) ? data : (Array.isArray(data?.projects) ? data.projects : []);
-      if (rawList.length === 0) {
-        return mapToContentHubProject(await getSafeProjects(lang));
-      }
-      
       return rawList.map((p: any) => {
-        const title = lang === 'ar' ? (p.titleAr || p.title) : (p.titleEn || p.title);
-        const problemText = lang === 'ar' 
-          ? (p.problemAr || p.problemEn || p.problemText || p.problem || '') 
-          : (p.problemEn || p.problemText || p.problem || '');
+        const title = lang === 'ar' ? (p.data?.title || p.titleAr || p.title) : (p.data?.title || p.titleEn || p.title);
+        const rawProblemText = lang === 'ar' 
+          ? (p.data?.problemAr || p.data?.problemText || p.problemAr || p.problemEn || p.problemText || p.problem || '') 
+          : (p.data?.problemEn || p.data?.problemText || p.problemEn || p.problemText || p.problem || '');
+        const problemText = formatCardDescription(rawProblemText);
         const solutionText = lang === 'ar' 
-          ? (p.salesDescriptionAr || p.salesDescriptionEn || p.solutionText || p.solution || '') 
-          : (p.salesDescriptionEn || p.solutionText || p.solution || '');
+          ? (p.data?.solutionText || p.salesDescriptionAr || p.salesDescriptionEn || p.solutionText || p.solution || '') 
+          : (p.data?.solutionText || p.salesDescriptionEn || p.solutionText || p.solution || '');
         const impactText = lang === 'ar' 
-          ? (p.salesFunnelMetricsAr || p.salesFunnelMetricsEn || p.impactText || p.impact || '') 
-          : (p.salesFunnelMetricsEn || p.impactText || p.impact || '');
+          ? (p.data?.impactText || p.salesFunnelMetricsAr || p.salesFunnelMetricsEn || p.impactText || p.impact || '') 
+          : (p.data?.impactText || p.salesFunnelMetricsEn || p.impactText || p.impact || '');
 
-        const dataObj = p.data || {
-          title,
-          projectBadge: p.projectBadge || p.category || 'DATA ANALYTICS',
+        const baseData = p.data || {};
+        const dataObj = {
+          ...baseData,
+          title: baseData.title || title,
+          projectBadge: baseData.projectBadge || p.projectBadge || p.category || 'DATA ANALYTICS',
           problemText,
-          solutionText,
-          impactText,
-          coverImage: p.coverImage || p.image || p.imagePath,
-          galleryImages: p.galleryImages || p.images || [],
-          githubUrl: p.githubUrl || '',
-          dashboardUrl: p.dashboardUrl || p.powerBiUrl || p.demoUrl || '',
-          whatsappStartProjectMsg: p.whatsappStartProjectMsg || `Hi Amr, I'd like to inquire about ${title}`,
-          whatsappOpenDashboardMsg: p.whatsappOpenDashboardMsg || `Hi Amr, I'd like to request access to dashboard for ${title}`,
-          priority: p.priority || 1,
-          category: p.category || 'Data Analytics',
-          tags: p.tags || p.tech || [],
-          draft: p.draft || false,
-          featured: p.featured ?? true,
-          publishedDate: p.publishedDate || p.updatedAt || new Date()
+          solutionText: baseData.solutionText || solutionText,
+          impactText: baseData.impactText || impactText,
+          coverImage: baseData.coverImage || p.coverImage || p.image || p.imagePath,
+          galleryImages: baseData.galleryImages || p.galleryImages || p.images || [],
+          githubUrl: baseData.githubUrl || p.githubUrl || '',
+          dashboardUrl: baseData.dashboardUrl || p.dashboardUrl || p.powerBiUrl || p.demoUrl || '',
+          whatsappStartProjectMsg: baseData.whatsappStartProjectMsg || p.whatsappStartProjectMsg || `Hi Amr, I'd like to inquire about ${title}`,
+          whatsappOpenDashboardMsg: baseData.whatsappOpenDashboardMsg || p.whatsappOpenDashboardMsg || `Hi Amr, I'd like to request access to dashboard for ${title}`,
+          priority: baseData.priority || p.priority || 1,
+          category: baseData.category || p.category || 'Data Analytics',
+          tags: baseData.tags || p.tags || p.tech || [],
+          draft: baseData.draft ?? p.draft ?? false,
+          featured: baseData.featured ?? p.featured ?? true,
+          publishedDate: baseData.publishedDate || p.publishedDate || p.updatedAt || new Date()
         };
 
         return {

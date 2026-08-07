@@ -4,6 +4,7 @@ description: "Learn how to track your online store's metrics to make data-driven
 publishDate: "2026-05-27"
 author: "Amr Mousa"
 category: "Data Analytics"
+coverImage: "/images/services/data-analytics.png"
 tags: ["E-Commerce", "Power BI", "Tracking"]
 translationKey: "intro-to-analytics"
 draft: false

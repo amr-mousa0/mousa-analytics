@@ -1,0 +1,54 @@
+---
+import Icon from '../ui/Icon.astro';
+import BrandMark from '../brand/BrandMark.astro';
+import { useTranslations } from '../../i18n/index.js';
+import { getWhatsAppUrl } from '../../lib/contact/cta.js';
+
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+const currentLang = (lang || 'ar') as 'en' | 'ar';
+const t = useTranslations(currentLang);
+const whatsappUrl = getWhatsAppUrl({ lang: currentLang });
+---
+
+<section id="pain-points" aria-labelledby="pain-points-title" class="py-20 sm:py-32 px-4 sm:px-6 relative bg-transparent scroll-mt-20">
+  <div class="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+    
+    <!-- Top Badge Box with Sized BrandMark (Governed by Constitution.md Article 4 & DESIGN.md) -->
+    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl border border-text-main/20 bg-hero-card text-text-main flex items-center justify-center mx-auto shadow-xs">
+      <BrandMark size={36} class="w-7 h-7 sm:w-8 sm:h-8 text-text-main" />
+    </div>
+
+    <!-- Main Display Section Heading (Governed by DESIGN.md Section 3) -->
+    <h2 id="pain-points-title" class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text-main tracking-tight leading-tight max-w-3xl mx-auto px-2">
+      {t.services.bottleneckTitle}
+    </h2>
+
+    <!-- Dual Pill CTA Buttons (Governed by DESIGN.md Section 5) -->
+    <div class="pt-4 sm:pt-6 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-5 w-full max-w-2xl mx-auto">
+      <!-- Primary Solid Dark Pill Button (Goes directly to WhatsApp) -->
+      <a 
+        href={whatsappUrl} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="inline-flex items-center justify-center whitespace-nowrap min-h-[48px] px-4 sm:px-6 rounded-full bg-text-main hover:bg-text-main/90 text-white font-sans font-semibold text-[11px] sm:text-xs md:text-sm tracking-wider uppercase shadow-xs transition-all duration-200 cursor-pointer border border-transparent active:scale-98 gap-2 w-full text-center"
+      >
+        <Icon name="whatsapp" class="w-4 h-4 shrink-0 text-white" />
+        <span class="text-white leading-tight">{t.services.startSolvingWhatsapp}</span>
+      </a>
+
+      <!-- Secondary Outlined Pill Button (Opens Interactive Contact Lead Modal on desktop & mobile) -->
+      <button 
+        type="button"
+        data-open-contact-modal="true"
+        class="inline-flex items-center justify-center whitespace-nowrap min-h-[48px] px-4 sm:px-6 rounded-full bg-transparent hover:bg-text-main/5 text-text-main border border-text-main/30 hover:border-text-main/60 font-sans font-semibold text-[11px] sm:text-xs md:text-sm tracking-wider uppercase transition-all duration-200 cursor-pointer active:scale-98 gap-2 w-full text-center"
+      >
+        <span class="text-text-main leading-tight">{t.services.viewFullProposal}</span>
+      </button>
+    </div>
+
+  </div>
+</section>

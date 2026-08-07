@@ -5,7 +5,7 @@ icon: "laptop-code"
 priority: 5
 category: "Web Development"
 tags: ["web", "nextjs", "astro", "speed"]
-coverImage: ../../../assets/images/Portfolio.jpeg
+coverImage: "/images/services/web-portfolios.png"
 execSummaryText: "موقع شركتك بطيء وبيطفش الزوار أول ما يدخلوا، أو شكله قديم ومش بيعبر عن جودة شغلك بجد؟ هصمملك موقع بورتفوليو أو صفحة هبوط سريعة جداً وجذابة تظهر شغلك وتخلي شكلك قدام عملائك براند عالمي، ومظبوط بالملي عشان يظهر في بحث جوجل وتجيبلك عملاء مهتمين فعلاً."
 scopeItems:
   - title: "صفحات هبوط عالية التحويل"

@@ -7,7 +7,7 @@ test.describe('Accessibility Audits (Axe-Core & Keyboard Navigation)', () => {
   for (const route of routes) {
     test(`Automated accessibility scan on: ${route}`, async ({ page }) => {
       await page.goto(route);
-      await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 }).catch(() => {});
+      await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 }).catch(() => { });
 
       // Disable transitions and animations to prevent color-contrast false positives during fade-in transitions
       await page.addStyleTag({
@@ -45,17 +45,37 @@ test.describe('Accessibility Audits (Axe-Core & Keyboard Navigation)', () => {
 
     // Focus on first interactive element (should be header/logo or skip link)
     await page.keyboard.press('Tab');
-    
+
     // Check if there is an active focused element
     const activeTagName = await page.evaluate(() => document.activeElement?.tagName);
     expect(activeTagName).not.toBeNull();
-    
+
     // Press Tab multiple times to traverse navigation links
     for (let i = 0; i < 5; i++) {
       await page.keyboard.press('Tab');
     }
-    
+
     const newActiveTagName = await page.evaluate(() => document.activeElement?.tagName);
     expect(newActiveTagName).not.toBeNull();
+  });
+
+  test('Services Grid keyboard navigation & Escape key collapse', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/');
+    await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });
+
+    const firstCardLink = page.locator('.card-link').first();
+    await expect(firstCardLink).toBeVisible();
+
+    await firstCardLink.focus();
+    await page.waitForTimeout(200);
+
+    const initialUrl = page.url();
+
+    // Press Escape to collapse
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(200);
+
+    expect(page.url()).toBe(initialUrl);
   });
 });

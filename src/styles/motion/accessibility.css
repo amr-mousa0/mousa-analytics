@@ -1,0 +1,21 @@
+/* ==========================================================================
+   Motion Design System — Accessibility & Reduced Motion
+   Governed by MOTION.md & Constitution Article 28
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-enter-fade,
+  .motion-enter-up,
+  .motion-enter-down,
+  .motion-hover-scale,
+  .motion-hover-lift,
+  .motion-hover-image-scale img,
+  .motion-press,
+  .motion-transform-card {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    will-change: auto !important;
+  }
+}

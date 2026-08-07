@@ -9,7 +9,7 @@ tags:
   - nextjs
   - astro
   - speed
-coverImage: ../../../assets/images/Portfolio.jpeg
+coverImage: "/images/services/web-portfolios.png"
 execSummaryText: "Your online presence is your ultimate sales presentation. I design and code ultra-fast, premium web portfolios and conversion landing pages styled with luxury aesthetics, engineered to convert cold visitors into high-paying clients."
 scopeItems:
   - title: "High-Converting Landing Pages"

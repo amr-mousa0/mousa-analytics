@@ -1,4 +1,5 @@
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { ContentFacade } from '../lib/content/facade.js';
+import type { CollectionEntry } from 'astro:content';
 
 export interface ExtendedService extends CollectionEntry<'services'> {
   isFallback?: boolean;
@@ -10,7 +11,7 @@ export interface ExtendedService extends CollectionEntry<'services'> {
  */
 export async function getSafeServices(lang: string): Promise<ExtendedService[]> {
   try {
-    const allServices = await getCollection('services');
+    const allServices = await ContentFacade.getServices({ includeDrafts: !import.meta.env.PROD }) as ExtendedService[];
     if (!allServices) return [];
 
     const isProd = import.meta.env.PROD;

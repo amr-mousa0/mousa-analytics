@@ -1,38 +1,57 @@
 ---
-import { ContentHubClient } from '../../../lib/sdk/contentHubClient.js';
-import { Image } from 'astro:assets';
+import { getImageUrl } from '../../../scripts/imageHelper.js';
 import Layout from '../../../layouts/Layout.astro';
-import Navigation from '../../../components/ui/Navigation.astro';
-import Footer from '../../../components/ui/Footer.astro';
-import { getCollection } from 'astro:content';
+import Navbar from '../../../components/layout/Navbar.astro';
+import Footer from '../../../components/layout/Footer.astro';
+import Icon from '../../../components/ui/Icon.astro';
+import { ContentFacade } from '../../../lib/content/facade.js';
 import { resolveDynamicSeo } from '../../../scripts/seoResolver';
+import { useTranslations } from '../../../i18n/index.js';
+import { getWhatsAppUrl } from '../../../lib/contact/cta.js';
 
 // Dynamic static route generations with fallback support
 export async function getStaticPaths() {
-  const enProjects = await ContentHubClient.getProjects('en');
-  const arProjects = await ContentHubClient.getProjects('ar');
-  const allProjects = [...enProjects, ...arProjects];
+  let allProjects: any[] = [];
+  
+  try {
+    const fileProjects = await ContentFacade.getProjects({ includeDrafts: true });
+    if (fileProjects) {
+      allProjects = fileProjects.map(p => ({
+        id: p.id,
+        slug: p.slug,
+        draft: p.data.draft,
+        ...p.data,
+        data: p.data
+      }));
+    }
+  } catch (e) {
+    console.warn('[projects/[slug].astro] Local collection fallback error:', e);
+  }
+
   const isProd = import.meta.env.PROD;
   const showDrafts = !isProd;
 
   // Filter drafts based on build mode
   const activeProjects = allProjects.filter(item => showDrafts || !item.draft);
 
-
   // Group projects by translation key
   const projectsByKey: Record<string, { en?: any; ar?: any }> = {};
   activeProjects.forEach(project => {
-    const [lang] = project.slug.split('/');
-    const key = project.slug.split('/').slice(1).join('/');
-    if (!projectsByKey[key]) {
-      projectsByKey[key] = {};
+    const cleanKey = project.slug.replace(/^(ar|en)\//, '').split('/').pop() || project.slug;
+    const isArabic = project.slug.startsWith('ar/') || (project as any).id?.startsWith('ar/');
+    const langKey = isArabic ? 'ar' : 'en';
+
+    if (!projectsByKey[cleanKey]) {
+      projectsByKey[cleanKey] = {};
     }
-    if (lang === 'en') projectsByKey[key].en = project;
-    if (lang === 'ar') projectsByKey[key].ar = project;
+    if (langKey === 'en') projectsByKey[cleanKey].en = project;
+    if (langKey === 'ar') projectsByKey[cleanKey].ar = project;
   });
 
   const paths: any[] = [];
   Object.entries(projectsByKey).forEach(([key, versions]) => {
+    if (!key || key === '') return;
+
     // Generate English page
     if (versions.en) {
       paths.push({
@@ -40,7 +59,6 @@ export async function getStaticPaths() {
         props: { project: versions.en, isFallback: false }
       });
     } else if (versions.ar) {
-      // Fallback: English page uses Arabic content
       paths.push({
         params: { lang: 'en', slug: key },
         props: { project: versions.ar, isFallback: true }
@@ -54,7 +72,6 @@ export async function getStaticPaths() {
         props: { project: versions.ar, isFallback: false }
       });
     } else if (versions.en) {
-      // Fallback: Arabic page uses English content
       paths.push({
         params: { lang: undefined, slug: key },
         props: { project: versions.en, isFallback: true }
@@ -68,52 +85,31 @@ export async function getStaticPaths() {
 const { lang, slug } = Astro.params;
 const { project, isFallback } = Astro.props;
 
-if (lang !== undefined && lang !== 'en') {
+if (lang !== undefined && lang !== 'en' && lang !== 'projects') {
   return Astro.redirect('/');
 }
 
-const currentLang = lang || 'ar';
+const currentLang = (lang === 'en') ? 'en' : 'ar';
 const isAr = currentLang === 'ar';
-
-// Localization UI Texts
-const t = {
-  backBtn: isAr ? "العودة للمشاريع" : "Back to Projects",
-  githubBtn: isAr ? "عرض مستودع GitHub" : "View GitHub Repository",
-  problemTitle: isAr ? "المشكلة" : "The Problem",
-  solutionTitle: isAr ? "الحل والقيمة المضافة" : "The Solution & Value",
-  impactTitle: isAr ? "الأثر والنتائج" : "Sales Funnel Impact",
-  galleryTab: isAr ? "معرض صور المشروع" : "Project Gallery",
-  dashboardTab: isAr ? "لوحة البيانات التفاعلية" : "Live Interactive Dashboard",
-  dashboardPrompt: isAr ? "هل ترغب في تصفية البيانات واستكشاف المؤشرات بشكل تفاعلي؟" : "Want to filter the data and explore the metrics interactively?",
-  dashboardBtn: isAr ? "فتح لوحة البيانات التفاعلية" : "Open Live Interactive Dashboard",
-  inquireTitle: isAr ? "استفسر عن هذه الخدمة" : "Inquire About This Service",
-  inquireDesc: isAr ? "احصل على كفاءة تشغيلية أعلى ونظم بيانات تفاعلية دقيقة لمشروعك اليوم." : "Unlock optimized performance, streamlined operations, and high-impact analytics for your business today.",
-  inquireBtn: isAr ? "ابدأ مشروعاً مشابهاً الآن" : "Start a Similar Project",
-};
-
-// Resolve dynamic template fields with sensible fallbacks
-const problemTitle = project.data.problemTitle || t.problemTitle;
-const solutionTitle = project.data.solutionTitle || t.solutionTitle;
-const impactTitle = project.data.impactTitle || t.impactTitle;
-const galleryTab = project.data.galleryTab || t.galleryTab;
-const dashboardTab = project.data.dashboardTab || t.dashboardTab;
-const dashboardPrompt = project.data.dashboardPrompt || t.dashboardPrompt;
-const dashboardBtn = project.data.dashboardBtn || t.dashboardBtn;
-const inquireTitle = project.data.inquireTitle || t.inquireTitle;
-const inquireDesc = project.data.inquireDesc || t.inquireDesc;
-const inquireBtn = project.data.inquireBtn || t.inquireBtn;
+const t = useTranslations(currentLang);
+const pr = t.projects;
 
 // Resolve SEO from central source ONLY (Single Source of Truth)
 const seoData = await resolveDynamicSeo(currentLang, slug, 'project');
 
 // Check if noindex should be applied (draft OR central SEO noindex flag)
-const shouldNoindex = project.data.draft || seoData.noindex;
+const shouldNoindex = project?.draft || project?.data?.draft || seoData.noindex;
 
-// Fetch related services of matching category (T014)
-const allServices = await getCollection('services');
-const activeServices = allServices.filter((s: any) => !s.data.draft && s.slug.startsWith(`${currentLang}/`) && s.data.category === project.data.category);
+// Defensive fallbacks for optional fields
+const coverImgSrc = getImageUrl(project?.data?.coverImage);
 
+// Fetch matching services of the current category (T013)
+const allServices = await ContentFacade.getServices({ lang: currentLang });
+const activeServices = (allServices || []).filter((s: any) => s?.data?.category === project?.data?.category);
 
+// Spec-sheet fields derived from real content data only
+const projectYear = project?.data?.publishedDate ? new Date(project.data.publishedDate).getFullYear() : '';
+const projectStack = (project?.data?.tags || []).join(' · ');
 ---
 
 <Layout 
@@ -121,469 +117,154 @@ const activeServices = allServices.filter((s: any) => !s.data.draft && s.slug.st
   pageId={`project-${slug}`}
   title={seoData.title}
   description={seoData.description}
-  ogImage={seoData.ogImage || project.data.coverImage.src}
+  ogImage={seoData.ogImage || coverImgSrc}
   canonicalUrl={seoData.canonicalUrl}
   noindex={shouldNoindex}
   contentType="project"
   slug={slug}
-  pageCategory={project.data.projectBadge}
+  pageCategory={project?.data?.category}
   isFallback={isFallback}
 >
-  <Navigation 
-    lang={currentLang} 
-    activePage="projects" 
-    backUrl={currentLang === 'ar' ? '/#projects' : '/en/#projects'} 
-    backText={t.backBtn}
-    actionUrl={project.data.githubUrl || "https://github.com/amr-mousa0"}
-    actionText={t.githubBtn}
-    actionIcon="fa-brands fa-github"
-  />
+  <Navbar lang={currentLang === 'en' ? 'en' : 'ar'} activePage="projects" backUrl={currentLang === 'ar' ? '/#projects' : '/en/#projects'} backText={pr.backToProjects} />
 
-  <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent">
-    <!-- Atmospheric Ambient Glows -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_0%,rgba(37,99,235,0.03),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
-    
-    <div class="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
-      
+<main class="flex-grow pt-24 md:pt-32 pb-20 relative bg-bg-primary">
+
+    <div class="relative w-full max-w-5xl mx-auto px-6 sm:px-8">
+      <div class="space-y-14 md:space-y-20">
+
       {isFallback && (
-        <div class="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-amber-600 text-xs sm:text-sm font-sans flex items-center gap-3">
-          <i class="fa-solid fa-triangle-exclamation text-base sm:text-lg"></i>
-          <div>
-            {isAr 
-              ? "⚠️ هذا المشروع غير متوفر باللغة العربية بعد. تم عرض النسخة الإنجليزية بدلاً منها كخيار احتياطي." 
-              : "⚠️ This project is not available in English yet. The Arabic version is displayed as a fallback."}
-          </div>
+        <div class="rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3 sm:px-5 text-amber-700/90 text-xs sm:text-sm font-sans flex items-center gap-3">
+          <Icon name="xmark" class="w-4 h-4 shrink-0" />
+          <span>{pr.fallbackNotice}</span>
         </div>
       )}
 
-      <!-- Main Project Header (Blueprint layout style) -->
-      <div class="flex flex-col gap-6 lg:gap-0 lg:glass-card lg:premium-card-global lg:!p-0 lg:overflow-hidden lg:rounded-[24px]">
-        <div class="p-6 sm:p-8 rounded-[24px] bg-white border border-slate-100 lg:border-none lg:border-b lg:border-slate-100 lg:bg-slate-50/40 lg:rounded-none lg:p-10 relative lg:bg-[linear-gradient(to_right,rgba(37,99,235,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(37,99,235,0.04)_1px,transparent_1px)] lg:bg-[size:16px_16px] space-y-4 shadow-xs lg:shadow-none">
-          <!-- Category Pill -->
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent-primary/20 bg-accent-primary/5 text-accent-primary text-[9px] font-bold tracking-wider uppercase font-mono">
-            <span class="relative flex h-1.5 w-1.5">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-primary"></span>
-            </span>
-            {project.data.projectBadge}
-          </div>
-          
-          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-text-main font-serif leading-tight">
-            {project.data.title}
+      <!-- Case Study Masthead -->
+      <header class="space-y-10 md:space-y-12">
+        <div class="space-y-6 md:space-y-8 max-w-3xl">
+          <span class="block font-mono text-xs uppercase tracking-widest text-text-muted">{pr.caseStudyBadge}</span>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-main leading-tight">
+            {project?.data?.title}
           </h1>
-
-          <!-- Tech Stack Pills -->
-          <div class="flex flex-wrap gap-2 pt-1 font-mono">
-            {project.data.tags.map((tag: string) => (
-              <span class="px-3 py-1 rounded-full bg-slate-200/50 text-text-main/65 text-[10px] font-medium border border-text-main/5 transition-colors hover:bg-slate-200/80">
-                {tag}
-              </span>
-            ))}
-          </div>
         </div>
 
-        <!-- Case Study Details & Interactive Gallery -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 p-0 lg:p-10 bg-transparent">
-          
-          <!-- Left Column: Problem, Solution, Impact -->
-          <div class="lg:col-span-5 space-y-6 order-2 lg:order-1">
-            
-            <!-- Problem Card -->
-            <div class="p-6 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition-all duration-300 shadow-xs space-y-3">
-              <h2 class="text-xs font-bold uppercase tracking-widest text-text-main/75 font-sans flex items-center gap-2">
-                <i class="fa-solid fa-triangle-exclamation text-amber-500" aria-hidden="true"></i>
-                {problemTitle}
-              </h2>
-              <p class="text-text-main/80 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
-                {project.data.problemText}
-              </p>
-            </div>
-
-            <!-- Solution Card -->
-            <div class="p-6 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition-all duration-300 shadow-xs space-y-3">
-              <h2 class="text-xs font-bold uppercase tracking-widest text-text-main/75 font-sans flex items-center gap-2">
-                <i class="fa-solid fa-lightbulb text-blue-500" aria-hidden="true"></i>
-                {solutionTitle}
-              </h2>
-              <p class="text-text-main/80 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
-                {project.data.solutionText}
-              </p>
-            </div>
-
-            <!-- Impact Card -->
-            <div class="p-6 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition-all duration-300 shadow-xs space-y-3">
-              <h2 class="text-xs font-bold uppercase tracking-widest text-text-main/75 font-sans flex items-center gap-2">
-                <i class="fa-solid fa-chart-line text-emerald-500" aria-hidden="true"></i>
-                {impactTitle}
-              </h2>
-              <p class="text-text-main/80 text-[13px] sm:text-[13.5px] leading-relaxed font-sans font-light">
-                {project.data.impactText}
-              </p>
-            </div>
-
+        <!-- Specification Sheet -->
+        <dl class="border-y border-text-main/10 py-6 md:py-8 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
+          <div>
+            <dt class="font-mono text-xs uppercase tracking-wider text-text-muted">{pr.metaCategory}</dt>
+            <dd class="mt-1.5 text-lg font-semibold tracking-tight text-text-main">{project?.data?.category}</dd>
           </div>
-
-          <!-- Right Column: Interactive Gallery & Dashboard Link -->
-          <div class="lg:col-span-7 space-y-6 flex flex-col justify-between order-1 lg:order-2">
-            
-            <!-- Gallery / Dashboard Tab Container -->
-            <div class="p-6 rounded-2xl bg-white lg:bg-slate-50/50 border border-slate-100/70 space-y-4 flex-grow shadow-xs">
-              
-              <!-- Tab Headers -->
-              <div class="flex flex-col gap-2.5 p-0 bg-transparent border-none rounded-none lg:flex-row lg:gap-2 lg:p-1 lg:bg-slate-200/50 lg:rounded-xl lg:border lg:border-slate-200/20">
-                <button 
-                  id="tab-gallery" 
-                  class="flex-1 py-3 px-6 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer bg-accent-primary text-white shadow-md border-none lg:py-2 lg:px-3 lg:rounded-lg lg:text-[11px] lg:shadow-none"
-                >
-                  <i class="fa-regular fa-image text-sm lg:text-xs" aria-hidden="true"></i>
-                  <span>{galleryTab}</span>
-                </button>
-                <button 
-                  id="tab-dashboard" 
-                  class="flex-1 py-3 px-6 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer bg-slate-100 border border-slate-200/60 text-text-main/70 shadow-none lg:py-2 lg:px-3 lg:rounded-lg lg:text-[11px] lg:bg-transparent lg:border-none lg:hover:bg-slate-200/30"
-                >
-                  <i class="fa-solid fa-chart-pie text-sm lg:text-xs" aria-hidden="true"></i>
-                  <span>{dashboardTab}</span>
-                </button>
-              </div>
-
-              <!-- Tab Contents -->
-              <div class="relative w-full overflow-hidden">
-                <!-- Gallery Content -->
-                <div id="content-gallery" class="space-y-4 transition-all duration-300">
-                   <!-- Main Image Display -->
-                  {project.data.galleryImages.length > 0 && (
-                    <div class="w-full aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 bg-white relative">
-                      {typeof project.data.galleryImages[0] === 'object' && project.data.galleryImages[0] !== null && 'format' in project.data.galleryImages[0] ? (
-                        <Image 
-                          id="main-gallery-image"
-                          src={project.data.galleryImages[0]} 
-                          alt="Main Project Snapshot" 
-                          class="w-full h-full object-cover transition-opacity duration-150"
-                          width={1000}
-                          quality={90}
-                        />
-                      ) : (
-                        <img 
-                          id="main-gallery-image"
-                          src={typeof project.data.galleryImages[0] === 'string' ? project.data.galleryImages[0] : (project.data.galleryImages[0] as any)?.src || '/images/og-image.png'} 
-                          alt="Main Project Snapshot" 
-                          class="w-full h-full object-cover transition-opacity duration-150"
-                          width="1000"
-                        />
-                      )}
-                    </div>
-                  )}
-                  <!-- Thumbnails Grid -->
-                  <div class="flex overflow-x-auto gap-2 no-scrollbar pb-1 justify-center lg:grid lg:grid-cols-4 lg:gap-3 lg:overflow-visible">
-                    {project.data.galleryImages.map((img: any, i: number) => (
-                      <button 
-                        class:list={[
-                          "gallery-thumbnail aspect-[16/10] rounded-lg overflow-hidden border bg-white cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 w-16 sm:w-20 lg:w-auto shrink-0",
-                          i === 0 ? "border-accent-primary ring-2 ring-accent-primary/20" : "border-slate-200 hover:border-slate-300"
-                        ]}
-                        data-src={typeof img === 'string' ? img : img?.src || ''}
-                        aria-label={`View image snapshot ${i + 1}`}
-                      >
-                        {typeof img === 'object' && img !== null && 'format' in img ? (
-                          <Image 
-                            src={img} 
-                            alt={`Thumbnail snapshot ${i + 1}`} 
-                            class="w-full h-full object-cover" 
-                            width={200}
-                            quality={90}
-                          />
-                        ) : (
-                          <img 
-                            src={typeof img === 'string' ? img : img?.src || '/images/og-image.png'} 
-                            alt={`Thumbnail snapshot ${i + 1}`} 
-                            class="w-full h-full object-cover" 
-                            width="200"
-                          />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <!-- Dashboard Content (hidden by default) -->
-                <div id="content-dashboard" class="hidden w-full transition-all duration-300 space-y-4">
-                  {project.data.dashboardUrl ? (
-                    <div class="w-full flex flex-col gap-4">
-                      <!-- Interactive Iframe Container -->
-                      <div class="w-full aspect-[16/9] min-h-[400px] md:min-h-[550px] rounded-xl overflow-hidden border border-slate-200 bg-slate-50 relative shadow-sm">
-                        <!-- Skeleton Loader -->
-                        <div id="iframe-loader" class="absolute inset-0 bg-slate-50 flex flex-col items-center justify-center gap-3 z-10 transition-opacity duration-300">
-                          <div class="w-12 h-12 rounded-full border-4 border-slate-200 border-t-accent-primary animate-spin"></div>
-                          <p class="text-xs text-text-main/50 font-mono">Loading live interactive dashboard...</p>
-                        </div>
-                        
-                        <iframe
-                          id="dashboard-iframe"
-                          title={`${project.data.title} Live Dashboard`}
-                          data-src={project.data.dashboardUrl}
-                          class="w-full h-full border-none opacity-0 transition-opacity duration-300"
-                          allowfullscreen="true"
-                          loading="lazy"
-                        ></iframe>
-                      </div>
-
-                      <!-- Custom Note Card (warning/info style from screenshot) -->
-                      <div class="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 flex gap-3 text-start">
-                        <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-sm sm:text-base flex-shrink-0"></i>
-                        <p class="text-[11px] leading-relaxed text-slate-700/90 font-sans">
-                          {isAr 
-                            ? "ملاحظة: إذا كانت خدمة Microsoft Power BI محجوبة على شبكتك أو جهازك، يرجى استخدام علامة تبويب \"معرض صور المشروع\" أعلاه لعرض لقطات عالية الدقة للوحة البيانات."
-                            : "Note: If the Microsoft Power BI service is blocked on your network or device, please use the Project Gallery tab above to view full high-resolution dashboard exports."}
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div class="flex flex-col items-center justify-center py-12 px-4 text-center space-y-4">
-                      <div class="w-16 h-16 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary border border-accent-primary/20 shadow-xs">
-                        <i class="fa-solid fa-compass text-2xl animate-spin" style="animation-duration: 8s" aria-hidden="true"></i>
-                      </div>
-                      <div class="space-y-1.5">
-                        <h4 class="text-sm font-bold text-text-main font-serif">
-                          {project.data.title}
-                        </h4>
-                        <p class="text-text-main/60 text-xs leading-relaxed max-w-sm">
-                          {isAr 
-                            ? "هذا المشروع يحتوي على لوحة مؤشرات أداء تفاعلية مشفرة بالكامل. اضغط أدناه لطلب رابط التجربة الحية مباشرة."
-                            : "This project has a fully live, filterable interactive client dashboard. Click below to request the interactive link."}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-              </div>
-              </div>
-              
-              <!-- Dashboard Prompt helper (nested inside the card, responsive layout) -->
-              <div id="dashboard-prompt-helper" class="p-5 rounded-2xl bg-blue-50/50 border border-blue-100/40 flex flex-col items-center text-center gap-4 mt-4 transition-all duration-300">
-                <p class="text-text-main/70 text-[11px] leading-relaxed max-w-xs">
-                  {dashboardPrompt}
-                </p>
-                <button 
-                  id="activate-dashboard-tab-btn"
-                  class="h-10 px-6 rounded-full bg-accent-primary hover:bg-accent-highlight text-white font-semibold text-[10px] tracking-wider flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all duration-300 cursor-pointer w-full sm:w-auto"
-                >
-                  <i class="fa-regular fa-circle-play text-xs" aria-hidden="true"></i>
-                  <span>{dashboardBtn}</span>
-                </button>
-              </div>
-
-            </div>
-
+          <div>
+            <dt class="font-mono text-xs uppercase tracking-wider text-text-muted">{pr.metaYear}</dt>
+            <dd class="mt-1.5 text-lg font-semibold tracking-tight text-text-main">{projectYear}</dd>
           </div>
+          <div>
+            <dt class="font-mono text-xs uppercase tracking-wider text-text-muted">{pr.metaStack}</dt>
+            <dd class="mt-1.5 text-lg font-semibold tracking-tight text-text-main">{projectStack}</dd>
+          </div>
+        </dl>
 
+        <!-- Project Hero Cover Image -->
+        {coverImgSrc && (
+          <figure class="relative">
+            <img
+              src={coverImgSrc}
+              alt={project?.data?.title || ''}
+              class="w-full aspect-video sm:aspect-[21/9] object-cover block"
+              width="1200"
+              height="600"
+              loading="eager"
+              fetchpriority="high"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-bg-primary via-transparent to-transparent pointer-events-none" aria-hidden="true"></div>
+          </figure>
+        )}
+      </header>
+
+      <!-- Problem / Solution -->
+      <section class="grid grid-cols-1 md:grid-cols-2 items-start">
+        <div class="md:pe-14 pb-10 md:pb-0">
+          <h2 class="text-xs font-semibold uppercase tracking-widest text-text-main mb-5">{pr.problemTitle}</h2>
+          <p class="text-text-secondary leading-relaxed">{project?.data?.problemText}</p>
+        </div>
+        <div class="md:ps-14 md:border-s md:border-text-main/10">
+          <h2 class="text-xs font-semibold uppercase tracking-widest text-text-main mb-5">{pr.solutionTitle}</h2>
+          <p class="text-text-secondary leading-relaxed">{project?.data?.solutionText}</p>
+        </div>
+      </section>
+
+      <!-- Impact -->
+      {project?.data?.impactText && (
+        <section class="border-t border-text-main/10 pt-10 md:pt-12 space-y-5 max-w-3xl">
+          <h2 class="text-xs font-semibold uppercase tracking-widest text-text-main">{pr.impactTitle}</h2>
+          <p class="text-text-secondary leading-relaxed">{project.data.impactText}</p>
+        </section>
+      )}
+
+      <!-- CTA -->
+      <section class="border-t border-text-main/10 pt-10 md:pt-12 flex flex-col sm:flex-row sm:items-center justify-between gap-8">
+        <div class="space-y-3 max-w-xl">
+          <h3 class="text-xl md:text-2xl font-bold tracking-tight text-text-main">
+            {pr.similarResultsHeadline}
+          </h3>
+          <p class="text-text-muted text-sm sm:text-base leading-relaxed font-sans font-light">
+            {pr.similarResultsDesc}
+          </p>
         </div>
 
-        <!-- Inquire / Action CTA Bar -->
-        <div class="p-6 sm:p-8 bg-white rounded-[24px] border border-slate-100 lg:border-none lg:border-t lg:border-slate-100 lg:rounded-none shadow-xs lg:shadow-none flex flex-col items-center text-center gap-6">
-          <div class="space-y-2 max-w-xl">
-            <h3 class="text-lg md:text-xl font-bold text-text-main font-serif">
-              {inquireTitle}
-            </h3>
-            <p class="text-text-main/60 text-[13px] md:text-sm leading-relaxed font-sans font-light">
-              {inquireDesc}
-            </p>
-          </div>
+        <div class="flex flex-wrap items-center gap-4 md:gap-6">
+          {project?.data?.githubUrl && (
+            <a
+              href={project.data.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-text-main transition-colors"
+            >
+              <Icon name="github" class="w-4 h-4" />
+              <span>{pr.githubBtn}</span>
+            </a>
+          )}
 
-          <button 
-            id="start-project-btn"
-            data-msg={project.data.whatsappStartProjectMsg}
-            class="h-12 px-8 rounded-full bg-gradient-to-r from-accent-primary to-accent-highlight hover:shadow-lg hover:brightness-110 text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all duration-300 cursor-pointer border-none"
+          <a
+            href={getWhatsAppUrl({ message: project?.data?.whatsappStartProjectMsg || '', lang: currentLang })}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 min-h-[48px] px-6 rounded-lg bg-success-primary hover:bg-success-hover text-white text-sm font-semibold tracking-wide transition-colors active:scale-[0.98]"
           >
-            <span>{inquireBtn}</span>
-            <span class="text-sm font-sans">{isAr ? "←" : "→"}</span>
-          </button>
+            <Icon name="whatsapp" class="w-4 h-4 shrink-0" />
+            <span>{pr.discussSimilarProject}</span>
+          </a>
         </div>
+      </section>
 
-      </div>
-
-      <!-- Related Services Section (T014) -->
-      {activeServices.length > 0 && (
-        <div class="space-y-6 pt-12">
-          <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-text-main font-serif text-center md:text-start flex items-center justify-center md:justify-start gap-2">
-            <span class="text-xl">🛠️</span>
-            {isAr ? "الخدمات المهنية ذات الصلة" : "Related Professional Services"}
+      <!-- Related Services -->
+      {activeServices && activeServices.length > 0 && (
+        <section class="max-w-3xl">
+          <h2 class="font-mono text-xs uppercase tracking-widest text-text-muted">
+            {pr.relatedServicesTitle}
           </h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
-            {activeServices.map((service: any) => {
-              const serviceSlug = service.slug.split('/').pop();
+          <ul class="mt-4 divide-y divide-text-main/10">
+            {activeServices.map((s: any) => {
+              const sSlug = s.slug.split('/').pop();
               return (
-                <a href={currentLang === 'ar' ? `/services/${serviceSlug}/` : `/en/services/${serviceSlug}/`} class="glass-card glass-card-hover group rounded-2xl p-5 flex flex-col gap-3 transition-all duration-300">
-                  <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0 transition-colors group-hover:bg-accent-primary/20">
-                      <i class={`fa-solid fa-${service.data.icon} text-base`} aria-hidden="true"></i>
+                <li>
+                  <a href={currentLang === 'ar' ? `/services/${sSlug}/` : `/en/services/${sSlug}/`} class="group flex items-center justify-between gap-6 py-5">
+                    <div class="space-y-1 overflow-hidden">
+                      <span class="block font-mono text-xs uppercase tracking-wider text-text-muted">{t.blogPage.professionalService}</span>
+                      <span class="block text-sm font-semibold text-text-main truncate group-hover:text-accent-primary transition-colors">{s?.data?.title}</span>
                     </div>
-                    <div class="space-y-0.5">
-                      <span class="text-[9px] font-mono text-text-main/45 uppercase tracking-widest">{service.data.category}</span>
-                      <h3 class="text-sm font-bold text-text-main group-hover:text-accent-primary transition-colors duration-300 font-serif leading-tight">
-                        {service.data.title}
-                      </h3>
-                    </div>
-                  </div>
-                  <p class="text-text-main/60 text-xs leading-relaxed font-sans font-light">
-                    {service.data.description}
-                  </p>
-                </a>
+                    <svg class="w-4 h-4 text-text-muted group-hover:text-accent-primary transition-colors shrink-0 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5 15.75 12 8.25 19.5" /></svg>
+                  </a>
+                </li>
               );
             })}
-          </div>
-        </div>
+          </ul>
+        </section>
       )}
 
+      </div>
     </div>
   </main>
 
-  <Footer lang={currentLang} />
+  <Footer lang={currentLang === 'en' ? 'en' : 'ar'} />
 </Layout>
-
-<script>
-  import { trackEvent } from '../../../scripts/analytics';
-
-  function initProjectPage() {
-    // Tab switching logic
-    const galleryTab = document.getElementById('tab-gallery');
-    const dashboardTab = document.getElementById('tab-dashboard');
-    const galleryContent = document.getElementById('content-gallery');
-    const dashboardContent = document.getElementById('content-dashboard');
-    const promptHelper = document.getElementById('dashboard-prompt-helper');
-
-    const activeClasses = ['bg-accent-primary', 'text-white', 'shadow-md', 'border-none', 'lg:shadow-none'];
-    const inactiveClasses = ['bg-slate-100', 'border', 'border-slate-200/60', 'text-text-main/70', 'shadow-none', 'lg:bg-transparent', 'lg:border-none', 'lg:hover:bg-slate-200/30'];
-
-    if (galleryTab && dashboardTab && galleryContent && dashboardContent) {
-      galleryTab.addEventListener('click', () => {
-        // Gallery Active
-        activeClasses.forEach(c => galleryTab.classList.add(c));
-        inactiveClasses.forEach(c => galleryTab.classList.remove(c));
-
-        // Dashboard Inactive
-        inactiveClasses.forEach(c => dashboardTab.classList.add(c));
-        activeClasses.forEach(c => dashboardTab.classList.remove(c));
-
-        galleryContent.classList.remove('hidden');
-        dashboardContent.classList.add('hidden');
-        if (promptHelper) {
-          promptHelper.classList.remove('hidden');
-        }
-      });
-
-      dashboardTab.addEventListener('click', () => {
-        // Dashboard Active
-        activeClasses.forEach(c => dashboardTab.classList.add(c));
-        inactiveClasses.forEach(c => dashboardTab.classList.remove(c));
-
-        // Gallery Inactive
-        inactiveClasses.forEach(c => galleryTab.classList.add(c));
-        activeClasses.forEach(c => galleryTab.classList.remove(c));
-
-        dashboardContent.classList.remove('hidden');
-        galleryContent.classList.add('hidden');
-        if (promptHelper) {
-          promptHelper.classList.add('hidden');
-        }
-
-        // Dynamically load the dashboard iframe to protect initial load performance
-        const iframe = document.getElementById('dashboard-iframe') as HTMLIFrameElement | null;
-        if (iframe && !iframe.src) {
-          const dSrc = iframe.getAttribute('data-src');
-          if (dSrc) {
-            iframe.src = dSrc;
-          }
-        }
-      });
-    }
-
-    // Internal tab redirect button click
-    const activateTabBtn = document.getElementById('activate-dashboard-tab-btn');
-    if (activateTabBtn && dashboardTab) {
-      activateTabBtn.addEventListener('click', () => {
-        dashboardTab.click();
-      });
-    }
-
-    // Thumbnail click logic
-    const thumbnails = document.querySelectorAll('.gallery-thumbnail');
-    const mainImage = document.getElementById('main-gallery-image') as HTMLImageElement | null;
-
-    if (thumbnails.length > 0 && mainImage) {
-      thumbnails.forEach(thumb => {
-        thumb.addEventListener('click', () => {
-          // Remove active border from all thumbnails
-          thumbnails.forEach(t => t.classList.remove('border-accent-primary', 'ring-2', 'ring-accent-primary/20'));
-          // Add active border to clicked thumbnail
-          thumb.classList.add('border-accent-primary', 'ring-2', 'ring-accent-primary/20');
-          // Update main image source with smooth crossfade
-          const newSrc = thumb.getAttribute('data-src') || '';
-          mainImage.style.opacity = '0';
-          setTimeout(() => {
-            mainImage.src = newSrc;
-            mainImage.style.opacity = '1';
-          }, 150);
-        });
-      });
-    }
-
-    // Iframe load spinner logic
-    const iframe = document.getElementById('dashboard-iframe') as HTMLIFrameElement | null;
-    const loader = document.getElementById('iframe-loader');
-    if (iframe && loader) {
-      iframe.addEventListener('load', () => {
-        loader.style.opacity = '0';
-        setTimeout(() => loader.classList.add('hidden'), 300);
-        iframe.style.opacity = '1';
-      });
-    }
-
-    // Adblock-resilient dynamic WhatsApp redirection for CTAs
-    const registerCta = (id: string, textGetter: () => string) => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.addEventListener('click', () => {
-          const msg = textGetter();
-
-          // Track CTA click
-          const slug = window.location.pathname.split('/').filter(Boolean).pop() || '';
-          trackEvent({
-            event: 'cta_click',
-            cta_text: btn.textContent?.trim() || id,
-            cta_type: 'whatsapp',
-            context_slug: slug
-          });
-
-          const domainParts = ['wa', 'me'];
-          const targetDomain = domainParts.join('.');
-          const recipientNum = '201017749925';
-          const redirectUrl = `https://${targetDomain}/${recipientNum}?text=${encodeURIComponent(msg)}`;
-          window.open(redirectUrl, '_blank', 'noopener,noreferrer');
-        });
-      }
-    };
-
-    registerCta('start-project-btn', () => {
-      const btn = document.getElementById('start-project-btn');
-      return btn?.getAttribute('data-msg') || '';
-    });
-  }
-
-  // Bind to page load event for initial load and page changes
-  document.addEventListener('astro:page-load', initProjectPage);
-</script>
-
-<script type="application/ld+json" is:inline set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": project.data.title,
-  "description": seoData.description,
-  "image": project.data.coverImage.src,
-  "genre": project.data.category,
-  "inLanguage": currentLang,
-  "creator": {
-    "@type": "Person",
-    "name": "Amr Mousa",
-    "jobTitle": "Data & Marketing Analyst"
-  }
-})} />

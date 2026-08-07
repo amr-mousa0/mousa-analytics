@@ -1,0 +1,72 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'outline' | 'whatsapp';
+  size?: 'sm' | 'md' | 'lg';
+  icon?: string;
+  iconPosition?: 'left' | 'right';
+  target?: string;
+  rel?: string;
+  class?: string;
+  id?: string;
+  [key: string]: any;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconPosition = 'right',
+  target,
+  rel,
+  class: className = '',
+  id,
+  ...rest
+} = Astro.props;
+
+const variantClasses = {
+  primary: 'bg-hero-accent hover:bg-hero-accent/90 text-white shadow-md border border-hero-accent/20',
+  secondary: 'bg-hero-card hover:bg-hero-card/80 text-text-main border border-text-main/15 shadow-sm',
+  outline: 'bg-transparent border border-text-main/20 hover:bg-text-main/5 text-text-main',
+  whatsapp: 'bg-success-primary hover:bg-success-primary/90 text-white shadow-md border border-success-primary/20'
+}[variant];
+
+const sizeClasses = {
+  sm: 'h-9 px-4 text-[11px] gap-1.5',
+  md: 'h-11 px-6 text-xs gap-2',
+  lg: 'h-13 px-8 text-sm gap-2.5'
+}[size];
+
+const baseClasses = 'inline-flex items-center justify-center font-semibold uppercase tracking-wider rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hero-accent';
+const combinedClasses = `${baseClasses} ${variantClasses} ${sizeClasses} ${className}`.trim();
+---
+
+{
+  href ? (
+    <a
+      id={id}
+      href={href}
+      target={target}
+      rel={rel || (target === '_blank' ? 'noopener noreferrer' : undefined)}
+      class={combinedClasses}
+      {...rest}
+    >
+      {icon && iconPosition === 'left' && <Icon name={icon} class="w-4 h-4 shrink-0" />}
+      <slot />
+      {icon && iconPosition === 'right' && <Icon name={icon} class="w-4 h-4 shrink-0" />}
+    </a>
+  ) : (
+    <button
+      id={id}
+      class={combinedClasses}
+      {...rest}
+    >
+      {icon && iconPosition === 'left' && <Icon name={icon} class="w-4 h-4 shrink-0" />}
+      <slot />
+      {icon && iconPosition === 'right' && <Icon name={icon} class="w-4 h-4 shrink-0" />}
+    </button>
+  )
+}

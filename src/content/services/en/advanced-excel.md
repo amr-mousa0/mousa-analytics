@@ -8,7 +8,7 @@ tags:
   - excel
   - vba
   - automation
-coverImage: ../../../assets/images/Excel.jpg
+coverImage: "/images/services/advanced-excel.jpg"
 execSummaryText: "Say goodbye to slow spreadsheets, manual data entry, and formula crashes. I automate your workflows, design secure financial models, and code custom VBA macros to make your business run at lightning speed."
 scopeItems:
   - title: "Automated Reports & Dashboards"

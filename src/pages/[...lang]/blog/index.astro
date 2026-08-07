@@ -1,9 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
+import { ContentFacade } from '../../../lib/content/facade.js';
+import { getImageUrl } from '../../../scripts/imageHelper';
 import Layout from '../../../layouts/Layout.astro';
-import Navigation from '../../../components/ui/Navigation.astro';
-import Footer from '../../../components/ui/Footer.astro';
+import Navbar from '../../../components/layout/Navbar.astro';
+import Footer from '../../../components/layout/Footer.astro';
+import { useTranslations } from '../../../i18n/index.js';
 
 export function getStaticPaths() {
   return [
@@ -21,19 +22,22 @@ if (lang !== undefined && lang !== 'en') {
 
 const currentLang = lang || 'ar';
 const isAr = currentLang === 'ar';
+const t = useTranslations(currentLang);
+const b = t.blogPage;
 
-// Fetch and filter localized blog posts
-const allPosts = await getCollection('blog');
-const activePosts = allPosts
-  .filter(post => !post.data.draft && post.slug.startsWith(`${currentLang}/`))
-  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+// Fetch localized blog posts
+const activePosts = await ContentFacade.getBlogPosts({ lang: currentLang });
 
-const t = {
-  title: isAr ? "المدونة والمقالات" : "Blog & Articles",
-  subtitle: isAr ? "مقالات متخصصة في التحليلات، التسويق وأتمتة العمليات" : "Expert articles on analytics, performance marketing & automation",
-  readMore: isAr ? "اقرأ المقال" : "Read Article",
-  publishedOn: isAr ? "نشر في" : "Published on",
-  emptyState: isAr ? "لا توجد مقالات منشورة حالياً." : "No articles published yet."
+const categoryTranslations: Record<string, string> = {
+  'Data Analytics': 'تحليل_البيانات',
+  'Systems Automation': 'أتمتة_الأنظمة',
+  'Custom CRM': 'أنظمة_CRM',
+  'Advanced Excel': 'إكسيل_متقدم',
+  'Marketing Strategy': 'التسويق',
+  'Web Portfolios': 'المواقع_الإلكترونية',
+  'Branding': 'العلامة_التجارية',
+  'Art Direction': 'التوجيه_الفني',
+  'Design System': 'نظام_التصميم'
 };
 ---
 
@@ -42,67 +46,100 @@ const t = {
   pageId="blog"
   contentType="page"
 >
-  <Navigation lang={currentLang} activePage="blog" />
+  <Navbar lang={currentLang === 'en' ? 'en' : 'ar'} activePage="blog" />
 
-  <main class="flex-grow pt-24 md:pt-32 pb-20 relative overflow-hidden bg-transparent">
-    <!-- Ambient Glows -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_0%,rgba(37,99,235,0.03),transparent_70%)] pointer-events-none z-0" aria-hidden="true"></div>
-
-    <div class="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 space-y-12">
-      <!-- Title Block -->
-      <div class="text-center max-w-xl mx-auto space-y-3 pt-4">
-        <span class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-accent-primary uppercase font-mono">
-          {isAr ? "رؤى وأفكار" : "INSIGHTS & ARTICLES"}
+  <main class="flex-grow pt-24 md:pt-32 pb-24 relative overflow-hidden bg-white">
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 space-y-12">
+      <!-- Title Block (Exact Reference Match) -->
+      <div class="text-center max-w-2xl mx-auto space-y-2 pt-4">
+        <span class="text-[11px] font-mono font-bold tracking-[0.2em] text-blue-600 uppercase block motion-enter-fade">
+          {b.eyebrow}
         </span>
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight font-serif text-text-main leading-tight">
-          {t.title}
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-gray-900 font-sans leading-tight motion-enter-up">
+          {b.title}
         </h1>
-        <p class="text-text-main/60 text-xs sm:text-sm font-sans leading-relaxed">
-          {t.subtitle}
+        <p class="text-gray-500 text-sm sm:text-base font-sans leading-relaxed motion-enter-up">
+          {b.subtitle}
         </p>
       </div>
 
-      <!-- Feed Grid -->
+      <!-- Feed Grid (3 Large Columns matching Reference Layout) -->
       {activePosts.length > 0 ? (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-6">
-          {activePosts.map((post) => {
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 pt-4">
+          {activePosts.map((post, index) => {
             const postSlug = post.slug.split('/').pop();
             const formattedDate = new Date(post.data.publishDate).toLocaleDateString(isAr ? 'ar-EG' : 'en-US', {
               year: 'numeric',
-              month: 'long',
+              month: 'short',
               day: 'numeric'
             });
 
+            const postCoverSrc = getImageUrl(post.data.coverImage);
+            const isFirstImage = index === 0;
+            const postUrl = currentLang === 'ar' ? `/blog/${postSlug}/` : `/en/blog/${postSlug}/`;
+            
+            const categoryBase = post.data.category || 'ARTICLE';
+            const categoryTag = isAr && categoryTranslations[categoryBase]
+              ? categoryTranslations[categoryBase]
+              : categoryBase.toUpperCase().replace(/\s+/g, '');
+              
+            const tagPositionClasses = isAr ? 'top-0 -right-[1px]' : 'top-0 -left-[1px]';
+
             return (
-              <a href={currentLang === 'ar' ? `/blog/${postSlug}/` : `/en/blog/${postSlug}/`} class="glass-card glass-card-hover group rounded-[20px] p-5 flex flex-col gap-4 transition-all duration-300">
-                {post.data.coverImage && (
-                  <div class="overflow-hidden rounded-xl border border-text-main/10 aspect-video">
-                    <Image 
-                      src={post.data.coverImage} 
-                      alt={post.data.title}
-                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      width={400}
-                      quality={85}
+              <a 
+                href={postUrl} 
+                class="relative motion-hover-lift motion-enter-up motion-stagger group flex flex-col justify-between border border-t-0 border-[#E5E7EB] bg-white rounded-none p-0 shadow-none transition-all duration-300"
+                style={`--stagger-index: ${index}`}
+              >
+                <!-- Category Tag — absolute overlay top-corner on card (covers border for cutout effect) -->
+                <div dir={isAr ? 'rtl' : 'ltr'} class={`absolute ${tagPositionClasses} z-20 bg-white px-3 py-1.5`}>
+                  <span class="text-[11px] font-mono font-bold tracking-wider text-black uppercase">
+                    #{categoryTag}
+                  </span>
+                </div>
+
+                <!-- Tall Cover Image -->
+                <div class="aspect-[4/3] relative overflow-hidden motion-hover-image-scale bg-slate-100 w-full rounded-none">
+                  {postCoverSrc && (
+                    <img 
+                      src={postCoverSrc} 
+                      alt={post.data.title || ''}
+                      class="w-full h-full object-cover rounded-none"
+                      width="600"
+                      height="450"
+                      loading={isFirstImage ? "eager" : "lazy"}
+                      decoding="async"
+                      fetchpriority={isFirstImage ? "high" : "low"}
                     />
-                  </div>
-                )}
-                <div class="flex-grow flex flex-col justify-between gap-4">
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2 text-[10px] font-mono text-text-main/45">
-                      <span class="px-2 py-0.5 rounded-md bg-accent-primary/10 text-accent-primary font-semibold">{post.data.category}</span>
-                      <span>•</span>
-                      <span>{formattedDate}</span>
-                    </div>
-                    <h2 class="text-base font-bold text-text-main group-hover:text-accent-primary transition-colors duration-300 font-serif leading-snug">
+                  )}
+                </div>
+
+                <!-- Card Content Area -->
+                <div class="p-6 sm:p-7 flex-grow flex flex-col justify-between gap-6 min-h-[240px]">
+                  <div class="space-y-3">
+                    <h2 class="text-xl sm:text-2xl font-normal font-sans text-gray-900 group-hover:text-blue-600 transition-colors duration-300 leading-snug line-clamp-2 min-h-[3rem]">
                       {post.data.title}
                     </h2>
-                    <p class="text-text-main/60 text-xs leading-relaxed font-sans font-light line-clamp-3">
+                    <p class="text-gray-500 text-[13px] sm:text-sm font-sans font-light leading-relaxed line-clamp-3 min-h-[3.75rem]">
                       {post.data.description}
                     </p>
                   </div>
-                  <div class="flex items-center gap-1.5 text-[11px] font-bold text-accent-primary uppercase tracking-wider mt-2 group-hover:gap-2.5 transition-all">
-                    <span>{t.readMore}</span>
-                    <span class="text-xs">{isAr ? "←" : "→"}</span>
+
+                  <!-- Footer Action Bar matching Reference Layout -->
+                  <div class="flex items-center justify-between pt-4 text-xs font-sans">
+                    <!-- Action Link + Icon Box -->
+                    <div class="flex items-center gap-3 text-gray-900 font-bold group-hover:text-blue-600 transition-colors">
+                      <span class="w-8 h-8 border border-gray-200 bg-white group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-all duration-300 flex items-center justify-center shrink-0 motion-press text-xs rounded-none">
+                        {isAr ? "←" : "→"}
+                      </span>
+                      <span class="text-xs font-bold font-sans text-gray-900 uppercase tracking-wide whitespace-nowrap">{b.readMore}</span>
+                    </div>
+
+                    <!-- Date & Accent Line -->
+                    <div class="flex items-center gap-3 font-mono text-xs text-gray-400">
+                      <span>{formattedDate}</span>
+                      <span class="h-px w-10 bg-gray-200 inline-block" aria-hidden="true"></span>
+                    </div>
                   </div>
                 </div>
               </a>
@@ -110,12 +147,41 @@ const t = {
           })}
         </div>
       ) : (
-        <div class="text-center py-20 bg-hero-card/40 border border-text-main/5 rounded-[24px] max-w-md mx-auto">
-          <p class="text-sm text-text-main/50 font-sans">{t.emptyState}</p>
+        <div class="text-center py-20 bg-white border border-gray-200 max-w-md mx-auto">
+          <p class="text-sm text-gray-400 font-sans">{b.emptyState}</p>
         </div>
       )}
     </div>
   </main>
 
-  <Footer lang={currentLang} />
+  <Footer lang={currentLang === 'en' ? 'en' : 'ar'} />
 </Layout>
+
+<script>
+  // Viewport entrance animation trigger
+  document.documentElement.classList.add('js-enabled');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.motion-enter-up, .motion-enter-fade').forEach((el) => {
+      observer.observe(el);
+    });
+  } else {
+    document.querySelectorAll('.motion-enter-up, .motion-enter-fade').forEach((el) => {
+      el.classList.add('is-visible');
+    });
+  }
+</script>
+
+<noscript>
+  <style>
+    .motion-enter-fade, .motion-enter-up { opacity: 1 !important; transform: none !important; }
+  </style>
+</noscript>

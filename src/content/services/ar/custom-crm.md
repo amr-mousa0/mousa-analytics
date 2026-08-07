@@ -5,7 +5,7 @@ icon: "diagram-project"
 priority: 4
 category: "Systems Automation"
 tags: ["crm", "systems", "nocode", "workflow"]
-coverImage: ../../../assets/images/Crm.png
+coverImage: "/images/services/custom-crm.png"
 execSummaryText: "بتدفع اشتراكات شهرية غالية لسيستم CRM معقد، أو لسة شغال بورقة وقلم والسيلز بينسى يكلم العملاء ومتابعة المناديب صعبة؟ هبني لك سيستم CRM بسيط باللغة العربية متفصل بالكامل على طريقة شغلك، يجمع كل عملائك وحركات البيع ويربط موقعك بالتحليلات من غير أي اشتراك شهري متكرر عشان تتابع السيلز والمناديب وتكبر مبيعاتك وأنت مستريح."
 scopeItems:
   - title: "تطوير ويب مخصص لنظام الـ CRM (بدون اشتراكات)"

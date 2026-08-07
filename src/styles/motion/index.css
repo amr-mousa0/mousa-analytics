@@ -1,0 +1,8 @@
+/* ==========================================================================
+   Motion Design System — Barrel Import
+   Governed by MOTION.md & Constitution Article 34
+   ========================================================================== */
+
+@import "./entrances.css";
+@import "./interactions.css";
+@import "./accessibility.css";

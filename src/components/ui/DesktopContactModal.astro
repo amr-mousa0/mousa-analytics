@@ -1,0 +1,333 @@
+---
+import { useTranslations } from '../../lib/locales/index';
+import { siteConfig } from '../../lib/config/site.config';
+
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const whatsappNumber = siteConfig.public.whatsappNumber;
+
+// Dynamic datasets from centralized dictionary
+const services = t.nav.contactModal.services || [];
+const timelines = t.nav.contactModal.timelines || [];
+---
+
+<!-- Desktop Dedicated Contact Modal Dialog (hidden on mobile via hidden md:flex) -->
+<div
+  id="desktop-contact-modal-container"
+  class="fixed inset-0 z-50 hidden md:flex items-center justify-center p-4 sm:p-6 lg:p-8 transition-opacity duration-300 opacity-0 pointer-events-none"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="desktop-contact-modal-title"
+  aria-describedby="desktop-contact-modal-subtitle"
+>
+  <!-- Backdrop Overlay with Soft Blur -->
+  <div
+    id="desktop-contact-modal-backdrop"
+    class="fixed inset-0 bg-text-main/60 backdrop-blur-sm transition-opacity duration-300"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Centered Desktop Modal Card -->
+  <div
+    id="desktop-contact-modal-dialog"
+    class="relative bg-bg-card border border-border-subtle rounded-3xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col z-10 overflow-hidden transform scale-95 transition-all duration-300 ease-out"
+  >
+    <!-- Modal Header -->
+    <div class="px-8 py-5 border-b border-border-subtle shrink-0 bg-bg-card flex items-start justify-between gap-6">
+      <!-- Title & Subtitle -->
+      <div class="flex-1 text-right rtl:text-right ltr:text-left">
+        <h2 id="desktop-contact-modal-title" class="text-2xl font-bold text-text-primary tracking-tight">
+          {t.nav.contactModal.title}
+        </h2>
+        <p id="desktop-contact-modal-subtitle" class="text-xs sm:text-sm text-text-muted mt-1 leading-relaxed">
+          {t.nav.contactModal.desktopSubtitle || t.nav.contactModal.subtitle}
+        </p>
+      </div>
+
+      <!-- Prominent Exit / Close Button (زرار الخروج) -->
+      <button
+        id="desktop-contact-modal-close-btn"
+        type="button"
+        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-bg-secondary hover:bg-border-subtle text-text-secondary hover:text-text-primary text-xs font-semibold transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-primary shrink-0 border border-border-subtle"
+        aria-label={t.nav.contactModal.closeHint}
+      >
+        <span>{t.nav.contactModal.closeHint}</span>
+        <svg class="w-4 h-4 stroke-current stroke-2 fill-none" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Scrollable Form Body -->
+    <div class="px-8 py-6 space-y-6 overflow-y-auto flex-1 text-right rtl:text-right ltr:text-left">
+      <!-- 1. Service Selection -->
+      <div class="space-y-3">
+        <label class="block text-xs uppercase tracking-wider font-semibold text-text-secondary">
+          {t.nav.contactModal.selectServicePrompt}
+        </label>
+        <div id="desktop-service-pills-container" class="flex flex-wrap gap-2.5 justify-start">
+          {services.map((service, index) => (
+            <button
+              type="button"
+              data-service-id={service.id}
+              data-service-label={service.label}
+              class={`desktop-service-pill px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer border select-none ${
+                index === 0
+                  ? 'bg-bg-card border-2 border-primary text-primary font-semibold shadow-xs'
+                  : 'bg-bg-secondary border-border-subtle text-text-primary hover:border-border-strong'
+              }`}
+            >
+              {service.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- 2. Industry / Business Model Input -->
+      <div class="space-y-2">
+        <label for="desktop-contact-industry-input" class="block text-xs uppercase tracking-wider font-semibold text-text-secondary">
+          {t.nav.contactModal.industryPrompt}
+        </label>
+        <input
+          id="desktop-contact-industry-input"
+          type="text"
+          placeholder={t.nav.contactModal.industryPlaceholder}
+          class="w-full px-4 py-3 rounded-xl bg-bg-secondary border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:bg-bg-card focus:border-border-accent focus:outline-none transition-colors"
+        />
+      </div>
+
+      <!-- 3. Inquiry / Project Details Textarea -->
+      <div class="space-y-2">
+        <label for="desktop-contact-details-input" class="block text-xs uppercase tracking-wider font-semibold text-text-secondary">
+          {t.nav.contactModal.inquiryPrompt}
+        </label>
+        <textarea
+          id="desktop-contact-details-input"
+          rows="3"
+          placeholder={t.nav.contactModal.inquiryPlaceholder}
+          class="w-full px-4 py-3 rounded-xl bg-bg-secondary border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:bg-bg-card focus:border-border-accent focus:outline-none transition-colors resize-none"
+        ></textarea>
+      </div>
+
+      <!-- 4. Timeline Selection -->
+      <div class="space-y-3">
+        <label class="block text-xs uppercase tracking-wider font-semibold text-text-secondary">
+          {t.nav.contactModal.timelinePrompt}
+        </label>
+        <div id="desktop-timeline-pills-container" class="flex flex-wrap gap-2.5 justify-start">
+          {timelines.map((timeline, index) => (
+            <button
+              type="button"
+              data-timeline-id={timeline.id}
+              data-timeline-label={timeline.label}
+              class={`desktop-timeline-pill px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer border select-none ${
+                index === 0
+                  ? 'bg-bg-card border-2 border-primary text-primary font-semibold shadow-xs'
+                  : 'bg-bg-secondary border-border-subtle text-text-primary hover:border-border-strong'
+              }`}
+            >
+              {timeline.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer with WhatsApp Action Button -->
+    <div class="px-8 py-4 border-t border-border-subtle bg-bg-card shrink-0 flex items-center justify-end gap-4">
+      <button
+        id="desktop-contact-modal-submit-btn"
+        type="button"
+        class="w-full sm:w-auto py-3.5 px-8 rounded-full bg-success-primary hover:bg-success-hover text-white font-bold text-sm flex items-center justify-center gap-3 shadow-md transition-all active:scale-[0.99] cursor-pointer focus-visible:ring-2 focus-visible:ring-success-primary"
+      >
+        <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+        </svg>
+        <span>{t.nav.contactModal.submitWhatsApp}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Client-Side Controller Script for Desktop Contact Modal -->
+<script is:inline define:vars={{ whatsappNumber, tMsg: t.nav.contactModal }}>
+  (() => {
+    let container = null;
+    let backdrop = null;
+    let dialog = null;
+    let closeBtn = null;
+    let submitBtn = null;
+    let industryInput = null;
+    let detailsInput = null;
+
+    let selectedService = tMsg.services && tMsg.services[0] ? tMsg.services[0].label : '';
+    let selectedTimeline = tMsg.timelines && tMsg.timelines[0] ? tMsg.timelines[0].label : '';
+    let previousOverflow = '';
+    let previousFocusedElement = null;
+
+    const initDesktopModal = () => {
+      container = document.getElementById('desktop-contact-modal-container');
+      backdrop = document.getElementById('desktop-contact-modal-backdrop');
+      dialog = document.getElementById('desktop-contact-modal-dialog');
+      closeBtn = document.getElementById('desktop-contact-modal-close-btn');
+      submitBtn = document.getElementById('desktop-contact-modal-submit-btn');
+      industryInput = document.getElementById('desktop-contact-industry-input');
+      detailsInput = document.getElementById('desktop-contact-details-input');
+
+      if (!container || !dialog) return;
+
+      // Ensure initial closed state on load
+      container.classList.add('opacity-0', 'pointer-events-none');
+      dialog.classList.add('scale-95');
+      dialog.classList.remove('scale-100');
+
+      // Pill click handlers - Service
+      const servicePills = container.querySelectorAll('.desktop-service-pill');
+      servicePills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          servicePills.forEach((p) => {
+            p.className = 'desktop-service-pill px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer border select-none bg-bg-secondary border-border-subtle text-text-primary hover:border-border-strong';
+          });
+          pill.className = 'desktop-service-pill px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer border-2 border-primary text-primary bg-bg-card shadow-xs select-none';
+          selectedService = pill.getAttribute('data-service-label') || pill.textContent.trim();
+        });
+      });
+
+      // Pill click handlers - Timeline
+      const timelinePills = container.querySelectorAll('.desktop-timeline-pill');
+      timelinePills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          timelinePills.forEach((p) => {
+            p.className = 'desktop-timeline-pill px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer border select-none bg-bg-secondary border-border-subtle text-text-primary hover:border-border-strong';
+          });
+          pill.className = 'desktop-timeline-pill px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer border-2 border-primary text-primary bg-bg-card shadow-xs select-none';
+          selectedTimeline = pill.getAttribute('data-timeline-label') || pill.textContent.trim();
+        });
+      });
+
+      // Close events
+      if (closeBtn) closeBtn.addEventListener('click', closeDesktopModal);
+      if (backdrop) backdrop.addEventListener('click', closeDesktopModal);
+
+      // Submit WhatsApp event
+      if (submitBtn) submitBtn.addEventListener('click', handleSubmit);
+
+      // Keyboard listeners (Escape & Focus Trap)
+      document.addEventListener('keydown', (e) => {
+        if (container && !container.classList.contains('pointer-events-none')) {
+          if (e.key === 'Escape') {
+            closeDesktopModal();
+          } else if (e.key === 'Tab') {
+            handleFocusTrap(e);
+          }
+        }
+      });
+
+      // Desktop trigger handler (only triggers when viewport is md: >= 768px)
+      document.querySelectorAll('[data-open-contact-modal]').forEach((trigger) => {
+        trigger.addEventListener('click', (e) => {
+          if (window.matchMedia('(min-width: 768px)').matches) {
+            e.preventDefault();
+            openDesktopModal(trigger);
+          }
+        });
+      });
+
+      window.addEventListener('open-desktop-contact-modal', () => {
+        if (window.matchMedia('(min-width: 768px)').matches) {
+          openDesktopModal(null);
+        }
+      });
+
+      window.addEventListener('open-contact-modal', () => {
+        if (window.matchMedia('(min-width: 768px)').matches) {
+          openDesktopModal(null);
+        }
+      });
+    };
+
+    const openDesktopModal = (triggerElement) => {
+      if (!container || !dialog) return;
+      previousFocusedElement = triggerElement || document.activeElement;
+
+      previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+
+      container.classList.remove('pointer-events-none', 'opacity-0');
+      dialog.classList.remove('scale-95');
+      dialog.classList.add('scale-100');
+
+      setTimeout(() => {
+        if (closeBtn) closeBtn.focus();
+      }, 100);
+    };
+
+    const closeDesktopModal = () => {
+      if (!container || !dialog) return;
+
+      dialog.classList.remove('scale-100');
+      dialog.classList.add('scale-95');
+      container.classList.add('opacity-0', 'pointer-events-none');
+
+      setTimeout(() => {
+        document.body.style.overflow = previousOverflow;
+        if (previousFocusedElement && typeof previousFocusedElement.focus === 'function') {
+          previousFocusedElement.focus();
+        }
+      }, 300);
+    };
+
+    const handleFocusTrap = (e) => {
+      if (!container) return;
+      const focusables = container.querySelectorAll('button, input, textarea, a, [tabindex]:not([tabindex="-1"])');
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    const handleSubmit = () => {
+      const industryVal = industryInput ? industryInput.value.trim() : '';
+      const detailsVal = detailsInput ? detailsInput.value.trim() : '';
+
+      const greeting = tMsg.greeting || 'السلام عليكم،';
+      const sLabel = tMsg.msgServiceLabel || 'الخدمة:';
+      const iLabel = tMsg.msgIndustryLabel || 'المجال:';
+      const dLabel = tMsg.msgDetailsLabel || 'وصف المشروع:';
+      const tLabel = tMsg.msgTimelineLabel || 'المدة المطلوبة:';
+      const thanks = tMsg.msgThanks || 'شكراً.';
+
+      const formattedMsg = `${greeting}\n\n${sLabel} ${selectedService}\n${iLabel} ${industryVal || '-'}\n${dLabel}\n${detailsVal || '-'}\n\n${tLabel} ${selectedTimeline}\n\n${thanks}`;
+
+      const encodedText = encodeURIComponent(formattedMsg);
+      const url = `https://wa.me/${whatsappNumber}?text=${encodedText}`;
+
+      window.open(url, '_blank', 'noopener,noreferrer');
+
+      if (industryInput) industryInput.value = '';
+      if (detailsInput) detailsInput.value = '';
+
+      closeDesktopModal();
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDesktopModal);
+    } else {
+      initDesktopModal();
+    }
+
+    document.addEventListener('astro:after-swap', initDesktopModal);
+  })();
+</script>

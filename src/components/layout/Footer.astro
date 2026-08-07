@@ -1,0 +1,120 @@
+---
+import BrandMark from '../brand/BrandMark.astro';
+import { BRAND_CONSTANTS } from '../../lib/constants/brand.constants';
+import { useTranslations } from '../../lib/locales/index';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const currentYear = new Date().getFullYear();
+
+const brandName = lang === 'ar' ? BRAND_CONSTANTS.PRIMARY_BRAND_AR : BRAND_CONSTANTS.PRIMARY_BRAND_EN;
+
+const navLinks = [
+  { href: lang === 'ar' ? '/' : '/en/', label: t.nav.home },
+  { href: lang === 'ar' ? '/#services' : '/en/#services', label: t.nav.services },
+  { href: lang === 'ar' ? '/#projects' : '/en/#projects', label: t.nav.projects },
+  { href: lang === 'ar' ? '/blog/' : '/en/blog/', label: t.nav.blog },
+  { href: lang === 'ar' ? '/about/' : '/en/about/', label: t.nav.about },
+];
+
+const legalLinks = [
+  { href: lang === 'ar' ? '/privacy/' : '/en/privacy/', label: t.footer.privacy },
+  { href: lang === 'ar' ? '/terms/' : '/en/terms/', label: t.footer.terms },
+];
+
+const socials = [
+  { name: 'LinkedIn', url: BRAND_CONSTANTS.SOCIAL_LINKEDIN, icon: 'linkedin' },
+  { name: 'GitHub', url: BRAND_CONSTANTS.SOCIAL_GITHUB, icon: 'github' },
+  { name: 'WhatsApp', url: `https://wa.me/${BRAND_CONSTANTS.CANONICAL_PHONE}`, icon: 'whatsapp' },
+];
+---
+
+<footer class="bg-bg-secondary border-t border-border-subtle rounded-t-[32px] md:rounded-t-[48px] pt-10 pb-24 md:py-16 mt-auto relative z-20 shadow-2xl">
+  <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+
+    <!-- Top layout: 3 Columns distributed cleanly across container width -->
+    <div class="grid grid-cols-1 sm:grid-cols-12 gap-8 sm:gap-6 pb-8 border-b border-border-subtle items-start">
+
+      <!-- Col 1: Brand + Description (5 cols on sm+) -->
+      <div class="sm:col-span-5 flex flex-col gap-3.5">
+        <a href={lang === 'ar' ? '/' : '/en/'} class="inline-flex items-center gap-2.5 group w-fit">
+          <BrandMark class="w-7 h-7 text-text-primary shrink-0 transition-transform duration-300 group-hover:scale-105" />
+          <span class="font-bold text-sm text-text-primary">{brandName}</span>
+        </a>
+        <p class="text-xs text-text-muted leading-relaxed max-w-xs">
+          {t.footer.bio}
+        </p>
+      </div>
+
+      <!-- Col 2: Quick Links (3 cols on sm+, centered) -->
+      <div class="sm:col-span-3 flex flex-col gap-3 sm:mx-auto">
+        <h3 class="text-xs font-semibold text-text-primary uppercase tracking-widest">
+          {t.footer.quickLinks}
+        </h3>
+        <nav aria-label="Footer navigation">
+          <ul class="flex flex-col gap-2 text-xs">
+            {navLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-text-secondary hover:text-primary transition-colors font-medium"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Col 3: Contact & Socials (4 cols on sm+, aligned to end/left) -->
+      <div class="sm:col-span-4 flex flex-col gap-3 sm:items-end">
+        <h3 class="text-xs font-semibold text-text-primary uppercase tracking-widest">
+          {t.footer.directConnect}
+        </h3>
+        <div class="flex items-center gap-2">
+          {socials.map((social) => (
+            <a
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-9 h-9 rounded-full bg-bg-card border border-border-subtle flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary transition-all duration-200"
+              aria-label={social.name}
+            >
+              <Icon name={social.icon} class="w-4 h-4" />
+            </a>
+          ))}
+        </div>
+        <a 
+          href={`tel:+${BRAND_CONSTANTS.CANONICAL_PHONE}`} 
+          class="text-xs text-text-muted hover:text-primary transition-colors font-mono tracking-wider w-fit inline-block" 
+          dir="ltr"
+          aria-label="Phone number"
+        >
+          +{BRAND_CONSTANTS.CANONICAL_PHONE}
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar: Copyright + Legal links -->
+    <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-text-muted text-center sm:text-start">
+      <p>© {currentYear} {brandName}. {t.footer.copyright}</p>
+      <div class="flex items-center gap-5">
+        {legalLinks.map((link) => (
+          <a href={link.href} class="text-text-secondary hover:text-primary transition-colors font-medium">
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+

@@ -4,6 +4,7 @@ description: "اكتشف التكلفة الخفية وتأثير جداول ا�
 publishDate: "2026-05-27"
 author: "عمرو موسى"
 category: "Systems Automation"
+coverImage: "/images/services/advanced-excel.jpg"
 tags: ["إدارة العملاء", "المبيعات", "الأتمتة", "إكسيل"]
 translationKey: "why-excel-kills-growth"
 draft: false

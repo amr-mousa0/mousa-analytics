@@ -84,3 +84,29 @@ index.legacy.html
 # and must never be committed — they contain fake image paths from test runs.
 src/content/projects/*/sales-performance-analytics.md
 src/content/projects/*/sql-practice-level-1.md
+
+# 10. Agent & Misc Junk
+.gemini/
+*.py
+*.png
+*.jpg
+*.webp
+*.svg
+!src/assets/images/*.svg
+!src/assets/images/*.png
+!src/assets/images/*.jpg
+!src/assets/images/*.webp
+ezgif-*/
+images/
+assets/
+صور/
+صور الخدمات/
+صور الخدما ت/
+Dashboard*.png
+Screenshot*.png
+*.html
+!src/**/*.html
+*.md
+!README.md
+!docs/**/*.md
+!src/**/*.md

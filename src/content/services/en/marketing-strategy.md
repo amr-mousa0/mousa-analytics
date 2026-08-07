@@ -9,7 +9,7 @@ tags:
   - ads
   - facebook
   - google
-coverImage: ../../../assets/images/media-buying.jpg
+coverImage: "/images/services/marketing-strategy.png"
 execSummaryText: "Stop burning money on ineffective ads. I build high-converting Meta and Google ad strategies and manage media buying from end to end, ensuring every dollar spent goes directly toward generating high-ticket sales or leads."
 scopeItems:
   - title: "Meta Ads Campaign Management"

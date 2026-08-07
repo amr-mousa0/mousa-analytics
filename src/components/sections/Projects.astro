@@ -1,7 +1,11 @@
 ---
 import { ContentHubClient } from '../../lib/sdk/contentHubClient.js';
-import { Image } from 'astro:assets';
+import { getImageUrl } from '../../scripts/imageHelper.js';
 import Icon from '../ui/Icon.astro';
+import { useTranslations } from '../../i18n/index.js';
+import { getWhatsAppUrl, getContactHref } from '../../lib/contact/cta.js';
+
+import FlowingRibbons from '../ui/FlowingRibbons.astro';
 
 interface Props {
   lang: string;
@@ -9,9 +13,9 @@ interface Props {
 
 const { lang } = Astro.props;
 const isAr = lang === 'ar';
+const t = useTranslations(lang);
 
 const projects = await ContentHubClient.getProjects(lang);
-
 
 const getProjectUrl = (slug: string) => {
   const cleanSlug = slug.split('/').pop();
@@ -20,140 +24,130 @@ const getProjectUrl = (slug: string) => {
 
 const getProjectIcon = (slug: string) => {
   const cleanSlug = slug.split('/').pop();
-  if (cleanSlug === 'coffee-shop') return 'fa-solid fa-mug-hot';
-  if (cleanSlug === 'marketing-roi') return 'fa-solid fa-chart-line';
-  if (cleanSlug === 'oxygen-gym') return 'fa-solid fa-dumbbell';
-  return 'fa-solid fa-laptop-code';
+  if (cleanSlug === 'coffee-shop') return 'mug-hot';
+  if (cleanSlug === 'marketing-roi') return 'chart-line';
+  if (cleanSlug === 'oxygen-gym') return 'dumbbell';
+  return 'laptop-code';
 };
-
 ---
 
-<section id="projects" aria-labelledby="projects-title" class="py-24 px-6 relative bg-transparent overflow-hidden scroll-mt-20">
-  <div class="max-w-6xl mx-auto space-y-12">
+<section id="projects" aria-labelledby="projects-title" class="projects-orbit-section py-16 md:py-28 px-4 sm:px-6 relative bg-[#080807] overflow-hidden scroll-mt-20">
+  <!-- ─── Flowing 3D Ribbons Dynamic Background from System Design ─── -->
+  <FlowingRibbons opacity={0.45} />
+
+  <div class="max-w-7xl mx-auto space-y-6 md:space-y-10 relative z-10">
+    
     <!-- Header Area -->
-    <div class="space-y-3 text-center">
-      <!-- Title -->
-      <h2 id="projects-title" class="text-4xl font-extrabold tracking-tight text-accent-primary font-sans">
-        {isAr ? "المشاريع" : "Projects"}
+    <div class="space-y-3 text-center flex flex-col items-center">
+      <span class="text-[10px] font-bold tracking-[0.2em] text-accent-primary uppercase font-sans px-4 py-1.5 bg-accent-primary/10 rounded-full border border-accent-primary/25 backdrop-blur-md shadow-sm">
+        {isAr ? "استكشف المشاريع" : "EXPLORE PROJECTS"}
+      </span>
+
+      <h2 id="projects-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white font-sans mt-2">
+        {t.projects.title}
       </h2>
       
-      <!-- Subtitle -->
-      <p class="text-text-main/70 text-base leading-relaxed font-sans max-w-xl mx-auto">
-        {isAr ? "نتائج حقيقية من مشاريع واقعية. شاهد كيف نقود النمو." : "Real results from real projects. See how we drive growth."}
+      <p class="text-white/60 text-xs sm:text-base leading-relaxed font-sans max-w-xl mx-auto font-light px-2">
+        {t.projects.subtitle}
       </p>
     </div>
 
-    <!-- Carousel Container Wrapper -->
-    <div class="relative project-carousel-container px-4 md:px-0">
+    <!-- Coverflow Container Stage -->
+    <div class="relative project-carousel-container">
       
-      <!-- Navigation Arrows (Desktop overlay only) -->
+      <!-- Navigation Arrows (Desktop Side Arrows) -->
       <button 
-        class="absolute top-1/2 -translate-y-1/2 start-0 md:-start-6 z-10 w-12 h-12 rounded-full border border-slate-200 bg-white shadow-md hidden md:flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all duration-200 active:scale-90 select-none carousel-btn-left"
-        aria-label={isAr ? "التمرير للأمام" : "Scroll back"}
+        class="absolute top-1/2 -translate-y-1/2 start-2 md:-start-4 z-50 w-11 h-11 md:w-12 md:h-12 rounded-full border border-white/15 bg-black/70 backdrop-blur-xl text-white shadow-[0_10px_30px_rgba(0,0,0,0.5)] hidden md:flex items-center justify-center cursor-pointer hover:bg-white/15 hover:border-white/30 hover:scale-105 transition-all duration-300 active:scale-95 select-none carousel-btn-left"
+        aria-label={t.projects.scrollBack}
       >
-        <svg class="w-4 h-4 text-text-main/70 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+        <svg class="w-5 h-5 text-white/90 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
       </button>
 
       <button 
-        class="absolute top-1/2 -translate-y-1/2 end-0 md:-end-6 z-10 w-12 h-12 rounded-full border border-slate-200 bg-white shadow-md hidden md:flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-all duration-200 active:scale-90 select-none carousel-btn-right"
-        aria-label={isAr ? "التمرير للخلف" : "Scroll forward"}
+        class="absolute top-1/2 -translate-y-1/2 end-2 md:-end-4 z-50 w-11 h-11 md:w-12 md:h-12 rounded-full border border-white/15 bg-black/70 backdrop-blur-xl text-white shadow-[0_10px_30px_rgba(0,0,0,0.5)] hidden md:flex items-center justify-center cursor-pointer hover:bg-white/15 hover:border-white/30 hover:scale-105 transition-all duration-300 active:scale-95 select-none carousel-btn-right"
+        aria-label={t.projects.scrollForward}
       >
-        <svg class="w-4 h-4 text-text-main/70 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+        <svg class="w-5 h-5 text-white/90 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
       </button>
 
-      <!-- Horizontal scroll snap list -->
-      <div class="project-carousel-list flex gap-5 md:gap-8 overflow-x-auto overflow-y-hidden touch-auto scroll-smooth snap-x snap-mandatory no-scrollbar pb-6 px-6 md:px-0 -mx-6 md:mx-0">
+      <!-- 3D Orbit Stage Container -->
+      <div class="project-coverflow-stage relative w-full h-[480px] sm:h-[540px] md:h-[590px] flex items-center justify-center overflow-visible" style="perspective: 1100px; transform-style: preserve-3d;" data-projects-count={projects.length}>
         {projects.length === 0 ? (
-          <div class="w-full text-center py-12 text-slate-400 font-sans">
-            {isAr ? "لا توجد مشاريع متاحة حالياً." : "No projects found."}
+          <div class="w-full text-center py-12 text-white/40 font-sans">
+            {t.projects.noProjects}
           </div>
         ) : (
-          projects.map((project) => (
-            <div class="group premium-card-global !p-0 overflow-hidden flex flex-col h-full flex-shrink-0 w-[76vw] sm:w-[335px] md:w-[420px] snap-center relative">
-              
-              <!-- Top Half: Project Preview Image -->
+          projects.map((project, index) => (
+            <article 
+              class="project-coverflow-card group !p-0 overflow-hidden flex flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[1.75rem] sm:rounded-[2rem] border border-white/15 bg-[#0a0b0e] w-[88vw] sm:w-[380px] md:w-[450px] h-[440px] sm:h-[490px] md:h-[540px] shadow-2xl origin-center pointer-events-auto transition-shadow duration-500 hover:shadow-[0_25px_60px_rgba(0,0,0,0.95)]" 
+              style="transform-style: preserve-3d; backface-visibility: hidden;"
+              data-index={index}
+            >
+              <!-- Interaction Shield for Inactive Cards -->
+              <div class="coverflow-shield absolute inset-0 z-40 hidden cursor-pointer" aria-hidden="true"></div>
+
+              <!-- Top Image Area -->
               <a 
                 href={getProjectUrl(project.slug)} 
-                class="h-40 sm:h-44 md:h-56 relative border-b border-slate-100 bg-slate-50 overflow-hidden block"
+                class="h-40 sm:h-48 md:h-52 relative bg-[#050505] block shrink-0 z-10 group/img"
+                tabindex="-1"
               >
-                {typeof project.data.coverImage === 'object' && project.data.coverImage !== null && 'format' in project.data.coverImage ? (
-                  <Image 
-                    src={project.data.coverImage} 
-                    alt={project.data.title} 
-                    class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                    width={500}
-                    quality={75}
-                    loading="lazy"
-                  />
-                ) : (
+                <div class="w-full h-full overflow-hidden relative">
                   <img 
-                    src={typeof project.data.coverImage === 'string' ? project.data.coverImage : (project.data.coverImage as any)?.src || '/images/og-image.png'} 
+                    src={getImageUrl(project.data.coverImage)} 
                     alt={project.data.title} 
-                    class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    class="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover/img:scale-108"
                     width="500"
+                    height="300"
                     loading="lazy"
                   />
-                )}
-                
-                {project.isFallback && (
-                  <span class="absolute top-4 end-4 text-[8px] font-bold tracking-wider text-white uppercase px-2 py-0.5 rounded bg-amber-600 font-sans z-10">
-                    {isAr ? "غير مترجم" : "NOT TRANSLATED"}
-                  </span>
-                )}
-
-                <!-- GPU-Accelerated Mobile Click/Tap Indicator Badge -->
-                <div class="absolute bottom-3 end-3 md:hidden z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/75 border border-white/10 text-white text-[8px] font-bold tracking-wider uppercase font-mono shadow-md animate-gpu-pulse">
-                  <span class="relative flex h-1.5 w-1.5">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-primary"></span>
-                  </span>
-                  <span>{isAr ? "اضغط هنا لتفاصيل المشروع ↗" : "TAP FOR PROJECT DETAILS ↗"}</span>
+                  <div class="absolute inset-0 bg-gradient-to-t from-[#0a0b0e] via-[#0a0b0e]/40 to-transparent opacity-90"></div>
+                  
+                  {project.isFallback && (
+                    <span class="absolute top-3 end-3 text-[8px] font-bold tracking-wider text-black uppercase px-2 py-0.5 rounded-full bg-amber-400 font-sans z-10 shadow-md">
+                      {t.projects.notTranslated}
+                    </span>
+                  )}
                 </div>
 
-                <!-- Floating Icon Badge (Bottom-Left) -->
-                <div class="absolute -bottom-3 start-4 w-9 h-9 rounded-xl bg-white border border-slate-200 shadow-md flex items-center justify-center text-accent-primary z-10">
-                  <Icon name={getProjectIcon(project.slug)} class="w-4.5 h-4.5" />
+                <!-- Floating Icon Badge -->
+                <div class="absolute -bottom-3.5 start-4 sm:start-5 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-600 border border-blue-400/40 shadow-xl flex items-center justify-center text-white z-30">
+                  <Icon name={getProjectIcon(project.slug)} class="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </a>
 
-              <!-- Bottom Half: Content details -->
-              <div class="p-4 pt-5 pb-24 md:p-6 md:pt-8 md:pb-28 bg-white flex-grow flex flex-col justify-between">
-                <div class="space-y-2.5 md:space-y-4">
-                  
-                  <!-- Category pill tag -->
-                  <div>
-                    <span class="inline-block px-2.5 py-1 text-[9px] font-extrabold tracking-wider text-accent-primary uppercase bg-accent-primary/5 border border-accent-primary/20 rounded font-sans">
+              <!-- Card Details Body -->
+              <div class="p-4 sm:p-5 pt-5 pb-16 sm:pb-20 bg-[#0a0b0e] flex-grow flex flex-col justify-between overflow-hidden">
+                <div class="space-y-2">
+                  <div class="h-4 sm:h-5 flex items-center">
+                    <span class="inline-block px-2.5 py-0.5 text-[9px] font-bold tracking-[0.12em] text-white/60 uppercase bg-white/5 border border-white/10 rounded-full font-sans truncate">
                       {project.data.projectBadge}
                     </span>
                   </div>
 
-                  <!-- Title -->
-                  <h3 class="text-sm sm:text-base md:text-lg font-bold text-text-main font-serif leading-snug">
+                  <h3 class="text-sm sm:text-base md:text-lg font-bold text-white leading-snug min-h-[2rem] sm:min-h-[2.25rem] flex items-center font-sans tracking-tight">
                     <a 
                       href={getProjectUrl(project.slug)} 
-                      class="hover:text-accent-primary transition-colors"
+                      class="hover:text-white/80 transition-colors block line-clamp-2"
+                      title={project.data.title}
                     >
                       {project.data.title}
                     </a>
                   </h3>
 
                   {project.isFallback && (
-                    <div class="text-[10px] text-amber-600 bg-amber-500/5 px-2.5 py-1.5 rounded border border-amber-500/10 font-sans leading-tight">
-                      {isAr 
-                        ? "⚠️ هذا المشروع غير متوفر بالعربية بعد، يتم عرض النسخة الإنجليزية." 
-                        : "⚠️ Arabic version unavailable, English details shown."}
+                    <div class="text-[10px] text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded-lg border border-amber-500/20 font-sans leading-tight truncate">
+                      {t.projects.fallbackNotice}
                     </div>
                   )}
 
-                  <!-- Description -->
-                  <p class="text-text-main/70 text-xs sm:text-sm leading-relaxed font-sans line-clamp-2 md:line-clamp-none min-h-[2.5rem] md:min-h-0">
+                  <p class="text-white/50 text-xs sm:text-sm leading-relaxed font-sans font-light line-clamp-2 min-h-[1.75rem] sm:min-h-[2rem]">
                     {project.data.problemText}
                   </p>
 
-                  <!-- Tech Stack tags -->
-                  <div class="flex flex-wrap gap-2 pt-2">
-                    {project.data.tags.map((tag: string) => (
-                      <span class="px-2.5 py-1 text-[11px] font-medium text-slate-600 bg-slate-50 border border-slate-100 rounded-full font-sans">
+                  <div class="flex flex-wrap gap-1.5 pt-0.5">
+                    {project.data.tags.slice(0, 3).map((tag: string) => (
+                      <span class="px-2 py-0.5 text-[9px] sm:text-[10px] font-mono text-white/40 bg-white/[0.04] border border-white/8 rounded-md truncate max-w-[140px] sm:max-w-[160px]">
                         {tag}
                       </span>
                     ))}
@@ -161,158 +155,411 @@ const getProjectIcon = (slug: string) => {
                 </div>
               </div>
 
-              <!-- Action Area Wrapper (Default Explore button - Desktop only) -->
-              <div class="absolute inset-x-0 bottom-0 p-6 bg-white pointer-events-none md:block hidden md:group-hover:opacity-0 transition-opacity duration-200">
-                <!-- Subtle Divider -->
-                <hr class="border-slate-100 mb-4" />
-                <div class="flex justify-end pointer-events-auto">
-                  <a 
-                    href={getProjectUrl(project.slug)} 
-                    class="h-11 px-5 rounded-lg bg-accent-primary/5 hover:bg-accent-primary/10 text-accent-primary border border-accent-primary/20 font-semibold text-xs transition-all duration-200 active:scale-95 flex items-center gap-1.5 cursor-pointer justify-center"
-                  >
-                    {isAr ? "استكشف التفاصيل" : "Explore Details"}
-                    <span class="text-sm font-sans">→</span>
-                  </a>
-                </div>
-              </div>
+              <!-- Action Footer -->
+              <div class="absolute inset-x-0 bottom-0 p-3.5 sm:p-4 bg-[#0a0b0e] border-t border-white/10 flex items-center justify-between gap-2 z-20">
+                <a 
+                  href={getProjectUrl(project.slug)} 
+                  class="h-9 sm:h-10 px-4 sm:px-5 rounded-full bg-white text-black hover:bg-white/90 font-semibold text-xs transition-all duration-300 active:scale-[0.96] flex items-center gap-1.5 group/btn shadow-md whitespace-nowrap shrink-0"
+                >
+                  <span>{t.projects.exploreDetails}</span>
+                  <span class="text-xs group-hover/btn:translate-x-1 transition-transform">{isAr ? "←" : "→"}</span>
+                </a>
 
-              <!-- Hover Overlay (Desktop slide-up, mobile always visible) -->
-              <div class="absolute inset-x-0 bottom-0 bg-white p-5 border-t border-slate-100 flex items-center justify-between gap-2 z-20 shadow-[0_-8px_24px_rgba(10,25,47,0.06)] opacity-100 translate-y-0 pointer-events-auto md:translate-y-full md:opacity-0 md:pointer-events-none md:transition-all md:duration-300 md:ease-out md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-hover:pointer-events-auto">
-                <!-- Quick Connect Actions -->
-                <div class="flex items-center gap-2 w-full">
-                  <!-- Call Button (Circular) -->
+                <div class="flex items-center gap-1.5 shrink-0">
                   <a 
-                    href="tel:+201017749925" 
-                    class="w-11 h-11 rounded-full bg-slate-100 hover:bg-slate-200 text-text-main flex items-center justify-center transition-all duration-200 active:scale-95 shrink-0 border border-slate-200/50 project-phone-cta"
-                    aria-label={isAr ? "اتصال هاتفي" : "Call now"}
+                    href={getContactHref('phone', lang as 'en' | 'ar')} 
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/5 hover:bg-white/15 text-white/80 flex items-center justify-center transition-all duration-300 active:scale-[0.96] border border-white/10 project-phone-cta shrink-0"
+                    aria-label={t.footer.callNow}
                   >
-                    <Icon name="phone" class="w-4 h-4" />
+                    <Icon name="phone" class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </a>
-
-                  <!-- WhatsApp Button (Green) -->
                   <a 
-                    href={`https://wa.me/201017749925?text=${encodeURIComponent(project.data.whatsappStartProjectMsg)}`}
+                    href={getWhatsAppUrl({ message: project.data.whatsappStartProjectMsg, lang: lang as 'en' | 'ar' })}
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    class="h-11 flex-grow rounded-full bg-success-primary hover:bg-success-hover text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all duration-200 border-none project-whatsapp-cta"
+                    class="w-9 h-9 sm:w-auto sm:h-10 sm:px-4 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold text-xs tracking-wide flex items-center justify-center sm:gap-1.5 transition-all duration-300 active:scale-[0.96] border border-emerald-500/30 project-whatsapp-cta shrink-0"
                     data-project-title={project.data.title}
                     data-project-slug={project.slug}
                   >
-                    <Icon name="whatsapp" class="w-4 h-4" />
-                    <span>{isAr ? "واتس اب" : "WhatsApp"}</span>
+                    <Icon name="whatsapp" class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span class="hidden sm:inline whitespace-nowrap">{t.footer.whatsappNow}</span>
                   </a>
                 </div>
               </div>
-
-            </div>
+            </article>
           ))
         )}
       </div>
+
+      <!-- Sleek Bottom Control Bar for Mobile & Desktop -->
+      {projects.length > 1 && (
+        <div class="flex items-center justify-center gap-3 mt-4">
+          <button 
+            class="w-9 h-9 rounded-full border border-white/15 bg-white/5 backdrop-blur-md text-white flex md:hidden items-center justify-center cursor-pointer hover:bg-white/15 active:scale-90 transition-all carousel-btn-left-mobile"
+            aria-label={t.projects.scrollBack}
+          >
+            <svg class="w-4 h-4 text-white/80 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+          </button>
+
+          <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md project-dots-container">
+            {projects.map((_, index) => (
+              <button 
+                class="project-dot h-2 rounded-full bg-white/20 transition-all duration-500 hover:bg-white/50 cursor-pointer"
+                data-dot-index={index}
+                aria-label={`Go to project ${index + 1}`}
+              ></button>
+            ))}
+          </div>
+
+          <button 
+            class="w-9 h-9 rounded-full border border-white/15 bg-white/5 backdrop-blur-md text-white flex md:hidden items-center justify-center cursor-pointer hover:bg-white/15 active:scale-90 transition-all carousel-btn-right-mobile"
+            aria-label={t.projects.scrollForward}
+          >
+            <svg class="w-4 h-4 text-white/80 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+          </button>
+        </div>
+      )}
 
     </div>
   </div>
 </section>
 
 <script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { trackEvent } from '../../scripts/analytics';
 
-  // Setup click listeners for hover contacts
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ── Analytics Tracking ──
   const setupHoverContacts = () => {
-    const phoneBtns = document.querySelectorAll('.project-phone-cta');
-    phoneBtns.forEach(btn => {
+    document.querySelectorAll('.project-phone-cta').forEach(btn => {
       if (btn.hasAttribute('data-tracking-bound')) return;
       btn.setAttribute('data-tracking-bound', 'true');
       btn.addEventListener('click', () => {
-        trackEvent({
-          event: 'cta_click',
-          cta_text: 'Phone Icon Call',
-          cta_type: 'call',
-          context_slug: 'homepage-project-hover'
-        });
+        trackEvent({ event: 'cta_click', cta_text: 'Phone Icon Call', cta_type: 'call', context_slug: 'homepage-project-hover' });
       });
     });
-
-    const whatsappBtns = document.querySelectorAll('.project-whatsapp-cta');
-    whatsappBtns.forEach(btn => {
+    document.querySelectorAll('.project-whatsapp-cta').forEach(btn => {
       if (btn.hasAttribute('data-tracking-bound')) return;
       btn.setAttribute('data-tracking-bound', 'true');
       btn.addEventListener('click', () => {
         const slug = btn.getAttribute('data-project-slug') || '';
         const cleanSlug = slug.split('/').pop() || '';
-        trackEvent({
-          event: 'cta_click',
-          cta_text: 'WhatsApp',
-          cta_type: 'whatsapp',
-          context_slug: cleanSlug || undefined
-        });
+        trackEvent({ event: 'cta_click', cta_text: 'WhatsApp', cta_type: 'whatsapp', context_slug: cleanSlug || undefined });
       });
     });
   };
 
-  // Setup logic for navigation trigger events
-  const setupCarousel = () => {
-    const carousels = document.querySelectorAll('.project-carousel-container');
-    
-    carousels.forEach(container => {
-      // Guard against double initialization
-      if (container.hasAttribute('data-carousel-initialized')) return;
-      container.setAttribute('data-carousel-initialized', 'true');
+  // ══════════════════════════════════════════════════════════════
+  // CINEMATIC FOCUS ORBIT ENGINE
+  // ══════════════════════════════════════════════════════════════
+  const setupFocusOrbit = () => {
+    const stage = document.querySelector('.project-coverflow-stage') as HTMLElement | null;
+    if (!stage) return;
+    if (stage.hasAttribute('data-orbit-init')) return;
+    stage.setAttribute('data-orbit-init', 'true');
 
-      const list = container.querySelector('.project-carousel-list');
-      const leftBtn = container.querySelector('.carousel-btn-left');
-      const rightBtn = container.querySelector('.carousel-btn-right');
-      
-      if (!list || !leftBtn || !rightBtn) return;
-      
-      const card = list.querySelector('.premium-card-global');
-      if (!card) return;
+    const cards = Array.from(stage.querySelectorAll('.project-coverflow-card')) as HTMLElement[];
+    const btnLeftDesktop = document.querySelector('.carousel-btn-left') as HTMLElement | null;
+    const btnRightDesktop = document.querySelector('.carousel-btn-right') as HTMLElement | null;
+    const btnLeftMobile = document.querySelector('.carousel-btn-left-mobile') as HTMLElement | null;
+    const btnRightMobile = document.querySelector('.carousel-btn-right-mobile') as HTMLElement | null;
+    const dots = Array.from(document.querySelectorAll('.project-dot')) as HTMLElement[];
 
-      // Scroll amount is one card width + gap (32px)
-      const getScrollAmount = () => card.clientWidth + 32;
+    if (!cards.length) return;
 
-      leftBtn.addEventListener('click', () => {
-        const isRtl = document.documentElement.dir === 'rtl';
-        const scrollAmount = getScrollAmount();
-        list.scrollBy({
-          left: isRtl ? scrollAmount : -scrollAmount,
-          behavior: 'smooth'
-        });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isRtl = document.documentElement.dir === 'rtl';
+    const isMobile = window.innerWidth < 768;
+
+    let currentIndex = 0;
+    let isAnimating = false;
+    let entranceDone = false;
+
+    // ── Spacing Calculation ──
+    const getCardOffset = (absDiff: number) => {
+      if (isMobile) {
+        if (absDiff === 1) return 210;
+        if (absDiff === 2) return 350;
+        return 450;
+      } else {
+        if (absDiff === 1) return 330;
+        if (absDiff === 2) return 560;
+        return 760;
+      }
+    };
+
+    // ── Dot Indicators ──
+    const updateDots = () => {
+      dots.forEach((dot, i) => {
+        if (i === currentIndex) {
+          dot.style.width = '24px';
+          dot.style.backgroundColor = '#3B82F6';
+          dot.style.boxShadow = '0 0 12px rgba(59, 130, 246, 0.6)';
+        } else {
+          dot.style.width = '8px';
+          dot.style.backgroundColor = 'rgba(255,255,255,0.2)';
+          dot.style.boxShadow = 'none';
+        }
       });
+    };
 
-      rightBtn.addEventListener('click', () => {
-        const isRtl = document.documentElement.dir === 'rtl';
-        const scrollAmount = getScrollAmount();
-        list.scrollBy({
-          left: isRtl ? -scrollAmount : scrollAmount,
-          behavior: 'smooth'
-        });
+    // ── Calculate Coverflow Props ──
+    const getCoverflowTargetProps = (i: number, activeIdx: number, animate = true) => {
+      const diff = i - activeIdx;
+      const absDiff = Math.abs(diff);
+      const sign = diff > 0 ? 1 : -1;
+      const dir = isRtl ? -1 : 1;
+      const dur = animate ? 0.75 : 0;
+      const ease = 'power3.out';
+
+      const shield = cards[i]?.querySelector('.coverflow-shield') as HTMLElement | null;
+
+      if (absDiff === 0) {
+        if (shield) shield.style.display = 'none';
+        return {
+          x: 0,
+          y: 0,
+          z: 80,
+          rotateY: 0,
+          rotateZ: 0,
+          scale: 1,
+          opacity: 1,
+          filter: 'blur(0px)',
+          zIndex: 50,
+          duration: dur,
+          ease
+        };
+      } else if (absDiff === 1) {
+        if (shield) shield.style.display = 'block';
+        return {
+          x: sign * dir * getCardOffset(1),
+          y: isMobile ? 6 : 10,
+          z: -40,
+          rotateY: sign * dir * (isMobile ? -14 : -18),
+          rotateZ: 0,
+          scale: isMobile ? 0.82 : 0.85,
+          opacity: isMobile ? 0.55 : 0.65,
+          filter: 'blur(1.5px)',
+          zIndex: 40,
+          duration: dur,
+          ease
+        };
+      } else if (absDiff === 2) {
+        if (shield) shield.style.display = 'block';
+        return {
+          x: sign * dir * getCardOffset(2),
+          y: isMobile ? 12 : 20,
+          z: -140,
+          rotateY: sign * dir * (isMobile ? -25 : -30),
+          rotateZ: 0,
+          scale: isMobile ? 0.65 : 0.7,
+          opacity: isMobile ? 0 : 0.2,
+          filter: 'blur(4px)',
+          zIndex: 30,
+          duration: dur,
+          ease
+        };
+      } else {
+        if (shield) shield.style.display = 'block';
+        return {
+          x: sign * dir * getCardOffset(3),
+          y: 0,
+          z: -250,
+          rotateY: sign * dir * -35,
+          rotateZ: 0,
+          scale: 0.5,
+          opacity: 0,
+          filter: 'blur(10px)',
+          zIndex: 10,
+          duration: dur,
+          ease
+        };
+      }
+    };
+
+    // ══════════════════════════════════════════
+    // COVERFLOW UPDATE
+    // ══════════════════════════════════════════
+    const updateCoverflow = (animate = true) => {
+      cards.forEach((card, i) => {
+        const props = getCoverflowTargetProps(i, currentIndex, animate);
+        animate ? gsap.to(card, props) : gsap.set(card, props);
       });
+      updateDots();
+    };
+
+    // Initialize layout immediately so cards are NEVER unstyled or top-left
+    updateCoverflow(false);
+
+    // ══════════════════════════════════════════
+    // NAVIGATION
+    // ══════════════════════════════════════════
+    const goToIndex = (idx: number) => {
+      if (isAnimating) return;
+      if (idx < 0) idx = cards.length - 1;
+      if (idx >= cards.length) idx = 0;
+      if (idx === currentIndex) return;
+      
+      isAnimating = true;
+      currentIndex = idx;
+      updateCoverflow(true);
+      setTimeout(() => { isAnimating = false; }, 750);
+    };
+
+    const prev = () => goToIndex(currentIndex + (isRtl ? 1 : -1));
+    const next = () => goToIndex(currentIndex + (isRtl ? -1 : 1));
+
+    btnLeftDesktop?.addEventListener('click', prev);
+    btnRightDesktop?.addEventListener('click', next);
+    btnLeftMobile?.addEventListener('click', prev);
+    btnRightMobile?.addEventListener('click', next);
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goToIndex(i)));
+
+    cards.forEach((card, i) => {
+      const shield = card.querySelector('.coverflow-shield');
+      shield?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        goToIndex(i);
+      });
+    });
+
+    // Touch Swipe
+    let touchStartX = 0;
+    let touchStartTime = 0;
+    stage.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartTime = Date.now();
+    }, { passive: true });
+
+    stage.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dt = Date.now() - touchStartTime;
+      if (Math.abs(dx) > 30 && dt < 600) {
+        dx > 0 ? prev() : next();
+      }
+    }, { passive: true });
+
+    // Keyboard support
+    stage.setAttribute('tabindex', '0');
+    stage.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    });
+
+    // ══════════════════════════════════════════
+    // CINEMATIC ENTRANCE (SCROLLTRIGGER)
+    // ══════════════════════════════════════════
+    if (reduceMotion) {
+      entranceDone = true;
+      return;
+    }
+
+    const total = cards.length;
+    const orbitRadiusX = isMobile ? 120 : 250;
+    const orbitRadiusZ = isMobile ? 140 : 280;
+
+    const get3DOrbitPos = (i: number, angleOffsetDeg: number) => {
+      const angleDeg = (360 / Math.max(total, 1)) * i + angleOffsetDeg;
+      const rad = (angleDeg * Math.PI) / 180;
+      
+      const x = Math.sin(rad) * orbitRadiusX;
+      const z = Math.cos(rad) * orbitRadiusZ;
+      const y = Math.sin(rad * 2) * 12;
+      const depth = (z + orbitRadiusZ) / (2 * orbitRadiusZ);
+      
+      return {
+        x,
+        y,
+        z,
+        rotateY: angleDeg,
+        rotateZ: Math.sin(rad) * 3,
+        scale: 0.3 + depth * 0.35,
+        opacity: 0.25 + depth * 0.75,
+        filter: `blur(${Math.max(0, (1 - depth) * 4)}px)`,
+        zIndex: Math.round(10 + depth * 40),
+      };
+    };
+
+    const section = document.querySelector('#projects') as HTMLElement | null;
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section || stage,
+        start: 'top 70%',
+        end: '+=700px',
+        scrub: 0.6,
+        onLeave: () => {
+          entranceDone = true;
+        },
+        onLeaveBack: () => {
+          entranceDone = false;
+        }
+      },
+    });
+
+    // ── Crisp, Light & Stable Scrubbed 3D Entrance ──
+    tl.fromTo(cards, 
+      {
+        z: -450,
+        opacity: 0,
+        scale: 0.25,
+        filter: 'blur(10px)',
+      },
+      {
+        x: (i: number) => get3DOrbitPos(i, 0).x,
+        y: (i: number) => get3DOrbitPos(i, 0).y,
+        z: (i: number) => get3DOrbitPos(i, 0).z,
+        rotateY: (i: number) => get3DOrbitPos(i, 0).rotateY,
+        rotateZ: (i: number) => get3DOrbitPos(i, 0).rotateZ,
+        scale: (i: number) => get3DOrbitPos(i, 0).scale,
+        opacity: (i: number) => get3DOrbitPos(i, 0).opacity,
+        filter: (i: number) => get3DOrbitPos(i, 0).filter,
+        zIndex: (i: number) => get3DOrbitPos(i, 0).zIndex,
+        duration: 1.0,
+        stagger: { each: 0.05, from: 'center' },
+        ease: 'power2.out',
+      }
+    )
+    .to({}, {
+      duration: 2.2,
+      ease: 'none',
+      onUpdate: function () {
+        const progress = this.progress();
+        const spinDeg = progress * 360;
+        cards.forEach((card, i) => {
+          gsap.set(card, get3DOrbitPos(i, spinDeg));
+        });
+      },
+    })
+    .to(cards, {
+      x: (i: number) => getCoverflowTargetProps(i, 0, true).x,
+      y: (i: number) => getCoverflowTargetProps(i, 0, true).y,
+      z: (i: number) => getCoverflowTargetProps(i, 0, true).z,
+      rotateY: (i: number) => getCoverflowTargetProps(i, 0, true).rotateY,
+      rotateZ: 0,
+      scale: (i: number) => getCoverflowTargetProps(i, 0, true).scale,
+      opacity: (i: number) => getCoverflowTargetProps(i, 0, true).opacity,
+      filter: (i: number) => getCoverflowTargetProps(i, 0, true).filter,
+      zIndex: (i: number) => getCoverflowTargetProps(i, 0, true).zIndex,
+      duration: 1.2,
+      stagger: { each: 0.04, from: 'center' },
+      ease: 'power3.out',
     });
   };
 
-  // Run on page load
-  setupCarousel();
-  setupHoverContacts();
-
-  // Run on Astro View Transitions navigation swap
-  document.addEventListener('astro:after-swap', () => {
-    setupCarousel();
+  const init = () => {
+    setupFocusOrbit();
     setupHoverContacts();
-  });
-</script>
+  };
 
-<style>
-  @keyframes gpu-pulse {
-    0%, 100% {
-      transform: translate3d(0,0,0) scale(1);
-      opacity: 0.85;
-    }
-    50% {
-      transform: translate3d(0,0,0) scale(1.04);
-      opacity: 1;
-    }
+  document.addEventListener('astro:page-load', init);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
-  .animate-gpu-pulse {
-    animation: gpu-pulse 2s infinite ease-in-out;
-  }
-</style>
+</script>
