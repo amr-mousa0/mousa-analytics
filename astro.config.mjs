@@ -64,6 +64,25 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('gsap') || id.includes('framer-motion')) {
+                return 'vendor-motion';
+              }
+              if (id.includes('lucide') || id.includes('lucide-react')) {
+                return 'vendor-icons';
+              }
+              if (id.includes('react') || id.includes('react-dom')) {
+                return 'vendor-react';
+              }
+            }
+          }
+        }
+      }
+    },
     optimizeDeps: {
       // Removed React from optimizeDeps to fix `jsxDEV is not a function` in React 19
     },

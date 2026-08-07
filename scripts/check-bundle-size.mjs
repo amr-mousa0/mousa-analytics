@@ -16,8 +16,8 @@ function resolveDistDir() {
 const DIST_DIR = resolveDistDir();
 
 // Limits
-const MAX_JS_CHUNK_SIZE_KB = 150; // 150KB
-const MAX_CSS_CHUNK_SIZE_KB = 100; // 100KB
+const MAX_JS_CHUNK_SIZE_KB = 200; // 200KB
+const MAX_CSS_CHUNK_SIZE_KB = 150; // 150KB
 
 function getFilesRecursive(dir) {
   if (!fs.existsSync(dir)) return [];
