@@ -160,10 +160,11 @@ const galleryCards = [
       <h1
         class={`brand-name ${isAr ? 'brand-name--ar' : 'brand-name--en'}`}
         dir={isAr ? 'rtl' : 'ltr'}
+        aria-label={isAr ? 'موسى لتحليل البيانات' : 'MOUSA DATA ANALYTICS'}
       >
         {isAr ? (
           ['موسى', 'لتحليل البيانات'].map((line, li) => (
-            <span class="brand-line" role="text" aria-label={line}>
+            <span class="brand-line">
               <span
                 class="brand-char brand-char--word"
                 style={`--char-index: ${li}`}
@@ -173,7 +174,7 @@ const galleryCards = [
           ))
         ) : (
           ['MOUSA', 'DATA ANALYTICS'].map((line, li) => (
-            <span class="brand-line" role="text" aria-label={line}>
+            <span class="brand-line">
               {line.split('').map((char, ci) => (
                 <span
                   class="brand-char"
