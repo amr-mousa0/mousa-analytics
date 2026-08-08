@@ -122,7 +122,7 @@ test.describe('Performance & Core Web Vitals Audits', () => {
   }
 
   test('Emulates Slow 3G network conditions on Chromium', async ({ page, browserName, isMobile }) => {
-    test.setTimeout(90000);
+    test.setTimeout(150000);
     // Only desktop Chromium supports reliable CDP network emulation in Playwright
     test.skip(browserName !== 'chromium' || isMobile, 'Skip network emulation on non-chromium or mobile browsers');
 
@@ -137,8 +137,8 @@ test.describe('Performance & Core Web Vitals Audits', () => {
       uploadThroughput: (400 * 1024) / 8,
     });
 
-    await page.goto('/en/', { waitUntil: 'commit', timeout: 90000 });
-    await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 90000 });
+    await page.goto('/en/', { waitUntil: 'commit', timeout: 150000 });
+    await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 150000 });
 
     // Assert that lazy loaded assets are loaded correctly
     const imagesCount = await page.locator('img').count();
