@@ -36,6 +36,7 @@ export class AssetWorker {
     if (newModel.gallery && newModel.gallery.length > 0) {
       const galleryPromises = newModel.gallery.map((item) =>
         limit(async () => {
+          if (!item.url) return item;
           const newUrl = await this.processSingleAsset(
             item.url, repoFullName, branch, storageProvider, githubToken
           );
