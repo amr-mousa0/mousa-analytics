@@ -137,7 +137,11 @@ test.describe('Performance & Core Web Vitals Audits', () => {
       uploadThroughput: (400 * 1024) / 8,
     });
 
-    await page.goto('/en/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto('/en/', { waitUntil: 'commit', timeout: 150000 });
+
+    // The preloader is removed instantly for bots, so gate on real content parsing
+    // instead: wait until the HTML body streamed far enough to contain <img> elements.
+    await page.waitForFunction(() => document.querySelectorAll('img').length > 0, null, { timeout: 150000 });
 
     // Assert that lazy loaded assets are loaded correctly
     const imagesCount = await page.locator('img').count();

@@ -48,8 +48,6 @@ test.describe('Hydration, Console Audits, & Link Validations', () => {
         /moz-extension/i,
         /sw\.js/i,
         /Failed to fetch/i,
-        /Failed to load resource/i,
-        /404/i,
         /NetworkError/i,
         /Load failed/i,
         /net::ERR_/i,
