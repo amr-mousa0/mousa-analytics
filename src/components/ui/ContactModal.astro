@@ -70,9 +70,9 @@ const timelines = t.nav.contactModal.timelines || [];
     <div class="p-6 space-y-5 overflow-y-auto flex-1 text-right rtl:text-right ltr:text-left">
       <!-- 1. Service Selection -->
       <div class="space-y-2.5">
-        <label class="block text-sm font-semibold text-text-secondary">
+        <span class="block text-sm font-semibold text-text-secondary">
           {t.nav.contactModal.selectServicePrompt}
-        </label>
+        </span>
         <div id="service-pills-container" class="flex flex-wrap gap-2.5 justify-start">
           {services.map((service, index) => (
             <button
@@ -119,9 +119,9 @@ const timelines = t.nav.contactModal.timelines || [];
 
       <!-- 4. Timeline Selection -->
       <div class="space-y-2.5">
-        <label class="block text-sm font-semibold text-text-secondary">
+        <span class="block text-sm font-semibold text-text-secondary">
           {t.nav.contactModal.timelinePrompt}
-        </label>
+        </span>
         <div id="timeline-pills-container" class="flex flex-wrap gap-2.5 justify-start">
           {timelines.map((timeline, index) => (
             <button

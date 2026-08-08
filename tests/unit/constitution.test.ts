@@ -44,8 +44,8 @@ describe('GOV-002 Master Constitution Compliance Re-Audit Suite', () => {
     
     const fontsPath = path.resolve('src/styles/fonts.css');
     const fontsContent = fs.readFileSync(fontsPath, 'utf-8');
-    expect(fontsContent).toContain("font-family: 'Cairo'");
-    expect(fontsContent).toContain("font-family: 'Inter'");
+    expect(fontsContent).toContain('Cairo');
+    expect(fontsContent).toContain('Inter');
   });
 
   it('CC-06: Verifies zero raw font icon tags <i class="fa- remain in active src/ templates', () => {

@@ -40,7 +40,7 @@ const getProjectIcon = (slug: string) => {
     <!-- Header Area -->
     <div class="space-y-3 text-center flex flex-col items-center">
       <span class="text-[10px] font-bold tracking-[0.2em] text-accent-primary uppercase font-sans px-4 py-1.5 bg-accent-primary/10 rounded-full border border-accent-primary/25 backdrop-blur-md shadow-sm">
-        {isAr ? "استكشف المشاريع" : "EXPLORE PROJECTS"}
+        {t.hero.totem.exploreProjects}
       </span>
 
       <h2 id="projects-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white font-sans mt-2">
@@ -177,7 +177,7 @@ const getProjectIcon = (slug: string) => {
                     href={getWhatsAppUrl({ message: project.data.whatsappStartProjectMsg, lang: lang as 'en' | 'ar' })}
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    class="w-9 h-9 sm:w-auto sm:h-10 sm:px-4 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-semibold text-xs tracking-wide flex items-center justify-center sm:gap-1.5 transition-all duration-300 active:scale-[0.96] border border-emerald-500/30 project-whatsapp-cta shrink-0"
+                    class="w-9 h-9 sm:w-auto sm:h-10 sm:px-4 rounded-full bg-green-600/20 hover:bg-green-600/30 text-green-400 font-semibold text-xs tracking-wide flex items-center justify-center sm:gap-1.5 transition-all duration-300 active:scale-[0.96] border border-green-600/30 project-whatsapp-cta shrink-0"
                     data-project-title={project.data.title}
                     data-project-slug={project.slug}
                   >

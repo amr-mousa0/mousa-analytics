@@ -8,14 +8,14 @@ import {
 
 describe('TASK-FND-003: Brand Governance Naming Constants & Guards', () => {
   it('exports canonical primary brand and legal entity names matching SPEC-BRAND-001', () => {
-    expect(BRAND_CONSTANTS.PRIMARY_BRAND_EN).toBe('Mousa Analytics');
+    expect(BRAND_CONSTANTS.PRIMARY_BRAND_EN).toBe('Mousa Data Analytics');
     expect(BRAND_CONSTANTS.PRIMARY_BRAND_AR).toBe('موسى لتحليل البيانات');
     expect(BRAND_CONSTANTS.LEGAL_ENTITY_EN).toBe('Mousa Systems');
     expect(BRAND_CONSTANTS.LEGAL_ENTITY_AR).toBe('أنظمة موسى');
   });
 
   it('validates canonical brand names successfully', () => {
-    expect(isValidBrandName('Mousa Analytics')).toBe(true);
+    expect(isValidBrandName('Mousa Data Analytics')).toBe(true);
     expect(isValidBrandName('Mousa Systems')).toBe(true);
     expect(isValidBrandName('موسى لتحليل البيانات')).toBe(true);
   });

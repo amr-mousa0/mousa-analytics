@@ -170,7 +170,8 @@ test.describe('Performance & Core Web Vitals Audits', () => {
     // but warning helps developer audit them.
   });
 
-  test('Services Grid zero-CLS desktop hover verification', async ({ page }) => {
+  test('Services Grid zero-CLS desktop hover verification', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'Skip desktop hover engine test on mobile/touch projects');
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
     await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });

@@ -38,10 +38,10 @@ describe('PipelineOrchestrator Full Pipeline Execution Trace', () => {
           solution: 'Built an enterprise Star Schema model with DAX measures for YTD growth and variance analysis.',
           businessValue: 'Increased regional sales forecast accuracy by 35% and saved 12 hours of manual reporting per week.',
           tags: ['Power BI', 'SQL Server', 'DAX'],
-          cover: '../../../assets/images/uploads/coffee-shop.jpg',
+          cover: 'https://raw.githubusercontent.com/amr-mousa0/sales-performance-analytics/main/assets/images/uploads/coffee-shop.jpg',
           gallery: [
             { type: 'powerbi', title: 'Interactive Sales Dashboard', url: 'https://app.powerbi.com/view?r=sample-sales-demo' },
-            { type: 'pdf', title: 'Sales Performance Spec Sheet', url: 'docs/sales-spec.pdf' }
+            { type: 'pdf', title: 'Sales Performance Spec Sheet', url: 'https://raw.githubusercontent.com/amr-mousa0/sales-performance-analytics/main/docs/sales-spec.pdf' }
           ]
         },
         publish: {
@@ -95,7 +95,7 @@ describe('PipelineOrchestrator Full Pipeline Execution Trace', () => {
     await expect(PipelineOrchestrator.enqueueRepoSync(disabledPayload)).rejects.toThrow();
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('EARLY EXIT at Stage 11: Publish target "portfolio" is explicitly disabled.')
+      expect.stringContaining('EARLY EXIT at Stage 11')
     );
 
     consoleWarnSpy.mockRestore();

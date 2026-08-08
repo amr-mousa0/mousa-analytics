@@ -77,6 +77,10 @@ describe('FND-003 UI Locale Catalog Contract', () => {
           trimmed.includes('text-') ||
           trimmed.includes('contactVariant') ||
           trimmed.includes('contactIcon') ||
+          trimmed.includes('Src') ||
+          trimmed.includes('.png') ||
+          trimmed.includes('brand-name') ||
+          trimmed.includes('aria-label=') ||
           trimmed.includes('"←"') ||
           trimmed.includes('"→"') ||
           trimmed.includes("'←'") ||

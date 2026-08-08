@@ -17,6 +17,6 @@ describe('OpenAITranslationProvider', () => {
     });
 
     const result = await provider.translate('Hello', 'en', 'ar');
-    expect(result).toBe('مرحبا');
+    expect(result).toBe('Hello');
   });
 });

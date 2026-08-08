@@ -34,6 +34,8 @@ test.describe('Locale Redirection & Routing', () => {
     await waitForPreloader(page);
     await expect(arToggle).toBeVisible();
     await arToggle.click();
+    await page.waitForURL('/', { timeout: 10000 });
+    await waitForPreloader(page, 3000);
     
     await expect(page).toHaveURL('/');
     // Main heading should contain Arabic brand content

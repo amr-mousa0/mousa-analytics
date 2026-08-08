@@ -40,9 +40,9 @@ describe('SQL Practice Level 1 Repository Synchronization Phase Investigation', 
           solution: 'Created 25+ structured SQL problems with synthetic e-commerce datasets and benchmark solutions.',
           businessValue: 'Accelerated analytical onboarding time by 40% for junior data analysts.',
           tags: ['SQL Server', 'PostgreSQL', 'Data Analytics'],
-          cover: '../../../assets/images/uploads/coffee-shop.jpg',
+          cover: 'https://raw.githubusercontent.com/amr-mousa0/SQL-Practice-Level-1/main/assets/images/uploads/coffee-shop.jpg',
           gallery: [
-            { type: 'pdf', title: 'SQL Query Solutions Manual', url: 'docs/sql-solutions.pdf' }
+            { type: 'pdf', title: 'SQL Query Solutions Manual', url: 'https://raw.githubusercontent.com/amr-mousa0/SQL-Practice-Level-1/main/docs/sql-solutions.pdf' }
           ]
         },
         publish: {

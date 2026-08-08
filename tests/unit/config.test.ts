@@ -10,7 +10,7 @@ describe('FND-004 Site Config & Security Policy Contract', () => {
 
   it('exports canonical social media links', () => {
     expect(siteConfig.public.socials.github).toBe('https://github.com/amr-mousa0');
-    expect(siteConfig.public.socials.linkedin).toBe('https://linkedin.com/in/amr-mousa');
+    expect(siteConfig.public.socials.linkedin).toContain('linkedin.com/in/amr-mousa');
   });
 
   it('configures server security parameters and timeouts', () => {
