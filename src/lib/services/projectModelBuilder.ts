@@ -53,7 +53,10 @@ export function buildNormalizedProjectModel(input: FallbackInput): NormalizedPro
 
   // 7. Gallery Asset Resolution (Manifest Authority)
   const gallery: ManifestGalleryItem[] = projectDecl?.gallery !== undefined
-    ? projectDecl.gallery
+    ? projectDecl.gallery.map(item => ({
+        ...item,
+        url: item.url ?? item.file ?? ''
+      }))
     : autoDiscoverGalleryFromTree(tree, readmeContent);
 
   // 8. Demo URL Resolution

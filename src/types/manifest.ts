@@ -1,9 +1,10 @@
-export type AssetType = 'image' | 'powerbi' | 'pdf' | 'video';
+export type AssetType = 'image' | 'powerbi' | 'pdf' | 'video' | 'sql' | string;
 
 export interface ManifestGalleryItem {
   type: AssetType;
   title?: string;
-  url: string;
+  url?: string;
+  file?: string;
 }
 
 export interface ManifestCapabilities {

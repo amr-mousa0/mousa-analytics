@@ -10,7 +10,7 @@ describe('TASK-TYP-001: Self-Hosted Web Font Loading Pipeline', () => {
 
     expect(content).toContain('Cairo');
     expect(content).toContain('Inter');
-    expect(content).toContain('display=swap');
+    expect(content).toContain('font-display: swap');
   });
 
   it('verifies global.css imports fonts.css', () => {
