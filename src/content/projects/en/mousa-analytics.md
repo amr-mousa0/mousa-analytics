@@ -1,22 +1,21 @@
 ---
 title: "mousa-analytics"
-projectBadge: "DATA ANALYTICS & BI"
+projectBadge: "TECH & WEB SOLUTIONS"
 problemText: "The organization required automated tracking and structured analytics visibility for mousa-analytics. Raw operational data needed processing and transformation."
 solutionText: "for services "
 impactText: "Engineered data modeling and optimized decision-making workflows."
 coverImage: "https://avatars.githubusercontent.com/u/237460098?v=4"
-galleryImages:
-
+galleryImages: []
 githubUrl: "https://github.com/amr-mousa0/mousa-analytics"
 dashboardUrl: "https://mousa-analytics.vercel.app"
 whatsappStartProjectMsg: "Hi Amr, I'd like to inquire about this project."
 whatsappOpenDashboardMsg: "Hi Amr, I'd like to request the interactive dashboard."
 priority: 99
-category: "TypeScript"
+category: "Web Development"
 tags: ["TypeScript"]
 draft: false
 featured: false
-publishedDate: "2026-08-08T22:06:43.082Z"
+publishedDate: "2026-08-08T22:06:45.124Z"
 translationKey: "mousa-analytics"
 ---
 Case Study: mousa-analytics
