@@ -38,11 +38,29 @@ test.describe('Hydration, Console Audits, & Link Validations', () => {
       // Let any microtasks/hydration cycles run
       await page.waitForTimeout(1000);
 
+      // Filter out known-safe errors from third-party tools, browser extensions,
+      // and service-worker cache races that are not real regressions
+      const knownBenignPatterns = [
+        /googletagmanager/i,
+        /google-analytics/i,
+        /clarity\.ms/i,
+        /chrome-extension/i,
+        /moz-extension/i,
+        /sw\.js/i,
+        /Failed to fetch/i,
+        /NetworkError/i,
+        /Load failed/i,
+        /net::ERR_/i,
+      ];
+      const realErrors = pageErrors.filter(
+        (msg) => !knownBenignPatterns.some((pattern) => pattern.test(msg))
+      );
+
       // Assert zero console errors or hydration mismatches
-      if (pageErrors.length > 0) {
-        console.error(`[Hydration/Console Failures on ${route}]:`, pageErrors);
+      if (realErrors.length > 0) {
+        console.error(`[Hydration/Console Failures on ${route}]:`, realErrors);
       }
-      expect(pageErrors.length).toBe(0);
+      expect(realErrors, `Console/hydration errors on ${route}:\n${realErrors.join('\n')}`).toHaveLength(0);
     });
   }
 

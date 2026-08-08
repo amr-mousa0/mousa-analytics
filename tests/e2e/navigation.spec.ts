@@ -97,7 +97,7 @@ test.describe('Responsive Navigation Drawer', () => {
     await expect(hamburger).toBeVisible();
 
     // Checkbox should start unchecked (drawer closed)
-    const checkbox = page.locator('#menu-toggle');
+    const checkbox = page.locator('#mobile-nav-toggle');
     expect(await checkbox.isChecked()).toBe(false);
 
     // Open drawer

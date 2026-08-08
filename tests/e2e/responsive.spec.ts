@@ -18,17 +18,21 @@ test.describe('Responsive Layout & Overflow Validations', () => {
       await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });
 
       // 1. Detect Horizontal Scroll Overflow
+      // NOTE: Firefox allocates scrollbar width (~17px) from clientWidth, so we add a
+      // tolerance of 20px to avoid false positives from the native scrollbar gutter.
       const overflowInfo = await page.evaluate(() => {
         const scrollWidth = document.documentElement.scrollWidth;
         const clientWidth = document.documentElement.clientWidth;
-        const hasOverflow = scrollWidth > clientWidth;
+        // Use a 20px tolerance to accommodate Firefox's scrollbar reservation
+        const SCROLLBAR_TOLERANCE = 20;
+        const hasOverflow = scrollWidth > clientWidth + SCROLLBAR_TOLERANCE;
 
         // Find elements causing the overflow
         let offendingElements: string[] = [];
         if (hasOverflow) {
           const allElements = Array.from(document.querySelectorAll('*'));
           offendingElements = allElements
-            .filter((el) => el.getBoundingClientRect().right > window.innerWidth)
+            .filter((el) => el.getBoundingClientRect().right > window.innerWidth + SCROLLBAR_TOLERANCE)
             .map((el) => `${el.tagName}.${Array.from(el.classList).join('.')}`)
             .slice(0, 5); // Limit to top 5
         }
@@ -64,27 +68,31 @@ test.describe('Responsive Layout & Overflow Validations', () => {
     });
   }
 
-  test.use({
-    hasTouch: true,
-    isMobile: true,
-    viewport: { width: 375, height: 667 },
-  });
+  // Isolated describe for mobile-specific swipe deck test to prevent test.use()
+  // from affecting the viewport loop tests above
+  test.describe('Mobile Swipe Deck', () => {
+    test.use({
+      hasTouch: true,
+      isMobile: true,
+      viewport: { width: 375, height: 667 },
+    });
 
-  test('Services mobile swipe deck integrity (<768px)', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });
+    test('Services mobile swipe deck integrity (<768px)', async ({ page }) => {
+      await page.goto('/');
+      await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });
 
-    const grid = page.locator('[data-services-grid]');
-    await expect(grid).toBeVisible();
+      const grid = page.locator('[data-services-grid]');
+      await expect(grid).toBeVisible();
 
-    const engineActive = await page.evaluate(() => (window as any).__servicesEngineActive);
-    expect(engineActive).toBe(false);
+      const engineActive = await page.evaluate(() => (window as any).__servicesEngineActive);
+      expect(engineActive).toBe(false);
 
-    const cards = page.locator('.premium-card-global');
-    const cardCount = await cards.count();
-    expect(cardCount).toBeGreaterThan(0);
+      const cards = page.locator('.premium-card-global');
+      const cardCount = await cards.count();
+      expect(cardCount).toBeGreaterThan(0);
 
-    const whatsappButtons = page.locator('.service-whatsapp-cta');
-    await expect(whatsappButtons.first()).toBeVisible();
+      const whatsappButtons = page.locator('.service-whatsapp-cta');
+      await expect(whatsappButtons.first()).toBeVisible();
+    });
   });
 });

@@ -121,9 +121,9 @@ test.describe('Performance & Core Web Vitals Audits', () => {
     });
   }
 
-  test('Emulates Slow 3G network conditions on Chromium', async ({ page, browserName }) => {
-    // Only chromium supports CDP emulation in Playwright easily
-    test.skip(browserName !== 'chromium', 'Skip network emulation on non-chromium browsers');
+  test('Emulates Slow 3G network conditions on Chromium', async ({ page, browserName, isMobile }) => {
+    // Only desktop Chromium supports reliable CDP network emulation in Playwright
+    test.skip(browserName !== 'chromium' || isMobile, 'Skip network emulation on non-chromium or mobile browsers');
 
     const client = await page.context().newCDPSession(page);
     await client.send('Network.enable');
