@@ -65,7 +65,7 @@ const loadingPolicy: 'lazy' | 'eager' = index === 0 ? 'eager' : 'lazy';
           src={getServiceImageMeta(service)!}
           alt={`${t.services.serviceTag}: ${service.data.title}`}
           class="card-image w-full h-full object-cover group-hover/body:scale-105 transition-transform duration-500"
-          formats={['webp']}
+          format="webp"
           widths={[360, 500, 720]}
           sizes="(min-width: 768px) 33vw, 100vw"
           width={500}

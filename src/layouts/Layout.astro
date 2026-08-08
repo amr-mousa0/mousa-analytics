@@ -111,6 +111,7 @@ const pageContext = {
 };
 
 const langPath = lang === 'ar' ? '' : 'en/';
+const modalLang: 'en' | 'ar' = lang === 'ar' ? 'ar' : 'en';
 
 // Global Schema Graph
 const graph = [];
@@ -382,8 +383,8 @@ const breadcrumbSchema = breadcrumbs.length > 1 ? {
     <!-- Contact modal controllers: emitted at the end of <body> on purpose so
          their ~17KB of client logic never blocks the parser near the top of
          the page (markup itself lives in the Navbar). -->
-    <ContactModalInit lang={lang} />
-    <DesktopContactModalInit lang={lang} />
+    <ContactModalInit lang={modalLang} />
+    <DesktopContactModalInit lang={modalLang} />
 
     <!-- Centralized Page View Tracking Script -->
     <script>

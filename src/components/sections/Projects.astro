@@ -295,7 +295,7 @@ const getProjectIcon = (slug: string) => {
     };
 
     // ── Dot Indicators ──
-    const getDotPill = (dot: HTMLElement): HTMLElement | null =>
+    const getDotPill = (dot: HTMLElement): HTMLElement =>
       (dot.querySelector('.dot-pill') as HTMLElement | null) || dot;
 
     const updateDots = () => {
