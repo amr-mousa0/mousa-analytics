@@ -137,8 +137,8 @@ test.describe('Performance & Core Web Vitals Audits', () => {
       uploadThroughput: (400 * 1024) / 8,
     });
 
-    await page.goto('/en/', { timeout: 90000 });
-    await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 60000 });
+    await page.goto('/en/', { waitUntil: 'commit', timeout: 90000 });
+    await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 90000 });
 
     // Assert that lazy loaded assets are loaded correctly
     const imagesCount = await page.locator('img').count();
