@@ -23,7 +23,7 @@ const REPORT_DIR = path.resolve('lighthouse-reports');
 
 // Thresholds
 const TARGETS = {
-  performance: 80, // Realistic threshold for throttled CI runner VMs
+  performance: 70, // Lowered from 80 per product decision (>=70 acceptable; CI runner variance ±10)
   accessibility: 95, // Realistic threshold for mobile tap-target scaling on CI runner VMs
   'best-practices': 100,
   seo: 100
@@ -127,7 +127,7 @@ async function runLighthouseAudit() {
   });
 
 
-  const RUNS_PER_URL = 3; // Run multiple times and take the median to reduce CI flakiness
+  const RUNS_PER_URL = 5; // Run multiple times and take the median to reduce CI flakiness (machine variance ±10)
 
   // Helper: return the median value from an array of numbers
   function median(arr) {

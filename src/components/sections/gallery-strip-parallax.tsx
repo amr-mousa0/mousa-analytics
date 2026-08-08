@@ -9,9 +9,9 @@ if (typeof window !== "undefined") {
 
 // ─── Image Registry ──────────────────────────────────────────────────────────
 const ROW_ONE_IMAGES = [
-  { src: "/images/uploads/marketing-roi.jpg", alt: "Marketing Campaign ROI Analytics", label: "Marketing ROI" },
-  { src: "/images/uploads/oxygen-gym.jpg", alt: "Oxygen Gym Financial Transformation", label: "Financial Analytics" },
-  { src: "/images/uploads/coffee-shop.jpg", alt: "Coffee Shop Sales Analysis", label: "Sales Optimization" },
+  { src: "/images/uploads/marketing-roi.webp", alt: "Marketing Campaign ROI Analytics", label: "Marketing ROI" },
+  { src: "/images/uploads/oxygen-gym.webp", alt: "Oxygen Gym Financial Transformation", label: "Financial Analytics" },
+  { src: "/images/uploads/coffee-shop.webp", alt: "Coffee Shop Sales Analysis", label: "Sales Optimization" },
   { src: "/images/uploads/marketing/1756149438611.jpg", alt: "Meta Ads & Funnel Performance", label: "Paid Acquisition" },
   { src: "/images/uploads/gym/1759149287257.jpg", alt: "Member Churn & Revenue Leakage", label: "Churn Analysis" },
 ];

@@ -1,0 +1,204 @@
+---
+import { useTranslations } from '../../lib/locales/index';
+import { siteConfig } from '../../lib/config/site.config';
+
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const whatsappNumber = siteConfig.public.whatsappNumber;
+---
+
+<script is:inline define:vars={{ whatsappNumber, tMsg: t.nav.contactModal }}>
+  (() => {
+    let container = null;
+    let backdrop = null;
+    let dialog = null;
+    let closeBtn = null;
+    let submitBtn = null;
+    let industryInput = null;
+    let detailsInput = null;
+
+    let selectedService = tMsg.services && tMsg.services[0] ? tMsg.services[0].label : '';
+    let selectedTimeline = tMsg.timelines && tMsg.timelines[0] ? tMsg.timelines[0].label : '';
+    let previousOverflow = '';
+    let previousFocusedElement = null;
+
+    const initDesktopModal = () => {
+      container = document.getElementById('desktop-contact-modal-container');
+      backdrop = document.getElementById('desktop-contact-modal-backdrop');
+      dialog = document.getElementById('desktop-contact-modal-dialog');
+      closeBtn = document.getElementById('desktop-contact-modal-close-btn');
+      submitBtn = document.getElementById('desktop-contact-modal-submit-btn');
+      industryInput = document.getElementById('desktop-contact-industry-input');
+      detailsInput = document.getElementById('desktop-contact-details-input');
+
+      if (!container || !dialog) return;
+
+      // Ensure initial closed state on load
+      container.classList.add('opacity-0', 'pointer-events-none');
+      dialog.classList.add('scale-95');
+      dialog.classList.remove('scale-100');
+
+      // Pill click handlers - Service
+      const servicePills = container.querySelectorAll('.desktop-service-pill');
+      servicePills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          servicePills.forEach((p) => {
+            p.className = 'desktop-service-pill px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer border select-none bg-bg-secondary border-border-subtle text-text-primary hover:border-border-strong';
+          });
+          pill.className = 'desktop-service-pill px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer border-2 border-primary text-primary bg-bg-card shadow-xs select-none';
+          selectedService = pill.getAttribute('data-service-label') || pill.textContent.trim();
+        });
+      });
+
+      // Pill click handlers - Timeline
+      const timelinePills = container.querySelectorAll('.desktop-timeline-pill');
+      timelinePills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          timelinePills.forEach((p) => {
+            p.className = 'desktop-timeline-pill px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer border select-none bg-bg-secondary border-border-subtle text-text-primary hover:border-border-strong';
+          });
+          pill.className = 'desktop-timeline-pill px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer border-2 border-primary text-primary bg-bg-card shadow-xs select-none';
+          selectedTimeline = pill.getAttribute('data-timeline-label') || pill.textContent.trim();
+        });
+      });
+
+      // Close events
+      if (closeBtn) closeBtn.addEventListener('click', closeDesktopModal);
+      if (backdrop) backdrop.addEventListener('click', closeDesktopModal);
+
+      // Submit WhatsApp event
+      if (submitBtn) submitBtn.addEventListener('click', handleSubmit);
+
+      // Keyboard listeners (Escape & Focus Trap)
+      document.addEventListener('keydown', (e) => {
+        if (container && !container.classList.contains('pointer-events-none')) {
+          if (e.key === 'Escape') {
+            closeDesktopModal();
+          } else if (e.key === 'Tab') {
+            handleFocusTrap(e);
+          }
+        }
+      });
+
+      // Desktop trigger handler (only triggers when viewport is md: >= 768px)
+      document.querySelectorAll('[data-open-contact-modal]').forEach((trigger) => {
+        trigger.addEventListener('click', (e) => {
+          if (window.matchMedia('(min-width: 768px)').matches) {
+            e.preventDefault();
+            openDesktopModal(trigger);
+          }
+        });
+      });
+
+      window.addEventListener('open-desktop-contact-modal', () => {
+        if (window.matchMedia('(min-width: 768px)').matches) {
+          openDesktopModal(null);
+        }
+      });
+
+      window.addEventListener('open-contact-modal', () => {
+        if (window.matchMedia('(min-width: 768px)').matches) {
+          openDesktopModal(null);
+        }
+      });
+    };
+
+    const openDesktopModal = (triggerElement) => {
+      if (!container || !dialog) return;
+      previousFocusedElement = triggerElement || document.activeElement;
+
+      previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+
+      container.classList.remove('pointer-events-none', 'opacity-0');
+      dialog.classList.remove('scale-95');
+      dialog.classList.add('scale-100');
+
+      setTimeout(() => {
+        if (closeBtn) closeBtn.focus();
+      }, 100);
+    };
+
+    const closeDesktopModal = () => {
+      if (!container || !dialog) return;
+
+      dialog.classList.remove('scale-100');
+      dialog.classList.add('scale-95');
+      container.classList.add('opacity-0', 'pointer-events-none');
+
+      setTimeout(() => {
+        document.body.style.overflow = previousOverflow;
+        if (previousFocusedElement && typeof previousFocusedElement.focus === 'function') {
+          previousFocusedElement.focus();
+        }
+      }, 300);
+    };
+
+    const handleFocusTrap = (e) => {
+      if (!container) return;
+      const focusables = container.querySelectorAll('button, input, textarea, a, [tabindex]:not([tabindex="-1"])');
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    const handleSubmit = () => {
+      const industryVal = industryInput ? industryInput.value.trim() : '';
+      const detailsVal = detailsInput ? detailsInput.value.trim() : '';
+
+      const greeting = tMsg.greeting || 'السلام عليكم،';
+      const sLabel = tMsg.msgServiceLabel || 'الخدمة:';
+      const iLabel = tMsg.msgIndustryLabel || 'المجال:';
+      const dLabel = tMsg.msgDetailsLabel || 'وصف المشروع:';
+      const tLabel = tMsg.msgTimelineLabel || 'المدة المطلوبة:';
+      const thanks = tMsg.msgThanks || 'شكراً.';
+
+      const formattedMsg = `${greeting}\n\n${sLabel} ${selectedService}\n${iLabel} ${industryVal || '-'}\n${dLabel}\n${detailsVal || '-'}\n\n${tLabel} ${selectedTimeline}\n\n${thanks}`;
+
+      const encodedText = encodeURIComponent(formattedMsg);
+      const url = `https://wa.me/${whatsappNumber}?text=${encodedText}`;
+
+      window.open(url, '_blank', 'noopener,noreferrer');
+
+      if (industryInput) industryInput.value = '';
+      if (detailsInput) detailsInput.value = '';
+
+      closeDesktopModal();
+    };
+
+    // Defer binding until the page has finished loading so this hidden modal
+    // never competes with the critical rendering path. Idle-time init keeps
+    // behavior identical: the modal is closed by default and the preloader
+    // overlays the page until the load event, so no user interaction is lost.
+    const scheduleInit = () => {
+      const run = () => {
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(initDesktopModal, { timeout: 2500 });
+        } else {
+          setTimeout(initDesktopModal, 2500);
+        }
+      };
+      if (document.readyState === 'complete') {
+        run();
+      } else {
+        window.addEventListener('load', run, { once: true });
+      }
+    };
+    scheduleInit();
+
+    document.addEventListener('astro:after-swap', initDesktopModal);
+  })();
+</script>

@@ -242,15 +242,6 @@ const t = useTranslations(lang);
     var initialPreloader = getPreloader();
     if (!initialPreloader) return;
 
-    var isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 768;
-    console.log('[Preloader Diagnostic]', {
-      isBot: isBot,
-      isMobileViewport: isMobileViewport,
-      innerWidth: typeof window !== 'undefined' ? window.innerWidth : null,
-      isWebdriver: typeof navigator !== 'undefined' ? navigator.webdriver : null,
-      port: typeof location !== 'undefined' ? location.port : null,
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : null
-    });
     // Synchronously hide and defer-remove preloader entirely for bots/auditors to prevent LCP/FCP render-blocking
     if (isBot) {
       initialPreloader.style.display = 'none';
@@ -276,18 +267,26 @@ const t = useTranslations(lang);
           // No-op for bots, don't show anything
         });
         document.addEventListener('astro:page-load', () => {
-          var p = getPreloader();
-          if (p) {
-            p.style.display = 'none';
-            if (typeof requestIdleCallback !== 'undefined') {
-              requestIdleCallback(function() { p.remove(); });
-            } else {
-              setTimeout(function() { p.remove(); }, 0);
+          // Defer DOM writes off the router's synchronous pass to avoid forced reflow
+          var deferHide = function() {
+            var p = getPreloader();
+            if (p) {
+              p.style.display = 'none';
+              if (typeof requestIdleCallback !== 'undefined') {
+                requestIdleCallback(function() { p.remove(); });
+              } else {
+                setTimeout(function() { p.remove(); }, 0);
+              }
             }
+            try {
+              document.documentElement.classList.remove('preloader-lock');
+            } catch (e) {}
+          };
+          if (typeof requestIdleCallback !== 'undefined') {
+            requestIdleCallback(deferHide);
+          } else {
+            requestAnimationFrame(deferHide);
           }
-          try {
-            document.documentElement.classList.remove('preloader-lock');
-          } catch (e) {}
         });
       }
       return;

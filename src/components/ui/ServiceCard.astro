@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { useTranslations } from '../../i18n/index.js';
 import { getWhatsAppUrl, getContactHref } from '../../lib/contact/cta.js';
@@ -23,24 +24,31 @@ const getServiceUrl = (slug: string) => {
   return lang === 'ar' ? `/services/${cleanSlug}/` : `/en/services/${cleanSlug}/`;
 };
 
-const getServiceImage = (srv: any): string => {
+const serviceImageMap = {
+  'data-analytics': powerBiImg,
+  'marketing-strategy': mediaBuyingImg,
+  'advanced-excel': excelImg,
+  'custom-crm': crmImg,
+  'web-portfolios': portfolioImg,
+} as Record<string, ImageMetadata>;
+
+const getServiceImageMeta = (srv: any): ImageMetadata | null => {
   const cleanSlug = srv.slug ? srv.slug.split('/').pop() : '';
-  switch (cleanSlug) {
-    case 'data-analytics': return powerBiImg.src;
-    case 'marketing-strategy': return mediaBuyingImg.src;
-    case 'advanced-excel': return excelImg.src;
-    case 'custom-crm': return crmImg.src;
-    case 'web-portfolios': return portfolioImg.src;
-    default:
-      if (srv.data?.coverImage) {
-        const img = srv.data.coverImage;
-        return typeof img === 'object' && img !== null ? img.src : img;
-      }
-      return powerBiImg.src;
-  }
+  return serviceImageMap[cleanSlug] ?? null;
 };
 
-const loadingPolicy = index === 0 ? 'eager' : 'lazy';
+const getServiceImage = (srv: any): string => {
+  const cleanSlug = srv.slug ? srv.slug.split('/').pop() : '';
+  const meta = serviceImageMap[cleanSlug];
+  if (meta) return meta.src;
+  if (srv.data?.coverImage) {
+    const img = srv.data.coverImage;
+    return typeof img === 'object' && img !== null ? img.src : img;
+  }
+  return powerBiImg.src;
+};
+
+const loadingPolicy: 'lazy' | 'eager' = index === 0 ? 'eager' : 'lazy';
 ---
 
 <div
@@ -52,15 +60,30 @@ const loadingPolicy = index === 0 ? 'eager' : 'lazy';
   <a href={getServiceUrl(service.slug)} class="card-link flex flex-col h-full flex-grow hover:no-underline group/body">
     <!-- Top Half: Service Image -->
     <div class="h-44 relative border-b border-text-main/10 overflow-hidden bg-primary-bg">
-      <img 
-        src={getServiceImage(service)} 
-        alt={`${t.services.serviceTag}: ${service.data.title}`}
-        class="card-image w-full h-full object-cover group-hover/body:scale-105 transition-transform duration-500"
-        width="500"
-        height="300"
-        loading={loadingPolicy}
-        decoding="async"
-      />
+      {getServiceImageMeta(service) ? (
+        <Image
+          src={getServiceImageMeta(service)!}
+          alt={`${t.services.serviceTag}: ${service.data.title}`}
+          class="card-image w-full h-full object-cover group-hover/body:scale-105 transition-transform duration-500"
+          formats={['webp']}
+          widths={[360, 500, 720]}
+          sizes="(min-width: 768px) 33vw, 100vw"
+          width={500}
+          height={300}
+          loading={loadingPolicy}
+          decoding="async"
+        />
+      ) : (
+        <img
+          src={getServiceImage(service)}
+          alt={`${t.services.serviceTag}: ${service.data.title}`}
+          class="card-image w-full h-full object-cover group-hover/body:scale-105 transition-transform duration-500"
+          width="500"
+          height="300"
+          loading={loadingPolicy}
+          decoding="async"
+        />
+      )}
       <!-- Service Pill Tag -->
       <span class="absolute top-4 start-4 text-[9px] font-bold tracking-wider text-text-main/60 uppercase border border-text-main/10 px-2 py-0.5 rounded bg-hero-card/90 font-mono z-10">
         {t.services.serviceTag}

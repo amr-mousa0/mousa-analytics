@@ -86,7 +86,7 @@ export async function getSafeProjects(lang: string): Promise<ExtendedProject[]> 
             problemText,
             solutionText,
             impactText,
-            coverImage: (model.cover || '../../../assets/images/uploads/marketing-roi.jpg') as any,
+            coverImage: (model.cover || '../../../assets/images/uploads/marketing-roi.webp') as any,
             galleryImages: (model.gallery?.map(g => g.url) || []) as any,
             githubUrl: `https://github.com/amr-mousa0/${model.sourceRepo || model.projectId}`,
             dashboardUrl: model.demo || '',

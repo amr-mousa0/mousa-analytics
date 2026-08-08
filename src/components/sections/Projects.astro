@@ -206,10 +206,12 @@ const getProjectIcon = (slug: string) => {
           <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md project-dots-container">
             {projects.map((_, index) => (
               <button 
-                class="project-dot h-2 rounded-full bg-white/20 transition-all duration-500 hover:bg-white/50 cursor-pointer"
+                class="project-dot h-6 w-6 flex items-center justify-center rounded-full cursor-pointer"
                 data-dot-index={index}
                 aria-label={`Go to project ${index + 1}`}
-              ></button>
+              >
+                <span class="dot-pill h-2 w-2 block rounded-full bg-white/20 transition-all duration-500 hover:bg-white/50"></span>
+              </button>
             ))}
           </div>
 
@@ -293,16 +295,20 @@ const getProjectIcon = (slug: string) => {
     };
 
     // ── Dot Indicators ──
+    const getDotPill = (dot: HTMLElement): HTMLElement | null =>
+      (dot.querySelector('.dot-pill') as HTMLElement | null) || dot;
+
     const updateDots = () => {
       dots.forEach((dot, i) => {
+        const pill = getDotPill(dot);
         if (i === currentIndex) {
-          dot.style.width = '24px';
-          dot.style.backgroundColor = '#3B82F6';
-          dot.style.boxShadow = '0 0 12px rgba(59, 130, 246, 0.6)';
+          pill.style.width = '24px';
+          pill.style.backgroundColor = '#3B82F6';
+          pill.style.boxShadow = '0 0 12px rgba(59, 130, 246, 0.6)';
         } else {
-          dot.style.width = '8px';
-          dot.style.backgroundColor = 'rgba(255,255,255,0.2)';
-          dot.style.boxShadow = 'none';
+          pill.style.width = '8px';
+          pill.style.backgroundColor = 'rgba(255,255,255,0.2)';
+          pill.style.boxShadow = 'none';
         }
       });
     };
@@ -558,10 +564,42 @@ const getProjectIcon = (slug: string) => {
     setupHoverContacts();
   };
 
-  document.addEventListener('astro:page-load', init);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
+  // The projects orbit lives below the fold; build it only when it nears the
+  // viewport (with an always-run safety fallback) so its GSAP work never
+  // competes with the initial paint.
+  let started = false;
+  const safeInit = () => {
+    if (started) return;
+    started = true;
     init();
+  };
+
+  document.addEventListener('astro:page-load', safeInit);
+  document.addEventListener('astro:before-swap', () => {
+    started = false;
+  });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      if ('IntersectionObserver' in window) {
+        const section = document.getElementById('projects');
+        if (section) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              if (entries.some((e) => e.isIntersecting)) {
+                io.disconnect();
+                safeInit();
+              }
+            },
+            { rootMargin: '240px 0px' }
+          );
+          io.observe(section);
+          window.addEventListener('load', () => setTimeout(safeInit, 12000), { once: true });
+          return;
+        }
+      }
+      safeInit();
+    });
+  } else {
+    safeInit();
   }
 </script>

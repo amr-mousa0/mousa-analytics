@@ -4,7 +4,7 @@ projectBadge: "MARKETING & MEDIA BUYING"
 problemText: "Management allocated heavy ad budgets across multi-social platforms but lacked channel-specific visibility into true ad spend ROI and CTR."
 solutionText: "Engineered a marketing analytics Star Schema using Power BI. Created dynamic dashboards mapping the full marketing funnel, utilizing DAX to measure CPA, ROAS, and conversion trends across seasons."
 impactText: "Discovered Pinterest drove the highest ROI despite lower engagement, and Facebook excelled at brand awareness. Revealed winter campaign inefficiencies, enabling highly optimized, data-driven seasonal ad allocation."
-coverImage: "/images/uploads/marketing-roi.jpg"
+coverImage: "/images/uploads/marketing-roi.webp"
 galleryImages:
   - "/images/uploads/marketing/1756149438611.jpg"
   - "/images/uploads/marketing/1756149438724.jpg"

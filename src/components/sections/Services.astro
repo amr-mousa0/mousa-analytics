@@ -67,7 +67,14 @@ const services = await ContentFacade.getServices({ lang: lang as 'en' | 'ar' });
 <script>
   import { servicesGridLifecycle } from '../../lib/services-grid/index';
 
+  let started = false;
+
+  // The services section lives far below the fold; defer the (relatively heavy)
+  // grid engine until the section is close to the viewport — never during the
+  // initial paint. Fallbacks guarantee it always runs.
   const init = () => {
+    if (started) return;
+    started = true;
     servicesGridLifecycle.init();
   };
 
@@ -76,10 +83,38 @@ const services = await ContentFacade.getServices({ lang: lang as 'en' | 'ar' });
   };
 
   document.addEventListener('astro:page-load', init);
-  document.addEventListener('astro:before-swap', dispose);
+  document.addEventListener('astro:before-swap', () => {
+    started = false;
+    dispose();
+  });
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', () => {
+      if ('IntersectionObserver' in window) {
+        const section = document.getElementById('services');
+        if (section) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              if (entries.some((e) => e.isIntersecting)) {
+                io.disconnect();
+                init();
+              }
+            },
+            { rootMargin: '240px 0px' }
+          );
+          io.observe(section);
+          // Safety: never leave the grid un-enhanced, even if the observer
+          // never fires (tabs, printers, odd viewports).
+          window.addEventListener(
+            'load',
+            () => setTimeout(init, 12000),
+            { once: true }
+          );
+          return;
+        }
+      }
+      init();
+    });
   } else {
     init();
   }

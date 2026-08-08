@@ -4,7 +4,7 @@ projectBadge: "TECH & WEB SOLUTIONS"
 problemText: "The business was trapped in 'profitability illusion'—relying on manual paper ledgers, losing revenue to uncollected billing leakages, and suffering from 80% customer churn."
 solutionText: "Digitized 5 years of paper records into a Power BI model, implementing advanced financial analytics (CAGR, Break-Even analysis, and product cost allocations across Supplements, Beverages, and Subscriptions)."
 impactText: "Revealed a -28% CAGR decline despite cost-cutting, identified 93,000 EGP in leaked unbilled memberships, a 43% net loss in supplement pricing, and provided strategic controls to recover revenue and stop churn."
-coverImage: "/images/uploads/oxygen-gym.jpg"
+coverImage: "/images/uploads/oxygen-gym.webp"
 galleryImages:
   - "/images/uploads/gym/1759149287257.jpg"
   - "/images/uploads/gym/1759149287549.jpg"
