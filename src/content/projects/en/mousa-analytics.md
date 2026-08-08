@@ -15,7 +15,7 @@ category: "Web Development"
 tags: ["TypeScript"]
 draft: false
 featured: false
-publishedDate: "2026-08-08T22:08:46.759Z"
+publishedDate: "2026-08-08T22:08:48.510Z"
 translationKey: "mousa-analytics"
 ---
 Case Study: mousa-analytics
