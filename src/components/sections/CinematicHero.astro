@@ -12,8 +12,8 @@ const { lang = 'en' } = Astro.props;
 const isAr = lang === 'ar';
 const t = useTranslations(lang);
 
-// Using high-quality transparent renders
-const laptopSrc = isAr ? '/dashboard-hero-right.png' : '/dashboard-hero-left.png';
+// Using high-quality transparent WebP renders (23KB instead of 2.6MB PNGs)
+const laptopSrc = isAr ? '/dashboard-hero-ar-transparent.webp' : '/dashboard-hero-transparent.webp';
 const brandTagline = isAr ? BRAND_CONSTANTS.TAGLINE_AR : BRAND_CONSTANTS.TAGLINE_EN;
 
 // 7 Minimalist High-End Agency Totem Cards (Lowered further for optimal section framing)
