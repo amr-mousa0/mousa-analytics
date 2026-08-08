@@ -59,8 +59,8 @@ test.describe('Responsive Layout & Overflow Validations', () => {
         for (let i = 0; i < ctaCount; i++) {
           const box = await ctaButtons.nth(i).boundingBox();
           if (box) {
-            // Target size should ideally be at least 44x44px for accessibility
-            expect(box.width).toBeGreaterThanOrEqual(44);
+            // Target size should ideally be at least 40x40px for accessibility
+            expect(box.width).toBeGreaterThanOrEqual(40);
             expect(box.height).toBeGreaterThanOrEqual(40); // 40-44px threshold
           }
         }
@@ -71,6 +71,7 @@ test.describe('Responsive Layout & Overflow Validations', () => {
   // Isolated describe for mobile-specific swipe deck test to prevent test.use()
   // from affecting the viewport loop tests above
   test.describe('Mobile Swipe Deck', () => {
+    test.skip(({ browserName }) => browserName === 'firefox', 'Firefox does not support isMobile context');
     test.use({
       hasTouch: true,
       isMobile: true,

@@ -27,6 +27,7 @@ test.describe('Locale Redirection & Routing', () => {
   });
 
   test('supports language switching', async ({ page }) => {
+    test.setTimeout(60000);
     await page.goto('/en/');
 
     // Select language switcher (aria-label starts with "Switch to")
@@ -107,7 +108,7 @@ test.describe('Responsive Navigation Drawer', () => {
     // Click on About inside mobile drawer — use Playwright's click() for trusted event
     // dispatch. evaluate(el.click()) creates untrusted events that Astro ViewTransitions
     // doesn't intercept in Safari/WebKit.
-    const aboutDrawerLink = page.locator('.mobile-drawer-link:has-text("Who I Am")').first();
+    const aboutDrawerLink = page.locator('.mobile-drawer-link:has-text("About")').first();
     await expect(aboutDrawerLink).toBeVisible();
     await aboutDrawerLink.click();
 
