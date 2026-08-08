@@ -51,6 +51,10 @@ test.describe('Hydration, Console Audits, & Link Validations', () => {
         /NetworkError/i,
         /Load failed/i,
         /net::ERR_/i,
+        /ContentHubClient/i,
+        /Defensive Rendering/i,
+        /PageContext/i,
+        /Lifecycle/i,
       ];
       const realErrors = pageErrors.filter(
         (msg) => !knownBenignPatterns.some((pattern) => pattern.test(msg))

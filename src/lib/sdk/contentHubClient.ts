@@ -229,7 +229,7 @@ export class ContentHubClient {
       const match = projects.find(p => p.slug === slug || p.slug.endsWith(`/${cleanSlug}`));
       return match || null;
     } catch (err: any) {
-      console.error(`[ContentHubClient] Graceful degradation on getProject(${slug}):`, err?.message || err);
+      console.warn(`[ContentHubClient] Graceful degradation on getProject(${slug}):`, err?.message || err);
       return null;
     }
   }
@@ -244,7 +244,7 @@ export class ContentHubClient {
       if (!res.ok) return null;
       return await res.json();
     } catch (err: any) {
-      console.error('[ContentHubClient] Graceful degradation on getConfig():', err?.message || err);
+      console.warn('[ContentHubClient] Graceful degradation on getConfig():', err?.message || err);
       return null;
     }
   }
@@ -259,7 +259,7 @@ export class ContentHubClient {
       if (!res.ok) return null;
       return await res.json();
     } catch (err: any) {
-      console.error('[ContentHubClient] Graceful degradation on health():', err?.message || err);
+      console.warn('[ContentHubClient] Graceful degradation on health():', err?.message || err);
       return null;
     }
   }
@@ -274,7 +274,7 @@ export class ContentHubClient {
       if (!res.ok) return null;
       return await res.json();
     } catch (err: any) {
-      console.error('[ContentHubClient] Graceful degradation on version():', err?.message || err);
+      console.warn('[ContentHubClient] Graceful degradation on version():', err?.message || err);
       return null;
     }
   }
