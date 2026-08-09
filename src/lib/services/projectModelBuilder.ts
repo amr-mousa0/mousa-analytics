@@ -53,11 +53,22 @@ export function buildNormalizedProjectModel(input: FallbackInput): NormalizedPro
 
   // 7. Gallery Asset Resolution (Manifest Authority)
   const gallery: ManifestGalleryItem[] = projectDecl?.gallery !== undefined
-    ? projectDecl.gallery.map(item => ({
-        ...item,
-        url: item.url ?? item.file ?? ''
-      }))
+    ? projectDecl.gallery.map(item => {
+        const rawUrl = item.url ?? item.file ?? '';
+        let url = rawUrl;
+        if (rawUrl && !rawUrl.startsWith('http://') && !rawUrl.startsWith('https://') && repoName) {
+          const cleanPath = rawUrl.startsWith('/') ? rawUrl.slice(1) : rawUrl;
+          url = `https://raw.githubusercontent.com/amr-mousa0/${repoName}/main/${encodeURI(cleanPath)}`;
+        }
+        return {
+          ...item,
+          url
+        };
+      })
     : autoDiscoverGalleryFromTree(tree, readmeContent);
+
+  const pdfItem = gallery.find(g => g.type === 'pdf');
+  const pdfUrl = pdfItem?.url;
 
   // 8. Demo URL Resolution
   const demo = projectDecl?.demo !== undefined
@@ -110,6 +121,7 @@ export function buildNormalizedProjectModel(input: FallbackInput): NormalizedPro
     cover,
     gallery,
     demo,
+    pdfUrl,
     caseStudy,
     capabilities,
     publish: publish as Record<string, any>,

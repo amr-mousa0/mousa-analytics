@@ -12,6 +12,7 @@ export interface ExtendedProjectData {
   galleryImages: any[];
   githubUrl?: string;
   dashboardUrl?: string;
+  pdfUrl?: string;
   whatsappStartProjectMsg: string;
   whatsappOpenDashboardMsg: string;
   priority: number;
@@ -93,6 +94,7 @@ export async function getSafeProjects(lang: string): Promise<ExtendedProject[]> 
             galleryImages: (model.gallery?.map(g => g.url) || []) as any,
             githubUrl: `https://github.com/amr-mousa0/${model.sourceRepo || model.projectId}`,
             dashboardUrl: model.demo || '',
+            pdfUrl: model.pdfUrl || model.gallery?.find(g => g.type === 'pdf')?.url || undefined,
             whatsappStartProjectMsg: `Hi Amr, I'd like to inquire about ${title}`,
             whatsappOpenDashboardMsg: `Hi Amr, I'd like to request access to dashboard for ${title}`,
             priority: 1,

@@ -64,6 +64,7 @@ export interface NormalizedProjectModel {
   cover?: string;
   gallery: ManifestGalleryItem[];
   demo?: string;
+  pdfUrl?: string;
   caseStudy?: string;
   capabilities: ManifestCapabilities;
   publish: Record<string, ManifestPublishConfig>;

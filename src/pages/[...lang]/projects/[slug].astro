@@ -202,9 +202,32 @@ const projectStack = (project?.data?.tags || []).join(' · ');
 
       <!-- PDF Interactive Viewer Section -->
       {(() => {
-        const resolvedPdf = project?.data?.pdfUrl || 
-          (project?.data?.galleryImages || []).find((img: any) => typeof img === 'string' && img.toLowerCase().includes('.pdf'));
-        if (!resolvedPdf) return null;
+        const galleryItems = project?.data?.galleryImages || [];
+        const pdfFromGallery = galleryItems.find((img: any) => {
+          if (typeof img === 'string') return img.toLowerCase().includes('.pdf');
+          if (typeof img === 'object' && img !== null) {
+            const path = img.url || img.file || '';
+            return typeof path === 'string' && (path.toLowerCase().includes('.pdf') || img.type === 'pdf');
+          }
+          return false;
+        });
+
+        let rawPdf = project?.data?.pdfUrl || 
+          (typeof pdfFromGallery === 'string' 
+            ? pdfFromGallery 
+            : (pdfFromGallery?.url || pdfFromGallery?.file));
+
+        if (!rawPdf) return null;
+
+        if (!rawPdf.startsWith('http://') && !rawPdf.startsWith('https://') && !rawPdf.startsWith('/')) {
+          const repoSlug = project?.slug?.split('/')?.pop();
+          if (repoSlug) {
+            const cleanPath = rawPdf.startsWith('/') ? rawPdf.slice(1) : rawPdf;
+            rawPdf = `https://raw.githubusercontent.com/amr-mousa0/${repoSlug}/main/${encodeURI(cleanPath)}`;
+          }
+        }
+
+        const resolvedPdf = rawPdf;
         return (
           <section class="border-t border-text-main/10 pt-10 md:pt-14 space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
