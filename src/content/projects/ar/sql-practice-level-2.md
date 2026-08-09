@@ -1,5 +1,5 @@
 ---
-title: "رحلة تدريب SQL - المستوى 2.2"
+title: "رحلة تدريب SQL - المستوى 2"
 projectBadge: "TECH & WEB SOLUTIONS"
 problemText: "غالبًا ما يعتمد تعلم SQL بشكل كبير على البرامج التعليمية السلبية، مما يجعل من الصعب تطوير مهارات حقيقية في حل المشكلات والحفاظ على ممارسة متسقة."
 solutionText: "يوفر هذا المستودع مجموعة منظمة من تمارين SQL والحلول الكاملة، مما يساعد المتعلمين على تعزيز التفكير التحليلي وتحسين كفاءة SQL من خلال التدريب العملي."
@@ -16,7 +16,7 @@ category: "Data Analytics"
 tags: ["SQL","PostgreSQL","Database","Data Analysis","Practice","Learning"]
 draft: false
 featured: false
-publishedDate: "2026-08-09T00:09:33.215Z"
+publishedDate: "2026-08-09T01:36:35.333Z"
 translationKey: "sql-practice-level-2"
 ---
-Case Study: رحلة تدريب SQL - المستوى 2.2
+Case Study: رحلة تدريب SQL - المستوى 2
