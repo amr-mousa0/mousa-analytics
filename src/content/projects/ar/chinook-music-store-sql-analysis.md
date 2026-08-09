@@ -5,7 +5,8 @@ problemText: "طلبت المنظمة تتبعًا آليًا ورؤية تحل�
 solutionText: "من بنية قاعدة البيانات الأولية إلى رؤى الأعمال باستخدام SQL"
 impactText: "نمذجة البيانات الهندسية وسير عمل اتخاذ القرار الأمثل."
 coverImage: "https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&pause=1200&color=2EA043&center=true&vCenter=true&width=800&lines=Exploring+Business+Data;Validating+Data+Quality;Finding+Patterns+and+Outliers;Turning+SQL+Into+Business+Insights"
-galleryImages: []
+galleryImages:
+  - "https://raw.githubusercontent.com/amr-mousa0/Chinook-Music-Store-SQL-Analysis/main/assets/Screenshot 2026-08-09 201449.png"
 githubUrl: "https://github.com/amr-mousa0/Chinook-Music-Store-SQL-Analysis"
 dashboardUrl: "https://amr-mousa0.github.io/Chinook-Music-Store-SQL-Analysis"
 whatsappStartProjectMsg: "Hi Amr, I'd like to inquire about this project."
@@ -15,7 +16,7 @@ category: "Data Analytics"
 tags: ["Data/Tech"]
 draft: false
 featured: false
-publishedDate: "2026-08-09T17:31:10.641Z"
+publishedDate: "2026-08-09T17:31:54.336Z"
 translationKey: "chinook-music-store-sql-analysis"
 ---
 Case Study: شينوك-متجر الموسيقى-تحليل SQL
