@@ -8,19 +8,17 @@ export const CONTENT_LIMITS = Object.freeze({
    * Set to 160 characters to ensure descriptions fit cleanly within 3 lines
    * across both English and Arabic card layouts without any text line clipping.
    */
-  PROJECT_CARD_DESCRIPTION: 160,
+  PROJECT_CARD_DESCRIPTION: 130,
 
   /**
    * Maximum word count for Arabic outer card descriptions.
-   * Arabic characters are wider and require fewer words to fill 3 visible lines
-   * on standard card widths without overflow or clipping.
+   * Set to 16 words max to fit complete sentences cleanly in 2 lines.
    */
-  PROJECT_CARD_DESCRIPTION_WORDS_AR: 18,
+  PROJECT_CARD_DESCRIPTION_WORDS_AR: 16,
 
   /**
    * Maximum word count for English outer card descriptions.
-   * English characters are narrower, allowing more words to fit cleanly
-   * within 3 visible lines on standard card widths.
+   * Set to 20 words max to fit complete sentences cleanly in 2 lines.
    */
-  PROJECT_CARD_DESCRIPTION_WORDS_EN: 22,
+  PROJECT_CARD_DESCRIPTION_WORDS_EN: 20,
 });

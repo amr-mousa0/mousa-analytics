@@ -1,7 +1,7 @@
 ---
 title: "SQL Practice Journey - Level 2"
 projectBadge: "TECH & WEB SOLUTIONS"
-problemText: "Learning SQL often relies heavily on passive tutorials, making it difficult to develop real problem-solving skills and maintain consistent practice."
+problemText: "Mastering complex analytical SQL queries and multi-table data modeling."
 solutionText: "This repository provides a structured collection of SQL practice exercises and complete solutions, helping learners strengthen analytical thinking and improve SQL proficiency through hands-on practice."
 impactText: "Creates a reusable SQL learning resource that demonstrates practical database skills, tracks learning progress, and supports interview preparation through real-world query practice."
 coverImage: "https://raw.githubusercontent.com/amr-mousa0/SQL-Practice---level-2/main/assets/cover.webp"

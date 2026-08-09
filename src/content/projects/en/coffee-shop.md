@@ -1,7 +1,7 @@
 ---
-title: "Coffee Shop Sales Analysis & Optimization"
+title: "Coffee Shop Sales & Optimization"
 projectBadge: "DATA ANALYTICS & BI"
-problemText: "The café suffered from operational blindness with high inventory waste and unpredictable peak hours across a raw 10,000-row transaction dataset."
+problemText: "High inventory waste and unmonitored peak sales hours due to manual tracking."
 solutionText: "Utilized Excel UNIQUE and XLOOKUP to clean 95% of data anomalies. Engineered a robust relational Star Schema database in Power BI, writing complex DAX queries to dynamically segment peak sales periods."
 impactText: "Calculated 9,489 orders ($84.7K revenue). Proven the Pareto Principle where the top 5 items generated 80% of revenue. Provided actionable combo offers to pair top-sellers with lower-performing items, cutting waste and optimizing sales."
 coverImage: "/images/uploads/coffee-shop.webp"

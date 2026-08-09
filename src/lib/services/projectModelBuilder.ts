@@ -90,7 +90,7 @@ export function buildNormalizedProjectModel(input: FallbackInput): NormalizedPro
     ? publishDecl
     : {
         portfolio: {
-          enabled: true,
+          enabled: false, // STRICT REQUIREMENT: Require manifest.json for portfolio publishing
           visibility: 'public',
           featured: false,
           priority: 99,

@@ -1,7 +1,7 @@
 ---
-title: "Walmart-Sales-Analysis"
-projectBadge: "TECH & WEB SOLUTIONS"
-problemText: "The organization required automated tracking and structured analytics visibility for Walmart-Sales-Analysis. Raw operational data needed processing and transformation."
+title: "Walmart Sales Performance Analysis"
+projectBadge: "DATA ANALYTICS & BI"
+problemText: "Analyzing large-scale retail sales data to identify high-performing store branches."
 solutionText: "A business intelligence project focused on analyzing Walmart's weekly sales performance across multiple stores, evaluating the impact of holidays and external economic factors, and uncovering trends that support strategic business decisions."
 impactText: "Engineered data modeling and optimized decision-making workflows."
 coverImage: "https://raw.githubusercontent.com/amr-mousa0/Walmart-Sales-Analysis/main/assets/cover.webp"

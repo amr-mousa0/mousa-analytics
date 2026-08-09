@@ -24,6 +24,8 @@ export class GitHubWorker {
       } catch (err: any) {
         throw new Error(`[GitHubWorker] PermanentError: Invalid manifest.json for ${job.payload.repoName}: ${err.message}`);
       }
+    } else {
+      throw new Error(`[GitHubWorker] PermanentError: Missing manifest.json for ${job.payload.repoName}. Repositories without manifest.json are not published.`);
     }
 
     const input: FallbackInput = {

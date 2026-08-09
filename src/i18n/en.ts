@@ -11,7 +11,7 @@ export const en = {
     about: 'About',
     whoIAm: 'Who I Am',
     services: 'Services',
-    projects: 'Portfolio',
+    projects: 'Projects',
     blog: 'Blog',
     contact: 'Contact',
     menu: 'Menu',

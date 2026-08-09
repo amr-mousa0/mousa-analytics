@@ -79,6 +79,7 @@ const projectsCollection = defineCollection({
     coverImage: z.any().optional().describe("The main cover image showing in lists and header"),
     githubUrl: z.string().url().optional().describe("Optional link to the public GitHub code repository"),
     dashboardUrl: z.string().url().optional().describe("Optional link to embed the live Power BI / looker dashboard"),
+    pdfUrl: z.string().url().optional().describe("Optional URL to an embedded PDF report or documentation file"),
     whatsappStartProjectMsg: z.string().describe("Pre-filled WhatsApp message for initiating a similar project"),
     whatsappOpenDashboardMsg: z.string().describe("Pre-filled WhatsApp message for requesting access to dashboard"),
     priority: z.number().int().default(0).describe("Sorting order on the home page grid"),

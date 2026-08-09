@@ -200,6 +200,53 @@ const projectStack = (project?.data?.tags || []).join(' · ');
         </section>
       )}
 
+      <!-- PDF Interactive Viewer Section -->
+      {(() => {
+        const resolvedPdf = project?.data?.pdfUrl || 
+          (project?.data?.galleryImages || []).find((img: any) => typeof img === 'string' && img.toLowerCase().includes('.pdf'));
+        if (!resolvedPdf) return null;
+        return (
+          <section class="border-t border-text-main/10 pt-10 md:pt-14 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center justify-center px-2 py-0.5 rounded bg-red-500/10 text-red-500 font-bold text-[10px] tracking-wider uppercase font-mono border border-red-500/20">
+                    PDF DOCUMENT
+                  </span>
+                  <h2 class="text-sm font-semibold uppercase tracking-widest text-text-main">
+                    {currentLang === 'ar' ? 'مستند وتقرير المشروع الفني (PDF)' : 'Project Documentation & Technical Report (PDF)'}
+                  </h2>
+                </div>
+                <p class="text-text-muted text-xs font-sans">
+                  {currentLang === 'ar' ? 'يمكنك قراءة وتصفح التقرير الفني الكامل مباشرة عبر الموقع' : 'Read and browse the full technical report directly within the browser'}
+                </p>
+              </div>
+
+              <div class="flex items-center gap-3 shrink-0">
+                <a 
+                  href={resolvedPdf} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-text-main/5 hover:bg-text-main/10 text-text-main text-xs font-semibold transition-colors border border-text-main/10 shadow-sm"
+                >
+                  <Icon name="arrow-down-tray" class="w-3.5 h-3.5" />
+                  <span>{currentLang === 'ar' ? 'تحميل ملف PDF' : 'Download PDF File'}</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="w-full rounded-2xl border border-text-main/15 bg-[#0d0e12] overflow-hidden shadow-2xl relative">
+              <iframe 
+                src={resolvedPdf.startsWith('http') ? `https://docs.google.com/viewer?url=${encodeURIComponent(resolvedPdf)}&embedded=true` : resolvedPdf} 
+                class="w-full h-[550px] sm:h-[650px] md:h-[750px] border-0 bg-white" 
+                title={currentLang === 'ar' ? 'عرض مستند PDF' : 'PDF Document Viewer'}
+                loading="lazy"
+              ></iframe>
+            </div>
+          </section>
+        );
+      })()}
+
       <!-- CTA -->
       <section class="border-t border-text-main/10 pt-10 md:pt-12 flex flex-col sm:flex-row sm:items-center justify-between gap-8">
         <div class="space-y-3 max-w-xl">

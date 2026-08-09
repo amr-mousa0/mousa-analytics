@@ -66,6 +66,9 @@ export async function getSafeProjects(lang: string): Promise<ExtendedProject[]> 
     // Merge in-memory published projects from webhook pipeline runs
     const publishedModels = PublishWorker.getPublishedProjects();
     publishedModels.forEach(model => {
+      if (model.isFallback || model.publish?.portfolio?.enabled === false) {
+        return;
+      }
       const slug = `${lang}/${model.projectId}`;
       const exists = allProjects.some(p => p.slug === slug || p.slug.endsWith(`/${model.projectId}`));
       if (!exists) {
