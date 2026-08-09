@@ -16,7 +16,7 @@ category: "Data Analytics"
 tags: ["Data/Tech"]
 draft: false
 featured: false
-publishedDate: "2026-08-09T17:35:16.888Z"
+publishedDate: "2026-08-09T17:36:35.397Z"
 translationKey: "chinook-music-store-sql-analysis"
 ---
 Case Study: شينوك-متجر الموسيقى-تحليل SQL
