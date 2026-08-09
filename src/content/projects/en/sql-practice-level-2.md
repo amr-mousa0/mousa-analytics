@@ -1,5 +1,5 @@
 ---
-title: "SQL Practice Journey - Level 2.2"
+title: "SQL Practice Journey - Level 2"
 projectBadge: "TECH & WEB SOLUTIONS"
 problemText: "Learning SQL often relies heavily on passive tutorials, making it difficult to develop real problem-solving skills and maintain consistent practice."
 solutionText: "This repository provides a structured collection of SQL practice exercises and complete solutions, helping learners strengthen analytical thinking and improve SQL proficiency through hands-on practice."
@@ -16,7 +16,7 @@ category: "Data Analytics"
 tags: ["SQL","PostgreSQL","Database","Data Analysis","Practice","Learning"]
 draft: false
 featured: false
-publishedDate: "2026-08-09T00:09:32.401Z"
+publishedDate: "2026-08-09T01:36:34.639Z"
 translationKey: "sql-practice-level-2"
 ---
-Case Study: SQL Practice Journey - Level 2.2
+Case Study: SQL Practice Journey - Level 2
