@@ -1,5 +1,6 @@
 ---
 import { ContentHubClient } from '../../lib/sdk/contentHubClient.js';
+import { ContentFacade } from '../../lib/content/facade.js';
 import { getImageUrl } from '../../scripts/imageHelper.js';
 import Icon from '../ui/Icon.astro';
 import { useTranslations } from '../../i18n/index.js';
@@ -15,7 +16,20 @@ const { lang } = Astro.props;
 const isAr = lang === 'ar';
 const t = useTranslations(lang);
 
-const projects = await ContentHubClient.getProjects(lang);
+const hubProjects = await ContentHubClient.getProjects(lang);
+
+// Only render cards for projects that actually have a statically-built detail
+// page. The detail pages are generated from the local content collection, so
+// any API-only project (e.g. stale webhook-synced entries pending removal)
+// would yield a dead /projects/{slug}/ link. Draft filtering mirrors the
+// getStaticPaths logic of [...lang]/projects/[slug].astro.
+const isProd = import.meta.env.PROD;
+const publishedSlugs = new Set(
+  (await ContentFacade.getProjects({ includeDrafts: true }))
+    .filter((p: any) => !isProd || !p.data.draft)
+    .map((p: any) => String(p.slug).split('/').pop())
+);
+const projects = hubProjects.filter((p) => publishedSlugs.has(String(p.slug).split('/').pop()));
 
 const getProjectUrl = (slug: string) => {
   const cleanSlug = slug.split('/').pop();
