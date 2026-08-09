@@ -1,5 +1,5 @@
 ---
-title: "رحلة تدريب SQL - المستوى 1.1"
+title: "رحلة تدريب SQL - المستوى 1"
 projectBadge: "TECH & WEB SOLUTIONS"
 problemText: "يكافح العديد من المبتدئين لبناء أساسيات SQL قوية لأنهم يعتمدون على التعلم السلبي بدلاً من التدريب العملي المتسق مع استعلامات SQL الحقيقية."
 solutionText: "يوفر هذا المستودع مجموعة منظمة من تمارين SQL للمبتدئين والحلول الكاملة، مما يسمح للمتعلمين بتعزيز فهمهم لمفاهيم SQL الأساسية من خلال حل المشكلات العملية."
@@ -16,7 +16,7 @@ category: "Data Analytics"
 tags: ["SQL","PostgreSQL","Database","Practice","Learning","Data Analysis"]
 draft: false
 featured: false
-publishedDate: "2026-08-08T23:06:26.294Z"
+publishedDate: "2026-08-09T00:08:47.457Z"
 translationKey: "sql-practice-level-1"
 ---
-Case Study: رحلة تدريب SQL - المستوى 1.1
+Case Study: رحلة تدريب SQL - المستوى 1
