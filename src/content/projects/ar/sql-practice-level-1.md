@@ -8,7 +8,7 @@ coverImage: "https://raw.githubusercontent.com/amr-mousa0/SQL-Practice---level-1
 galleryImages:
   - "https://raw.githubusercontent.com/amr-mousa0/SQL-Practice---level-1/main/assets/cover.webp"
 githubUrl: "https://github.com/amr-mousa0/SQL-Practice---level-1"
-pdfUrl: "https://raw.githubusercontent.com/amr-mousa0/SQL-Practice---level-1/main/docs/documentation.pdf"
+pdfUrl: "https://raw.githubusercontent.com/amr-mousa0/SQL-Practice---level-1/main/SQL%20PRACTIC-LEVEL%201%20.pdf"
 dashboardUrl: "https://amr-mousa0.github.io/SQL-Practice---level-1"
 whatsappStartProjectMsg: "Hi Amr, I'd like to inquire about this project."
 whatsappOpenDashboardMsg: "Hi Amr, I'd like to request the interactive dashboard."
