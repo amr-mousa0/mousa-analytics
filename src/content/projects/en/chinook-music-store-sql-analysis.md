@@ -4,9 +4,9 @@ projectBadge: "TECH & WEB SOLUTIONS"
 problemText: "The organization required automated tracking and structured analytics visibility for Chinook-Music-Store-SQL-Analysis. Raw operational data needed processing and transformation."
 solutionText: "From Raw Database Structure to Business Insights Using SQL"
 impactText: "Engineered data modeling and optimized decision-making workflows."
-coverImage: "https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&pause=1200&color=2EA043&center=true&vCenter=true&width=800&lines=Exploring+Business+Data;Validating+Data+Quality;Finding+Patterns+and+Outliers;Turning+SQL+Into+Business+Insights"
+coverImage: "https://raw.githubusercontent.com/amr-mousa0/Chinook-Music-Store-SQL-Analysis/main/assets/cover.webp"
 galleryImages:
-  - "https://raw.githubusercontent.com/amr-mousa0/Chinook-Music-Store-SQL-Analysis/main/assets/Screenshot 2026-08-09 201449.png"
+  - "https://raw.githubusercontent.com/amr-mousa0/Chinook-Music-Store-SQL-Analysis/main/assets/cover.webp"
 githubUrl: "https://github.com/amr-mousa0/Chinook-Music-Store-SQL-Analysis"
 dashboardUrl: "https://amr-mousa0.github.io/Chinook-Music-Store-SQL-Analysis"
 whatsappStartProjectMsg: "Hi Amr, I'd like to inquire about this project."
@@ -16,7 +16,7 @@ category: "Data Analytics"
 tags: ["Data/Tech"]
 draft: false
 featured: false
-publishedDate: "2026-08-09T17:32:20.992Z"
+publishedDate: "2026-08-09T17:35:16.231Z"
 translationKey: "chinook-music-store-sql-analysis"
 ---
 Case Study: Chinook-Music-Store-SQL-Analysis
