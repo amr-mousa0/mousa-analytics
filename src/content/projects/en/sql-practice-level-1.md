@@ -1,5 +1,5 @@
 ---
-title: "SQL Practice Journey - Level 1.1"
+title: "SQL Practice Journey - Level 1"
 projectBadge: "TECH & WEB SOLUTIONS"
 problemText: "Many beginners struggle to build strong SQL fundamentals because they rely on passive learning instead of consistent hands-on practice with real SQL queries."
 solutionText: "This repository provides a structured collection of beginner-level SQL exercises and complete solutions, allowing learners to strengthen their understanding of core SQL concepts through practical problem solving."
@@ -16,7 +16,7 @@ category: "Data Analytics"
 tags: ["SQL","PostgreSQL","Database","Practice","Learning","Data Analysis"]
 draft: false
 featured: false
-publishedDate: "2026-08-08T23:06:25.477Z"
+publishedDate: "2026-08-09T00:08:46.732Z"
 translationKey: "sql-practice-level-1"
 ---
-Case Study: SQL Practice Journey - Level 1.1
+Case Study: SQL Practice Journey - Level 1
