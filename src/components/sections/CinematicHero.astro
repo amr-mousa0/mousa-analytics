@@ -258,67 +258,81 @@ const galleryCards = [
 
 </section>
 
-<!-- ─── Cinematic Scroll Engine ─── -->
+<!-- ══════════════════════════════════════════
+     ENTRANCE — Staggered reveal on page load (inline: runs at parse time so the
+     LCP hero title never waits for the deferred GSAP module chunk). Re-runs on
+     astro:after-swap to mirror the old module-bound behavior.
+     ══════════════════════════════════════════ -->
+<script is:inline>
+  (function () {
+    function initCinematicEntrance() {
+      const hero = document.getElementById('hero');
+      if (!hero) return;
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const tagline = hero.querySelector('.brand-tagline');
+
+      if (!reduceMotion) {
+        requestAnimationFrame(() => {
+          setTimeout(() => tagline && tagline.classList.add('is-visible'), 800);
+
+          const ctaWrap = hero.querySelector('.brand-cta-wrap');
+          setTimeout(() => ctaWrap && ctaWrap.classList.add('is-visible'), 1000);
+
+          const laptopInner = hero.querySelector('#hero-laptop-inner');
+          if (laptopInner) {
+            setTimeout(() => laptopInner.classList.add('is-visible'), 400);
+          }
+        });
+      } else {
+        // Reduced motion: show everything instantly
+        tagline && tagline.classList.add('is-visible');
+        const cta = hero.querySelector('.brand-cta-wrap');
+        cta && cta.classList.add('is-visible');
+        const laptop = hero.querySelector('#hero-laptop-inner');
+        laptop && laptop.classList.add('is-visible');
+        hero.querySelectorAll('.gallery-card').forEach((c) => c.classList.add('is-visible'));
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCinematicEntrance);
+    } else {
+      initCinematicEntrance();
+    }
+    document.addEventListener('astro:after-swap', initCinematicEntrance);
+  })();
+</script>
+
+<!-- ══════════════════════════════════════════
+     SCROLL ENGINE — GSAP is loaded on demand so its 137KB chunk + ScrollTrigger
+     layout measurement never block the first impression. The gallery stage is
+     held hidden by CSS while the engine is pending, so there is no content flash.
+     ══════════════════════════════════════════ -->
 <script>
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  let engineBuilt = false;
+  let engineCtx: any = null;
 
-  gsap.registerPlugin(ScrollTrigger);
+  async function buildCinematicEngine() {
+    if (engineBuilt) return;
+    engineBuilt = true;
 
-  function initCinematicEngine() {
     const hero = document.getElementById('hero');
-    if (!hero) return;
+    if (!hero || !document.documentElement.contains(hero)) return;
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+      import('gsap'),
+      import('gsap/ScrollTrigger'),
+    ]);
+    gsap.registerPlugin(ScrollTrigger);
 
-    const chars = hero.querySelectorAll<HTMLElement>('.brand-char');
-    const tagline = hero.querySelector<HTMLElement>('.brand-tagline');
     const brandStage = hero.querySelector<HTMLElement>('#brand-stage');
     const galleryStage = hero.querySelector<HTMLElement>('#gallery-stage');
     const galleryCards = hero.querySelectorAll<HTMLElement>('.gallery-card');
 
-    // ══════════════════════════════════════════
-    // ENTRANCE — Staggered reveal on page load
-    // ══════════════════════════════════════════
-    if (!reduceMotion) {
-      requestAnimationFrame(() => {
-        let maxDelay = 0;
-
-        chars.forEach((char) => {
-          const idx = parseInt(char.style.getPropertyValue('--char-index')) || 0;
-          const isWord = char.classList.contains('brand-char--word');
-          const step = isWord ? 140 : 50;
-          const delay = 150 + idx * step;
-          if (delay > maxDelay) maxDelay = delay;
-          setTimeout(() => char.classList.add('is-visible'), delay);
-        });
-
-        const totalDelay = maxDelay + 200;
-        setTimeout(() => tagline?.classList.add('is-visible'), totalDelay);
-
-        const ctaWrap = hero.querySelector<HTMLElement>('.brand-cta-wrap');
-        setTimeout(() => ctaWrap?.classList.add('is-visible'), totalDelay + 200);
-
-        const laptopInner = hero.querySelector<HTMLElement>('#hero-laptop-inner');
-        if (laptopInner) {
-          setTimeout(() => laptopInner.classList.add('is-visible'), 400);
-        }
-      });
-    } else {
-      // Reduced motion: show everything instantly
-      chars.forEach((c) => c.classList.add('is-visible'));
-      tagline?.classList.add('is-visible');
-      hero.querySelector<HTMLElement>('.brand-cta-wrap')?.classList.add('is-visible');
-      hero.querySelector<HTMLElement>('#hero-laptop-inner')?.classList.add('is-visible');
-      galleryCards.forEach((c) => c.classList.add('is-visible'));
-      return;
-    }
-
-    // ══════════════════════════════════════════
-    // SCROLL — Single timeline, single ScrollTrigger
-    // ══════════════════════════════════════════
-
-    // Gallery starts hidden — GSAP will reveal it
+    // Gallery starts hidden — GSAP will reveal it (CSS holds the same state
+    // until this engine takes over, so a deferred start never flashes)
     gsap.set(galleryStage, { opacity: 0, scale: 0.95 });
 
     // Initial state: Totem cards stacked together at lowered center stack
@@ -335,7 +349,7 @@ const galleryCards = [
       });
     });
 
-    const ctx = gsap.context(() => {
+    engineCtx = gsap.context(() => {
 
       const master = gsap.timeline({
         scrollTrigger: {
@@ -421,13 +435,41 @@ const galleryCards = [
     // Cleanup
     document.addEventListener(
       'astro:before-swap',
-      () => { ctx.revert(); },
+      () => { engineCtx?.revert(); },
       { once: true }
     );
   }
 
-  initCinematicEngine();
-  document.addEventListener('astro:after-swap', initCinematicEngine);
+  function scheduleCinematicEngine() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const run = () => {
+      if (engineBuilt) return;
+      buildCinematicEngine();
+    };
+
+    // The preloader covers the screen until the load event + fade-out, so the
+    // earliest idle moment is the ideal slot for the pinned scroll timeline.
+    // Scroll/touch/load/timer fallbacks guarantee it always exists before the
+    // user can reasonably reach the pinned scene.
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(run, { timeout: 1200 });
+    } else {
+      setTimeout(run, 1200);
+    }
+    window.addEventListener('load', run, { once: true });
+    window.addEventListener('scroll', run, { once: true, passive: true });
+    window.addEventListener('touchstart', run, { once: true, passive: true });
+    setTimeout(run, 4000);
+  }
+
+  scheduleCinematicEngine();
+
+  document.addEventListener('astro:after-swap', () => {
+    engineBuilt = false;
+    engineCtx = null;
+    scheduleCinematicEngine();
+  });
 </script>
 
 <style>
@@ -463,7 +505,6 @@ const galleryCards = [
     display: flex;
     flex-direction: column;
     align-items: center;
-    will-change: transform, opacity;
     flex: 1;
     max-width: 100%;
   }
@@ -519,18 +560,13 @@ const galleryCards = [
 
   .brand-char {
     display: inline-block;
-    opacity: 0;
-    transform: translateY(0.4em) rotateX(-20deg) scale(0.95);
+    transform: translateY(0) rotateX(0deg) scale(1);
     transform-origin: bottom center;
-    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform, opacity;
   }
   .brand-char--word {
     transform: translateY(0) rotateX(0deg) scale(1);
-    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .brand-char.is-visible {
-    opacity: 1;
     transform: translateY(0) rotateX(0deg) scale(1);
   }
 
@@ -637,7 +673,6 @@ const galleryCards = [
     position: relative;
     min-height: 420px;
     z-index: 3;
-    will-change: transform, opacity;
   }
 
   @media (min-width: 1024px) {
@@ -832,6 +867,10 @@ const galleryCards = [
     overflow: hidden;
     z-index: 3;
     pointer-events: none;
+    /* Held hidden until the scroll engine takes over — GSAP animates it back
+       in with the exact same values, so this never changes what the user sees */
+    opacity: 0;
+    transform: scale(0.95);
   }
   .gallery-stage .gallery-card {
     pointer-events: auto;
@@ -848,7 +887,7 @@ const galleryCards = [
 
   .gallery-card {
     position: absolute;
-    will-change: transform, opacity, left, top;
+    will-change: transform, opacity;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
@@ -875,6 +914,11 @@ const galleryCards = [
      REDUCED MOTION
   ───────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
+    .gallery-stage {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
     .brand-char,
     .brand-tagline,
     .gallery-card {

@@ -118,14 +118,19 @@ const t = useTranslations(lang);
 </section>
 
 <script>
-  import gsap from 'gsap';
-  import ScrollTrigger from 'gsap/ScrollTrigger';
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  const initCollageAnimation = () => {
+  const initCollageAnimation = async () => {
     const section = document.querySelector('.visual-collage-section');
-    if (!section) return;
+    if (!section || !document.documentElement.contains(section)) return;
+
+    // GSAP is fetched only when the collage actually approaches the viewport;
+    // the section's cards/title are hidden by their SSR opacity-0 classes, so
+    // nothing is ever visible before this engine takes over.
+    const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+      import('gsap'),
+      import('gsap/ScrollTrigger'),
+    ]);
+    gsap.registerPlugin(ScrollTrigger);
+    if (!document.documentElement.contains(section)) return;
 
     const leftCards = section.querySelectorAll('.collage-card-left');
     const rightCards = section.querySelectorAll('.collage-card-right');
@@ -171,38 +176,57 @@ const t = useTranslations(lang);
   // The collage lives below the fold; build its scroll animation only when the
   // section nears the viewport (with an always-run safety fallback).
   let started = false;
-  const safeInit = () => {
+  let observer: IntersectionObserver | null = null;
+
+  const init = async () => {
     if (started) return;
     started = true;
-    initCollageAnimation();
+    const section = document.getElementById('visual-collage');
+    if (!section || !document.documentElement.contains(section)) {
+      started = false;
+      return;
+    }
+    try {
+      await initCollageAnimation();
+    } catch {
+      started = false;
+    }
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      if ('IntersectionObserver' in window) {
-        const section = document.getElementById('visual-collage');
-        if (section) {
-          const io = new IntersectionObserver(
-            (entries) => {
-              if (entries.some((e) => e.isIntersecting)) {
-                io.disconnect();
-                safeInit();
-              }
-            },
-            { rootMargin: '240px 0px' }
-          );
-          io.observe(section);
-          window.addEventListener('load', () => setTimeout(safeInit, 12000), { once: true });
-          return;
+  const armObserver = () => {
+    if (observer) return;
+    if (!('IntersectionObserver' in window)) {
+      init();
+      return;
+    }
+    const section = document.getElementById('visual-collage');
+    if (!section) return;
+    observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          observer?.disconnect();
+          observer = null;
+          init();
         }
-      }
-      safeInit();
-    });
-  } else {
-    safeInit();
-  }
-  document.addEventListener('astro:page-load', safeInit);
+      },
+      { rootMargin: '50% 0px 0px 0px' }
+    );
+    observer.observe(section);
+  };
+
+  document.addEventListener('astro:page-load', armObserver);
   document.addEventListener('astro:before-swap', () => {
     started = false;
+    observer?.disconnect();
+    observer = null;
   });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', armObserver);
+  } else {
+    armObserver();
+  }
+
+  // Safety: never leave the collage un-enhanced, even if the observer never fires
+  window.addEventListener('load', () => setTimeout(init, 12000), { once: true });
 </script>

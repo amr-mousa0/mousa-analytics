@@ -243,11 +243,7 @@ const getProjectIcon = (slug: string) => {
 </section>
 
 <script>
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { trackEvent } from '../../scripts/analytics';
-
-  gsap.registerPlugin(ScrollTrigger);
 
   // ── Analytics Tracking ──
   const setupHoverContacts = () => {
@@ -271,12 +267,22 @@ const getProjectIcon = (slug: string) => {
 
   // ══════════════════════════════════════════════════════════════
   // CINEMATIC FOCUS ORBIT ENGINE
+  // GSAP is imported on demand — the engine only ever exists when the
+  // section nears the viewport, never during the initial paint.
   // ══════════════════════════════════════════════════════════════
-  const setupFocusOrbit = () => {
+  const setupFocusOrbit = async () => {
     const stage = document.querySelector('.project-coverflow-stage') as HTMLElement | null;
     if (!stage) return;
     if (stage.hasAttribute('data-orbit-init')) return;
+    if (!document.documentElement.contains(stage)) return;
     stage.setAttribute('data-orbit-init', 'true');
+
+    const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+      import('gsap'),
+      import('gsap/ScrollTrigger'),
+    ]);
+    gsap.registerPlugin(ScrollTrigger);
+    if (!document.documentElement.contains(stage)) return;
 
     const cards = Array.from(stage.querySelectorAll('.project-coverflow-card')) as HTMLElement[];
     const btnLeftDesktop = document.querySelector('.carousel-btn-left') as HTMLElement | null;
@@ -573,47 +579,63 @@ const getProjectIcon = (slug: string) => {
     });
   };
 
-  const init = () => {
-    setupFocusOrbit();
-    setupHoverContacts();
-  };
-
-  // The projects orbit lives below the fold; build it only when it nears the
-  // viewport (with an always-run safety fallback) so its GSAP work never
-  // competes with the initial paint.
+  // The projects coverflow lives below the fold; build it only when it nears
+  // the viewport (with an always-run safety fallback) so its GSAP work never
+  // competes with the initial paint. The 50vh margin ensures the cards' layout
+  // state is applied long before the section becomes visible on every viewport.
   let started = false;
-  const safeInit = () => {
+  let observer: IntersectionObserver | null = null;
+
+  const init = async () => {
     if (started) return;
     started = true;
-    init();
+    const section = document.getElementById('projects');
+    if (!section || !document.documentElement.contains(section)) {
+      started = false;
+      return;
+    }
+    setupHoverContacts();
+    try {
+      await setupFocusOrbit();
+    } catch {
+      started = false;
+    }
   };
 
-  document.addEventListener('astro:page-load', safeInit);
+  const armObserver = () => {
+    if (observer) return;
+    if (!('IntersectionObserver' in window)) {
+      init();
+      return;
+    }
+    const section = document.getElementById('projects');
+    if (!section) return;
+    observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          observer?.disconnect();
+          observer = null;
+          init();
+        }
+      },
+      { rootMargin: '50% 0px 0px 0px' }
+    );
+    observer.observe(section);
+  };
+
+  document.addEventListener('astro:page-load', armObserver);
   document.addEventListener('astro:before-swap', () => {
     started = false;
+    observer?.disconnect();
+    observer = null;
   });
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      if ('IntersectionObserver' in window) {
-        const section = document.getElementById('projects');
-        if (section) {
-          const io = new IntersectionObserver(
-            (entries) => {
-              if (entries.some((e) => e.isIntersecting)) {
-                io.disconnect();
-                safeInit();
-              }
-            },
-            { rootMargin: '240px 0px' }
-          );
-          io.observe(section);
-          window.addEventListener('load', () => setTimeout(safeInit, 12000), { once: true });
-          return;
-        }
-      }
-      safeInit();
-    });
+    document.addEventListener('DOMContentLoaded', armObserver);
   } else {
-    safeInit();
+    armObserver();
   }
+
+  // Safety: never leave the coverflow un-enhanced (behavior unchanged from before)
+  window.addEventListener('load', () => setTimeout(init, 12000), { once: true });
 </script>

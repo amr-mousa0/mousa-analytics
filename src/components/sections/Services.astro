@@ -65,58 +65,80 @@ const services = await ContentFacade.getServices({ lang: lang as 'en' | 'ar' });
 </section>
 
 <script>
-  import { servicesGridLifecycle } from '../../lib/services-grid/index';
-
+  // The services grid engine (and the GSAP chunk it pulls in) is loaded only
+  // when the section actually approaches the viewport, never during the first
+  // paint. The grid's entrance hides its content via gsap.set at init time,
+  // and the 50vh observation margin guarantees that happens well before the
+  // 'top 75%' reveal trigger, on every viewport size — identical visuals.
   let started = false;
+  let gridApi: typeof import('../../lib/services-grid/index') | null = null;
+  let observer: IntersectionObserver | null = null;
 
-  // The services section lives far below the fold; defer the (relatively heavy)
-  // grid engine until the section is close to the viewport — never during the
-  // initial paint. Fallbacks guarantee it always runs.
-  const init = () => {
+  const init = async () => {
     if (started) return;
     started = true;
-    servicesGridLifecycle.init();
+    const section = document.getElementById('services');
+    if (!section || !document.documentElement.contains(section)) {
+      started = false;
+      return;
+    }
+    try {
+      const grid = await import('../../lib/services-grid/index');
+      if (!document.documentElement.contains(section)) {
+        started = false;
+        return;
+      }
+      gridApi = grid;
+      grid.servicesGridLifecycle.init();
+    } catch {
+      started = false;
+    }
   };
 
   const dispose = () => {
-    servicesGridLifecycle.dispose();
+    if (gridApi) {
+      gridApi.servicesGridLifecycle.dispose();
+      gridApi = null;
+    }
   };
 
-  document.addEventListener('astro:page-load', init);
+  const armObserver = () => {
+    if (observer) return;
+    if (!('IntersectionObserver' in window)) {
+      init();
+      return;
+    }
+    const section = document.getElementById('services');
+    if (!section) return;
+    observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          observer?.disconnect();
+          observer = null;
+          init();
+        }
+      },
+      { rootMargin: '50% 0px 0px 0px' }
+    );
+    observer.observe(section);
+  };
+
+  document.addEventListener('astro:page-load', armObserver);
   document.addEventListener('astro:before-swap', () => {
     started = false;
     dispose();
+    observer?.disconnect();
+    observer = null;
   });
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      if ('IntersectionObserver' in window) {
-        const section = document.getElementById('services');
-        if (section) {
-          const io = new IntersectionObserver(
-            (entries) => {
-              if (entries.some((e) => e.isIntersecting)) {
-                io.disconnect();
-                init();
-              }
-            },
-            { rootMargin: '240px 0px' }
-          );
-          io.observe(section);
-          // Safety: never leave the grid un-enhanced, even if the observer
-          // never fires (tabs, printers, odd viewports).
-          window.addEventListener(
-            'load',
-            () => setTimeout(init, 12000),
-            { once: true }
-          );
-          return;
-        }
-      }
-      init();
-    });
+    document.addEventListener('DOMContentLoaded', armObserver);
   } else {
-    init();
+    armObserver();
   }
+
+  // Safety: never leave the grid un-enhanced, even if the observer never fires
+  // (tabs, printers, odd viewports) — behavior unchanged from before.
+  window.addEventListener('load', () => setTimeout(init, 12000), { once: true });
 </script>
 
