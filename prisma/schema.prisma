@@ -20,6 +20,9 @@ model Project {
   tags        String[]
   featured    Boolean  @default(false)
   commitSha   String?
+  cover       String?
+  pdfUrl      String?
+  gallery     Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

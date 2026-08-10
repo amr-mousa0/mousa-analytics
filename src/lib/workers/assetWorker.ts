@@ -44,6 +44,11 @@ export class AssetWorker {
         })
       );
       newModel.gallery = await Promise.all(galleryPromises);
+      
+      const pdfItem = newModel.gallery.find(g => g.type === 'pdf');
+      if (pdfItem && pdfItem.url) {
+        newModel.pdfUrl = pdfItem.url;
+      }
     }
 
     Logger.info(`[AssetWorker] Asset optimization completed for ${newModel.projectId}`);

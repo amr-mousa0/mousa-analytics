@@ -36,7 +36,8 @@ export const GET: APIRoute = async ({ request, url }) => {
       status: 200,
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/octet-stream',
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'inline',
         'Cache-Control': 'public, max-age=86400, immutable'
       }
     });

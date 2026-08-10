@@ -44,7 +44,10 @@ export class PersistentStorageProvider implements StorageProvider {
         contentEn: project.solution || project.description,
         category: project.category || 'Data Analytics',
         tags: project.tags || [],
-        featured: project.publish?.portfolio?.featured ?? true
+        featured: project.publish?.portfolio?.featured ?? true,
+        cover: project.cover || null,
+        pdfUrl: project.pdfUrl || null,
+        gallery: project.gallery ? (project.gallery as any) : null
       },
       update: {
         titleAr: project.titleAr || project.title,
@@ -55,7 +58,10 @@ export class PersistentStorageProvider implements StorageProvider {
         contentEn: project.solution || project.description,
         category: project.category || 'Data Analytics',
         tags: project.tags || [],
-        featured: project.publish?.portfolio?.featured ?? true
+        featured: project.publish?.portfolio?.featured ?? true,
+        cover: project.cover || null,
+        pdfUrl: project.pdfUrl || null,
+        gallery: project.gallery ? (project.gallery as any) : null
       }
     });
     Logger.info(`[PersistentStorage] Saved project ${project.projectId} to database.`);

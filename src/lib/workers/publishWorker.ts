@@ -37,7 +37,10 @@ export class PublishWorker {
           contentEn: model.solution || model.description,
           category: (model as any).category || model.tags?.[0] || 'Data Analytics',
           tags: model.tags || [],
-          featured: publishConfig?.featured ?? true
+          featured: publishConfig?.featured ?? true,
+          cover: model.cover || null,
+          pdfUrl: model.pdfUrl || null,
+          gallery: model.gallery ? (model.gallery as any) : null
         },
         update: {
           titleAr: model.titleAr || model.title,
@@ -48,7 +51,10 @@ export class PublishWorker {
           contentEn: model.solution || model.description,
           category: (model as any).category || model.tags?.[0] || 'Data Analytics',
           tags: model.tags || [],
-          featured: publishConfig?.featured ?? true
+          featured: publishConfig?.featured ?? true,
+          cover: model.cover || null,
+          pdfUrl: model.pdfUrl || null,
+          gallery: model.gallery ? (model.gallery as any) : null
         }
       });
 
