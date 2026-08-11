@@ -188,6 +188,10 @@ test.describe('Performance & Core Web Vitals Audits', () => {
     await page.goto('/');
     await page.waitForSelector('#global-preloader', { state: 'hidden', timeout: 10000 });
 
+    // Fonts swap into place after first paint; wait for them so the measurement
+    // window below only captures the hover interaction, not font-loading noise.
+    await page.evaluate(() => Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 5000))]));
+
     const grid = page.locator('[data-services-grid]');
     await expect(grid).toBeVisible();
 
@@ -232,9 +236,6 @@ test.describe('Performance & Core Web Vitals Audits', () => {
         })),
       };
     }, shiftsBaseline);
-
-    console.log('[zero-CLS debug] total:', shiftMetrics.total);
-    console.log('[zero-CLS debug] details:', JSON.stringify(shiftMetrics.details, null, 2));
 
     expect(shiftMetrics.total).toBeLessThan(0.001);
   });
