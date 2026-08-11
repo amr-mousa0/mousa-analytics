@@ -42,6 +42,22 @@ await page.addInitScript(() => {
   new PerformanceObserver((l) => {
     for (const e of l.getEntries()) window.__perf.lcp.push({ s: Math.round(e.startTime), size: Math.round(e.size), el: (e.element?.className || e.element?.tagName || '').toString().slice(0, 60) });
   }).observe({ type: 'largest-contentful-paint', buffered: true });
+
+  // When the hero scroll engine builds, GSAP writes inline styles on
+  // #gallery-stage (opacity/scale) — that style mutation marks engine readiness.
+  const watchEngine = () => {
+    const stage = document.querySelector('#gallery-stage');
+    if (!stage) return;
+    new MutationObserver(() => {
+      if (!window.__perf.engineBuilt) window.__perf.engineBuilt = Math.round(performance.now());
+    }).observe(stage, { attributes: true, attributeFilter: ['style'] });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', watchEngine);
+  } else {
+    watchEngine();
+  }
+  window.__perf.initReadyState = document.readyState;
 });
 await page.goto('http://localhost:4322/', { waitUntil: 'load' });
 await page.waitForTimeout(7000);
@@ -58,6 +74,9 @@ console.log('longtasks:');
 for (const t of r.longtasks) console.log('  +' + t.s + 'ms dur=' + t.d + 'ms src=' + t.f);
 console.log('LCP candidates:');
 for (const l of r.lcp) console.log('  +' + l.s + 'ms size=' + l.size + ' el=' + l.el);
+console.log('hero engine built at:', r.engineBuilt != null ? '+' + r.engineBuilt + 'ms' : 'NEVER', '(initReadyState=' + r.initReadyState + ')');
+console.log('stage style:', (await page.evaluate(() => { const s = document.querySelector('#gallery-stage'); return s && s.getAttribute('style'); })) || '(none)');
+console.log('reducedMotion:', await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches));
 console.log('resources first 40:');
 for (const x of r.res.slice(0, 40)) console.log('  +' + x.t + ' dur=' + x.d + ' size=' + x.size + ' ' + x.n);
 

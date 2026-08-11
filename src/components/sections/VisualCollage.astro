@@ -118,18 +118,21 @@ const t = useTranslations(lang);
 </section>
 
 <script>
+  import { loadMotion } from '../../scripts/motionLoader';
+
+  // Kickoff: warm the shared GSAP module as soon as this page script runs
+  // (right after HTML parse), so the scrub timeline below is ready long before
+  // the user scrolls the collage into view on mobile.
+  loadMotion();
+
   const initCollageAnimation = async () => {
     const section = document.querySelector('.visual-collage-section');
     if (!section || !document.documentElement.contains(section)) return;
 
-    // GSAP is fetched only when the collage actually approaches the viewport;
+    // GSAP is fetched via the shared loader (already warm from the kickoff);
     // the section's cards/title are hidden by their SSR opacity-0 classes, so
     // nothing is ever visible before this engine takes over.
-    const [{ gsap }, { ScrollTrigger }] = await Promise.all([
-      import('gsap'),
-      import('gsap/ScrollTrigger'),
-    ]);
-    gsap.registerPlugin(ScrollTrigger);
+    const { gsap } = await loadMotion();
     if (!document.documentElement.contains(section)) return;
 
     const leftCards = section.querySelectorAll('.collage-card-left');

@@ -245,6 +245,12 @@ const getProjectIcon = (slug: string) => {
 
 <script>
   import { trackEvent } from '../../scripts/analytics';
+  import { loadMotion } from '../../scripts/motionLoader';
+
+  // Kickoff: warm the shared GSAP module as soon as this page script runs
+  // (right after HTML parse), so the coverflow engine below is ready long
+  // before the user scrolls the orbit into view on mobile.
+  loadMotion();
 
   // ── Analytics Tracking ──
   const setupHoverContacts = () => {
@@ -268,8 +274,9 @@ const getProjectIcon = (slug: string) => {
 
   // ══════════════════════════════════════════════════════════════
   // CINEMATIC FOCUS ORBIT ENGINE
-  // GSAP is imported on demand — the engine only ever exists when the
-  // section nears the viewport, never during the initial paint.
+  // GSAP comes from the shared motion loader, warmed by the kickoff above —
+  // the engine only ever binds when the section nears the viewport, but never
+  // has to wait on a cold network fetch anymore.
   // ══════════════════════════════════════════════════════════════
   const setupFocusOrbit = async () => {
     const stage = document.querySelector('.project-coverflow-stage') as HTMLElement | null;
@@ -278,11 +285,7 @@ const getProjectIcon = (slug: string) => {
     if (!document.documentElement.contains(stage)) return;
     stage.setAttribute('data-orbit-init', 'true');
 
-    const [{ gsap }, { ScrollTrigger }] = await Promise.all([
-      import('gsap'),
-      import('gsap/ScrollTrigger'),
-    ]);
-    gsap.registerPlugin(ScrollTrigger);
+    const { gsap } = await loadMotion();
     if (!document.documentElement.contains(stage)) return;
 
     const cards = Array.from(stage.querySelectorAll('.project-coverflow-card')) as HTMLElement[];

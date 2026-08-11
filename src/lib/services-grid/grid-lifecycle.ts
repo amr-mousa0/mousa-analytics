@@ -31,6 +31,19 @@ export const servicesGridLifecycle = {
       );
     }
 
+    // The hover/expansion engine only has meaning on fine-pointer devices
+    // (the grid's entrance reveal is CSS-only, handled elsewhere). Skipping it
+    // early on touch devices avoids gating on image decode and building a
+    // MatchMedia graph that would never match — mobile keeps its instant CSS
+    // entrance while the main thread stays free for scrolling.
+    if (
+      typeof window === 'undefined' ||
+      !window.matchMedia(MEDIA_QUERIES.MOVES).matches ||
+      window.matchMedia(MEDIA_QUERIES.STATIC).matches
+    ) {
+      return;
+    }
+
     // Decode check for images before engine activation
     const images = Array.from(gridRoot.querySelectorAll<HTMLImageElement>('img'));
     Promise.all(images.map((img) => (img.complete ? Promise.resolve() : img.decode().catch(() => {})))).then(() => {

@@ -181,22 +181,28 @@ const whatsappNumber = siteConfig.public.whatsappNumber;
       closeModal();
     };
 
-    // Defer binding until the page has finished loading so this hidden modal
-    // never competes with the critical rendering path. Idle-time init keeps
-    // behavior identical: the modal is closed by default and the preloader
-    // overlays the page until the load event, so no user interaction is lost.
+    // Bind as soon as the DOM is parsed (DOMContentLoaded), not at the network
+    // `load` event which slow mobile connections delay by seconds. The binding
+    // itself is cheap; idle scheduling keeps it off the critical rendering
+    // path, and the modal is closed by default so no interaction is lost.
     const scheduleInit = () => {
       const run = () => {
         if ('requestIdleCallback' in window) {
-          requestIdleCallback(initModal, { timeout: 2500 });
+          requestIdleCallback(initModal, { timeout: 1000 });
         } else {
-          setTimeout(initModal, 2500);
+          requestAnimationFrame(initModal);
         }
       };
-      if (document.readyState === 'complete') {
-        run();
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(run, { timeout: 500 });
+          } else {
+            run();
+          }
+        });
       } else {
-        window.addEventListener('load', run, { once: true });
+        run();
       }
     };
     scheduleInit();

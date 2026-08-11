@@ -65,8 +65,15 @@ const services = await ContentFacade.getServices({ lang: lang as 'en' | 'ar' });
 </section>
 
 <script>
-  // The services grid engine (and the GSAP chunk it pulls in) is loaded only
-  // when the section actually approaches the viewport, never during the first
+  import { loadMotion } from '../../scripts/motionLoader';
+
+  // Kickoff: warm the shared GSAP module as soon as this page script runs
+  // (right after HTML parse), so the engine below is ready long before the
+  // user scrolls the services grid into view on mobile.
+  loadMotion();
+
+  // The services grid engine (and the GSAP chunk it pulls in) is built when
+  // the section actually approaches the viewport, never during the first
   // paint. The grid's entrance is CSS-only and driven by a lightweight
   // IntersectionObserver below (no GSAP); the gate itself is exposed eagerly
   // so consumers (e2e tests, analytics) can read it long before engine boot.

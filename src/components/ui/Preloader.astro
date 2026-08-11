@@ -399,17 +399,33 @@ const t = useTranslations(lang);
       }, remaining);
     }
 
-    // Run initial preloader instantly
-    showPreloader(false);
-    
-    if (document.readyState === 'complete') {
-      hidePreloader(false);
+    // Run initial preloader. Returning visitors within the same session skip
+    // the branded gate entirely (the `mousa_preloader_seen` flag written on
+    // first hide below), so warm loads show real content immediately while
+    // first visits still get the designed cinematic moment.
+    let seenInitial = false;
+    try {
+      seenInitial = sessionStorage.getItem('mousa_preloader_seen') === 'true';
+    } catch (e) {}
+
+    if (seenInitial) {
+      var seen = getPreloader();
+      if (seen) {
+        seen.style.display = 'none';
+        seen.classList.remove('preloader-active');
+      }
+      try {
+        document.documentElement.classList.remove('preloader-lock');
+      } catch (e) {}
     } else {
-      window.addEventListener('load', () => {
-        hidePreloader(false);
-      });
-      // Safe fallback timeout: absolute protection to guarantee loader disappears even with network failures
-      setTimeout(() => hidePreloader(false), 3000);
+      showPreloader(false);
+
+      // Hide policy: a fixed branded moment, NOT the network `load` event.
+      // Slow mobile connections delay `load` by seconds; the cinematic hero
+      // entrance (which now starts at parse time) fills the remaining wait,
+      // so the page is alive the moment the overlay lifts.
+      const initialDuration = isBot ? 0 : MIN_INITIAL_DURATION;
+      setTimeout(() => hidePreloader(false), initialDuration);
     }
 
     // 2. Setup Astro transitions handling if not already initialized
