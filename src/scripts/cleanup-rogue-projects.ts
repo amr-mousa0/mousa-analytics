@@ -47,7 +47,7 @@ async function main() {
       });
       console.log(`✅ Successfully deleted ${result.count} ghost project(s).`);
     } else {
-      console.log(`\n⚠️ This was a DRY RUN. No records were deleted.`);
+      console.log(`\n[WARN] This was a DRY RUN. No records were deleted.`);
       console.log(`To actually delete these records, run the script with the --delete flag:`);
       console.log(`npx tsx src/scripts/cleanup-rogue-projects.ts --delete\n`);
     }
