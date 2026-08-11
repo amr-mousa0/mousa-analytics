@@ -3,14 +3,11 @@ import { GRID_SELECTORS, MEDIA_QUERIES, ENHANCED_CLASS } from './grid-constants'
 import { createGridEngine } from './grid-engine';
 import type { GridEngine } from './grid-engine';
 import { attachResizeObserver } from './grid-resize-sync';
-import { attachEntrance } from './grid-entrance';
-import type { EntranceDisposer } from './grid-entrance';
 
 let currentEngine: GridEngine | null = null;
 let currentCtx: gsap.Context | null = null;
 let mm: gsap.MatchMedia | null = null;
 let io: IntersectionObserver | null = null;
-let entranceDisposer: EntranceDisposer | null = null;
 let isInitialized = false;
 
 export const servicesGridLifecycle = {
@@ -33,10 +30,6 @@ export const servicesGridLifecycle = {
         !window.matchMedia(MEDIA_QUERIES.STATIC).matches
       );
     }
-
-    // Entrance reveal (all devices; no-op under reduced-motion). Runs independently
-    // of the hover engine and before the image-decode gate resolves.
-    entranceDisposer = attachEntrance(gridRoot);
 
     // Decode check for images before engine activation
     const images = Array.from(gridRoot.querySelectorAll<HTMLImageElement>('img'));
@@ -75,11 +68,6 @@ export const servicesGridLifecycle = {
   dispose() {
     if (typeof document !== 'undefined') {
       document.documentElement.classList.remove(ENHANCED_CLASS);
-    }
-
-    if (entranceDisposer) {
-      entranceDisposer();
-      entranceDisposer = null;
     }
 
     if (io) {

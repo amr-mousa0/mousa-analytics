@@ -160,6 +160,34 @@
   /* Firefox */
 }
 
+/* Services entrance — CSS reveal driven by a lightweight IntersectionObserver
+   (no GSAP in the first-load path). The hidden state is gated on `html.services-js`
+   (added by the section's module script), so no-JS users see the grid instantly.
+   Baseline styles carry NO transform/opacity, so the revealed state computes to
+   `opacity: 1; transform: none` exactly like the old GSAP clearProps contract. */
+html.services-js [data-services-grid] .premium-card-global,
+html.services-js [data-services-grid] [data-entrance] {
+  opacity: 0;
+  transform: translateY(1.5rem);
+}
+
+html.services-js [data-services-grid].services-revealed .premium-card-global,
+html.services-js [data-services-grid].services-revealed [data-entrance] {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reduced motion renders the grid instantly (also covered by the global reduce
+   block, kept here as a locality guard). */
+@media (prefers-reduced-motion: reduce) {
+  html.services-js [data-services-grid] .premium-card-global,
+  html.services-js [data-services-grid] [data-entrance] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* gsap-enhanced handover — Services card hover */
 /* GSAP owns all transform/opacity/visibility during expansion, so the CSS
    baseline must never re-apply them. Inline GSAP styles outrank these

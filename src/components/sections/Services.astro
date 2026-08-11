@@ -67,12 +67,50 @@ const services = await ContentFacade.getServices({ lang: lang as 'en' | 'ar' });
 <script>
   // The services grid engine (and the GSAP chunk it pulls in) is loaded only
   // when the section actually approaches the viewport, never during the first
-  // paint. The grid's entrance hides its content via gsap.set at init time,
-  // and the 50vh observation margin guarantees that happens well before the
-  // 'top 75%' reveal trigger, on every viewport size — identical visuals.
+  // paint. The grid's entrance is CSS-only and driven by a lightweight
+  // IntersectionObserver below (no GSAP); the gate itself is exposed eagerly
+  // so consumers (e2e tests, analytics) can read it long before engine boot.
+  if (typeof window !== 'undefined') {
+    window.__servicesEngineActive = Boolean(
+      typeof window.matchMedia === 'function' &&
+        window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+    // JS-presence signal gating the CSS hidden state (no-JS users see the
+    // grid instantly).
+    document.documentElement.classList.add('services-js');
+  }
+
   let started = false;
   let gridApi: typeof import('../../lib/services-grid/index') | null = null;
   let observer: IntersectionObserver | null = null;
+  let revealIo: IntersectionObserver | null = null;
+
+  const armReveal = () => {
+    const section = document.getElementById('services');
+    if (!section || revealIo) return;
+    const grid = section.querySelector<HTMLElement>('[data-services-grid]');
+    if (!grid) return;
+    if (grid.classList.contains('services-revealed')) return;
+    if (!('IntersectionObserver' in window)) {
+      grid.classList.add('services-revealed');
+      return;
+    }
+    // Mirrors the previous ScrollTrigger 'top 75%' line.
+    revealIo = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && grid) {
+            grid.classList.add('services-revealed');
+            revealIo?.disconnect();
+            revealIo = null;
+          }
+        });
+      },
+      { rootMargin: '0px 0px -25% 0px' }
+    );
+    revealIo.observe(section);
+  };
 
   const init = async () => {
     if (started) return;
@@ -124,17 +162,24 @@ const services = await ContentFacade.getServices({ lang: lang as 'en' | 'ar' });
   };
 
   document.addEventListener('astro:page-load', armObserver);
+  document.addEventListener('astro:page-load', armReveal);
   document.addEventListener('astro:before-swap', () => {
     started = false;
     dispose();
     observer?.disconnect();
     observer = null;
+    revealIo?.disconnect();
+    revealIo = null;
   });
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', armObserver);
+    document.addEventListener('DOMContentLoaded', () => {
+      armObserver();
+      armReveal();
+    });
   } else {
     armObserver();
+    armReveal();
   }
 
   // Safety: never leave the grid un-enhanced, even if the observer never fires
