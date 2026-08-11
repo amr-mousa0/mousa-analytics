@@ -233,6 +233,9 @@ test.describe('Performance & Core Web Vitals Audits', () => {
       };
     }, shiftsBaseline);
 
+    console.log('[zero-CLS debug] total:', shiftMetrics.total);
+    console.log('[zero-CLS debug] details:', JSON.stringify(shiftMetrics.details, null, 2));
+
     expect(shiftMetrics.total).toBeLessThan(0.001);
   });
 
