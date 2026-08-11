@@ -147,6 +147,7 @@ const galleryCards = [
 ];
 ---
 
+<div class="hero-sticky-wrap">
 <section id="hero" class="cinematic-hero bg-[#080807]">
 
   <!-- ─── Flowing 3D Ribbons Dynamic Background ─── -->
@@ -258,13 +259,13 @@ const galleryCards = [
 
 </section>
 
-<!-- ─── Pin Scroll Room ───
-     ScrollTrigger's pin-spacer (hero + 180% pin distance) is inserted lazily when
-     the deferred engine builds. This static element pre-reserves exactly the same
-     space in flow, so spacer insertion / refresh never move the sections below.
-     The engine re-syncs its height (hero.offsetHeight * 1.8) at build and on every
-     ScrollTrigger refresh so it tracks font-driven hero height changes exactly. -->
+<!-- ─── Sticky Scroll Room ───
+     The hero is pinned with pure CSS (position: sticky), which by itself never
+     changes layout. Sticky elements release seamlessly, but the hero still
+     needs 180% of scroll room in flow for its scrub timeline; this static
+     element reserves exactly that space, so nothing below ever moves. -->
 <div class="hero-pin-room" aria-hidden="true"></div>
+</div>
 
 <!-- ══════════════════════════════════════════
      ENTRANCE — Staggered reveal on page load (inline: runs at parse time so the
@@ -338,37 +339,25 @@ const galleryCards = [
     const brandStage = hero.querySelector<HTMLElement>('#brand-stage');
     const galleryStage = hero.querySelector<HTMLElement>('#gallery-stage');
     const galleryCards = hero.querySelectorAll<HTMLElement>('.gallery-card');
-
-    // Keep the pre-reserved pin room exactly matched to the spacer geometry
-    // (pin distance = 180% of the hero height) so the lazy pin-spacer insertion
-    // and every ScrollTrigger refresh are layout-neutral. Before the spacer
-    // exists the room holds the 180% scroll room in flow; while the spacer
-    // exists (hero is pinned) the room collapses to 0. Both transitions happen
-    // synchronously inside one refresh() call, so no intermediate state paints.
-    const pinRoom = hero.nextElementSibling && hero.nextElementSibling.classList.contains('hero-pin-room')
-      ? (hero.nextElementSibling as HTMLElement)
-      : null;
-    const syncPinRoom = () => {
-      if (!pinRoom) return;
-      pinRoom.style.height = `${hero.offsetHeight * 1.8}px`;
-    };
-    const collapsePinRoom = () => {
-      if (!pinRoom) return;
-      pinRoom.style.height = '0px';
-    };
-    syncPinRoom();
-    ScrollTrigger.addEventListener('refreshInit', syncPinRoom);
-    ScrollTrigger.addEventListener('refresh', collapsePinRoom);
+    const gridEl = hero.querySelector<HTMLElement>('#gallery-grid');
 
     // Gallery starts hidden — GSAP will reveal it (CSS holds the same state
     // until this engine takes over, so a deferred start never flashes)
     gsap.set(galleryStage, { opacity: 0, scale: 0.95 });
 
-    // Initial state: Totem cards stacked together at lowered center stack
+    // Initial state: Totem cards stacked together at lowered center stack.
+    // The fan-out runs on TRANSFORMS (x/y) — measured from the stack position
+    // (50%, 65%) to each card's data-left/data-top target — because left/top
+    // tweens are layout properties: when the deferred engine builds mid-scroll
+    // the scrub catch-up would snap them and register a layout shift (CLS).
+    const gridW = gridEl ? gridEl.offsetWidth : 1280;
+    const gridH = gridEl ? gridEl.offsetHeight : 800;
     galleryCards.forEach((card) => {
+      const targetLeft = parseFloat(card.getAttribute('data-left') || '50');
+      const targetTop = parseFloat(card.getAttribute('data-top') || '40');
       gsap.set(card, {
-        left: '50%',
-        top: '65%',
+        x: ((50 - targetLeft) / 100) * gridW,
+        y: ((65 - targetTop) / 100) * gridH,
         xPercent: -50,
         yPercent: -50,
         rotation: 0,
@@ -386,9 +375,6 @@ const galleryCards = [
           start: 'top top',
           end: '+=180%',
           scrub: 1,
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
@@ -426,8 +412,8 @@ const galleryCards = [
           master.to(
             card,
             {
-              left: `${targetLeft}%`,
-              top: `${targetTop}%`,
+              x: 0,
+              y: 0,
               rotation: targetRotation,
               scale: 1,
               opacity: 1,
@@ -438,16 +424,20 @@ const galleryCards = [
             2.8 + index * 0.1
           );
 
-          // Parallax depth scrub as user continues scrolling
-          master.to(
-            card,
-            {
-              y: `${(1 - depth) * -90}px`,
-              ease: 'none',
-              duration: 4,
-            },
-            3.8
-          );
+          // Parallax depth scrub as user continues scrolling (transform-only,
+          // applied to the inner box so it composes with the fan-out x/y)
+          const cardInner = card.querySelector<HTMLElement>('.gallery-card__inner');
+          if (cardInner) {
+            master.to(
+              cardInner,
+              {
+                y: `${(1 - depth) * -90}px`,
+                ease: 'none',
+                duration: 4,
+              },
+              3.8
+            );
+          }
         });
       }
 
@@ -464,11 +454,7 @@ const galleryCards = [
     // Cleanup
     document.addEventListener(
       'astro:before-swap',
-      () => {
-        ScrollTrigger.removeEventListener('refreshInit', syncPinRoom);
-        ScrollTrigger.removeEventListener('refresh', collapsePinRoom);
-        engineCtx?.revert();
-      },
+      () => engineCtx?.revert(),
       { once: true }
     );
   }
@@ -506,8 +492,13 @@ const galleryCards = [
 </script>
 
 <style>
-  .cinematic-hero {
+  .hero-sticky-wrap {
     position: relative;
+  }
+
+  .cinematic-hero {
+    position: sticky;
+    top: 0;
     width: 100%;
     background-color: #080807;
     overflow: clip;
@@ -519,8 +510,8 @@ const galleryCards = [
     pointer-events: none;
   }
 
-  /* Without the scroll engine there is no pinned hero, so the reserved room
-     would be a dead zone — collapse it (the engine is never built under
+  /* Without the scroll engine there is no scrub timeline, so the reserved
+     room would be a dead zone — collapse it (the engine is never built under
      reduced motion). */
   @media (prefers-reduced-motion: reduce) {
     .hero-pin-room {
