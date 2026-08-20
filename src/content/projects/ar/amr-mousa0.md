@@ -21,7 +21,7 @@ category: "Data Analytics"
 tags: ["Data/Tech"]
 draft: false
 featured: false
-publishedDate: "2026-08-19T01:27:15.058Z"
+publishedDate: "2026-08-20T01:26:39.650Z"
 translationKey: "amr-mousa0"
 ---
 Case Study: عمرو موسى0
