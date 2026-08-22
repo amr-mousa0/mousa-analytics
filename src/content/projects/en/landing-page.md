@@ -21,7 +21,7 @@ category: "Data Analytics"
 tags: ["Data/Tech"]
 draft: false
 featured: false
-publishedDate: "2026-08-21T00:40:20.497Z"
+publishedDate: "2026-08-22T00:37:35.146Z"
 translationKey: "landing-page"
 ---
 Case Study: landing-page
