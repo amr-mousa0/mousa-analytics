@@ -15,7 +15,7 @@ category: "Web Development"
 tags: ["TypeScript"]
 draft: false
 featured: false
-publishedDate: "2026-08-23T00:40:31.395Z"
+publishedDate: "2026-08-23T01:00:26.111Z"
 translationKey: "crm-erb"
 ---
 Case Study: CRM_ERB
