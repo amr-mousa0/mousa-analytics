@@ -1,9 +1,9 @@
 ---
-title: "عمرو موسى0"
+title: "amr-mousa0"
 projectBadge: "TECH & WEB SOLUTIONS"
-problemText: "تطلبت المنظمة تتبعًا آليًا ورؤية تحليلية منظمة لـ amr-mousa0. تحتاج البيانات التشغيلية الأولية إلى المعالجة والتحويل."
-solutionText: "التمهيدي لملف تعريف GitHub المميز"
-impactText: "نمذجة البيانات الهندسية وسير عمل اتخاذ القرار الأمثل."
+problemText: "The organization required automated tracking and structured analytics visibility for amr-mousa0. Raw operational data needed processing and transformation."
+solutionText: "Premium GitHub Profile README"
+impactText: "Engineered data modeling and optimized decision-making workflows."
 coverImage: "https://raw.githubusercontent.com/amr-mousa0/amr-mousa0/main/images/header.svg"
 galleryImages:
   - "https://raw.githubusercontent.com/amr-mousa0/amr-mousa0/main/images/achievements.svg"
@@ -21,7 +21,7 @@ category: "Data Analytics"
 tags: ["Data/Tech"]
 draft: false
 featured: false
-publishedDate: "2026-08-22T01:25:58.905Z"
+publishedDate: "2026-08-23T01:39:45.174Z"
 translationKey: "amr-mousa0"
 ---
-Case Study: عمرو موسى0
+Case Study: amr-mousa0
