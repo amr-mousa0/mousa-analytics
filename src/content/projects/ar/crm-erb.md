@@ -1,9 +1,9 @@
 ---
 title: "CRM_ERB"
 projectBadge: "TECH & WEB SOLUTIONS"
-problemText: "The organization required automated tracking and structured analytics visibility for CRM_ERB. Raw operational data needed processing and transformation."
-solutionText: "Enterprise project data analytics and engineering solution."
-impactText: "Engineered data modeling and optimized decision-making workflows."
+problemText: "تطلبت المؤسسة تتبعًا آليًا ورؤية تحليلية منظمة لـ CRM_ERB. تحتاج البيانات التشغيلية الأولية إلى المعالجة والتحويل."
+solutionText: "تحليلات بيانات مشروع المؤسسة والحلول الهندسية."
+impactText: "نمذجة البيانات الهندسية وسير عمل اتخاذ القرار الأمثل."
 coverImage: "https://avatars.githubusercontent.com/u/237460098?v=4"
 galleryImages: []
 githubUrl: "https://github.com/amr-mousa0/CRM_ERB"
@@ -15,7 +15,7 @@ category: "Web Development"
 tags: ["TypeScript"]
 draft: false
 featured: false
-publishedDate: "2026-08-23T03:29:49.464Z"
+publishedDate: "2026-08-23T04:46:21.908Z"
 translationKey: "crm-erb"
 ---
 Case Study: CRM_ERB
