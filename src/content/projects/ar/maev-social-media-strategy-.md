@@ -1,22 +1,22 @@
 ---
-title: "MAEV-Social-Media-Strategy-"
+title: "MAEV Digital Media Strategy"
 projectBadge: "TECH & WEB SOLUTIONS"
-problemText: "The organization required automated tracking and structured analytics visibility for MAEV-Social-Media-Strategy-. Raw operational data needed processing and transformation."
-solutionText: "Enterprise project data analytics and engineering solution."
-impactText: "Engineered data modeling and optimized decision-making workflows."
-coverImage: "https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&pause=1200&color=8A2BE2&center=true&vCenter=true&width=800&lines=Digital+Media+Strategy;MAEV+Clothing+Brand;Strategy+Before+Content;Turning+Insights+Into+Action"
+problemText: "MAEV needs a clear digital media direction that can establish a recognizable brand presence, reach the right audience, differentiate the brand within a competitive clothing market, and turn social media activity into measurable business outcomes."
+solutionText: "This project develops a structured digital media strategy for MAEV by analyzing the market and competitors, defining the target audience and user persona, establishing strategic objectives, developing content and media tactics, and creating a KPI framework for continuous performance measurement and optimization."
+impactText: "Provides MAEV with a practical digital roadmap for building brand awareness, engaging the target audience, differentiating from competitors, guiding content creation, and measuring digital marketing performance through clear strategic objectives and KPIs."
+coverImage: "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/assets/cover.webp"
 galleryImages:
-  - "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/assets/Screenshot 2026-08-27 014203.png"
+  - "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/assets/cover.webp"
 githubUrl: "https://github.com/amr-mousa0/MAEV-Social-Media-Strategy-"
 dashboardUrl: "https://amr-mousa0.github.io/MAEV-Social-Media-Strategy-"
 whatsappStartProjectMsg: "Hi Amr, I'd like to inquire about this project."
 whatsappOpenDashboardMsg: "Hi Amr, I'd like to request the interactive dashboard."
-priority: 99
-category: "Data Analytics"
-tags: ["Data/Tech"]
+priority: 60
+category: "Digital Marketing"
+tags: ["Digital Media Strategy","Social Media","Marketing","Brand Strategy","Market Research","Competitive Analysis","Content Strategy","Clothing Brand","Digital Marketing","MAEV"]
 draft: false
 featured: false
-publishedDate: "2026-08-26T22:42:54.209Z"
+publishedDate: "2026-08-26T22:44:14.044Z"
 translationKey: "maev-social-media-strategy-"
 ---
-Case Study: MAEV-Social-Media-Strategy-
+Case Study: MAEV Digital Media Strategy
