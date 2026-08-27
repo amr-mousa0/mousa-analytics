@@ -1,5 +1,6 @@
 import type { TranslationProvider } from '../../types/providers.js';
 import { GeminiTranslationProvider } from './geminiTranslationProvider.js';
+import { MyMemoryTranslationProvider } from './myMemoryTranslationProvider.js';
 import { DeepLTranslationProvider } from './deeplTranslationProvider.js';
 import { LocalTranslationProvider } from './localTranslationProvider.js';
 import { TranslationMemory } from './translationMemory.js';
@@ -17,6 +18,7 @@ export class TranslationFallbackChain implements TranslationProvider {
     } catch (e: any) {
       Logger.warn(`[TranslationFallbackChain] Gemini init failed: ${e.message}`);
     }
+    this.providers.push(new MyMemoryTranslationProvider());
     try {
       this.providers.push(new DeepLTranslationProvider());
     } catch (e: any) {
