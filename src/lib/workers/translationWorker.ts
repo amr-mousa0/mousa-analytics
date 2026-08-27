@@ -42,15 +42,30 @@ export class TranslationWorker {
           translatedModel.businessValueAr = await provider.translate(model.businessValue, sourceLang, targetLang);
         }
 
-        // Fail-Closed Validation: Ensure critical Arabic fields are present
-        if (model.title && (!translatedModel.titleAr || translatedModel.titleAr.trim() === '')) {
+        // Strict Fail-Closed Validation: Ensure all Arabic fields exist AND contain actual Arabic characters
+        const containsArabic = (text?: string): boolean => {
+          if (!text) return false;
+          return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(text);
+        };
+
+        if (model.title && (!translatedModel.titleAr || !containsArabic(translatedModel.titleAr))) {
           throw new PermanentError(
-            `Fail-Closed: Required Arabic title translation is missing for project ${model.projectId}.`
+            `Fail-Closed: Required Arabic title translation is missing or untranslated for project ${model.projectId}. Publication denied.`
           );
         }
-        if (model.description && (!translatedModel.descriptionAr || translatedModel.descriptionAr.trim() === '')) {
+        if (model.description && (!translatedModel.descriptionAr || !containsArabic(translatedModel.descriptionAr))) {
           throw new PermanentError(
-            `Fail-Closed: Required Arabic description translation is missing for project ${model.projectId}.`
+            `Fail-Closed: Required Arabic description translation is missing or untranslated for project ${model.projectId}. Publication denied.`
+          );
+        }
+        if (model.problem && (!translatedModel.problemAr || !containsArabic(translatedModel.problemAr))) {
+          throw new PermanentError(
+            `Fail-Closed: Required Arabic problem translation is missing or untranslated for project ${model.projectId}. Publication denied.`
+          );
+        }
+        if (model.solution && (!translatedModel.solutionAr || !containsArabic(translatedModel.solutionAr))) {
+          throw new PermanentError(
+            `Fail-Closed: Required Arabic solution translation is missing or untranslated for project ${model.projectId}. Publication denied.`
           );
         }
       }
