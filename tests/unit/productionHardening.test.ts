@@ -5,9 +5,8 @@ import { GitHubWorker } from '../../src/lib/workers/githubWorker.js';
 import { PublishWorker } from '../../src/lib/workers/publishWorker.js';
 import { AssetWorker } from '../../src/lib/workers/assetWorker.js';
 import { TranslationWorker } from '../../src/lib/workers/translationWorker.js';
-import { TranslationFallbackChain } from '../../src/lib/providers/translationFallbackChain.js';
 import { DistributedLock } from '../../src/lib/orchestrator/locks.js';
-import { PermanentError, TransientError } from '../../src/lib/errors.js';
+import { PermanentError } from '../../src/lib/errors.js';
 import { DiskStorageProvider } from '../../src/lib/providers/storageProvider.js';
 
 describe('Production Security & Hardening Remediation Tests (P-01 to P-10)', () => {
@@ -24,7 +23,8 @@ describe('Production Security & Hardening Remediation Tests (P-01 to P-10)', () 
     const jobPayload = {
       jobId: 'test-job-p02-1',
       traceId: 'test-trace',
-      type: 'repo_sync',
+      correlationId: 'test-corr-1',
+      type: 'publish' as const,
       status: 'processing' as const,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -54,7 +54,8 @@ describe('Production Security & Hardening Remediation Tests (P-01 to P-10)', () 
     const jobPayload = {
       jobId: 'test-job-p02-2',
       traceId: 'test-trace',
-      type: 'repo_sync',
+      correlationId: 'test-corr-2',
+      type: 'publish' as const,
       status: 'processing' as const,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -86,7 +87,8 @@ describe('Production Security & Hardening Remediation Tests (P-01 to P-10)', () 
     const job = {
       jobId: 'test-p03-missing',
       traceId: 'trace-1',
-      type: 'repo_sync',
+      correlationId: 'corr-1',
+      type: 'repo_sync' as const,
       status: 'processing' as const,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -102,7 +104,8 @@ describe('Production Security & Hardening Remediation Tests (P-01 to P-10)', () 
     const job = {
       jobId: 'test-p03-invalid',
       traceId: 'trace-2',
-      type: 'repo_sync',
+      correlationId: 'corr-2',
+      type: 'repo_sync' as const,
       status: 'processing' as const,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -142,7 +145,8 @@ describe('Production Security & Hardening Remediation Tests (P-01 to P-10)', () 
     const job = {
       jobId: 'test-p08',
       traceId: 'trace-p08',
-      type: 'repo_sync',
+      correlationId: 'corr-p08',
+      type: 'translate' as const,
       status: 'processing' as const,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -178,7 +182,8 @@ describe('Production Security & Hardening Remediation Tests (P-01 to P-10)', () 
     const job = {
       jobId: 'test-p09',
       traceId: 'trace-p09',
-      type: 'repo_sync',
+      correlationId: 'corr-p09',
+      type: 'process_assets' as const,
       status: 'processing' as const,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -222,7 +227,8 @@ describe('Production Security & Hardening Remediation Tests (P-01 to P-10)', () 
     const job = {
       jobId: 'test-p09-success',
       traceId: 'trace-p09-success',
-      type: 'repo_sync',
+      correlationId: 'corr-p09-success',
+      type: 'process_assets' as const,
       status: 'processing' as const,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

@@ -1,6 +1,4 @@
 import { describe, it, expect, vi, afterAll } from 'vitest';
-import fs from 'fs';
-import path from 'path';
 
 vi.mock('astro:content', () => ({
   getEntry: vi.fn(),
