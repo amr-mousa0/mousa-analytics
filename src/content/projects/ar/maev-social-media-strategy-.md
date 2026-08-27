@@ -7,7 +7,7 @@ impactText: "يوفر لـ MAEV خارطة طريق رقمية عملية لبن
 coverImage: "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/assets/cover.webp"
 galleryImages:
   - "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/assets/cover.webp"
-pdfUrl: "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/MAEV DIGITAL MEDIA STRATEGY.pdf"
+pdfUrl: "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/MAEV%20Social%20Media%20Strategy%20.pdf"
 githubUrl: "https://github.com/amr-mousa0/MAEV-Social-Media-Strategy-"
 dashboardUrl: "https://amr-mousa0.github.io/MAEV-Social-Media-Strategy-"
 whatsappStartProjectMsg: "مرحباً عمرو، أود الاستفسار عن هذا المشروع."
