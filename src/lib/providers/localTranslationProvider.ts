@@ -43,6 +43,6 @@ export class LocalTranslationProvider implements TranslationProvider {
       'Production': 'إنتاج حي'
     };
 
-    return replacements[text] || text;
+    return replacements[text] || `[عربي] ${text}`;
   }
 }

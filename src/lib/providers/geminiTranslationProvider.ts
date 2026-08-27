@@ -20,7 +20,7 @@ export class GeminiTranslationProvider implements TranslationProvider {
       throw new PermanentError('GEMINI_API_KEY is not configured');
     }
     this.apiKey = key;
-    this.model = model || process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+    this.model = model || process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     this.genAI = new GoogleGenerativeAI(this.apiKey);
   }
 
@@ -36,12 +36,19 @@ export class GeminiTranslationProvider implements TranslationProvider {
   public async translate(text: string, sourceLang: string, targetLang: string): Promise<string> {
     if (!text || sourceLang === targetLang) return text;
 
-    try {
-      await GeminiTranslationProvider.enforceRateLimit();
-      
-      const model = this.genAI.getGenerativeModel({ model: this.model });
-      
-      const prompt = `You are a professional technical translator. Translate the following text from ${sourceLang} to ${targetLang}.
+    const candidateModels = [this.model, 'gemini-2.0-flash', 'gemini-1.5-flash'];
+    // Deduplicate candidate models
+    const uniqueModels = Array.from(new Set(candidateModels));
+
+    let lastError: any = null;
+
+    for (const modelName of uniqueModels) {
+      try {
+        await GeminiTranslationProvider.enforceRateLimit();
+        
+        const model = this.genAI.getGenerativeModel({ model: modelName });
+        
+        const prompt = `You are a professional technical translator. Translate the following text from ${sourceLang} to ${targetLang}.
 
 CRITICAL RULES:
 1. Preserve Markdown formatting exactly as it is.
@@ -54,25 +61,26 @@ CRITICAL RULES:
 Text to translate:
 "${text}"`;
 
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      let translatedText = response.text();
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        let translatedText = response.text();
 
-      // Clean up potential formatting added by Gemini
-      translatedText = translatedText.replace(/^"|"$/g, '').trim();
-      
-      return translatedText;
-    } catch (err: any) {
-      Logger.error(`[GeminiTranslationProvider] API Error: ${err.message}`);
-      
-      if (err.status === 401 || err.status === 403) {
-        throw new PermanentError('Authentication failed for Gemini API');
+        // Clean up potential formatting added by Gemini
+        translatedText = translatedText.replace(/^"|"$/g, '').trim();
+        
+        if (translatedText) {
+          return translatedText;
+        }
+      } catch (err: any) {
+        lastError = err;
+        Logger.warn(`[GeminiTranslationProvider] Model ${modelName} failed: ${err.message}. Trying next candidate model...`);
+        if (err.status === 401 || err.status === 403) {
+          throw new PermanentError('Authentication failed for Gemini API');
+        }
       }
-      if (err.status === 429) {
-         throw new TransientError('Rate limit exceeded for Gemini API');
-      }
-
-      throw new TransientError(`Gemini Translation Failed: ${err.message}`);
     }
+
+    Logger.error(`[GeminiTranslationProvider] All Gemini candidate models failed: ${lastError?.message}`);
+    throw new TransientError(`Gemini Translation Failed: ${lastError?.message}`);
   }
 }
