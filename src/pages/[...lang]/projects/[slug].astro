@@ -333,11 +333,7 @@ const projectStack = (project?.data?.tags || []).join(' · ');
                   src={resolvedPdf.startsWith('http') ? `/api/pdf-proxy?url=${encodeURIComponent(resolvedPdf)}` : resolvedPdf} 
                   class="w-full h-[650px] sm:h-[750px] md:h-[900px] border-0 bg-[#1a1c23]" 
                   title={currentLang === 'ar' ? 'عرض مستند PDF' : 'PDF Document Viewer'}
-                >
-                  <p class="p-8 text-center text-text-muted text-sm">
-                    {currentLang === 'ar' ? 'متصفحك لا يدعم عرض ملفات PDF المدمجة مباشرة.' : 'Your browser does not support inline PDF viewing.'}
-                  </p>
-                </iframe>
+                ></iframe>
               </object>
             </div>
           </section>
