@@ -17,7 +17,7 @@ category: "Digital Marketing"
 tags: ["Digital Media Strategy","Social Media","Marketing","Brand Strategy","Market Research","Competitive Analysis","Content Strategy","Clothing Brand","Digital Marketing","MAEV"]
 draft: false
 featured: false
-publishedDate: "2026-08-27T10:25:26.371Z"
+publishedDate: "2026-08-27T10:27:33.917Z"
 translationKey: "maev-social-media-strategy-"
 ---
 Case Study: MAEV Digital Media Strategy
