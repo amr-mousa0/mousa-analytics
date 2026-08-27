@@ -26,10 +26,13 @@ const hubProjects = await ContentHubClient.getProjects(lang);
 const isProd = import.meta.env.PROD;
 const publishedSlugs = new Set(
   (await ContentFacade.getProjects({ includeDrafts: true }))
-    .filter((p: any) => !isProd || !p.data.draft)
-    .map((p: any) => String(p.slug).split('/').pop())
+    .filter((p: any) => !isProd || !p.data?.draft)
+    .map((p: any) => String(p.slug || p.id || '').replace(/\.[^/.]+$/, '').split('/').pop())
 );
-const projects = hubProjects.filter((p) => publishedSlugs.has(String(p.slug).split('/').pop()));
+const projects = hubProjects.filter((p) => {
+  const clean = String(p.slug || p.id || '').replace(/\.[^/.]+$/, '').split('/').pop();
+  return publishedSlugs.has(clean);
+});
 
 const getProjectUrl = (slug: string) => {
   const cleanSlug = slug.split('/').pop();
