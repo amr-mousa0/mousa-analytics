@@ -28,6 +28,83 @@ export async function getStaticPaths() {
     console.warn('[projects/[slug].astro] Local collection fallback error:', e);
   }
 
+  // Also query database for dynamically synced projects
+  try {
+    if (process.env.DATABASE_URL) {
+      const { getDbClient } = await import('../../../lib/db.js');
+      const db = getDbClient();
+      const dbProjects = await db.project.findMany({ where: { draft: false } });
+      for (const p of dbProjects) {
+        allProjects.push({
+          id: `en/${p.slug}`,
+          slug: `en/${p.slug}`,
+          draft: false,
+          title: p.titleEn,
+          projectBadge: p.category || 'TECH & WEB SOLUTIONS',
+          problemText: p.summaryEn,
+          solutionText: p.contentEn,
+          impactText: p.contentEn,
+          coverImage: p.cover || `https://raw.githubusercontent.com/amr-mousa0/${p.slug}/main/assets/cover.webp`,
+          galleryImages: Array.isArray(p.gallery) ? p.gallery : [],
+          pdfUrl: p.pdfUrl || undefined,
+          githubUrl: `https://github.com/amr-mousa0/${p.slug}`,
+          category: p.category || 'Data Analytics',
+          tags: p.tags || [],
+          publishedDate: p.updatedAt || new Date(),
+          data: {
+            title: p.titleEn,
+            projectBadge: p.category || 'TECH & WEB SOLUTIONS',
+            problemText: p.summaryEn,
+            solutionText: p.contentEn,
+            impactText: p.contentEn,
+            coverImage: p.cover || `https://raw.githubusercontent.com/amr-mousa0/${p.slug}/main/assets/cover.webp`,
+            galleryImages: Array.isArray(p.gallery) ? p.gallery : [],
+            pdfUrl: p.pdfUrl || undefined,
+            githubUrl: `https://github.com/amr-mousa0/${p.slug}`,
+            category: p.category || 'Data Analytics',
+            tags: p.tags || [],
+            draft: false,
+            publishedDate: p.updatedAt || new Date(),
+          }
+        });
+        allProjects.push({
+          id: `ar/${p.slug}`,
+          slug: `ar/${p.slug}`,
+          draft: false,
+          title: p.titleAr || p.titleEn,
+          projectBadge: p.category || 'TECH & WEB SOLUTIONS',
+          problemText: p.summaryAr || p.summaryEn,
+          solutionText: p.contentAr || p.contentEn,
+          impactText: p.contentAr || p.contentEn,
+          coverImage: p.cover || `https://raw.githubusercontent.com/amr-mousa0/${p.slug}/main/assets/cover.webp`,
+          galleryImages: Array.isArray(p.gallery) ? p.gallery : [],
+          pdfUrl: p.pdfUrl || undefined,
+          githubUrl: `https://github.com/amr-mousa0/${p.slug}`,
+          category: p.category || 'Data Analytics',
+          tags: p.tags || [],
+          publishedDate: p.updatedAt || new Date(),
+          data: {
+            title: p.titleAr || p.titleEn,
+            projectBadge: p.category || 'TECH & WEB SOLUTIONS',
+            problemText: p.summaryAr || p.summaryEn,
+            solutionText: p.contentAr || p.contentEn,
+            impactText: p.contentAr || p.contentEn,
+            coverImage: p.cover || `https://raw.githubusercontent.com/amr-mousa0/${p.slug}/main/assets/cover.webp`,
+            galleryImages: Array.isArray(p.gallery) ? p.gallery : [],
+            pdfUrl: p.pdfUrl || undefined,
+            githubUrl: `https://github.com/amr-mousa0/${p.slug}`,
+            category: p.category || 'Data Analytics',
+            tags: p.tags || [],
+            draft: false,
+            publishedDate: p.updatedAt || new Date(),
+          }
+        });
+      }
+    }
+  } catch (dbErr) {
+    // Graceful fallback
+  }
+
   const isProd = import.meta.env.PROD;
   const showDrafts = !isProd;
 

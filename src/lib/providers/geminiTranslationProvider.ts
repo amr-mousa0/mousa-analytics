@@ -14,13 +14,13 @@ export class GeminiTranslationProvider implements TranslationProvider {
   private static lastCallTime = 0;
   private static readonly RPM_DELAY_MS = 4000;
 
-  constructor(apiKey?: string, model: string = 'gemini-2.5-flash') {
+  constructor(apiKey?: string, model?: string) {
     const key = apiKey || process.env.GEMINI_API_KEY;
     if (!key) {
       throw new PermanentError('GEMINI_API_KEY is not configured');
     }
     this.apiKey = key;
-    this.model = model;
+    this.model = model || process.env.GEMINI_MODEL || 'gemini-1.5-flash';
     this.genAI = new GoogleGenerativeAI(this.apiKey);
   }
 

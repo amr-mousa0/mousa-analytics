@@ -100,8 +100,38 @@ export class AssetWorker {
       }
 
       Logger.info(`[AssetWorker] Downloading asset from ${url}`);
-      const response = await fetch(url, { headers });
+      let response = await fetch(url, { headers });
       
+      // Smart Fallback for PDFs: If 404, look up actual PDF in repo
+      if (response.status === 404 && relativePath.toLowerCase().endsWith('.pdf')) {
+        Logger.warn(`[AssetWorker] Exact PDF path not found (${relativePath}), searching repo contents for PDF match...`);
+        try {
+          const contentsUrl = `https://api.github.com/repos/${repoFullName}/contents/?ref=${branch}`;
+          const contentsRes = await fetch(contentsUrl, {
+            headers: {
+              'Accept': 'application/vnd.github.v3+json',
+              'User-Agent': 'Antigravity-IDE-Client',
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            }
+          });
+          if (contentsRes.ok) {
+            const items: any = await contentsRes.json();
+            if (Array.isArray(items)) {
+              const pdfFile = items.find(
+                (item: any) => item.type === 'file' && item.name.toLowerCase().endsWith('.pdf')
+              );
+              if (pdfFile) {
+                Logger.info(`[AssetWorker] Found matching PDF in repository: "${pdfFile.name}" (downloading from ${pdfFile.download_url || pdfFile.url})`);
+                const altUrl = `https://api.github.com/repos/${repoFullName}/contents/${encodeURIComponent(pdfFile.name)}?ref=${branch}`;
+                response = await fetch(altUrl, { headers });
+              }
+            }
+          }
+        } catch (findErr: any) {
+          Logger.warn(`[AssetWorker] Failed to search repo for PDF: ${findErr.message}`);
+        }
+      }
+
       if (response.status === 404) {
         throw new PermanentError(`Asset not found in repository: ${relativePath}`);
       }
