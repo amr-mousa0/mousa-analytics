@@ -305,6 +305,8 @@ const projectStack = (project?.data?.tags || []).join(' · ');
         }
 
         const resolvedPdf = rawPdf;
+        const proxyPdfUrl = resolvedPdf.startsWith('http') ? `/api/pdf-proxy?url=${encodeURIComponent(resolvedPdf)}` : resolvedPdf;
+
         return (
           <section class="border-t border-text-main/10 pt-10 md:pt-14 space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -321,16 +323,36 @@ const projectStack = (project?.data?.tags || []).join(' · ');
                   {currentLang === 'ar' ? 'تصفح وقراءة المستند التفاعلي مباشرة داخل الصفحة' : 'Interactive in-browser document viewer'}
                 </p>
               </div>
+
+              <div class="flex items-center gap-3">
+                <a
+                  href={proxyPdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface-elevated text-text-main border border-text-main/10 text-xs font-semibold uppercase tracking-wider transition-all duration-200 hover:border-accent-primary/40 shadow-sm"
+                >
+                  <Icon name="tab" class="w-3.5 h-3.5 text-accent-primary" />
+                  <span>{currentLang === 'ar' ? 'فتح في نافذة جديدة' : 'Open in New Tab'}</span>
+                </a>
+                <a
+                  href={`${proxyPdfUrl}${proxyPdfUrl.includes('?') ? '&' : '?'}download=1`}
+                  download
+                  class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-accent-primary/10 hover:bg-accent-primary/20 text-accent-primary border border-accent-primary/30 text-xs font-semibold uppercase tracking-wider transition-all duration-200 shadow-sm"
+                >
+                  <Icon name="arrow-right" class="w-3.5 h-3.5 rotate-90" />
+                  <span>{currentLang === 'ar' ? 'تحميل المستند' : 'Download PDF'}</span>
+                </a>
+              </div>
             </div>
 
             <div class="w-full rounded-2xl border border-text-main/15 bg-[#14161f] overflow-hidden shadow-2xl relative min-h-[600px]">
               <object
-                data={resolvedPdf.startsWith('http') ? `/api/pdf-proxy?url=${encodeURIComponent(resolvedPdf)}#toolbar=1&navpanes=1&scrollbar=1` : resolvedPdf}
+                data={`${proxyPdfUrl}#toolbar=1&navpanes=1&scrollbar=1`}
                 type="application/pdf"
                 class="w-full h-[650px] sm:h-[750px] md:h-[900px] border-0 block"
               >
                 <iframe 
-                  src={resolvedPdf.startsWith('http') ? `/api/pdf-proxy?url=${encodeURIComponent(resolvedPdf)}` : resolvedPdf} 
+                  src={proxyPdfUrl} 
                   class="w-full h-[650px] sm:h-[750px] md:h-[900px] border-0 bg-[#1a1c23]" 
                   title={currentLang === 'ar' ? 'عرض مستند PDF' : 'PDF Document Viewer'}
                 ></iframe>
