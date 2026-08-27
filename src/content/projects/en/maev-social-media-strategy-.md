@@ -7,7 +7,7 @@ impactText: "Provides MAEV with a practical digital roadmap for building brand a
 coverImage: "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/assets/cover.webp"
 galleryImages:
   - "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/assets/cover.webp"
-pdfUrl: "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/MAEV%20Social%20Media%20Strategy%20.pdf"
+pdfUrl: "https://raw.githubusercontent.com/amr-mousa0/MAEV-Social-Media-Strategy-/main/MAEV DIGITAL MEDIA STRATEGY.pdf"
 githubUrl: "https://github.com/amr-mousa0/MAEV-Social-Media-Strategy-"
 dashboardUrl: "https://amr-mousa0.github.io/MAEV-Social-Media-Strategy-"
 whatsappStartProjectMsg: "Hi Amr, I'd like to inquire about this project."
@@ -17,7 +17,7 @@ category: "Digital Marketing"
 tags: ["Digital Media Strategy","Social Media","Marketing","Brand Strategy","Market Research","Competitive Analysis","Content Strategy","Clothing Brand","Digital Marketing","MAEV"]
 draft: false
 featured: false
-publishedDate: "2026-08-27T10:27:33.917Z"
+publishedDate: "2026-08-27T19:00:11.628Z"
 translationKey: "maev-social-media-strategy-"
 ---
 Case Study: MAEV Digital Media Strategy
