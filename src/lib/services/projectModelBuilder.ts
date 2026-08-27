@@ -55,14 +55,9 @@ export function buildNormalizedProjectModel(input: FallbackInput): NormalizedPro
   const gallery: ManifestGalleryItem[] = projectDecl?.gallery !== undefined
     ? projectDecl.gallery.map(item => {
         const rawUrl = item.url ?? item.file ?? '';
-        let url = rawUrl;
-        if (rawUrl && !rawUrl.startsWith('http://') && !rawUrl.startsWith('https://') && repoName) {
-          const cleanPath = rawUrl.startsWith('/') ? rawUrl.slice(1) : rawUrl;
-          url = `https://raw.githubusercontent.com/amr-mousa0/${repoName}/main/${encodeURI(cleanPath)}`;
-        }
         return {
           ...item,
-          url
+          url: rawUrl
         };
       })
     : autoDiscoverGalleryFromTree(tree, readmeContent);

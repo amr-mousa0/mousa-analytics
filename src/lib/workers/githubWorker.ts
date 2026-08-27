@@ -2,6 +2,7 @@ import type { PipelineJob } from '../../types/providers.js';
 import { buildNormalizedProjectModel, type FallbackInput } from '../services/projectModelBuilder.js';
 import type { NormalizedProjectModel } from '../../types/manifest.js';
 import { ManifestSchema } from '../schemas/manifestSchema.js';
+import { PermanentError } from '../errors.js';
 
 export interface GitHubWorkerPayload {
   repoName: string;
@@ -22,10 +23,10 @@ export class GitHubWorker {
         const rawJson = JSON.parse(job.payload.manifestRaw);
         parsedManifest = ManifestSchema.parse(rawJson);
       } catch (err: any) {
-        throw new Error(`[GitHubWorker] PermanentError: Invalid manifest.json for ${job.payload.repoName}: ${err.message}`);
+        throw new PermanentError(`Invalid manifest.json for ${job.payload.repoName}: ${err.message}`);
       }
     } else {
-      throw new Error(`[GitHubWorker] PermanentError: Missing manifest.json for ${job.payload.repoName}. Repositories without manifest.json are not published.`);
+      throw new PermanentError(`Missing manifest.json for ${job.payload.repoName}. Repositories without manifest.json are not published.`);
     }
 
     const input: FallbackInput = {

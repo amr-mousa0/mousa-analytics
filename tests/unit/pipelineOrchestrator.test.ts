@@ -55,11 +55,29 @@ describe('PipelineOrchestrator Full Pipeline Execution Trace', () => {
       readmeRaw: '# Sales Performance Analytics\nComprehensive data dashboard for sales tracking.'
     };
 
+    // Mock fetch for GitHub API asset downloads
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const urlStr = typeof input === 'string' ? input : input.toString();
+      if (urlStr.includes('api.github.com/repos/')) {
+        return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
+          status: 200,
+          headers: {
+            'content-type': urlStr.endsWith('.pdf') ? 'application/pdf' : 'image/jpeg',
+            'content-length': '4'
+          }
+        });
+      }
+      return originalFetch(input, init);
+    });
+
     // Stage 1 Log
     console.log('[Pipeline] [1/15] Webhook received - Event: "push", Signature Header: Present');
 
     // Stage 2 to 15 via PipelineOrchestrator
     const { jobId, result } = await PipelineOrchestrator.enqueueRepoSync(samplePushPayload);
+
+    globalThis.fetch = originalFetch;
 
     expect(jobId).toBeDefined();
     expect(result).toBeDefined();
@@ -102,14 +120,6 @@ describe('PipelineOrchestrator Full Pipeline Execution Trace', () => {
   });
 
   afterAll(() => {
-    const filesToDelete = [
-      path.resolve('src/content/projects/ar/sales-performance-analytics.md'),
-      path.resolve('src/content/projects/en/sales-performance-analytics.md'),
-      path.resolve('src/content/projects/ar/sql-practice-level-1.md'),
-      path.resolve('src/content/projects/en/sql-practice-level-1.md')
-    ];
-    filesToDelete.forEach(f => {
-      if (fs.existsSync(f)) fs.unlinkSync(f);
-    });
+    // Cleanup any temporary mock state
   });
 });

@@ -56,10 +56,28 @@ describe('SQL Practice Level 1 Repository Synchronization Phase Investigation', 
       readmeRaw: '# SQL Practice Level 1\nStructured SQL problems and solutions.'
     };
 
+    // Mock fetch for GitHub API asset downloads
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const urlStr = typeof input === 'string' ? input : input.toString();
+      if (urlStr.includes('api.github.com/repos/')) {
+        return new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
+          status: 200,
+          headers: {
+            'content-type': urlStr.endsWith('.pdf') ? 'application/pdf' : 'image/jpeg',
+            'content-length': '4'
+          }
+        });
+      }
+      return originalFetch(input, init);
+    });
+
     console.log('\n================ START RUNTIME TRACE (15 STAGES) ================');
     console.log('[Pipeline] [1/15] Webhook received - Event: "push", Signature Header: Present');
 
     const { jobId, result } = await PipelineOrchestrator.enqueueRepoSync(pushPayload);
+
+    globalThis.fetch = originalFetch;
 
     expect(jobId).toBeDefined();
     expect(result).toBeDefined();
@@ -75,12 +93,6 @@ describe('SQL Practice Level 1 Repository Synchronization Phase Investigation', 
   });
 
   afterAll(() => {
-    const filesToDelete = [
-      path.resolve('src/content/projects/ar/sql-practice-level-1.md'),
-      path.resolve('src/content/projects/en/sql-practice-level-1.md')
-    ];
-    filesToDelete.forEach(f => {
-      if (fs.existsSync(f)) fs.unlinkSync(f);
-    });
+    // Cleanup any temporary mock state
   });
 });

@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { getDbClient } from '../lib/db.js';
 
 const prisma = getDbClient();
@@ -5,7 +7,13 @@ const prisma = getDbClient();
 const GHOST_PROJECT_SLUGS = [
   'landing-page',
   'amr-mousa0.github.io',
-  // Add other known rogue project slugs here if discovered
+  'amr-mousa0',
+  'crm-erb'
+];
+
+const CONTENT_DIRS = [
+  'src/content/projects/ar',
+  'src/content/projects/en'
 ];
 
 async function main() {
@@ -16,7 +24,7 @@ async function main() {
   console.log(`Mode: ${isDeleteMode ? 'DELETE' : 'DRY RUN (default)'}\n`);
 
   try {
-    // 1. Find the ghost projects
+    // 1. Find the ghost projects in DB
     const ghostProjects = await prisma.project.findMany({
       where: {
         slug: {
@@ -26,29 +34,56 @@ async function main() {
     });
 
     if (ghostProjects.length === 0) {
-      console.log('No ghost projects found in the database. Everything looks clean.');
-      return;
-    }
-
-    console.log(`Found ${ghostProjects.length} ghost project(s):`);
-    for (const p of ghostProjects) {
-      console.log(` - ${p.slug} (ID: ${p.id}, Category: ${p.category})`);
-    }
-
-    // 2. Delete if in delete mode
-    if (isDeleteMode) {
-      console.log(`\nProceeding to delete ${ghostProjects.length} records...`);
-      const result = await prisma.project.deleteMany({
-        where: {
-          slug: {
-            in: GHOST_PROJECT_SLUGS
-          }
-        }
-      });
-      console.log(`✅ Successfully deleted ${result.count} ghost project(s).`);
+      console.log('No ghost projects found in the database.');
     } else {
-      console.log(`\n[WARN] This was a DRY RUN. No records were deleted.`);
-      console.log(`To actually delete these records, run the script with the --delete flag:`);
+      console.log(`Found ${ghostProjects.length} ghost project(s) in DB:`);
+      for (const p of ghostProjects) {
+        console.log(` - ${p.slug} (ID: ${p.id}, Category: ${p.category})`);
+      }
+    }
+
+    // 2. Find ghost files on filesystem
+    const foundFiles: string[] = [];
+    for (const slug of GHOST_PROJECT_SLUGS) {
+      for (const dir of CONTENT_DIRS) {
+        const filePath = path.join(process.cwd(), dir, `${slug}.md`);
+        if (fs.existsSync(filePath)) {
+          foundFiles.push(filePath);
+        }
+      }
+    }
+
+    if (foundFiles.length > 0) {
+      console.log(`\nFound ${foundFiles.length} ghost markdown file(s) on disk:`);
+      for (const f of foundFiles) {
+        console.log(` - ${f}`);
+      }
+    }
+
+    // 3. Delete if in delete mode
+    if (isDeleteMode) {
+      if (ghostProjects.length > 0) {
+        console.log(`\nProceeding to delete ${ghostProjects.length} DB records...`);
+        const result = await prisma.project.deleteMany({
+          where: {
+            slug: {
+              in: GHOST_PROJECT_SLUGS
+            }
+          }
+        });
+        console.log(`✅ Successfully deleted ${result.count} ghost project record(s) from database.`);
+      }
+
+      if (foundFiles.length > 0) {
+        console.log(`\nProceeding to delete ${foundFiles.length} ghost markdown files from disk...`);
+        for (const filePath of foundFiles) {
+          fs.unlinkSync(filePath);
+          console.log(`  ✅ Deleted file: ${filePath}`);
+        }
+      }
+    } else {
+      console.log(`\n[WARN] This was a DRY RUN. No records or files were deleted.`);
+      console.log(`To actually delete these records and files, run:`);
       console.log(`npx tsx src/scripts/cleanup-rogue-projects.ts --delete\n`);
     }
 

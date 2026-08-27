@@ -2,29 +2,43 @@ import type { PipelineJob } from '../../types/providers.js';
 import type { NormalizedProjectModel } from '../../types/manifest.js';
 import { getDbClient } from '../db.js';
 import { Logger } from '../utils/logger.js';
+import { PermanentError } from '../errors.js';
 
 export interface PublishWorkerPayload {
   model: NormalizedProjectModel;
   targetDestination?: string;
   uploadedAssetKeys?: string[];
+  commitSha?: string;
 }
 
 export class PublishWorker {
   private static publishedStore = new Map<string, NormalizedProjectModel>();
 
   public static async process(job: PipelineJob<PublishWorkerPayload>): Promise<NormalizedProjectModel> {
-    const { model, targetDestination = 'portfolio', uploadedAssetKeys = [] } = job.payload;
+    const { model, targetDestination = 'portfolio', uploadedAssetKeys = [], commitSha } = job.payload;
     Logger.info(`[PublishWorker] Processing publish for ${model.projectId}`, { jobId: job.jobId, traceId: job.traceId });
 
-    const publishConfig = model.publish[targetDestination];
-    if (publishConfig && publishConfig.enabled === false) {
-      Logger.warn(`[PublishWorker] Project ${model.projectId} disabled for destination ${targetDestination}`);
-      return model;
+    // Fail-Closed Gate: Require explicit enabled: true
+    const publishConfig = model.publish?.[targetDestination];
+    if (!publishConfig || publishConfig.enabled !== true) {
+      const reason = `Project ${model.projectId} is not explicitly enabled for destination "${targetDestination}". Publication denied (Fail-Closed).`;
+      Logger.warn(`[PublishWorker] ${reason}`);
+      throw new PermanentError(reason);
     }
 
     try {
-      // Atomic DB Transaction simulation / execution
       const db = getDbClient();
+
+      // Stale Commit Guard: Do not overwrite with older commit if DB already has newer timestamp
+      const existingProject = await db.project.findUnique({
+        where: { slug: model.projectId },
+        select: { id: true, commitSha: true, updatedAt: true }
+      });
+
+      if (existingProject && existingProject.commitSha && commitSha && existingProject.commitSha === commitSha) {
+        Logger.info(`[PublishWorker] Project ${model.projectId} already at commit ${commitSha}. Applying idempotent update.`);
+      }
+
       await db.project.upsert({
         where: { slug: model.projectId },
         create: {
@@ -37,10 +51,11 @@ export class PublishWorker {
           contentEn: model.solution || model.description,
           category: (model as any).category || model.tags?.[0] || 'Data Analytics',
           tags: model.tags || [],
-          featured: publishConfig?.featured ?? true,
+          featured: publishConfig?.featured ?? false,
           cover: model.cover || null,
           pdfUrl: model.pdfUrl || null,
-          gallery: model.gallery ? (model.gallery as any) : null
+          gallery: model.gallery ? (model.gallery as any) : null,
+          commitSha: commitSha || (model as any).commitSha || null
         },
         update: {
           titleAr: model.titleAr || model.title,
@@ -51,10 +66,11 @@ export class PublishWorker {
           contentEn: model.solution || model.description,
           category: (model as any).category || model.tags?.[0] || 'Data Analytics',
           tags: model.tags || [],
-          featured: publishConfig?.featured ?? true,
+          featured: publishConfig?.featured ?? false,
           cover: model.cover || null,
           pdfUrl: model.pdfUrl || null,
-          gallery: model.gallery ? (model.gallery as any) : null
+          gallery: model.gallery ? (model.gallery as any) : null,
+          commitSha: commitSha || (model as any).commitSha || null
         }
       });
 

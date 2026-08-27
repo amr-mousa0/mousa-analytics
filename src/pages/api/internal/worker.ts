@@ -3,6 +3,8 @@ import crypto from 'crypto';
 import { Logger } from '../../../lib/utils/logger.js';
 import { PipelineOrchestrator } from '../../../lib/orchestrator/pipelineOrchestrator.js';
 import { getEnv } from '../../../config/env.js';
+import { IdempotencyStore } from '../../../lib/orchestrator/idempotency.js';
+import { FeatureFlagManager } from '../../../lib/flags.js';
 
 export const prerender = false;
 
@@ -65,6 +67,12 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Pass the abort signal for graceful termination support
     const result = await PipelineOrchestrator.processRepoSyncJob(job, request.signal);
+
+    // P-05: Mark as processed ONLY after successful completion
+    const commitSha = job.payload?.commitSha || job.payload?.after || job.payload?.fullPayload?.after;
+    if (commitSha && FeatureFlagManager.isEnabled('ENABLE_IDEMPOTENCY')) {
+      await IdempotencyStore.markProcessed(commitSha);
+    }
 
     return new Response(JSON.stringify({ status: 'completed', result }), {
       status: 200,

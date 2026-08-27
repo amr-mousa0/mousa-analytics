@@ -8,7 +8,9 @@ import { FeatureFlagManager } from '../../../lib/flags.js';
 
 export const prerender = false;
 
-// Simple in-memory rate limiting counter (e.g. max 30 requests per minute per IP)
+// In-memory rate limiting counter (e.g. max 30 requests per minute per IP)
+// NOTE (P-07 / F-07): This in-memory map is scoped to a single serverless instance.
+// In high-traffic production, edge rate limiting (Vercel WAF or Upstash @upstash/ratelimit) should be used.
 const rateLimitMap = new Map<string, { count: number; expires: number }>();
 
 function isRateLimited(ip: string): boolean {
@@ -86,7 +88,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       Logger.info(`Duplicate webhook delivery detected (SHA: ${commitSha}). Skipping payload.`, { requestId });
       return new Response(JSON.stringify({ status: 'skipped', reason: 'Duplicate commit SHA' }), { status: 200 });
     }
-    await IdempotencyStore.markProcessed(commitSha);
+    // NOTE (P-05): Do NOT mark as processed here.
+    // The worker endpoint marks it AFTER successful pipeline execution to avoid dropped retries.
   }
 
   const jobId = `job_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;

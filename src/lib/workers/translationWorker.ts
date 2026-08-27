@@ -41,12 +41,27 @@ export class TranslationWorker {
         if (model.businessValue && !model.businessValueAr) {
           translatedModel.businessValueAr = await provider.translate(model.businessValue, sourceLang, targetLang);
         }
+
+        // Fail-Closed Validation: Ensure critical Arabic fields are present
+        if (model.title && (!translatedModel.titleAr || translatedModel.titleAr.trim() === '')) {
+          throw new PermanentError(
+            `Fail-Closed: Required Arabic title translation is missing for project ${model.projectId}.`
+          );
+        }
+        if (model.description && (!translatedModel.descriptionAr || translatedModel.descriptionAr.trim() === '')) {
+          throw new PermanentError(
+            `Fail-Closed: Required Arabic description translation is missing for project ${model.projectId}.`
+          );
+        }
       }
     } catch (error: any) {
+      if (error instanceof PermanentError || error instanceof TransientError) {
+        throw error;
+      }
       if (error.message && error.message.includes('400')) {
         throw new PermanentError(`Translation failed with 400 Bad Request: ${error.message}`);
       }
-      throw new TransientError(`Translation failed (API error, Rate Limit, etc): ${error.message}`);
+      throw new TransientError(`Translation failed: ${error.message}`);
     }
 
     console.log(`[TranslationWorker] Translation completed for ${translatedModel.projectId}`);

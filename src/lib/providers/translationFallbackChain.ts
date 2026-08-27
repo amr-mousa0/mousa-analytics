@@ -4,6 +4,7 @@ import { DeepLTranslationProvider } from './deeplTranslationProvider.js';
 import { LocalTranslationProvider } from './localTranslationProvider.js';
 import { TranslationMemory } from './translationMemory.js';
 import { Logger } from '../utils/logger.js';
+import { TransientError, PermanentError } from '../errors.js';
 
 export class TranslationFallbackChain implements TranslationProvider {
   public id = 'fallback-chain';
@@ -41,6 +42,7 @@ export class TranslationFallbackChain implements TranslationProvider {
     let geminiCalls = 0;
     let deeplCalls = 0;
     let failures = 0;
+    let hasTransientFailure = false;
 
     for (const provider of this.providers) {
       try {
@@ -60,11 +62,23 @@ export class TranslationFallbackChain implements TranslationProvider {
         }
       } catch (err: any) {
         failures++;
+        if (err instanceof TransientError) {
+          hasTransientFailure = true;
+        }
         Logger.warn(`[FallbackChain] Provider ${provider.id} failed: ${err.message}. Trying next provider...`);
       }
     }
 
     Logger.error(`[CostMonitor] Cache Hits: 0, Gemini Calls: ${geminiCalls}, DeepL Calls: ${deeplCalls}, Failures: ${failures} (Complete Failure)`);
-    return text;
+    
+    if (hasTransientFailure) {
+      throw new TransientError(
+        `Translation failed due to transient provider error (Rate Limit/Network). Retrying via QStash.`
+      );
+    }
+
+    throw new PermanentError(
+      `All translation providers failed permanently for text snippet "${text.slice(0, 40)}...". Publication blocked per Fail-Closed policy.`
+    );
   }
 }

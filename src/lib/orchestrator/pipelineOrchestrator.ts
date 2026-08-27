@@ -13,6 +13,7 @@ import { getDbClient } from '../db.js';
 import { FeatureFlagManager } from '../flags.js';
 import { TransientError, PermanentError } from '../errors.js';
 import { Logger } from '../utils/logger.js';
+import { DistributedLock } from './locks.js';
 
 export interface WebhookPushPayload {
   ref?: string;
@@ -148,6 +149,16 @@ export class PipelineOrchestrator {
     const repoFullName = payload.repoFullName || `amr-mousa0/${repoName.replace(/\s+/g, '-')}`;
     const installationId = payload.installationId || payload.fullPayload?.installation?.id || 58291043;
     const branch = payload.branch || 'main';
+    const commitSha = payload.commitSha || payload.after || payload.head_commit?.id;
+
+    // P-04: Distributed Lock to prevent race condition across concurrent executions
+    const repoLockKey = repoFullName;
+    const lockAcquired = await DistributedLock.acquire(repoLockKey, 120000); // 120s TTL
+    if (!lockAcquired) {
+      const lockMsg = `Lock contention for repository ${repoLockKey}. Another job is currently processing it.`;
+      Logger.warn(`[Pipeline] ${lockMsg}`);
+      throw new TransientError(lockMsg);
+    }
 
     let currentModel: NormalizedProjectModel | any = payload.model || null;
 
@@ -162,6 +173,16 @@ export class PipelineOrchestrator {
         Logger.info(`[Pipeline] [7/15] Calling fetchManifest()...`);
         
         const fetchResult = await fetchManifest(repoFullName, branch, payload.manifestRaw);
+        
+        // Early Rejection: If manifest.json does not exist in repo, reject permanently
+        if (!fetchResult.manifestFound && !payload.manifestRaw) {
+          const rejectReason = `Repository "${repoFullName}" does not contain manifest.json. Publication rejected (Fail-Closed).`;
+          Logger.warn(`[Pipeline] EARLY REJECTION at Stage 7: ${rejectReason}`);
+          await this.updateJobState(job.jobId, job.traceId, 'REJECTED_NO_MANIFEST', 7, payload, rejectReason);
+          this.queueProvider.failJob(job.jobId, rejectReason);
+          throw new PermanentError(rejectReason);
+        }
+
         let manifestRawToUse = payload.manifestRaw;
         if (fetchResult.manifestFound && fetchResult.rawResponse) {
           manifestRawToUse = fetchResult.rawResponse;
@@ -173,7 +194,7 @@ export class PipelineOrchestrator {
           ...job,
           payload: {
             repoName,
-            commitSha: payload.commitSha,
+            commitSha,
             manifestRaw: manifestRawToUse,
             treeRaw: payload.treeRaw,
             readmeRaw: payload.readmeRaw,
@@ -213,22 +234,38 @@ export class PipelineOrchestrator {
           } 
         };
         currentModel = await AssetWorker.process(assetJob, this.storageProvider);
+
+        // P-09: Post-Asset Fail-Closed Verification for declared PDFs
+        const declaredPdf = (currentModel.gallery || []).find((g: any) => g.type === 'pdf');
+        if (declaredPdf && (!currentModel.pdfUrl || currentModel.pdfUrl.trim() === '')) {
+          const pdfErr = `Required PDF artifact declared in manifest could not be resolved. Publication blocked (Fail-Closed).`;
+          Logger.error(`[Pipeline] FAIL-CLOSED at Stage 10: ${pdfErr}`);
+          throw new PermanentError(pdfErr);
+        }
       }
 
       if (startStage < 11) {
         this.checkAbort(signal);
         await this.updateJobState(job.jobId, job.traceId, 'PUBLISHING', 11, { model: currentModel });
         
-        const publishJob: PipelineJob<any> = { ...job, payload: { model: currentModel, targetDestination: 'portfolio' } };
+        // P-02: Fail-Closed Gate check
         const publishConfig = currentModel.publish?.portfolio;
-        
-        if (publishConfig && publishConfig.enabled === false) {
-          const exitReason = `Publish target "portfolio" is explicitly disabled.`;
+        if (!publishConfig || publishConfig.enabled !== true) {
+          const exitReason = `Publish target "portfolio" is not explicitly enabled in manifest.json. Publication denied (Fail-Closed).`;
           Logger.warn(`[Pipeline] EARLY EXIT at Stage 11: ${exitReason}`);
           await this.updateJobState(job.jobId, job.traceId, 'COMPLETED_DISABLED', 15, { model: currentModel });
           this.queueProvider.failJob(job.jobId, exitReason);
           throw new PermanentError(exitReason);
         }
+
+        const publishJob: PipelineJob<any> = {
+          ...job,
+          payload: {
+            model: currentModel,
+            targetDestination: 'portfolio',
+            commitSha
+          }
+        };
 
         currentModel = await PublishWorker.process(publishJob);
         Logger.info(`[Pipeline] [11/15] Publish target resolution - Target portfolio enabled.`);
@@ -269,6 +306,9 @@ export class PipelineOrchestrator {
       this.queueProvider.failJob(job.jobId, error.message);
       
       throw error;
+    } finally {
+      // P-04: Always release distributed lock
+      await DistributedLock.release(repoLockKey);
     }
   }
 

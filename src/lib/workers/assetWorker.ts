@@ -51,6 +51,14 @@ export class AssetWorker {
       }
     }
 
+    // Fail-Closed Validation: If manifest declared a PDF gallery item, pdfUrl MUST be resolved
+    const declaredPdf = (model.gallery || []).find(g => g.type === 'pdf');
+    if (declaredPdf && (!newModel.pdfUrl || newModel.pdfUrl.trim() === '')) {
+      throw new PermanentError(
+        `Fail-Closed: Required PDF artifact "${declaredPdf.title || declaredPdf.url}" declared in manifest could not be resolved for project ${newModel.projectId}. Publication blocked.`
+      );
+    }
+
     Logger.info(`[AssetWorker] Asset optimization completed for ${newModel.projectId}`);
     return newModel;
   }
@@ -62,13 +70,18 @@ export class AssetWorker {
     storageProvider: StorageProvider,
     githubToken?: string
   ): Promise<string> {
-    // 1. Skip if already an external public URL
-    if (assetPath.startsWith('http://') || assetPath.startsWith('https://')) {
-      return assetPath;
+    // 1. Normalize GitHub raw URL back to relative repo path if needed
+    let cleanPath = assetPath;
+    const rawGhPrefix = `https://raw.githubusercontent.com/${repoFullName}/${branch}/`;
+    if (cleanPath.startsWith(rawGhPrefix)) {
+      cleanPath = cleanPath.slice(rawGhPrefix.length);
+    } else if (cleanPath.startsWith('http://') || cleanPath.startsWith('https://')) {
+      // Third-party external URL (e.g. PowerBI or external CDN)
+      return cleanPath;
     }
 
     // Strip leading slash if any
-    const relativePath = assetPath.startsWith('/') ? assetPath.slice(1) : assetPath;
+    const relativePath = cleanPath.startsWith('/') ? cleanPath.slice(1) : cleanPath;
 
     // 2. Security Validation
     SecurityValidator.validateAssetPath(relativePath);
