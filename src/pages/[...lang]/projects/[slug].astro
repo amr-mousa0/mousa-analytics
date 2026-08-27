@@ -310,38 +310,35 @@ const projectStack = (project?.data?.tags || []).join(' · ');
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div class="space-y-1">
                 <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center justify-center px-2 py-0.5 rounded bg-red-500/10 text-red-500 font-bold text-[10px] tracking-wider uppercase font-mono border border-red-500/20">
-                    PDF DOCUMENT
+                  <span class="inline-flex items-center justify-center px-2.5 py-1 rounded bg-accent-primary/10 text-accent-primary font-bold text-xs tracking-wider uppercase font-mono border border-accent-primary/20">
+                    PDF VIEWER
                   </span>
-                  <h2 class="text-sm font-semibold uppercase tracking-widest text-text-main">
-                    {currentLang === 'ar' ? 'مستند وتقرير المشروع الفني (PDF)' : 'Project Documentation & Technical Report (PDF)'}
+                  <h2 class="text-base font-bold uppercase tracking-wide text-text-main">
+                    {currentLang === 'ar' ? 'استعراض التقرير والمستند الفني الكامل' : 'Full Technical Report & Documentation'}
                   </h2>
                 </div>
-                <p class="text-text-muted text-xs font-sans">
-                  {currentLang === 'ar' ? 'يمكنك قراءة وتصفح التقرير الفني الكامل مباشرة عبر الموقع' : 'Read and browse the full technical report directly within the browser'}
+                <p class="text-text-muted text-xs sm:text-sm font-sans">
+                  {currentLang === 'ar' ? 'تصفح وقراءة المستند التفاعلي مباشرة داخل الصفحة' : 'Interactive in-browser document viewer'}
                 </p>
-              </div>
-
-              <div class="flex items-center gap-3 shrink-0">
-                <a 
-                  href={resolvedPdf} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-text-main/5 hover:bg-text-main/10 text-text-main text-xs font-semibold transition-colors border border-text-main/10 shadow-sm"
-                >
-                  <Icon name="arrow-down-tray" class="w-3.5 h-3.5" />
-                  <span>{currentLang === 'ar' ? 'تحميل ملف PDF' : 'Download PDF File'}</span>
-                </a>
               </div>
             </div>
 
-            <div class="w-full rounded-2xl border border-text-main/15 bg-[#0d0e12] overflow-hidden shadow-2xl relative">
-              <iframe 
-                src={resolvedPdf.startsWith('http') ? `https://docs.google.com/viewer?url=${encodeURIComponent(resolvedPdf)}&embedded=true` : resolvedPdf} 
-                class="w-full h-[550px] sm:h-[650px] md:h-[750px] border-0 bg-white" 
-                title={currentLang === 'ar' ? 'عرض مستند PDF' : 'PDF Document Viewer'}
-                loading="lazy"
-              ></iframe>
+            <div class="w-full rounded-2xl border border-text-main/15 bg-[#14161f] overflow-hidden shadow-2xl relative min-h-[600px]">
+              <object
+                data={resolvedPdf.startsWith('http') ? `/api/pdf-proxy?url=${encodeURIComponent(resolvedPdf)}#toolbar=1&navpanes=1&scrollbar=1` : resolvedPdf}
+                type="application/pdf"
+                class="w-full h-[650px] sm:h-[750px] md:h-[900px] border-0 block"
+              >
+                <iframe 
+                  src={resolvedPdf.startsWith('http') ? `/api/pdf-proxy?url=${encodeURIComponent(resolvedPdf)}` : resolvedPdf} 
+                  class="w-full h-[650px] sm:h-[750px] md:h-[900px] border-0 bg-[#1a1c23]" 
+                  title={currentLang === 'ar' ? 'عرض مستند PDF' : 'PDF Document Viewer'}
+                >
+                  <p class="p-8 text-center text-text-muted text-sm">
+                    {currentLang === 'ar' ? 'متصفحك لا يدعم عرض ملفات PDF المدمجة مباشرة.' : 'Your browser does not support inline PDF viewing.'}
+                  </p>
+                </iframe>
+              </object>
             </div>
           </section>
         );

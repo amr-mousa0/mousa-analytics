@@ -11,25 +11,29 @@ export class TranslationFallbackChain implements TranslationProvider {
   private providers: TranslationProvider[];
 
   constructor() {
-    // Pipeline: Gemini -> DeepL -> Local
-    this.providers = [
-      new GeminiTranslationProvider(),
-      new DeepLTranslationProvider(),
-      new LocalTranslationProvider()
-    ];
+    this.providers = [];
+    try {
+      this.providers.push(new GeminiTranslationProvider());
+    } catch (e: any) {
+      Logger.warn(`[TranslationFallbackChain] Gemini init failed: ${e.message}`);
+    }
+    try {
+      this.providers.push(new DeepLTranslationProvider());
+    } catch (e: any) {
+      Logger.warn(`[TranslationFallbackChain] DeepL init failed: ${e.message}`);
+    }
+    this.providers.push(new LocalTranslationProvider());
   }
 
   public async translate(text: string, sourceLang: string, targetLang: string): Promise<string> {
     if (!text || sourceLang === targetLang) return text;
 
-    // We assume the first provider (Gemini) owns the prompt model/version for the cache
-    const primaryProvider = this.providers[0] as GeminiTranslationProvider;
     const cacheKey = TranslationMemory.generateCacheKey(
       text, 
       sourceLang, 
       targetLang, 
-      primaryProvider.model, 
-      primaryProvider.promptVersion
+      'gemini-1.5-flash', 
+      'v2-strict-technical'
     );
     
     const cached = await TranslationMemory.get(cacheKey);
