@@ -1,5 +1,6 @@
 import type { RepositoryManifest, NormalizedProjectModel, ManifestGalleryItem } from '../../types/manifest.js';
 import type { ContentSourceTreeItem } from '../../types/providers.js';
+import { PermanentError } from '../errors.js';
 
 export interface FallbackInput {
   repoName: string;
@@ -14,17 +15,22 @@ export interface FallbackInput {
  * 
  * MANIFEST AUTHORITY RULE:
  * 1. If a field exists in manifest.json -> ALWAYS use it.
- * 2. Fallback Engine MAY ONLY fill missing (undefined) fields.
- * 3. Fallback Engine MUST NEVER overwrite declared values.
- * 4. Empty arrays or explicit false/null values are considered intentional choices.
+ * 2. Repositories WITHOUT manifest.json or WITHOUT manifest.project are strictly rejected (Fail-Closed).
+ * 3. Fallback Engine MAY ONLY fill missing optional fields in an existing manifest.
+ * 4. Fallback Engine MUST NEVER synthesize an entire project when manifest.json is absent.
  */
 export function buildNormalizedProjectModel(input: FallbackInput): NormalizedProjectModel {
   const { repoName, manifest, tree = [], readmeContent, githubPagesUrl } = input;
-  const projectDecl = manifest?.project;
-  const publishDecl = manifest?.publish;
+  
+  if (!manifest || !manifest.project) {
+    throw new PermanentError(
+      `Fail-Closed: Repository "${repoName}" is missing a valid manifest.json with "project" declaration. Publication denied.`
+    );
+  }
 
-  const isManifestPresent = Boolean(manifest && manifest.project);
-  let isFallback = !isManifestPresent;
+  const projectDecl = manifest.project;
+  const publishDecl = manifest.publish;
+  let isFallback = false;
 
   // 1. Title Resolution (Manifest Authority)
   const title = projectDecl?.title ?? formatRepoNameTitle(repoName);

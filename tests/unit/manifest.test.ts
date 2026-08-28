@@ -19,15 +19,28 @@ describe('Manifest Authority & Intelligent Fallback Engine', () => {
     expect(model.isFallback).toBe(false);
   });
 
-  it('activates Intelligent Fallback when manifest title is missing', () => {
+  it('activates Intelligent Fallback for optional fields when manifest.project title is omitted', () => {
     const model = buildNormalizedProjectModel({
       repoName: 'enterprise-crm-erp',
+      manifest: {
+        schemaVersion: 1,
+        project: {}
+      },
       readmeContent: 'First paragraph summary from README file.'
     });
 
     expect(model.title).toBe('Enterprise Crm Erp');
     expect(model.description).toBe('First paragraph summary from README file.');
     expect(model.isFallback).toBe(true);
+  });
+
+  it('strictly rejects ingestion when manifest.json is completely absent (Fail-Closed)', () => {
+    expect(() => {
+      buildNormalizedProjectModel({
+        repoName: 'enterprise-crm-erp',
+        readmeContent: 'First paragraph summary from README file.'
+      });
+    }).toThrow();
   });
 
   it('generates SHA-256 Translation Memory compound cache key', () => {

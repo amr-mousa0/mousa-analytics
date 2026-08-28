@@ -5,6 +5,7 @@ import { Logger } from '../../../lib/utils/logger.js';
 import { getEnv } from '../../../config/env.js';
 import { IdempotencyStore } from '../../../lib/orchestrator/idempotency.js';
 import { FeatureFlagManager } from '../../../lib/flags.js';
+import { isRogueProject } from '../../../lib/constants/projects.constants.js';
 
 export const prerender = false;
 
@@ -76,6 +77,16 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (eventType === 'ping') {
     return new Response(
       JSON.stringify({ status: 'active', message: 'Mousa Analytics Webhook Active' }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Early Rogue Repository Rejection (e.g. profile repo, non-project repositories)
+  const repoName = payload.repository?.name || payload.repository?.full_name || '';
+  if (isRogueProject(repoName)) {
+    Logger.warn(`Webhook received for non-portfolio/rogue repository "${repoName}". Skipping payload (Fail-Closed).`, { requestId });
+    return new Response(
+      JSON.stringify({ status: 'skipped', reason: `Repository "${repoName}" is excluded from portfolio publication.` }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   }

@@ -14,6 +14,7 @@ import { FeatureFlagManager } from '../flags.js';
 import { TransientError, PermanentError } from '../errors.js';
 import { Logger } from '../utils/logger.js';
 import { DistributedLock } from './locks.js';
+import { isRogueProject } from '../constants/projects.constants.js';
 
 export interface WebhookPushPayload {
   ref?: string;
@@ -89,6 +90,13 @@ export class PipelineOrchestrator {
   public static async enqueueRepoSync(payload: WebhookPushPayload): Promise<{ jobId: string; traceId: string; result?: NormalizedProjectModel }> {
     const repoName = payload.repository?.name || 'SQL Practice Level 1';
     const repoFullName = payload.repository?.full_name || `amr-mousa0/${repoName.replace(/\s+/g, '-')}`;
+    
+    if (isRogueProject(repoName) || isRogueProject(repoFullName)) {
+      const rejectReason = `Repository "${repoFullName}" is excluded from portfolio publication (Fail-Closed).`;
+      Logger.warn(`[Pipeline] EARLY REJECTION: ${rejectReason}`);
+      throw new PermanentError(rejectReason);
+    }
+
     const installationId = payload.installation?.id || 58291043;
     const branch = payload.ref ? payload.ref.replace('refs/heads/', '') : (payload.repository?.default_branch || 'main');
     const jobId = `job_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
@@ -147,6 +155,14 @@ export class PipelineOrchestrator {
     
     const repoName = payload.repoName || 'SQL Practice Level 1';
     const repoFullName = payload.repoFullName || `amr-mousa0/${repoName.replace(/\s+/g, '-')}`;
+
+    if (isRogueProject(repoName) || isRogueProject(repoFullName)) {
+      const rejectReason = `Repository "${repoFullName}" is excluded from portfolio publication (Fail-Closed).`;
+      Logger.warn(`[Pipeline] EARLY REJECTION: ${rejectReason}`);
+      await this.updateJobState(job.jobId, job.traceId, 'REJECTED_ROGUE_REPO', 3, payload, rejectReason);
+      this.queueProvider.failJob(job.jobId, rejectReason);
+      throw new PermanentError(rejectReason);
+    }
     const installationId = payload.installationId || payload.fullPayload?.installation?.id || 58291043;
     const branch = payload.branch || 'main';
     const commitSha = payload.commitSha || payload.after || payload.head_commit?.id;
