@@ -3,6 +3,7 @@ import { ContentFacade } from '../../lib/content/facade.js';
 import { getSecurityHeaders, handleCorsPreflight } from '../../lib/security/corsPolicy.js';
 import { formatCardDescription } from '../../lib/utils/descriptionFormatter.js';
 import { getDbClient } from '../../lib/db.js';
+import { isRogueProject } from '../../lib/constants/projects.constants.js';
 import crypto from 'crypto';
 
 export const prerender = false;
@@ -23,8 +24,10 @@ export const GET: APIRoute = async ({ request, url }) => {
   const projectMap = new Map<string, any>();
 
   rawProjects.forEach(p => {
-    const formattedProblem = formatCardDescription(p.data.problemText);
     const cleanSlug = p.slug.replace(/^(ar|en)\//, '').split('/').pop() || p.slug;
+    if (isRogueProject(cleanSlug)) return;
+
+    const formattedProblem = formatCardDescription(p.data.problemText);
     projectMap.set(cleanSlug, {
       id: p.id,
       slug: cleanSlug,
@@ -61,6 +64,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
     dbProjects.forEach((p: any) => {
       const cleanSlug = p.slug;
+      if (isRogueProject(cleanSlug)) return;
       const title = lang === 'ar' ? (p.titleAr || p.titleEn) : p.titleEn;
       const rawProblem = lang === 'ar' ? (p.summaryAr || p.summaryEn) : p.summaryEn;
       const formattedProblem = formatCardDescription(rawProblem);

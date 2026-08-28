@@ -1,4 +1,5 @@
 import { getCollection, getEntry } from 'astro:content';
+import { isRogueProject } from '../constants/projects.constants.js';
 
 export interface ContentQueryOptions {
   lang?: 'en' | 'ar';
@@ -15,7 +16,8 @@ export class ContentFacade {
    */
   public static async getProjects(options: ContentQueryOptions = {}) {
     const { lang, includeDrafts = false } = options;
-    const all = await getCollection('projects', ({ data, id }) => {
+    const all = await getCollection('projects', ({ data, id, slug }) => {
+      if (isRogueProject(slug || id)) return false;
       if (!includeDrafts && data.draft) return false;
       if (lang) return id.startsWith(`${lang}/`);
       return true;
@@ -28,7 +30,8 @@ export class ContentFacade {
         slug: cleanSlug,
         id: entry.id || cleanSlug,
       };
-    }).sort((a, b) => (a.data.priority ?? 0) - (b.data.priority ?? 0));
+    }).filter((entry: any) => !isRogueProject(entry.slug))
+      .sort((a, b) => (a.data.priority ?? 0) - (b.data.priority ?? 0));
   }
 
   /**

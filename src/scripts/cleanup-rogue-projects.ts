@@ -24,21 +24,35 @@ async function main() {
   console.log(`Mode: ${isDeleteMode ? 'DELETE' : 'DRY RUN (default)'}\n`);
 
   try {
-    // 1. Find the ghost projects in DB
-    const ghostProjects = await prisma.project.findMany({
-      where: {
-        slug: {
-          in: GHOST_PROJECT_SLUGS
+    // 1. Find the ghost projects in DB if available
+    if (typeof prisma?.project?.findMany === 'function') {
+      const ghostProjects = await prisma.project.findMany({
+        where: {
+          slug: {
+            in: GHOST_PROJECT_SLUGS
+          }
+        }
+      });
+
+      if (ghostProjects.length === 0) {
+        console.log('No ghost projects found in the database.');
+      } else {
+        console.log(`Found ${ghostProjects.length} ghost project(s) in DB:`);
+        for (const p of ghostProjects) {
+          console.log(` - ${p.slug} (ID: ${p.id}, Category: ${p.category})`);
         }
       }
-    });
 
-    if (ghostProjects.length === 0) {
-      console.log('No ghost projects found in the database.');
-    } else {
-      console.log(`Found ${ghostProjects.length} ghost project(s) in DB:`);
-      for (const p of ghostProjects) {
-        console.log(` - ${p.slug} (ID: ${p.id}, Category: ${p.category})`);
+      if (isDeleteMode && ghostProjects.length > 0 && typeof prisma?.project?.deleteMany === 'function') {
+        console.log(`\nProceeding to delete ${ghostProjects.length} DB records...`);
+        const result = await prisma.project.deleteMany({
+          where: {
+            slug: {
+              in: GHOST_PROJECT_SLUGS
+            }
+          }
+        });
+        console.log(`✅ Successfully deleted ${result.count} ghost project record(s) from database.`);
       }
     }
 
@@ -60,20 +74,8 @@ async function main() {
       }
     }
 
-    // 3. Delete if in delete mode
+    // 3. Delete files if in delete mode
     if (isDeleteMode) {
-      if (ghostProjects.length > 0) {
-        console.log(`\nProceeding to delete ${ghostProjects.length} DB records...`);
-        const result = await prisma.project.deleteMany({
-          where: {
-            slug: {
-              in: GHOST_PROJECT_SLUGS
-            }
-          }
-        });
-        console.log(`✅ Successfully deleted ${result.count} ghost project record(s) from database.`);
-      }
-
       if (foundFiles.length > 0) {
         console.log(`\nProceeding to delete ${foundFiles.length} ghost markdown files from disk...`);
         for (const filePath of foundFiles) {
@@ -90,7 +92,9 @@ async function main() {
   } catch (error) {
     console.error('Error during cleanup:', error);
   } finally {
-    await prisma.$disconnect();
+    if (typeof prisma?.$disconnect === 'function') {
+      await prisma.$disconnect();
+    }
   }
 }
 

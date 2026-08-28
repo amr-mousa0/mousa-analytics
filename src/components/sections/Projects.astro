@@ -5,6 +5,7 @@ import { getImageUrl } from '../../scripts/imageHelper.js';
 import Icon from '../ui/Icon.astro';
 import { useTranslations } from '../../i18n/index.js';
 import { getWhatsAppUrl, getContactHref } from '../../lib/contact/cta.js';
+import { isRogueProject } from '../../lib/constants/projects.constants.js';
 
 import FlowingRibbons from '../ui/FlowingRibbons.astro';
 
@@ -28,10 +29,11 @@ const publishedSlugs = new Set(
   (await ContentFacade.getProjects({ includeDrafts: true }))
     .filter((p: any) => !isProd || !p.data?.draft)
     .map((p: any) => String(p.slug || p.id || '').replace(/\.[^/.]+$/, '').split('/').pop())
+    .filter((slug: any) => !isRogueProject(slug))
 );
 const projects = hubProjects.filter((p) => {
   const clean = String(p.slug || p.id || '').replace(/\.[^/.]+$/, '').split('/').pop();
-  return publishedSlugs.has(clean);
+  return !isRogueProject(clean) && publishedSlugs.has(clean);
 });
 
 const getProjectUrl = (slug: string) => {

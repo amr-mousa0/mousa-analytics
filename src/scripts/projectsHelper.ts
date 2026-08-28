@@ -1,6 +1,7 @@
 import { ContentFacade } from '../lib/content/facade.js';
 import { PublishWorker } from '../lib/workers/publishWorker.js';
 import { formatCardDescription } from '../lib/utils/descriptionFormatter.js';
+import { isRogueProject } from '../lib/constants/projects.constants.js';
 
 export interface ExtendedProjectData {
   title: string;
@@ -111,8 +112,12 @@ export async function getSafeProjects(lang: string): Promise<ExtendedProject[]> 
     const isProd = import.meta.env.PROD;
     const showDrafts = !isProd;
 
-    // Filter by draft status
-    const activeProjects = allProjects.filter(item => showDrafts || !item.data.draft);
+    // Filter by draft status and rogue slugs
+    const activeProjects = allProjects.filter(item => {
+      const cleanSlug = item.slug.split('/').pop() || '';
+      if (isRogueProject(cleanSlug)) return false;
+      return showDrafts || !item.data.draft;
+    });
 
     // Group by target language
     const currentLocaleProjects: ExtendedProject[] = activeProjects
