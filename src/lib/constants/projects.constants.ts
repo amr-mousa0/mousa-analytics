@@ -12,7 +12,7 @@ export const ROGUE_PROJECT_SLUGS = Object.freeze([
   'content-sync-service'
 ]);
 
-export function isRogueProject(slug: string): boolean {
+export function isRogueProject(slug?: string | null): boolean {
   if (!slug) return true;
   const clean = String(slug)
     .replace(/^(ar|en)\//, '')

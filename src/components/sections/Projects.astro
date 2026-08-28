@@ -32,7 +32,7 @@ const publishedSlugs = new Set(
     .filter((slug: any) => !isRogueProject(slug))
 );
 const projects = hubProjects.filter((p) => {
-  const clean = String(p.slug || p.id || '').replace(/\.[^/.]+$/, '').split('/').pop();
+  const clean = String(p.slug || p.id || '').replace(/\.[^/.]+$/, '').split('/').pop() || '';
   return !isRogueProject(clean) && publishedSlugs.has(clean);
 });
 
