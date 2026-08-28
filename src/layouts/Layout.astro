@@ -237,9 +237,13 @@ const breadcrumbSchema = breadcrumbs.length > 1 ? {
     {preloadImageMobile && <link rel="preload" href={preloadImageMobile} as="image" fetchpriority="high" media="(max-width: 767px)" />}
     {preloadImageDesktop && <link rel="preload" href={preloadImageDesktop} as="image" fetchpriority="high" media="(min-width: 768px)" />}
 
-<!-- Web Fonts: self-hosted + preload + non-blocking (never blocks first paint; font-display: swap) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Web Fonts: self-hosted + preload + non-blocking (never blocks first paint; font-display: swap) -->
+    {pageId === 'about' && (
+      <>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      </>
+    )}
     <!-- Preload the exact subsets used above the fold (Cairo arabic for the AR hero/text,
          Outfit latin for the EN+AR body/nav, Cormorant Garamond latin for the EN hero display). -->
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/cairo-400-1.woff2" />

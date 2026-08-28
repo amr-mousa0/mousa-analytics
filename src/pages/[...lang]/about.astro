@@ -100,7 +100,7 @@ const approachPillars = [
     <AboutHeroCinematic client:load lang={currentLang} />
 
     <!-- Section 1.5: Cinematic Gallery Strip — living portfolio divider between hero and content -->
-    <GalleryStripParallax client:load />
+    <GalleryStripParallax client:visible />
 
     <!-- Section 2: Evidence Strip (Trust Metrics) -->
     <div class="relative z-10 w-full bg-primary-bg">
@@ -202,7 +202,7 @@ const approachPillars = [
         </div>
 
         <div class="w-full flex justify-center pt-8 pb-12">
-          <SocialCards client:load cards={experienceCards} />
+          <SocialCards client:visible cards={experienceCards} />
         </div>
       </div>
       

@@ -14,6 +14,7 @@ const t = useTranslations(lang);
 
 // Using high-quality transparent renders (WebP-optimized, originals kept as .png masters)
 const laptopSrc = isAr ? '/dashboard-hero-right.webp' : '/dashboard-hero-left.webp';
+const laptopSrcMobile = isAr ? '/dashboard-hero-right-mobile.webp' : '/dashboard-hero-left-mobile.webp';
 const brandTagline = isAr ? BRAND_CONSTANTS.TAGLINE_AR : BRAND_CONSTANTS.TAGLINE_EN;
 
 // 7 Minimalist High-End Agency Totem Cards (Lowered further for optimal section framing)
@@ -39,6 +40,7 @@ const galleryCards = [
     id: 2,
     kind: 'image' as const,
     src: '/images/gallery/pic1.webp',
+    srcMobile: '/images/gallery/pic1-sm.webp',
     alt: 'Café & Bar Sales Performance',
     label: t.hero.totem.salesAnalytics,
     tag: 'Sales Performance',
@@ -57,6 +59,7 @@ const galleryCards = [
     id: 3,
     kind: 'image' as const,
     src: '/images/gallery/pic2.webp',
+    srcMobile: '/images/gallery/pic2-sm.webp',
     alt: 'Net Profit Breakdown',
     label: t.hero.totem.netProfit,
     tag: 'Profit Analytics',
@@ -75,6 +78,7 @@ const galleryCards = [
     id: 4,
     kind: 'image' as const,
     src: '/images/gallery/pic4.webp',
+    srcMobile: '/images/gallery/pic4-sm.webp',
     alt: 'Marketing ROI Overview',
     label: t.hero.totem.marketingOverview,
     tag: 'Marketing ROI',
@@ -94,6 +98,7 @@ const galleryCards = [
     id: 5,
     kind: 'image' as const,
     src: '/images/gallery/pic5.webp',
+    srcMobile: '/images/gallery/pic5-sm.webp',
     alt: 'Conversion Rate Funnel',
     label: t.hero.totem.conversionFunnel,
     tag: 'Funnel Analytics',
@@ -112,6 +117,7 @@ const galleryCards = [
     id: 6,
     kind: 'image' as const,
     src: '/images/gallery/pic3.webp',
+    srcMobile: '/images/gallery/pic3-sm.webp',
     alt: 'Customer Acquisition Matrix',
     label: t.hero.totem.acquisitionMatrix,
     tag: 'Customer Growth',
@@ -130,6 +136,7 @@ const galleryCards = [
     id: 7,
     kind: 'image' as const,
     src: '/images/gallery/pic1.webp',
+    srcMobile: '/images/gallery/pic1-sm.webp',
     alt: 'Executive BI Dashboard',
     label: t.hero.totem.executiveBi,
     tag: 'Executive Dashboard',
@@ -209,7 +216,10 @@ const galleryCards = [
     <div class="brand-laptop-wrap">
       <div class="hero-laptop" aria-hidden="true">
         <div class="hero-laptop__inner" id="hero-laptop-inner">
-          <img src={laptopSrc} alt="Dashboard Analysis" class="hero-laptop__img" fetchpriority="high" decoding="async" />
+          <picture>
+            <source media="(max-width: 767px)" srcset={laptopSrcMobile} type="image/webp" />
+            <img src={laptopSrc} alt="Dashboard Analysis" class="hero-laptop__img" fetchpriority="high" decoding="async" width="1672" height="941" />
+          </picture>
         </div>
       </div>
     </div>
@@ -239,13 +249,16 @@ const galleryCards = [
               </figure>
             ) : (
               <figure class="gallery-figure relative w-full h-full overflow-hidden bg-[#06070a]">
-                <img
-                  src={card.src}
-                  alt={card.alt}
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  decoding="async"
-                  class="gallery-img w-full h-full object-cover object-center opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]"
-                />
+                <picture>
+                  {card.srcMobile && <source media="(max-width: 767px)" srcset={card.srcMobile} type="image/webp" />}
+                  <img
+                    src={card.src}
+                    alt={card.alt}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    class="gallery-img w-full h-full object-cover object-center opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]"
+                  />
+                </picture>
               </figure>
             )}
           </div>
@@ -454,14 +467,15 @@ const galleryCards = [
 
     }, hero);
 
-    // Calibrate the pinned trigger once layout settles, instead of waiting for
-    // the window `load` event (which slow mobile networks delay by several
-    // seconds). A silent re-calibration on `load` stays for absolute accuracy
-    // once every eager image has decoded.
-    requestAnimationFrame(() => ScrollTrigger.refresh());
-    const imgs = Array.from(document.images);
-    if (!imgs.every((img) => img.complete)) {
-      window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
+    // Calibrate the pinned trigger safely after initial paint without blocking main thread
+    const calibrateScrollTrigger = () => {
+      ScrollTrigger.refresh();
+    };
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(calibrateScrollTrigger, { timeout: 800 });
+    } else {
+      setTimeout(calibrateScrollTrigger, 100);
     }
 
     // Cleanup
@@ -472,27 +486,28 @@ const galleryCards = [
     );
   }
 
-  async function scheduleCinematicEngine() {
+  function scheduleCinematicEngine() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (engineBuilt) return;
 
-    try {
-      await buildCinematicEngine();
-    } catch (err) {
-      console.error('[CinematicHero] engine build failed:', err);
+    const run = async () => {
+      try {
+        await buildCinematicEngine();
+      } catch (err) {
+        console.error('[CinematicHero] engine build failed:', err);
+      }
+    };
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(run, { timeout: 400 });
+    } else {
+      setTimeout(run, 40);
     }
   }
 
-  // Kickoff: this module script executes right after HTML parse (deferred
-  // semantics), which is the earliest safe moment — the first paint's inline
-  // entrance is untouched, the heavy ScrollTrigger layout measurement happens
-  // while the preloader still covers the page, and the motion chunk fetch
-  // overlaps the hero image download instead of racing the user's scroll.
-  // Scroll/touch/load listeners remain as safety nets in case anything clears
-  // the document before the engine could build.
   scheduleCinematicEngine();
-  window.addEventListener('scroll', () => scheduleCinematicEngine(), { once: true, passive: true });
-  window.addEventListener('touchstart', () => scheduleCinematicEngine(), { once: true, passive: true });
-  window.addEventListener('load', () => scheduleCinematicEngine(), { once: true });
+  window.addEventListener('scroll', scheduleCinematicEngine, { once: true, passive: true });
+  window.addEventListener('touchstart', scheduleCinematicEngine, { once: true, passive: true });
 
   document.addEventListener('astro:after-swap', () => {
     engineBuilt = false;

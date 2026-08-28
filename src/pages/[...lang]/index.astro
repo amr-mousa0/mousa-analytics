@@ -24,10 +24,11 @@ if (lang !== undefined && lang !== 'en') {
 }
 
 const currentLang = (lang || 'ar') as 'en' | 'ar';
-const heroImage = currentLang === 'ar' ? '/dashboard-hero-right.webp' : '/dashboard-hero-left.webp';
+const heroImageDesktop = currentLang === 'ar' ? '/dashboard-hero-right.webp' : '/dashboard-hero-left.webp';
+const heroImageMobile = currentLang === 'ar' ? '/dashboard-hero-right-mobile.webp' : '/dashboard-hero-left-mobile.webp';
 ---
 
-<Layout lang={currentLang} pageId="homepage" preloadImageMobile={heroImage} preloadImageDesktop={heroImage}>
+<Layout lang={currentLang} pageId="homepage" preloadImageMobile={heroImageMobile} preloadImageDesktop={heroImageDesktop}>
   <Navbar lang={currentLang} activePage="home" />
   <main class="flex-grow">
     <CinematicHero lang={currentLang} />

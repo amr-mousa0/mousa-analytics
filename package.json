@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/inject-motion-preload.mjs",
+    "build": "node scripts/generate-responsive-images.mjs && astro build && node scripts/inject-motion-preload.mjs",
     "preview": "node scripts/preview-server.mjs",
     "astro": "astro",
     "check": "astro check",
