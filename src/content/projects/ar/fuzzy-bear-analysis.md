@@ -10,7 +10,7 @@ galleryImages:
   - "https://raw.githubusercontent.com/amr-mousa0/Fuzzy-Bear-Analysis/main/assets/marketing-analysis.png"
   - "https://raw.githubusercontent.com/amr-mousa0/Fuzzy-Bear-Analysis/main/assets/sales-analysis.png"
 githubUrl: "https://github.com/amr-mousa0/Fuzzy-Bear-Analysis"
-dashboardUrl: "https://amr-mousa0.github.io/Fuzzy-Bear-Analysis"
+dashboardUrl: "https://app.powerbi.com/view?r=eyJrIjoiZWFmZjMzYWItMDI2Zi00OWVmLThmYzItOTM4Yzg3MjIwNWI5IiwidCI6IjJiYjZlNWJjLWMxMDktNDdmYi05NDMzLWMxYzZmNGZhMzNmZiIsImMiOjl9"
 whatsappStartProjectMsg: "مرحباً عمرو، أود الاستفسار عن هذا المشروع."
 whatsappOpenDashboardMsg: "مرحباً عمرو، أود الاطلاع على التفاصيل واستعراض المشروع."
 priority: 50
@@ -18,7 +18,7 @@ category: "Data Analytics"
 tags: ["SQL","PostgreSQL","Power BI","Data Analysis","Marketing Analytics","Sales Analytics","Business Intelligence"]
 draft: false
 featured: false
-publishedDate: "2026-09-26T18:28:23.098Z"
+publishedDate: "2026-09-26T18:34:10.924Z"
 translationKey: "fuzzy-bear-analysis"
 ---
 دراسة حالة: تحليلات بيانات فازي فاكتوري
