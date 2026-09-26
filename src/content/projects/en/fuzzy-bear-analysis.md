@@ -18,7 +18,7 @@ category: "Data Analytics"
 tags: ["SQL","PostgreSQL","Power BI","Data Analysis","Marketing Analytics","Sales Analytics","Business Intelligence"]
 draft: false
 featured: false
-publishedDate: "2026-09-26T18:00:47.273Z"
+publishedDate: "2026-09-26T18:01:36.774Z"
 translationKey: "fuzzy-bear-analysis"
 ---
 Case Study: Fuzzy Factory Data Analytics
